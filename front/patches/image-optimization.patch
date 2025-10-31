@@ -1,0 +1,32 @@
+--- a/src/components/sections/about.tsx
++++ b/src/components/sections/about.tsx
+@@ -59,6 +59,7 @@
+               <Image
+                 src="/images/about-one.png"
+                 alt="Handcrafted process"
++                priority
+                 fill
+-                sizes="(max-width: 1024px) 100vw, 50vw"
++                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                 className="object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out group-hover:scale-[1.035]"
+               />
+@@ -75,6 +76,7 @@
+                     <Image
+                       src="/images/about-two.png"
+                       alt="Linen texture"
++                      loading="lazy"
+                       fill
+-                      sizes="(max-width: 1024px) 50vw, 25vw"
++                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 12.5vw"
+                       className="object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out group-hover:scale-[1.035]"
+                     />
+@@ -86,6 +88,7 @@
+                     <Image
+                       src="/images/about-three.png"
+                       alt="Hand stitching"
++                      loading="lazy"
+                       fill
+-                      sizes="(max-width: 1024px) 50vw, 25vw"
++                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 12.5vw"
+                       className="object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out group-hover:scale-[1.035]"
+                     />

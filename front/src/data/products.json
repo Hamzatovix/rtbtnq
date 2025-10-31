@@ -1,0 +1,67 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 101,
+      "slug": "rose-mini",
+      "name": "Rose Mini",
+      "description": "Мини‑сумка из мягкой кожи с деликатной фурнитурой.",
+      "category": 1,
+      "material": "Натуральная кожа",
+      "care": "Протирать сухой мягкой тканью.",
+      "is_published": true,
+      "is_featured": true,
+      "images": [
+        {"id": 1001, "url": "/images/rose-mini-1.jpg", "alt": "Rose Mini — фронт", "position": 1, "is_cover": true},
+        {"id": 1002, "url": "/images/rose-mini-2.jpg", "alt": "Rose Mini — деталь", "position": 2, "is_cover": false}
+      ],
+      "variants": [
+        {"id": 201, "color": 2, "sku": "ROSE-MINI-BEIGE-001", "price": 12900, "stock": 5, "is_active": true},
+        {"id": 202, "color": 5, "sku": "ROSE-MINI-GRPH-002", "price": 12900, "stock": 2, "is_active": true}
+      ],
+      "seo_title": "Rose Mini — сумка RSBTQ",
+      "seo_description": "Компактная сумка Rose Mini в бежевом и графит."
+    },
+    {
+      "id": 102,
+      "slug": "atelier-tote",
+      "name": "Atelier Tote",
+      "description": "Просторная tote‑сумка для ежедневного использования.",
+      "category": 1,
+      "material": "Натуральная кожа",
+      "care": "Избегать влаги, хранить в мешочке.",
+      "is_published": true,
+      "is_featured": false,
+      "images": [
+        {"id": 1011, "url": "/images/atelier-tote-1.jpg", "alt": "Atelier Tote — фронт", "position": 1, "is_cover": true}
+      ],
+      "variants": [
+        {"id": 211, "color": 1, "sku": "ATELIER-TOTE-BLK-001", "price": 18900, "stock": 7, "is_active": true},
+        {"id": 212, "color": 3, "sku": "ATELIER-TOTE-IVR-002", "price": 18900, "stock": 0, "is_active": false}
+      ],
+      "seo_title": "Atelier Tote — сумка RSBTQ",
+      "seo_description": "Большая сумка Atelier Tote в чёрном и молочном."
+    },
+    {
+      "id": 103,
+      "slug": "pouch-classic",
+      "name": "Pouch Classic",
+      "description": "Клатч/кошелёк с удобной молнией и ремешком.",
+      "category": 3,
+      "material": "Натуральная кожа",
+      "care": "Хранить вдали от источников тепла.",
+      "is_published": false,
+      "is_featured": false,
+      "images": [],
+      "variants": [
+        {"id": 221, "color": 4, "sku": "POUCH-CL-SAGE-001", "price": 4900, "stock": 12, "is_active": true}
+      ],
+      "seo_title": "Pouch Classic — аксессуар RSBTQ",
+      "seo_description": "Классический клатч Pouch Classic."
+    }
+  ]
+}
+
+

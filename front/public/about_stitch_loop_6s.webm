@@ -1,0 +1,5 @@
+# Video placeholder
+# This file should contain a 6-8 second WebM video loop
+# Format: WebM, no audio, loop-friendly
+# Content: Hand stitching process in macro detail
+# If this file doesn't exist, the component will show fallback image

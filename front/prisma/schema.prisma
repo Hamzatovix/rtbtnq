@@ -1,0 +1,13 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// NOTE: Модели не описаны. Клиент сгенерируется, чтобы пройти сборку.
+// Для реальной работы API добавьте модели, соответствующие используемым сущностям.
+
+

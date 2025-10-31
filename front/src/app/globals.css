@@ -1,0 +1,704 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 240 6% 18%;
+    --card: 0 0% 98%;
+    --card-foreground: 240 6% 18%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 240 6% 18%;
+    --primary: 160 8% 65%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 45 18% 95%;
+    --secondary-foreground: 240 6% 18%;
+    --muted: 45 18% 95%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 45 18% 95%;
+    --accent-foreground: 240 6% 18%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 45 15% 88%;
+    --input: 45 15% 88%;
+    --ring: 160 8% 65%;
+    --radius: 1rem;
+    
+    /* Font variables */
+    --font-display: var(--font-cormorant);
+    --font-body: var(--font-inter);
+    
+    /* New brand colors for natural minimalism */
+    --roseBeige: 244 239 232;
+    --mistGray: 214 211 206;
+    --linenWhite: 249 249 249;
+    --sageTint: 174 182 175;
+    --inkSoft: 75 75 75;
+    --soft-shadow: 0 4px 20px rgba(174, 182, 175, 0.08);
+    --medium-shadow: 0 8px 30px rgba(174, 182, 175, 0.15);
+    --warm-shadow: 0 6px 25px rgba(244, 239, 232, 0.4);
+    --breathing-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142 76% 36%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    @apply bg-white font-sans;
+    font-size: 17px;
+    line-height: 1.8;
+  }
+  
+  h1, h2, h3 {
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* Form controls: brand focus and autofill reset */
+  input, textarea, select {
+    accent-color: rgb(var(--sageTint));
+    caret-color: rgb(var(--inkSoft));
+  }
+  input:focus,
+  input:focus-visible,
+  textarea:focus,
+  textarea:focus-visible,
+  select:focus,
+  select:focus-visible {
+    outline: none !important;
+    border-color: rgb(var(--sageTint)) !important;
+    /* Эмулируем tailwind ring, перекрывая системный синий */
+    box-shadow: 0 0 0 2px rgba(var(--sageTint), 1) !important;
+  }
+  /* Chrome/Safari autofill blue background fix */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: rgb(var(--inkSoft));
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+    box-shadow: 0 0 0px 1000px #ffffff inset;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+}
+
+/* ===== RB: Autofill + Focus hard reset ===== */
+:root {
+  --rb-autofill-bg: hsl(var(--background));
+  /* синхронизация нативных контролов с темой */
+  --rb-color-scheme: light;
+}
+
+.dark {
+  --rb-color-scheme: dark;
+}
+
+@layer utilities {
+  /* Chrome/Safari (WebKit) */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground)) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+    box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+    -webkit-background-clip: padding-box !important;
+    border-radius: inherit !important;
+    transition: background-color 99999s ease-out 0s !important;
+  }
+
+  /* Адресный таргет с повышенной специфичностью */
+  input[data-rb-input]:-webkit-autofill,
+  textarea[data-rb-input]:-webkit-autofill,
+  select[data-rb-input]:-webkit-autofill {
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground)) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+    box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+    -webkit-background-clip: padding-box !important;
+    border-radius: inherit !important;
+  }
+
+  /* Стандартный псевдокласс */
+  input:autofill,
+  textarea:autofill,
+  select:autofill,
+  input[data-rb-input]:autofill,
+  textarea[data-rb-input]:autofill,
+  select[data-rb-input]:autofill {
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground)) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+    box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+  }
+
+  /* Firefox */
+  input:-moz-autofill,
+  textarea:-moz-autofill,
+  select:-moz-autofill {
+    color: hsl(var(--foreground)) !important;
+    box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+  }
+
+  /* Убираем нативный синий outline, не трогая наш ring */
+  input:focus, input:focus-visible,
+  textarea:focus, textarea:focus-visible,
+  select:focus, select:focus-visible {
+    outline: 0 !important;
+  }
+
+  /* Стабилизируем рендер форм-контролов */
+  input, textarea, select {
+    -webkit-appearance: none;
+    appearance: none;
+    color-scheme: var(--rb-color-scheme);
+  }
+
+  /* Прячем синий contacts-autofill значок в Safari */
+  input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+  }
+
+  /* Запасной канал: если браузер/менеджер паролей не даёт :-webkit-autofill,
+     но значение уже вставлено — используем data-атрибут */
+  input[data-autocompleted],
+  textarea[data-autocompleted],
+  select[data-autocompleted] {
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground)) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+    box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
+    -webkit-background-clip: padding-box !important;
+    border-radius: inherit !important;
+  }
+}
+
+@layer utilities {
+  .shadow-soft {
+    box-shadow: var(--soft-shadow);
+  }
+  
+  .shadow-medium {
+    box-shadow: var(--medium-shadow);
+  }
+  
+  .shadow-warm {
+    box-shadow: var(--warm-shadow);
+  }
+  
+  .shadow-breathing {
+    box-shadow: var(--breathing-shadow);
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .bg-texture {
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(244, 239, 232, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(214, 211, 206, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(174, 182, 175, 0.05) 0%, transparent 50%);
+  }
+  
+  .bg-linen {
+    background-image: 
+      radial-gradient(circle at 30% 70%, rgba(244, 239, 232, 0.2) 0%, transparent 60%),
+      radial-gradient(circle at 70% 30%, rgba(214, 211, 206, 0.15) 0%, transparent 60%);
+  }
+  
+  .text-graceful {
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  
+  .backdrop-breathing {
+    backdrop-filter: blur(6px);
+    background: rgba(250, 249, 247, 0.6);
+  }
+  
+  .transition-breathing {
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  .bg-misty {
+    background-image: 
+      radial-gradient(circle at 25% 75%, rgba(244, 239, 232, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 75% 25%, rgba(214, 211, 206, 0.2) 0%, transparent 50%);
+  }
+  
+  .text-whisper {
+    color: rgba(75, 75, 75, 0.6);
+  }
+  
+  .shadow-misty {
+    box-shadow: 0 8px 32px rgba(174, 182, 175, 0.12);
+  }
+  
+  .backdrop-misty {
+    backdrop-filter: blur(8px);
+    background: rgba(250, 249, 247, 0.7);
+  }
+  
+  /* use anim-breath */
+  /* .breathing-glow {
+    animation: breathing-glow 6s ease-in-out infinite;
+  } */
+  
+  /* --- rosebotanique: motion tokens & utilities --- */
+  .anim-breath { 
+    animation: rb-breath 12s cubic-bezier(0.22, 1, 0.36, 1) infinite; 
+    will-change: transform, opacity;
+  }
+  .anim-breath-slow { 
+    animation: rb-breath-slow 22s ease-in-out infinite; 
+    will-change: transform, opacity;
+  }
+  .anim-delay-2s { animation-delay: 2s; }
+  
+  /* Typography utilities */
+  .smallcaps { 
+    letter-spacing: .12em; 
+    text-transform: uppercase; 
+    font-weight: 500; 
+  }
+  
+  /* Tilt effect */
+  .rb-tilt { 
+    transform: perspective(600px) rotateX(var(--tiltY,0deg)) rotateY(var(--tiltX,0deg)) translate3d(var(--tx,0),var(--ty,0),0); 
+    will-change: transform; 
+  }
+  
+  /* Stroke reveal animation */
+  .stroke-reveal { 
+    stroke-dasharray: 600; 
+    stroke-dashoffset: 600; 
+    transition: stroke-dashoffset 2s cubic-bezier(0.22,1,0.36,1); 
+  }
+  [data-inview="true"] .stroke-reveal { 
+    stroke-dashoffset: 0; 
+  }
+  
+  /* Hover mask */
+  .mask-stitch { 
+    opacity: 0; 
+    transition: opacity 600ms cubic-bezier(0.22,1,0.36,1); 
+    pointer-events: none; 
+  }
+  .group:hover .mask-stitch { 
+    opacity: .55; 
+  }
+  .anim-delay-4s { animation-delay: 4s; }
+  .anim-float { 
+    animation: rb-float 22s ease-in-out infinite; 
+  }
+.anim-stitch-once { 
+  animation: rb-stitch 2.7s cubic-bezier(0.22, 1, 0.36, 1) both 1; 
+}
+
+.anim-float-slow { 
+  animation: rb-float-slow 18s ease-in-out infinite; 
+}
+
+.rb-bloom-in { 
+  animation: rb-bloom-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; 
+}
+  
+  /* halo: мягкий узел фокуса (фон радиальный) */
+  .halo {
+    background: radial-gradient(
+      closest-side,
+      rgba(174,182,175,0.14),
+      rgba(174,182,175,0.08) 60%,
+      transparent 70%
+    );
+  }
+  
+  /* нижняя «вуаль» — деликатная подпорка снизу */
+  .veil-bottom {
+    background: linear-gradient(to top, rgba(0,0,0,0.06), rgba(0,0,0,0));
+  }
+  
+  /* уважение к reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .anim-breath, .anim-breath-slow, .anim-float { animation: none !important; }
+    .anim-stitch-once { animation-duration: 0.01s; }
+  }
+}
+
+/* --- rosebotanique · Elven Flower --- */
+.rb-flower { 
+  --fl-dur: 900ms; 
+  --fl-ease: cubic-bezier(0.22,1,0.36,1);
+  animation: rb-breathe 4s ease-in-out infinite;
+  transition: transform var(--fl-dur) var(--fl-ease);
+}
+.rb-flower svg { display:block; }
+
+/* общее увеличение цветка при наведении */
+.group:hover .rb-flower,
+.group:focus-within .rb-flower { transform: scale(1.25); }
+
+/* лепесток: лёгкий поворот и масштаб → раскрываться к 0deg/1 */
+.rb-petal {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transform: rotate(-8deg) scale(.88);
+  transition:
+    transform var(--fl-dur) var(--fl-ease),
+    opacity var(--fl-dur) var(--fl-ease);
+  transition-delay: var(--d, 0ms);
+}
+.rb-petal path{
+  stroke-dasharray: 140;
+  stroke-dashoffset: 0; /* видимые контуры в покое */
+  transition: stroke-dashoffset var(--fl-dur) var(--fl-ease);
+  opacity:.5;
+}
+
+/* hover/focus раскрывает лепестки полностью */
+.group:hover .rb-petal,
+.group:focus-within .rb-petal { transform: rotate(0deg) scale(1.2); }
+.group:hover .rb-petal path,
+.group:focus-within .rb-petal path { stroke-dashoffset: 0; opacity:.75; }
+
+/* сердцевина: мягко «собирается» */
+.rb-core{
+  transition: transform var(--fl-dur) var(--fl-ease), opacity var(--fl-dur) var(--fl-ease);
+  transform: scale(.85);
+  opacity:.55;
+}
+.group:hover .rb-core,
+.group:focus-within .rb-core { transform: scale(1.2); opacity:.9; }
+
+/* уважение к reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .anim-breath, .anim-breath-slow, .anim-float { animation: none !important; }
+  .anim-float-slow, .rb-bloom-in { animation: none !important; }
+  .rb-flower { animation: none !important; }
+  .anim-stitch-once { animation-duration: 0.01s; }
+  .rb-petal{ transition: opacity 200ms ease; transform: none !important; }
+  .rb-petal path{ transition: opacity 200ms ease; stroke-dashoffset: 0; }
+  .rb-core{ transition: opacity 200ms ease; transform: none !important; }
+  .stroke-reveal { stroke-dashoffset: 0 !important; }
+}
+
+/* Keyframes вне @layer для правильной работы */
+@keyframes rb-breath {
+  0%,100% { transform: scale(1); opacity: 0.12; }
+  50%     { transform: scale(1.03); opacity: 0.20; }
+}
+
+@keyframes rb-float {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%     { transform: translateY(-8px) rotate(0.5deg); }
+}
+
+@keyframes rb-stitch {
+  0%   { stroke-dashoffset: 120%; }
+  100% { stroke-dashoffset: 0%; }
+}
+
+@keyframes rb-float-slow {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%     { transform: translateY(-4px) rotate(0.3deg); }
+}
+
+@keyframes rb-bloom-in {
+  0%   { transform: scale(.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes rb-breathe {
+  0%,100% { transform: scale(1); opacity: 0.6; }
+  50%     { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes rb-breath-slow {
+  0%,100% { transform: scale(1); opacity: .12; }
+  50%     { transform: scale(1.02); opacity: .2; }
+}
+
+@keyframes rb-crossfade { 
+  0%, 40%   { opacity: 1 }
+  50%, 90%  { opacity: 0 }
+  100%      { opacity: 1 }
+}
+.rb-crossfade { position: absolute; inset: 0; object-fit: cover; opacity: 0; }
+.rb-crossfade--top { animation: rb-crossfade 22s cubic-bezier(0.22,1,0.36,1) infinite; }
+.group:hover .rb-crossfade--top,
+.group:focus-within .rb-crossfade--top { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce){
+  .rb-crossfade--top { animation: none !important; opacity: 0 !important; }
+}
+
+/* koru spiral */
+.rb-koru svg{display:block}
+.koru-stroke{
+  stroke-dasharray:600; stroke-dashoffset:0;
+  transition:stroke-dashoffset 2.1s cubic-bezier(0.22,1,0.36,1);
+  opacity:.75;
+}
+.koru-leaf{
+  transform-box: fill-box; transform-origin:50% 50%;
+  transition: transform 900ms cubic-bezier(0.22,1,0.36,1), opacity 900ms cubic-bezier(0.22,1,0.36,1);
+}
+.koru-breath{ animation: rb-koru-breath 22s ease-in-out infinite }
+@keyframes rb-koru-breath{
+  0%,100%{ transform: scale(1); opacity:.14 }
+  50%{ transform: scale(1.02); opacity:.20 }
+}
+/* hover/focus раскрытие */
+.koru-host:hover .koru-stroke,
+.koru-host:focus-within .koru-stroke{ stroke-dashoffset:0 }
+.koru-host:hover .koru-leaf,
+.koru-host:focus-within .koru-leaf{ transform: rotate(0deg) scale(1.02); opacity:.7 }
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .koru-breath{ animation:none!important }
+  .koru-stroke{ transition:none; stroke-dashoffset:0 }
+  .koru-leaf{ transition: opacity 200ms ease; transform:none!important }
+}
+
+/* --- NOAH stitched label --- */
+.noah-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.noah-stitch {
+  display:block;
+}
+.noah-stitch-path{
+  stroke:#aeb6af;
+  stroke-width:1.25;
+  stroke-linecap:round;
+  fill:none;
+  stroke-dasharray: 240;
+  stroke-dashoffset: 240;
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.22,1,0.36,1);
+  opacity:.35;
+}
+
+/* линия под словом для выравнивания, можно отключить */
+.noah-line{
+  line-height:1;
+}
+
+.noah-word{
+  font-family: var(--font-inter, Inter), ui-sans-serif, system-ui, -apple-system;
+  font-size: 12px;
+  letter-spacing: .18em;           /* стартовый kerning */
+  text-transform: uppercase;
+  color: rgba(75,75,75,.72);       /* inkSoft/72% */
+  opacity: 0;
+  transform: translateY(2px);
+  transition:
+    opacity 420ms cubic-bezier(0.22,1,0.36,1),
+    transform 420ms cubic-bezier(0.22,1,0.36,1),
+    letter-spacing 300ms cubic-bezier(0.22,1,0.36,1);
+}
+
+/* триггер: hover/focus на кнопку CTA */
+.about-hover:has(.cta-link:hover) .noah-stitch-path,
+.about-hover:has(.cta-link:focus) .noah-stitch-path{
+  stroke-dashoffset: 0;
+  opacity:.45;
+}
+.about-hover:has(.cta-link:hover) .noah-word,
+.about-hover:has(.cta-link:focus) .noah-word{
+  opacity:.9;
+  transform: translateY(0);
+  letter-spacing: .22em;           /* лёгкое расширение */
+}
+
+/* reduced-motion: показать сразу, без анимации */
+@media (prefers-reduced-motion: reduce){
+  .noah-stitch-path{
+    transition:none; stroke-dashoffset:0; opacity:.45;
+  }
+  .noah-word{
+    transition:none; opacity:.9; transform:none; letter-spacing:.22em;
+  }
+}
+
+/* мобильное поведение (опционально):
+   делаем слово видно сразу, чтобы не зависеть от hover */
+@media (max-width: 767.98px){
+  .noah-word{ opacity:.9; transform:none; }
+  .noah-stitch-path{ stroke-dashoffset:0; }
+}
+
+/* Saturn Planet */
+.rb-nord-disc svg{display:block}
+.rb-nord-disc{ 
+  opacity: 0.6; /* более заметный */
+  perspective: 1000px;
+}
+.nord-disc-breath{
+  transform-style: preserve-3d;
+}
+
+/* Дыхание планеты */
+.saturn-planet {
+  animation: rb-saturn-pulse 24s ease-in-out infinite;
+}
+@keyframes rb-saturn-pulse{ 
+  0%,100%{ transform: scale(1); opacity: 1; }
+  50%{ transform: scale(1.08); opacity: 1; }
+}
+
+/* Медленное вращение колец */
+.saturn-rings-front {
+  animation: rb-saturn-rings-rotate 120s linear infinite;
+  transform-origin: center;
+}
+.saturn-rings-back {
+  animation: rb-saturn-rings-rotate 140s linear infinite;
+  transform-origin: center;
+}
+@keyframes rb-saturn-rings-rotate{
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Дыхание всего контейнера + наклон из стороны в сторону */
+.nord-disc-breath{ 
+  animation: rb-disc-breath 22s cubic-bezier(0.22,1,0.36,1) infinite;
+}
+@keyframes rb-disc-breath{ 
+  0%,100%{ transform: scale(1) rotateX(0deg) rotateY(-20deg); }
+  25%{ transform: scale(1.01) rotateX(0deg) rotateY(-18deg); }
+  50%{ transform: scale(1.02) rotateX(0deg) rotateY(-22deg); }
+  75%{ transform: scale(1.01) rotateX(0deg) rotateY(-18deg); }
+}
+
+/* Ripple при hover текстовой колонки */
+.about-hover:hover .rb-nord-disc,
+.about-hover:focus-within .rb-nord-disc{ 
+  opacity: .8; 
+  transform: scale(1.12);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){ 
+  .nord-disc-breath{ animation: none !important; }
+  .saturn-planet{ animation: none !important; }
+  .saturn-rings-front{ animation: none !important; }
+  .saturn-rings-back{ animation: none !important; }
+}
+
+/* Nordic Branch - чистая реализация */
+.rb-nordic-branch svg { 
+  display: block;
+}
+
+.nord-host {
+  cursor: pointer;
+}
+
+.nord-stem {
+  stroke: #aeb6af; 
+  stroke-width: 1.4; 
+  fill: none; 
+  stroke-linecap: round;
+  opacity: .8;
+}
+
+/* листья: старт из маленького размера */
+.nord-leaf {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: rotate(var(--r,0deg)) scaleY(0.25);
+  opacity: .35;
+  transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 600ms ease-out;
+  transition-delay: var(--d, 0ms);
+}
+
+/* рост листьев при hover */
+.nord-host:hover .nord-stem {
+  stroke: #8a9a8a;
+  opacity: 1;
+}
+
+.nord-host:hover .nord-leaf {
+  transform: rotate(var(--r,0deg)) scaleY(1);
+  opacity: .75;
+}
+
+/* едва заметное покачивание */
+.nord-sway { 
+  animation: rb-nord-sway 20s ease-in-out infinite;
+}
+
+@keyframes rb-nord-sway {
+  0%, 100% { transform: rotate(0deg) }
+  50% { transform: rotate(0.5deg) }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .nord-sway { animation: none !important }
+  .nord-leaf { transition: opacity 200ms ease; transform: rotate(var(--r,0deg)) scaleY(0.7); opacity: .6 }
+}
+
+/* use anim-breath */
+/* @keyframes breathing-glow {
+  0%,100% { transform: scale(1); opacity: 0.3; }
+  50%     { transform: scale(1.1); opacity: 0.6; }
+} */
+
+/* едва заметный дрейф для центра (чуть тише стандартного) */
+@keyframes rb-float-slow {
+  0%,100% { transform: translateY(0) }
+  50%     { transform: translateY(-4px) }
+}
+.anim-float-slow { animation: rb-float-slow 24s ease-in-out infinite; }
+
+/* мягкий вход цветка (скейл/прозрачность) */
+@keyframes rb-bloom-in {
+  0%   { transform: scale(.92); opacity: 0 }
+  100% { transform: scale(1);   opacity: 1 }
+}
+.rb-bloom-in { animation: rb-bloom-in 600ms cubic-bezier(0.22,1,0.36,1) both; }
+

@@ -1,0 +1,14 @@
+--- a/src/components/visuals/NordicSunDisc.tsx
++++ b/src/components/visuals/NordicSunDisc.tsx
+@@ -15,6 +15,7 @@
+     <div
+       ref={ref}
+       className={`rb-nord-disc ${className}`}
++      role="img"
++      aria-label="Decorative Saturn planet with rotating rings"
+       style={{ width: size, height: size, '--tx': '0px', '--ty': '0px', '--rot': '0deg' } as React.CSSProperties}
+-      role="img"
+-      aria-label="Saturn planet decoration"
+       aria-hidden="true"
+       onMouseMove={onMove}
+       onMouseLeave={onLeave}

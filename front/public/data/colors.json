@@ -1,0 +1,8 @@
+[
+  {"id": 1, "name": "Черный", "hex_code": "#000000"},
+  {"id": 2, "name": "Бежевый", "hex_code": "#D9C7B2"},
+  {"id": 3, "name": "Молочный", "hex_code": "#F5F5F0"},
+  {"id": 4, "name": "Шалфей", "hex_code": "#AEB6AF"},
+  {"id": 5, "name": "Графит", "hex_code": "#4B4B4B"}
+]
+
