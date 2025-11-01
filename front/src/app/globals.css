@@ -96,18 +96,7 @@
     /* Эмулируем tailwind ring, перекрывая системный синий */
     box-shadow: 0 0 0 2px rgba(var(--sageTint), 1) !important;
   }
-  /* Chrome/Safari autofill blue background fix */
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  textarea:-webkit-autofill,
-  textarea:-webkit-autofill:hover,
-  textarea:-webkit-autofill:focus {
-    -webkit-text-fill-color: rgb(var(--inkSoft));
-    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
-    box-shadow: 0 0 0px 1000px #ffffff inset;
-    transition: background-color 9999s ease-in-out 0s;
-  }
+  
 }
 
 /* ===== RB: Autofill + Focus hard reset ===== */
@@ -122,16 +111,50 @@
 }
 
 @layer utilities {
+  /* Убираем синий tap-highlight на мобильных Safari/Chrome */
+  html :is(a, button, input, textarea, select) {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Брендовая подсветка выделенного текста внутри input/textarea */
+  html input::selection,
+  html textarea::selection {
+    background: theme(colors.sageTint / 0.35);
+    color: hsl(var(--foreground));
+  }
+  html input::-moz-selection,
+  html textarea::-moz-selection {
+    background: theme(colors.sageTint / 0.35);
+    color: hsl(var(--foreground));
+  }
+
+  /* Windows High Contrast / Edge forced-colors — только для наших полей */
+  @media (forced-colors: active) {
+    html :is(input[data-rb-input], textarea[data-rb-input], select[data-rb-input]) {
+      forced-color-adjust: none;
+      outline: 0 !important;
+      border-color: hsl(var(--input)) !important;
+      box-shadow:
+        0 0 0 2px var(--tw-ring-color, transparent),
+        0 0 0 var(--tw-ring-offset-width, 0) var(--tw-ring-offset-color, transparent) !important;
+    }
+  }
+
+  /* Страховка от остаточного UA outline/glow */
+  html :is(input, textarea, select):focus,
+  html :is(input, textarea, select):focus-visible {
+    outline: 0 !important;
+  }
   /* Chrome/Safari (WebKit) */
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  textarea:-webkit-autofill,
-  textarea:-webkit-autofill:hover,
-  textarea:-webkit-autofill:focus,
-  select:-webkit-autofill,
-  select:-webkit-autofill:hover,
-  select:-webkit-autofill:focus {
+  html input:-webkit-autofill,
+  html input:-webkit-autofill:hover,
+  html input:-webkit-autofill:focus,
+  html textarea:-webkit-autofill,
+  html textarea:-webkit-autofill:hover,
+  html textarea:-webkit-autofill:focus,
+  html select:-webkit-autofill,
+  html select:-webkit-autofill:hover,
+  html select:-webkit-autofill:focus {
     -webkit-text-fill-color: hsl(var(--foreground)) !important;
     caret-color: hsl(var(--foreground)) !important;
     -webkit-box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
@@ -142,9 +165,9 @@
   }
 
   /* Адресный таргет с повышенной специфичностью */
-  input[data-rb-input]:-webkit-autofill,
-  textarea[data-rb-input]:-webkit-autofill,
-  select[data-rb-input]:-webkit-autofill {
+  html input[data-rb-input]:-webkit-autofill,
+  html textarea[data-rb-input]:-webkit-autofill,
+  html select[data-rb-input]:-webkit-autofill {
     -webkit-text-fill-color: hsl(var(--foreground)) !important;
     caret-color: hsl(var(--foreground)) !important;
     -webkit-box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
@@ -154,12 +177,8 @@
   }
 
   /* Стандартный псевдокласс */
-  input:autofill,
-  textarea:autofill,
-  select:autofill,
-  input[data-rb-input]:autofill,
-  textarea[data-rb-input]:autofill,
-  select[data-rb-input]:autofill {
+  html :is(input, textarea, select):autofill,
+  html :is(input[data-rb-input], textarea[data-rb-input], select[data-rb-input]):autofill {
     -webkit-text-fill-color: hsl(var(--foreground)) !important;
     caret-color: hsl(var(--foreground)) !important;
     -webkit-box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
@@ -167,17 +186,16 @@
   }
 
   /* Firefox */
-  input:-moz-autofill,
-  textarea:-moz-autofill,
-  select:-moz-autofill {
+  html input:-moz-autofill,
+  html textarea:-moz-autofill,
+  html select:-moz-autofill {
     color: hsl(var(--foreground)) !important;
     box-shadow: 0 0 0 1000px var(--rb-autofill-bg) inset !important;
   }
 
   /* Убираем нативный синий outline, не трогая наш ring */
-  input:focus, input:focus-visible,
-  textarea:focus, textarea:focus-visible,
-  select:focus, select:focus-visible {
+  html :is(input, textarea, select):focus,
+  html :is(input, textarea, select):focus-visible {
     outline: 0 !important;
   }
 
@@ -701,4 +719,11 @@
   100% { transform: scale(1);   opacity: 1 }
 }
 .rb-bloom-in { animation: rb-bloom-in 600ms cubic-bezier(0.22,1,0.36,1) both; }
+
+/* autofill detection helper */
+@keyframes rb-autofill-start { from { opacity: 1 } to { opacity: 1 } }
+input:-webkit-autofill {
+  animation-name: rb-autofill-start;
+  animation-duration: 0.01s;
+}
 

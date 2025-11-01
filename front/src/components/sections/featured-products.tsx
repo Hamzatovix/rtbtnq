@@ -15,7 +15,7 @@ const DynamicProductCard = dynamic(
 )
 
 export function FeaturedProducts() {
-  const featuredProducts = mockProducts.slice(0, 6) // Показываем все 6 товаров
+  const featuredProducts = mockProducts.slice(0, 6) // Show all 6 products
 
   return (
     <section 

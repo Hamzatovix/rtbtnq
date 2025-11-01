@@ -17,13 +17,13 @@ export default function CatalogPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [selectedColor, setSelectedColor] = useState<number | undefined>(undefined)
 
-  // Мемоизируем объект фильтров, чтобы избежать бесконечных запросов
+  // Memoize filter object to avoid infinite requests
   const filters = useMemo(() => ({
     category: selectedCategory || undefined,
     color: selectedColor,
   }), [selectedCategory, selectedColor])
 
-  // Получаем данные из API
+  // Fetch data from API
   const { categories, loading: categoriesLoading } = useCategories()
   const { colors, loading: colorsLoading } = useColors()
   const { 

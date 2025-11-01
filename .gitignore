@@ -28,3 +28,4 @@ front/coverage/
 front/.env
 front/.env.*
 !front/.env.example
+.vercel

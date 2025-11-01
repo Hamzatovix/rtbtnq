@@ -258,7 +258,7 @@ export function ProductCard({ product, density = 'compact', className }: Product
                 <span className={`text-inkSoft/80 ${priceClass}`}>
                   {product.price_range ? 
                     (typeof product.price_range === 'string' ? product.price_range : `${product.price_range} ₽`) : 
-                    'Цена по запросу'
+                    'Price on request'
                   }
                 </span>
               </div>

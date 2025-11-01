@@ -17,7 +17,7 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     name: '',
     phone: '',
-    country: 'Россия',
+    country: 'Russia',
     city: '',
     addressOptional: '',
     pickupPoint: '',
@@ -30,7 +30,7 @@ export default function CheckoutPage() {
     setMounted(true)
   }, [])
 
-  // Помечаем поля, в которые что-то подставил браузер/менеджер паролей до первого фокуса
+  // Mark fields that were autofilled by browser/password manager before first focus
   useEffect(() => {
     const markAutocompleted = () => {
       const nodes = document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-rb-input]')
@@ -40,8 +40,24 @@ export default function CheckoutPage() {
         }
       })
     }
-    const t = setTimeout(markAutocompleted, 150)
-    return () => clearTimeout(t)
+    // First wave (after hydration and fast password managers)
+    const t1 = setTimeout(markAutocompleted, 150)
+    // Second wave — lazy password managers/browsers
+    const t2 = setTimeout(markAutocompleted, 750)
+
+    const onVis = () => requestAnimationFrame(markAutocompleted)
+    document.addEventListener('visibilitychange', onVis)
+
+    const onAnim = (e: AnimationEvent) => {
+      if (e.animationName === 'rb-autofill-start') markAutocompleted()
+    }
+    document.addEventListener('animationstart', onAnim, true)
+
+    return () => {
+      clearTimeout(t1); clearTimeout(t2)
+      document.removeEventListener('visibilitychange', onVis)
+      document.removeEventListener('animationstart', onAnim, true)
+    }
   }, [])
 
   const onChange = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -50,7 +66,7 @@ export default function CheckoutPage() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!items.length) return alert('Корзина пуста')
+    if (!items.length) return alert('Cart is empty')
     setIsSubmitting(true)
     setTimeout(() => {
       const orderNumber = `ORD-${Date.now()}`
@@ -79,53 +95,53 @@ export default function CheckoutPage() {
         <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           <motion.form initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} onSubmit={onSubmit} className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-h3 font-light text-inkSoft mb-2">Контактная информация</h2>
+              <h2 className="text-h3 font-light text-inkSoft mb-2">Contact Information</h2>
               <div>
-                <Label htmlFor="name">Имя</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input id="name" value={form.name} onChange={onChange('name')} required />
               </div>
               <div>
-                <Label htmlFor="phone">Телефон</Label>
+                <Label htmlFor="phone">Phone</Label>
                 <Input id="phone" type="tel" value={form.phone} onChange={onChange('phone')} />
               </div>
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-h3 font-light text-inkSoft mb-2">Адрес доставки</h2>
+              <h2 className="text-h3 font-light text-inkSoft mb-2">Delivery Address</h2>
               <div>
-                <Label htmlFor="country">Страна</Label>
+                <Label htmlFor="country">Country</Label>
                 <Input id="country" value={form.country} onChange={onChange('country')} required />
               </div>
               <div>
-                <Label htmlFor="city">Город</Label>
+                <Label htmlFor="city">City</Label>
                 <Input id="city" value={form.city} onChange={onChange('city')} required />
               </div>
 
               <div>
-                <Label htmlFor="addressOptional">Опционально: адрес доставки</Label>
+                <Label htmlFor="addressOptional">Optional: delivery address</Label>
                 <Input id="addressOptional" value={form.addressOptional} onChange={onChange('addressOptional')} />
               </div>
               <div>
-                <Label htmlFor="pickup">Опционально: пункт самовыдачи (Грозный)</Label>
+                <Label htmlFor="pickup">Optional: pickup point (Grozny)</Label>
                 <Input id="pickup" value={form.pickupPoint} onChange={onChange('pickupPoint')} />
               </div>
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-h3 font-light text-inkSoft mb-2">Комментарий к заказу</h2>
+              <h2 className="text-h3 font-light text-inkSoft mb-2">Order Comment</h2>
               <div>
-                <Label htmlFor="note">Дополнительные пожелания</Label>
+                <Label htmlFor="note">Additional notes</Label>
                 <Textarea id="note" rows={3} value={form.note} onChange={onChange('note')} />
               </div>
             </div>
 
             <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? 'Оформляем заказ...' : 'Оформить заказ'}
+              {isSubmitting ? 'Placing order...' : 'Place order'}
             </Button>
           </motion.form>
 
           <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="bg-linenWhite p-6 rounded-2xl border border-mistGray/20 shadow-breathing">
-            <h2 className="text-h3 font-light text-inkSoft mb-6">Ваш заказ</h2>
+            <h2 className="text-h3 font-light text-inkSoft mb-6">Your Order</h2>
             <div className="space-y-4 mb-6">
               {(mounted ? items : []).map((item) => (
                 <div key={`${item.id}-${item.selectedColor}`} className="flex justify-between items-center">
@@ -146,15 +162,15 @@ export default function CheckoutPage() {
             </div>
             <div className="border-t border-mistGray/30 pt-4 space-y-2">
               <div className="flex justify-between">
-                <span className="text-inkSoft/70">Сумма товаров:</span>
+                <span className="text-inkSoft/70">Subtotal:</span>
                 <span suppressHydrationWarning>{total.toLocaleString('ru-RU')} ₽</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-inkSoft/70">Доставка:</span>
+                <span className="text-inkSoft/70">Shipping:</span>
                 <span suppressHydrationWarning>{shipping.toLocaleString('ru-RU')} ₽</span>
               </div>
               <div className="flex justify-between text-lg font-medium">
-                <span>Итого:</span>
+                <span>Total:</span>
                 <span suppressHydrationWarning>{grand.toLocaleString('ru-RU')} ₽</span>
               </div>
             </div>

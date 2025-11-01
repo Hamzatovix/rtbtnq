@@ -14,9 +14,9 @@ function OrderSuccessInner() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-display-1 font-light text-ink-soft mb-6">Заказ не найден</h1>
+          <h1 className="text-display-1 font-light text-ink-soft mb-6">Order not found</h1>
           <Button onClick={() => window.location.href = '/catalog'}>
-            Перейти к каталогу
+            Browse catalog
           </Button>
         </div>
       </div>
@@ -44,15 +44,15 @@ function OrderSuccessInner() {
           </div>
           
           <h1 className="text-display-1 font-light text-ink-soft leading-[0.95] mb-6 tracking-normal">
-            Заказ оформлен!
+            Order placed!
           </h1>
           
           <Lead className="max-w-xl mx-auto mb-8">
-            Спасибо за ваш заказ. Мы получили вашу заявку и свяжемся с вами в ближайшее время для подтверждения.
+            Thank you for your order. We've received your request and will contact you shortly for confirmation.
           </Lead>
 
           <div className="bg-gray-50 p-6 rounded-2xl max-w-md mx-auto mb-8">
-            <p className="text-small font-medium text-ink-soft/70 tracking-wide mb-2">Номер заказа</p>
+            <p className="text-small font-medium text-ink-soft/70 tracking-wide mb-2">Order number</p>
             <p className="text-h3 font-light text-ink-soft">{orderNumber}</p>
           </div>
         </motion.div>
@@ -65,10 +65,10 @@ function OrderSuccessInner() {
         >
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => window.location.href = '/catalog'}>
-              Продолжить покупки
+              Continue shopping
             </Button>
             <Button variant="outline" onClick={() => window.print()}>
-              Распечатать заказ
+              Print order
             </Button>
           </div>
         </motion.div>
@@ -79,7 +79,7 @@ function OrderSuccessInner() {
 
 export default function OrderSuccessPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Загрузка...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
       <OrderSuccessInner />
     </Suspense>
   )

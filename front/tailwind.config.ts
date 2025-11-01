@@ -75,8 +75,11 @@ const config = {
         'display-2': '3rem',
         'title-1': '2.25rem',
         'title-2': '2rem',
+        'body-lg': '1.1875rem',
         body: '1.0625rem',
         subtle: '0.9375rem',
+        small: '0.9375rem',
+        h3: '2.25rem',
       },
       transitionTimingFunction: {
         brand: 'cubic-bezier(0.22, 1, 0.36, 1)',

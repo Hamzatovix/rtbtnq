@@ -12,7 +12,7 @@ export function About() {
       aria-labelledby="about-heading"
     >
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
-        {/* оборачиваем грид в relative, чтобы позиционировать коннектор */}
+        {/* Wrap grid in relative to position connector */}
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
           {/* Content */}
@@ -49,7 +49,7 @@ export function About() {
 
           {/* Images — ULTRA COMPACT */}
           <div className="space-y-2 media-col relative">
-            {/* Main hero image — более компактный */}
+            {/* Main hero image — more compact */}
             <div className="relative aspect-[3/2] md:aspect-[4/3] rounded-lg overflow-hidden group">
               <Image
                 src="/images/about-one.png"
@@ -64,12 +64,12 @@ export function About() {
                   target.src = '/placeholder/about_main_placeholder.webp'
                 }}
               />
-              {/* более деликатная маска */}
+              {/* more delicate mask */}
               <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_70%)] bg-sageTint/10 pointer-events-none" aria-hidden="true" />
               <div className="absolute inset-0 bg-gradient-to-t from-sageTint/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true" />
             </div>
 
-            {/* Two smaller images — более компактные */}
+            {/* Two smaller images — more compact */}
             <div className="grid grid-cols-2 gap-2">
               <div className="relative aspect-[3/4] md:aspect-square rounded-md overflow-hidden group">
                 <Image
