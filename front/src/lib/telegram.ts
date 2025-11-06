@@ -1,0 +1,385 @@
+/**
+ * Утилиты для отправки уведомлений в Telegram
+ */
+
+interface TelegramMessageOptions {
+  text: string
+  parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2'
+  replyMarkup?: {
+    inline_keyboard: Array<Array<{
+      text: string
+      url?: string
+      callback_data?: string
+    }>>
+  }
+}
+
+/**
+ * Отправляет фото в Telegram через Bot API
+ */
+export async function sendTelegramPhoto(
+  botToken: string,
+  chatId: string,
+  photoUrl: string,
+  caption?: string
+): Promise<boolean> {
+  try {
+    const url = `https://api.telegram.org/bot${botToken}/sendPhoto`
+    
+    const payload = {
+      chat_id: chatId,
+      photo: photoUrl,
+      caption: caption || undefined,
+      parse_mode: undefined,
+    }
+    
+    console.log('[Telegram] Отправка фото:', {
+      url: url.replace(botToken, 'TOKEN_HIDDEN'),
+      chatId,
+      photoUrl: photoUrl.substring(0, 50) + '...'
+    })
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const responseData = await response.json().catch(() => ({ ok: false, description: 'Failed to parse response' }))
+
+    if (!response.ok || !responseData.ok) {
+      console.error('[Telegram] API error при отправке фото:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: responseData
+      })
+      return false
+    }
+
+    console.log('[Telegram] Фото успешно отправлено')
+    return true
+  } catch (error) {
+    console.error('[Telegram] Failed to send Telegram photo:', error)
+    return false
+  }
+}
+
+/**
+ * Отправляет медиа-группу (несколько фото) в Telegram
+ */
+export async function sendTelegramMediaGroup(
+  botToken: string,
+  chatId: string,
+  media: Array<{ type: 'photo'; media: string; caption?: string }>
+): Promise<boolean> {
+  try {
+    const url = `https://api.telegram.org/bot${botToken}/sendMediaGroup`
+    
+    const payload = {
+      chat_id: chatId,
+      media: media,
+    }
+    
+    console.log('[Telegram] Отправка медиа-группы:', {
+      url: url.replace(botToken, 'TOKEN_HIDDEN'),
+      chatId,
+      mediaCount: media.length
+    })
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const responseData = await response.json().catch(() => ({ ok: false, description: 'Failed to parse response' }))
+
+    if (!response.ok || !responseData.ok) {
+      console.error('[Telegram] API error при отправке медиа-группы:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: responseData
+      })
+      return false
+    }
+
+    console.log('[Telegram] Медиа-группа успешно отправлена')
+    return true
+  } catch (error) {
+    console.error('[Telegram] Failed to send Telegram media group:', error)
+    return false
+  }
+}
+
+/**
+ * Отправляет сообщение в Telegram через Bot API
+ */
+export async function sendTelegramMessage(
+  botToken: string,
+  chatId: string,
+  options: TelegramMessageOptions
+): Promise<boolean> {
+  try {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`
+    
+    const payload = {
+      chat_id: chatId,
+      text: options.text,
+      parse_mode: options.parseMode || undefined,
+      reply_markup: options.replyMarkup,
+      disable_web_page_preview: true,
+    }
+    
+    console.log('[Telegram] Отправка запроса к API:', {
+      url: url.replace(botToken, 'TOKEN_HIDDEN'),
+      chatId,
+      textLength: options.text.length
+    })
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const responseData = await response.json().catch(() => ({ ok: false, description: 'Failed to parse response' }))
+
+    if (!response.ok || !responseData.ok) {
+      console.error('[Telegram] API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: responseData
+      })
+      return false
+    }
+
+    console.log('[Telegram] Сообщение успешно отправлено в Telegram')
+    return true
+  } catch (error) {
+    console.error('[Telegram] Failed to send Telegram message:', error)
+    return false
+  }
+}
+
+interface OrderNotificationData {
+  orderId: string
+  orderNumber: string
+  customerName: string
+  customerPhone?: string | null
+  items: Array<{
+    name: string
+    qty: number
+    color?: string | null
+    price: number
+    total: number
+    image?: string | null
+  }>
+  total: number
+  currency: string
+  address?: {
+    country: string
+    city: string
+    line1: string
+    line2?: string | null
+    postal?: string
+  } | null
+  note?: string | null
+  baseUrl?: string
+}
+
+/**
+ * Форматирует сообщение о новом заказе для Telegram
+ */
+export function formatOrderNotification(data: OrderNotificationData): string {
+  const { orderNumber, customerName, customerPhone, items, total, currency, address, note } = data
+
+  // Форматируем список товаров
+  const itemsText = items
+    .map(item => {
+      const colorText = item.color ? ` — ${item.color}` : ''
+      const priceText = formatPrice(item.total, currency)
+      return `  • ${item.name}${colorText} (x${item.qty}) — ${priceText}`
+    })
+    .join('\n')
+
+  // Форматируем адрес доставки
+  let addressText = ''
+  if (address) {
+    const addressParts = [
+      address.country,
+      address.city,
+      address.line1,
+      address.line2,
+      address.postal,
+    ].filter(Boolean)
+    addressText = addressParts.join(', ')
+  }
+
+  // Форматируем телефон
+  const phoneText = customerPhone ? formatPhone(customerPhone) : '—'
+
+  // Собираем сообщение с улучшенным форматированием
+  let message = `🛍️ *Новый заказ!*\n\n`
+  message += `📦 *Номер заказа:* ${orderNumber}\n`
+  message += `👤 *Клиент:* ${customerName}\n`
+  message += `📞 *Телефон:* ${phoneText}\n\n`
+  
+  message += `🛒 *Товары:*\n${itemsText}\n\n`
+  message += `💰 *Итого:* ${formatPrice(total, currency)}\n`
+
+  if (addressText) {
+    message += `\n📍 *Доставка:*\n${addressText}\n`
+  }
+
+  if (note) {
+    message += `\n💬 *Комментарий:*\n${note}`
+  }
+
+  return message
+}
+
+/**
+ * Форматирует цену с валютой
+ */
+function formatPrice(amount: number, currency: string): string {
+  const formatted = Math.floor(amount).toLocaleString('ru-RU')
+  return `${formatted} ₽`
+}
+
+/**
+ * Форматирует телефон для отображения
+ */
+function formatPhone(phone: string): string {
+  // Убираем все нецифровые символы
+  const digits = phone.replace(/\D/g, '')
+  
+  // Форматируем российский номер
+  if (digits.length === 11 && digits.startsWith('7')) {
+    return `+7 ${digits.slice(1, 4)} ${digits.slice(4, 7)}-${digits.slice(7, 9)}-${digits.slice(9)}`
+  }
+  
+  // Если не подходит под формат, возвращаем как есть
+  return phone
+}
+
+/**
+ * Отправляет уведомление о новом заказе в Telegram
+ */
+export async function sendOrderNotification(
+  data: OrderNotificationData,
+  botToken?: string,
+  chatId?: string
+): Promise<boolean> {
+  // Проверяем наличие токена и chat_id
+  const token = botToken || process.env.TELEGRAM_BOT_TOKEN
+  const chat = chatId || process.env.TELEGRAM_CHAT_ID
+
+  console.log('[Telegram] Проверка конфигурации:', {
+    hasToken: !!token,
+    hasChatId: !!chat,
+    chatId: chat,
+    tokenPreview: token ? `${token.substring(0, 10)}...` : 'не установлен'
+  })
+
+  if (!token || !chat) {
+    console.warn('[Telegram] Telegram bot token or chat ID not configured', {
+      token: token ? 'установлен' : 'не установлен',
+      chatId: chat ? 'установлен' : 'не установлен'
+    })
+    return false
+  }
+
+  // Форматируем сообщение
+  const message = formatOrderNotification(data)
+
+  // Формируем URL для кнопки
+  const baseUrl = data.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const orderUrl = `${baseUrl}/backoffice/orders/${data.orderId}`
+
+  // Проверяем, можно ли использовать URL для кнопки
+  // Telegram не принимает localhost URLs в inline кнопках
+  const isValidUrl = !baseUrl.includes('localhost') && !baseUrl.includes('127.0.0.1')
+  
+  console.log('[Telegram] Отправка уведомления о заказе:', {
+    orderNumber: data.orderNumber,
+    orderUrl,
+    isValidUrl
+  })
+  
+  // Отправляем фото товаров, если они есть
+  // Важно: для localhost изображения не отправляем, так как Telegram не может получить к ним доступ
+  const itemsWithImages = data.items.filter(item => item.image)
+  const canSendImages = !baseUrl.includes('localhost') && !baseUrl.includes('127.0.0.1')
+  
+  if (itemsWithImages.length > 0 && canSendImages) {
+    console.log('[Telegram] Найдено товаров с изображениями:', itemsWithImages.length)
+    
+    // Формируем полные URL для изображений
+    const mediaItems = itemsWithImages.slice(0, 10).map((item, index) => {
+      let imageUrl = item.image!
+      // Если путь относительный, добавляем базовый URL
+      if (imageUrl.startsWith('/')) {
+        imageUrl = `${baseUrl}${imageUrl}`
+      }
+      
+      // Формируем подпись для каждого товара
+      const colorText = item.color ? ` - ${item.color}` : ''
+      const priceText = formatPrice(item.total, data.currency)
+      const caption = `${item.name}${colorText} (x${item.qty}) - ${priceText}`
+      
+      return {
+        type: 'photo' as const,
+        media: imageUrl,
+        caption: caption.length > 1024 ? caption.substring(0, 1021) + '...' : caption, // Telegram limit
+      }
+    })
+    
+    // Отправляем медиа-группу (если несколько товаров) или одно фото
+    if (mediaItems.length === 1) {
+      await sendTelegramPhoto(token, chat, mediaItems[0].media, mediaItems[0].caption)
+    } else if (mediaItems.length > 1) {
+      await sendTelegramMediaGroup(token, chat, mediaItems)
+    }
+  } else if (itemsWithImages.length > 0 && !canSendImages) {
+    console.log('[Telegram] Изображения товаров пропущены (localhost недоступен для Telegram)')
+  }
+
+  // Формируем сообщение с кнопкой или без (если localhost)
+  const messageOptions: TelegramMessageOptions = {
+    text: message,
+    parseMode: 'Markdown', // Используем Markdown для форматирования
+  }
+  
+  if (isValidUrl) {
+    messageOptions.replyMarkup = {
+      inline_keyboard: [
+        [
+          {
+            text: '📋 Посмотреть заказ',
+            url: orderUrl,
+          },
+        ],
+      ],
+    }
+  } else {
+    // Для localhost добавляем URL в текст сообщения
+    messageOptions.text = `${message}\n\n🔗 *Ссылка на заказ:*\n${orderUrl}`
+  }
+  
+  const success = await sendTelegramMessage(token, chat, messageOptions)
+  
+  if (success) {
+    console.log('[Telegram] Уведомление успешно отправлено')
+  } else {
+    console.error('[Telegram] Ошибка при отправке уведомления')
+  }
+  
+  return success
+}
+

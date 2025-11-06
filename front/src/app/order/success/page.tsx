@@ -5,18 +5,20 @@ import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Lead } from '@/components/ui/typography'
+import { useTranslations } from '@/hooks/useTranslations'
 
 function OrderSuccessInner() {
   const searchParams = useSearchParams()
   const orderNumber = searchParams.get('number')
+  const t = useTranslations()
 
   if (!orderNumber) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-display-1 font-light text-ink-soft mb-6">Order not found</h1>
+          <h1 className="text-display-1 font-light text-ink-soft mb-6">{t('order.success.orderNotFound')}</h1>
           <Button onClick={() => window.location.href = '/catalog'}>
-            Browse catalog
+            {t('order.success.backToCatalog')}
           </Button>
         </div>
       </div>
@@ -44,15 +46,15 @@ function OrderSuccessInner() {
           </div>
           
           <h1 className="text-display-1 font-light text-ink-soft leading-[0.95] mb-6 tracking-normal">
-            Order placed!
+            {t('order.success.title')}
           </h1>
           
           <Lead className="max-w-xl mx-auto mb-8">
-            Thank you for your order. We've received your request and will contact you shortly for confirmation.
+            {t('order.success.message')}
           </Lead>
 
           <div className="bg-gray-50 p-6 rounded-2xl max-w-md mx-auto mb-8">
-            <p className="text-small font-medium text-ink-soft/70 tracking-wide mb-2">Order number</p>
+            <p className="text-small font-light text-ink-soft/70 tracking-wide mb-2">{t('order.success.orderNumber')}</p>
             <p className="text-h3 font-light text-ink-soft">{orderNumber}</p>
           </div>
         </motion.div>
@@ -65,10 +67,10 @@ function OrderSuccessInner() {
         >
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => window.location.href = '/catalog'}>
-              Continue shopping
+              {t('order.success.continueShopping')}
             </Button>
             <Button variant="outline" onClick={() => window.print()}>
-              Print order
+              {t('order.success.printOrder')}
             </Button>
           </div>
         </motion.div>
@@ -78,8 +80,9 @@ function OrderSuccessInner() {
 }
 
 export default function OrderSuccessPage() {
+  const t = useTranslations()
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">{t('order.success.loading')}</div>}>
       <OrderSuccessInner />
     </Suspense>
   )

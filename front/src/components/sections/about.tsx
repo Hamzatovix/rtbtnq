@@ -4,8 +4,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTranslations } from '@/hooks/useTranslations'
 
 export function About() {
+  const t = useTranslations()
   return (
     <section
       className="relative min-h-[88svh] flex items-center justify-center bg-white"
@@ -16,19 +18,19 @@ export function About() {
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
           {/* Content */}
-          <div className="space-y-4 relative">
-            <div className="flex flex-col items-start gap-1 mb-4">
+          <div className="space-y-4 relative text-center md:text-left">
+            <div className="flex flex-col items-center md:items-start gap-1 mb-4">
               <h2
                 id="about-heading"
                 className="text-title-1 font-light text-ink-soft leading-tight tracking-wide"
               >
-                about
+                {t('home.about.title')}
               </h2>
             </div>
               
-            <div className="flex items-center gap-4 min-h-[60px]">
+            <div className="flex items-center justify-center md:justify-start gap-4 min-h-[60px]">
               <p className="text-body font-light tracking-wide leading-relaxed">
-                made quietly.
+                {t('home.about.description')}
               </p>
               
               <Button 
@@ -38,22 +40,27 @@ export function About() {
               >
                 <Link 
                   href="/about" 
-                  aria-label="About the rosebotanique brand"
+                  aria-label={t('home.about.readMore') + ' rosebotanique'}
                 >
-                  About the brand
+                  {t('home.about.readMore')}
                   <ArrowRight className="ml-3 h-4 w-4 transition-transform duration-250 ease-brand group-hover:translate-x-1" />
                 </Link>
               </Button>
+            </div>
+
+            {/* Signature line — same in both locales */}
+            <div className="md:text-left text-center">
+              <span className="text-xs tracking-wide text-inkSoft/60">made in daymohk</span>
             </div>
           </div>
 
           {/* Images — ULTRA COMPACT */}
           <div className="space-y-2 media-col relative">
             {/* Main hero image — more compact */}
-            <div className="relative aspect-[3/2] md:aspect-[4/3] rounded-lg overflow-hidden group">
+            <div className="relative aspect-[16/9] md:aspect-[4/3] rounded-lg overflow-hidden group">
               <Image
                 src="/images/about-one.png"
-                alt="Handcrafted process"
+                alt={t('home.about.alt.process')}
                 fill
                 priority
                 loading="eager"
@@ -70,11 +77,11 @@ export function About() {
             </div>
 
             {/* Two smaller images — more compact */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative aspect-[3/4] md:aspect-square rounded-md overflow-hidden group">
-                <Image
-                  src="/images/about-two.png"
-                  alt="Linen texture"
+            <div className="grid grid-cols-2 gap-1.5 md:gap-2">
+              <div className="relative aspect-square md:aspect-square rounded-md overflow-hidden group">
+              <Image
+                src="/images/about-two.png"
+                alt={t('home.about.alt.texture')}
                   fill
                   loading="lazy"
                   sizes="(max-width: 1024px) 50vw, 25vw"
@@ -87,10 +94,10 @@ export function About() {
                 <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_80%)] bg-sageTint/10 pointer-events-none" aria-hidden="true" />
               </div>
 
-              <div className="relative aspect-[3/4] md:aspect-square rounded-md overflow-hidden group">
-                <Image
-                  src="/images/about-three.png"
-                  alt="Hand stitching"
+              <div className="relative aspect-square md:aspect-square rounded-md overflow-hidden group">
+              <Image
+                src="/images/about-three.png"
+                alt={t('home.about.alt.stitching')}
                   fill
                   loading="lazy"
                   sizes="(max-width: 1024px) 50vw, 25vw"

@@ -4,8 +4,10 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ElvenFlower from '@/components/visuals/ElvenFlower'
+import { useTranslations } from '@/hooks/useTranslations'
 
 export function Hero() {
+  const t = useTranslations()
   return (
     <section 
       className="relative min-h-[88svh] flex items-center justify-center bg-white pb-20"
@@ -55,14 +57,14 @@ export function Hero() {
               size="lg"
               asChild
             >
-              <Link href="/catalog" aria-label="Shop the rosebotanique collection">
-                Shop collection
+              <Link href="/catalog" aria-label={t('home.hero.cta') + ' rosebotanique'}>
+                {t('home.hero.cta')}
                 <ArrowRight className="ml-3 h-4 w-4 transition-transform duration-250 ease-brand group-hover:translate-x-1" />
               </Link>
             </Button>
 
             <span className="text-body font-light tracking-wide leading-relaxed text-inkSoft">
-              we make things
+              {t('home.hero.tagline')}
             </span>
           </div>
         </div>
@@ -71,7 +73,7 @@ export function Hero() {
       {/* Микро-бейджи — в самом низу секции */}
       <div className="absolute bottom-20 left-0 right-0 text-center">
         <div className="text-xs text-ink-soft/65">
-          Natural fabrics · Hand-stitched · Small batches
+          {t('home.hero.badges')}
         </div>
       </div>
     </section>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import NordicSunDisc from '@/components/visuals/NordicSunDisc'
+import { useTranslations } from '@/hooks/useTranslations'
 
 const fade = {
   hidden: { opacity: 0, y: 8 },
@@ -12,17 +13,18 @@ const fade = {
 
 export default function AboutPage() {
   const prefersReducedMotion = useReducedMotion()
+  const t = useTranslations()
 
   return (
     <div className="bg-white text-inkSoft">
       {/* One-shot hero with NordicSunDisc */}
       <section
-        aria-label="About the brand"
+        aria-label={t('home.about.title')}
         className="relative h-[58vh] min-h-[320px] w-full overflow-hidden"
       >
         <Image
           src="/images/about-m.jpg.png"
-          alt="Atelier — quiet craftsmanship in natural materials"
+          alt={t('aboutPage.heroAlt') || 'atelier'}
           fill
           priority
           sizes="100vw"
@@ -45,10 +47,10 @@ export default function AboutPage() {
           </div>
 
           <h1 className="font-serif text-4xl md:text-5xl font-light tracking-wide text-white">
-            About the brand
+            {t('home.about.title')}
           </h1>
           <p className="mt-3 text-base md:text-lg text-white/80">
-            Philosophy of simplicity, material quality and attention to detail
+            {t('aboutPage.heroSubtitle')}
           </p>
         </motion.div>
       </section>
@@ -64,38 +66,25 @@ export default function AboutPage() {
           role="region"
           aria-labelledby="about-title"
         >
-          <h2 id="about-title" className="sr-only">Our story</h2>
+          <h2 id="about-title" className="sr-only">{t('aboutPage.storyTitle')}</h2>
 
 
           <p className="mb-4">
-            rosebotanique was born from a love of nature and the desire to create
-            objects that are both beautiful and useful. Each piece is handcrafted
-            using traditional techniques and natural materials.
+            {t('aboutPage.paragraph1')}
           </p>
           <p>
-            We believe quality objects should last and quietly live with you every day.
-            That is why we choose reliable materials and work with artisans who share our values.
+            {t('aboutPage.paragraph2')}
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-3 text-sm">
-            {['Sustainability', 'Quality', 'Traditions', 'Simplicity'].map((tag) => (
+          <div className="mt-10 flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm">
+            {[t('aboutPage.tagSustainability'), t('aboutPage.tagQuality'), t('aboutPage.tagTraditions'), t('aboutPage.tagSimplicity')].map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-mistGray/30 px-3 py-1 text-inkSoft/70"
+                className="rounded-full border border-mistGray/30 px-2.5 md:px-3 py-1 text-inkSoft/70"
               >
                 {tag}
               </span>
             ))}
-          </div>
-
-          <div className="mt-12">
-            <Link
-              href="mailto:hello@rosebotanique.store"
-              aria-label="Email hello@rosebotanique.store"
-              className="inline-flex items-center rounded-full border border-mistGray/40 px-5 py-2 text-base hover:bg-mistGray/10 transition-colors"
-            >
-              hello@rosebotanique.store
-            </Link>
           </div>
         </motion.div>
       </section>

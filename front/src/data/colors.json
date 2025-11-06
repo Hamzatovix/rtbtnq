@@ -1,9 +1,13 @@
 [
-  {"id": 1, "name": "Черный", "hex_code": "#000000"},
-  {"id": 2, "name": "Бежевый", "hex_code": "#D9C7B2"},
-  {"id": 3, "name": "Молочный", "hex_code": "#F5F5F0"},
-  {"id": 4, "name": "Шалфей", "hex_code": "#AEB6AF"},
-  {"id": 5, "name": "Графит", "hex_code": "#4B4B4B"}
+  {"id": 1, "name": "Linen", "slug": "linen", "hex_code": "#F5F5DC", "hex": "#F5F5DC"},
+  {"id": 2, "name": "Black", "slug": "black", "hex_code": "#000000", "hex": "#000000"},
+  {"id": 3, "name": "Sage", "slug": "sage", "hex_code": "#9CAF88", "hex": "#9CAF88"},
+  {"id": 4, "name": "Stone", "slug": "stone", "hex_code": "#708090", "hex": "#708090"},
+  {"id": 5, "name": "Cloud", "slug": "cloud", "hex_code": "#F5DEB3", "hex": "#F5DEB3"},
+  {"id": 6, "name": "Stone Gray", "slug": "stone-gray", "hex_code": "#708090", "hex": "#708090"},
+  {"id": 7, "name": "Red", "slug": "red", "hex_code": "#DC143C", "hex": "#DC143C"},
+  {"id": 8, "name": "Storm Gray", "slug": "storm-gray", "hex_code": "#6B6B6B", "hex": "#6B6B6B"},
+  {"id": 9, "name": "Pistachio", "slug": "pistachio", "hex_code": "#93C572", "hex": "#93C572"}
 ]
 
 

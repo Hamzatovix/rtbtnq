@@ -1,7 +1,41 @@
 [
-  {"id": 1, "name": "Сумки", "slug": "bags", "parent": null, "position": 1, "is_active": true},
-  {"id": 2, "name": "Рюкзаки", "slug": "backpacks", "parent": null, "position": 2, "is_active": true},
-  {"id": 3, "name": "Аксессуары", "slug": "accessories", "parent": null, "position": 3, "is_active": true}
+  {
+    "id": "1",
+    "name": "Сумки",
+    "slug": "bags",
+    "parent": null,
+    "position": 1,
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "name": "Рюкзаки",
+    "slug": "backpacks",
+    "parent": null,
+    "position": 2,
+    "is_active": true
+  },
+  {
+    "id": 3,
+    "name": "Аксессуары",
+    "slug": "accessories",
+    "parent": null,
+    "position": 3,
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "slug": "things",
+    "name": "Мешочки ",
+    "position": 4,
+    "parent": null,
+    "is_active": true
+  },
+  {
+    "id": "1762363222699",
+    "slug": "Stuff",
+    "name": "Разное",
+    "position": 5,
+    "is_active": true
+  }
 ]
-
-

@@ -8,9 +8,12 @@ import { OptimizedImage } from '@/components/ui/optimized-image'
 import { useCart } from '@/lib/hooks'
 import { useFavoritesStore } from '@/store/favorites-store'
 import type { Product as FavoritableProduct } from '@/types'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, memo } from 'react'
+import { getColorDisplayName } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { useLocaleStore } from '@/store/locale-store'
+import { formatPriceWithLocale } from '@/lib/utils'
 
 interface ProductCardProps {
   product: ProductListItem
@@ -18,7 +21,8 @@ interface ProductCardProps {
   className?: string
 }
 
-export function ProductCard({ product, density = 'compact', className }: ProductCardProps) {
+function ProductCardComponent({ product, density = 'compact', className }: ProductCardProps) {
+  const { locale } = useLocaleStore()
   const { addToCart } = useCart()
   const { addToFavorites, removeFromFavorites, isFavorite, toggleFavorites } = useFavoritesStore()
   const [favorite, setFavorite] = useState(false)
@@ -46,7 +50,7 @@ export function ProductCard({ product, density = 'compact', className }: Product
   const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
   const titleClass = isCompact ? 'text-sm' : 'text-base sm:text-lg'
   const descClass = isCompact ? 'text-xs line-clamp-1' : 'text-xs sm:text-sm line-clamp-2'
-  const priceClass = isCompact ? 'text-sm font-medium' : 'text-base sm:text-lg font-medium'
+  const priceClass = isCompact ? 'text-sm font-light' : 'text-base sm:text-lg font-light'
   const colorsGap = isCompact ? 'space-x-1' : 'space-x-1 sm:space-x-2'
   const swatchSize = isCompact ? 'w-3.5 h-3.5 sm:w-4 sm:h-4' : 'w-5 h-5 sm:w-6 sm:h-6'
   const badgeTR = isCompact ? 'top-2.5 right-2.5' : 'top-6 right-6'
@@ -72,7 +76,19 @@ export function ProductCard({ product, density = 'compact', className }: Product
 
   // Get image for selected color
   const getImageForColor = (color: any) => {
-    // For now, just return the thumbnail
+    if (!color) return product.thumbnail || '/placeholder/about_main_placeholder.webp'
+    
+    // Try to get color-specific image by colorId (primary key)
+    if (product.colorImages && color.id && product.colorImages[color.id]) {
+      return product.colorImages[color.id]
+    }
+    
+    // Try by name (fallback)
+    if (product.colorImages && color.name && product.colorImages[color.name]) {
+      return product.colorImages[color.name]
+    }
+    
+    // Fallback to thumbnail
     return product.thumbnail || '/placeholder/about_main_placeholder.webp'
   }
 
@@ -108,6 +124,9 @@ export function ProductCard({ product, density = 'compact', className }: Product
       color: variant,
       price: product.price_range?.toString() || '0',
       stock_qty: 10, // Default stock
+      image: getImageForColor(selectedColor),
+      description: '',
+      category: product.category?.name || ''
     }
     
     addToCart(mockVariant, 1)
@@ -162,22 +181,22 @@ export function ProductCard({ product, density = 'compact', className }: Product
       {/* Toast Notifications */}
       {showCartNotification && (
         <motion.div 
-          className="absolute top-4 left-4 z-20 bg-green-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          className="absolute top-4 left-4 z-20 bg-sageTint text-linenWhite px-4 py-2 rounded-full text-sm font-light backdrop-blur-md shadow-warm border border-mistGray/30"
+          initial={{ scale: 0, opacity: 0, y: -10 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.8, opacity: 0, y: -5 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
         >
           Added to cart!
         </motion.div>
       )}
       {showFavoriteNotification && (
         <motion.div 
-          className="absolute top-4 left-4 z-20 bg-red-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          className="absolute top-4 left-4 z-20 bg-sageTint text-linenWhite px-4 py-2 rounded-full text-sm font-light backdrop-blur-md shadow-warm border border-mistGray/30"
+          initial={{ scale: 0, opacity: 0, y: -10 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.8, opacity: 0, y: -5 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
         >
           Added to favorites!
         </motion.div>
@@ -187,15 +206,19 @@ export function ProductCard({ product, density = 'compact', className }: Product
         <CardContent className="p-0">
           {/* Image */}
           <div className={`relative overflow-hidden rounded-t-[inherit] ${imageRatio}`}>
-            <Link href={`/product/${product.slug}`} className="absolute inset-0" aria-label={`View details for ${product.name}`}>
+            <Link href={`/product/${product.slug}`} className="absolute inset-0" aria-label={`посмотреть детали ${product.name}`}>
               <OptimizedImage
+                key={`${product.id}-${selectedColor?.id || selectedColor?.name || 'default'}`}
                 src={getImageForColor(selectedColor)}
-                alt={selectedColor ? `${product.name} in ${selectedColor.name}` : product.name}
+                alt={selectedColor ? `${product.name} · ${locale === 'ru' ? 'оттенок ' + getColorDisplayName(selectedColor.name, 'ru') : 'shade ' + selectedColor.name}` : product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 className={`object-cover transition-transform duration-300 ease-brand ${imageScale}`}
                 onError={() => setImgError(true)}
-                onLoad={() => setIsLoaded(true)}
+                onLoad={() => {
+                  setIsLoaded(true)
+                  setImgError(false)
+                }}
                 priority={false}
               />
             </Link>
@@ -207,19 +230,19 @@ export function ProductCard({ product, density = 'compact', className }: Product
             <div className={`absolute flex flex-col space-y-2.5 opacity-100 transition-all duration-250 z-10 ${badgeTR}`}>
               <button
                 type="button"
-                aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+                aria-label={favorite ? 'убрать из избранного' : 'в избранное'}
                 aria-pressed={favorite}
                 onClick={handleToggleFavorite}
-                className="group inline-flex items-center justify-center ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-mistGray/20 h-9 w-9 rounded-xl backdrop-blur-md shadow-warm border text-muted-foreground hover:scale-110 transition-transform duration-250 ease-brand"
+                className="group inline-flex items-center justify-center ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-roseBeige/30 h-9 w-9 rounded-full backdrop-blur-md shadow-warm bg-roseBeige/80 border-mistGray/30 text-inkSoft hover:scale-110 transition-transform duration-250 ease-brand"
               >
                 <Heart className="h-4 w-4" fill={favorite ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" />
               </button>
               
               <button
                 type="button"
-                aria-label="Add to cart"
+                aria-label="в корзину"
                 onClick={handleAddToCart}
-                className="group inline-flex items-center justify-center ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-mistGray/20 h-9 w-9 rounded-xl backdrop-blur-md shadow-warm bg-linenWhite/95 border-mistGray/30 hover:scale-110 transition-transform duration-250 ease-brand"
+                className="group inline-flex items-center justify-center ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-roseBeige/30 h-9 w-9 rounded-full backdrop-blur-md shadow-warm bg-roseBeige/80 border-mistGray/30 text-inkSoft hover:scale-110 transition-transform duration-250 ease-brand"
               >
                 <ShoppingBag className="h-4 w-4" />
               </button>
@@ -231,7 +254,7 @@ export function ProductCard({ product, density = 'compact', className }: Product
                 className={`${overlayPad} font-medium rounded-full backdrop-blur-md shadow-warm border bg-sageTint/90 text-linenWhite border-mistGray/30`}
                 aria-hidden="true"
               >
-                Handmade
+                ручная работа
               </div>
             </div>
 
@@ -242,7 +265,7 @@ export function ProductCard({ product, density = 'compact', className }: Product
 
           {/* Content */}
           <div className={bodyPadding}>
-            <Link href={`/product/${product.slug}`} aria-label={`View ${product.name} product details`}>
+            <Link href={`/product/${product.slug}`} aria-label={`просмотреть ${product.name}`}>
               <div className="space-y-1.5">
                 <h3 className={`text-graceful font-light transition-colors duration-250 leading-tight ${titleClass}`} style={{ color: '#4b4b4b' }}>
                   {product.name}
@@ -257,12 +280,12 @@ export function ProductCard({ product, density = 'compact', className }: Product
               <div className="flex items-center space-x-2">
                 <span className={`text-inkSoft/80 ${priceClass}`}>
                   {product.price_range ? 
-                    (typeof product.price_range === 'string' ? product.price_range : `${product.price_range} ₽`) : 
-                    'Price on request'
+                    (typeof product.price_range === 'string' ? product.price_range : formatPriceWithLocale(product.price_range, locale)) : 
+                    (locale === 'ru' ? 'цена по запросу' : 'Price on request')
                   }
                 </span>
               </div>
-              <div className={`flex ${colorsGap}`} role="radiogroup" aria-label="Available colors" onKeyDown={handleSwatchKey}>
+              <div className={`flex ${colorsGap}`} role="radiogroup" aria-label={locale === 'ru' ? 'доступные цвета' : 'available colors'} onKeyDown={handleSwatchKey}>
                 {product.colors?.slice(0, 3).map((color, index) => {
                   const checked = index === selectedColorIndex
                   return (
@@ -275,6 +298,7 @@ export function ProductCard({ product, density = 'compact', className }: Product
                       onClick={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
+                        setIsLoaded(false)
                         setSelectedColorIndex(index)
                         setSelectedColor(color)
                       }}
@@ -282,8 +306,8 @@ export function ProductCard({ product, density = 'compact', className }: Product
                         checked ? 'ring-2 ring-sageTint scale-110 shadow-medium' : 'border-mistGray/30 hover:border-mistGray/50 hover:scale-110'
                       }`}
                       style={{ backgroundColor: color.hex_code }}
-                      title={`Color: ${color.name}${checked ? ' (selected)' : ''}`}
-                      aria-label={`Color option: ${color.name}${checked ? ' (selected)' : ''}`}
+                      title={(locale === 'ru' ? `цвет: ${getColorDisplayName(color.name, 'ru')}` : `color: ${color.name}`) + (checked ? (locale === 'ru' ? ' (выбран)' : ' (selected)') : '')}
+                      aria-label={(locale === 'ru' ? `вариант цвета: ${getColorDisplayName(color.name, 'ru')}` : `color option: ${color.name}`) + (checked ? (locale === 'ru' ? ' (выбран)' : ' (selected)') : '')}
                     />
                   )
                 })}
@@ -291,7 +315,7 @@ export function ProductCard({ product, density = 'compact', className }: Product
                   <div 
                     className={`${swatchSize} rounded-full border-2 flex items-center justify-center text-[10px] font-medium text-muted-foreground shadow-warm bg-roseBeige border-mistGray/30`}
                     role="img"
-                    aria-label={`${product.colors.length - 3} more colors available`}
+                    aria-label={`ещё ${product.colors.length - 3} цветов доступно`}
                   >
                     +{product.colors.length - 3}
                   </div>
@@ -305,4 +329,21 @@ export function ProductCard({ product, density = 'compact', className }: Product
   )
 }
 
+// Мемоизация компонента для предотвращения лишних ре-рендеров
+// Компонент перерендерится только если изменились product.id, density или className
+export const ProductCard = memo(ProductCardComponent, (prevProps, nextProps) => {
+  // Проверяем, изменились ли важные пропсы
+  return (
+    prevProps.product.id === nextProps.product.id &&
+    prevProps.product.slug === nextProps.product.slug &&
+    prevProps.product.name === nextProps.product.name &&
+    prevProps.product.thumbnail === nextProps.product.thumbnail &&
+    prevProps.product.price_range === nextProps.product.price_range &&
+    prevProps.density === nextProps.density &&
+    prevProps.className === nextProps.className &&
+    // Проверяем изменения в массиве colors (по длине и ID первого цвета)
+    prevProps.product.colors?.length === nextProps.product.colors?.length &&
+    prevProps.product.colors?.[0]?.id === nextProps.product.colors?.[0]?.id
+  )
+})
 

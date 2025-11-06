@@ -10,11 +10,11 @@ import { FavoritesDrawer } from '@/components/favorites/favorites-drawer'
 import ErrorBoundary from '@/components/ui/error-boundary'
 
 const inter = Inter({ 
-  subsets: ['latin'],
+  subsets: ['latin', 'cyrillic'],
   variable: '--font-body'
 })
 const cormorantGaramond = Cormorant_Garamond({ 
-  subsets: ['latin'],
+  subsets: ['latin', 'cyrillic'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-cormorant'
 })

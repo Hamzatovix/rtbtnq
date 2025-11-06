@@ -3,10 +3,11 @@
 import { ProductCard } from '@/components/product/product-card'
 import { Button } from '@/components/ui/button'
 import { Lead } from '@/components/ui/typography'
-import { mockProducts, colorMap } from '@/lib/mock-data'
+import { mockProducts, mockCategories, colorMap } from '@/lib/mock-data'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { useTranslations } from '@/hooks/useTranslations'
 
 // Динамический импорт для тяжелых компонентов
 const DynamicProductCard = dynamic(
@@ -15,7 +16,9 @@ const DynamicProductCard = dynamic(
 )
 
 export function FeaturedProducts() {
+  const t = useTranslations()
   const featuredProducts = mockProducts.slice(0, 6) // Show all 6 products
+  const locale = typeof window !== 'undefined' ? (localStorage.getItem('locale-storage') ? JSON.parse(localStorage.getItem('locale-storage') as string).state?.locale : 'ru') : 'ru'
 
   return (
     <section 
@@ -34,23 +37,27 @@ export function FeaturedProducts() {
             id="featured-heading" 
             className="text-title-1 font-light text-ink-soft leading-tight tracking-wide mb-4"
           >
-            collection
+            {t('home.featuredProducts.title')}
           </h2>
           <Lead className="max-w-xl mx-auto">
-            Hand-stitched bags in natural tones for every moment.
+            {t('home.featuredProducts.lead')}
           </Lead>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-12">
           {featuredProducts.map((product) => {
+            const title = locale === 'ru' ? product.title_ru : product.title_en
+            const description = locale === 'ru' ? product.description_ru : product.description_en
+            const cat = mockCategories.find(c => c.id === product.category_id)
+            const categoryName = cat ? (locale === 'ru' ? cat.name_ru : cat.name_en) : ''
             const item = {
               id: product.id,
-              slug: product.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-              name: product.title,
+              slug: product.slug,
+              name: title,
               category: {
-                id: product.category,
-                name: product.category.charAt(0).toUpperCase() + product.category.slice(1),
-                slug: product.category.toLowerCase().replace(/\s+/g, '-')
+                id: product.category_id,
+                name: categoryName,
+                slug: product.category_id
               },
               thumbnail: product.image,
               price_range: product.price,
@@ -76,7 +83,7 @@ export function FeaturedProducts() {
             asChild
           >
             <Link href="/catalog">
-              all
+              {t('catalog.allProducts')}
               <ArrowRight className="ml-3 h-4 w-4 group-hover:translate-x-1 transition-transform duration-250 ease-brand" />
             </Link>
           </Button>

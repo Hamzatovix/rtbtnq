@@ -16,7 +16,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-whisper hover:text-sageTint transition-colors duration-500 ease-out group"
-              aria-label="Contact us on Telegram"
+              aria-label="написать в telegram"
             >
               <Send className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
             </a>
@@ -25,7 +25,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-whisper hover:text-sageTint transition-colors duration-500 ease-out group"
-              aria-label="Follow us on Instagram"
+              aria-label="подписаться в instagram"
             >
               <Instagram className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
             </a>

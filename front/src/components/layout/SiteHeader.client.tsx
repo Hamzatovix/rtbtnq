@@ -1,40 +1,32 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ShoppingBag, Heart } from 'lucide-react'
 import { useCartStore } from '@/store/cart-store'
 import { useFavoritesStore } from '@/store/favorites-store'
-import { AnimatePresence, motion } from 'framer-motion'
-
-type NavLink = { href: string; label: string }
-const navLinks: Readonly<NavLink[]> = Object.freeze([
-  { href: '/catalog', label: 'collection' },
-  { href: '/about', label: 'about' },
-])
+import { MobileDrawer } from './MobileDrawer'
+import { LocaleSwitcher } from '@/components/i18n/locale-switcher'
+import { useTranslations } from '@/hooks/useTranslations'
 
 export default function SiteHeader() {
-  const [open, setOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const dialogId = useId()
   const { toggleCart, getTotalItems } = useCartStore()
   const { items: favorites, toggleFavorites } = useFavoritesStore()
+  const t = useTranslations()
 
   useEffect(() => {
     setMounted(true)
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
-    document.addEventListener('keydown', onKey)
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
-  }, [open])
+  }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-mistGray/30 bg-white/80 backdrop-breathing supports-[backdrop-filter]:bg-white/60 shadow-breathing">
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         <div className="flex h-24 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group" aria-label="Go to homepage">
+          <Link href="/" className="flex items-center space-x-2 group" aria-label="на главную">
             <span
               className="text-graceful text-xl font-light text-inkSoft group-hover:text-sageTint transition-colors duration-500 ease-out"
             >
@@ -44,16 +36,20 @@ export default function SiteHeader() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-12">
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-whisper hover:text-sageTint transition-colors font-light text-base tracking-wide relative group"
-              >
-                {l.label}
-                <span className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-sageTint to-transparent group-hover:w-full transition-all duration-500 ease-out" />
-              </Link>
-            ))}
+            <Link
+              href="/catalog"
+              className="text-whisper hover:text-sageTint transition-colors font-light text-base tracking-wide relative group"
+            >
+              {t('header.collection')}
+              <span className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-sageTint to-transparent group-hover:w-full transition-all duration-500 ease-out" />
+            </Link>
+            <Link
+              href="/about"
+              className="text-whisper hover:text-sageTint transition-colors font-light text-base tracking-wide relative group"
+            >
+              {t('header.about')}
+              <span className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-sageTint to-transparent group-hover:w-full transition-all duration-500 ease-out" />
+            </Link>
           </nav>
 
           {/* Actions */}
@@ -96,125 +92,103 @@ export default function SiteHeader() {
           </Button>
               )
             })()}
+            {/* Locale switcher: desktop only */}
+            <div className="hidden md:block">
+              <LocaleSwitcher />
+            </div>
           <button
             type="button"
-            aria-label="Open menu"
-            aria-expanded={open}
-            aria-controls={dialogId}
-            onClick={() => setOpen(true)}
-              className="md:hidden hover:bg-sageTint/5 transition-all duration-500 ease-out rounded-xl inline-flex h-10 w-10 items-center justify-center border border-neutral-200"
+            aria-label="открыть меню"
+            aria-expanded={drawerOpen}
+            aria-controls="mobile-drawer"
+            onClick={() => setDrawerOpen(true)}
+            className="md:hidden hover:bg-sageTint/5 transition-all duration-500 ease-out rounded-full inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-mistGray/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
           >
             <span className="sr-only">Open menu</span>
             <div className="space-y-1.5">
-              <span className="block h-0.5 w-6 bg-neutral-900" />
-              <span className="block h-0.5 w-6 bg-neutral-900" />
-              <span className="block h-0.5 w-6 bg-neutral-900" />
+              <span className="block h-0.5 w-5 bg-inkSoft" />
+              <span className="block h-0.5 w-5 bg-inkSoft" />
+              <span className="block h-0.5 w-5 bg-inkSoft" />
             </div>
           </button>
           </div>
         </div>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40"
-            onClick={() => setOpen(false)}
-          />
-        )}
-        {open && (
-          <motion.div
-            key="panel"
-            initial={{ y: -12, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -8, opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={`${dialogId}-label`}
-            id={dialogId}
-            className="fixed inset-x-0 top-0 z-50 rounded-b-2xl bg-white border-b border-neutral-200 shadow-md"
-            onClick={(e) => e.stopPropagation()}
+      {/* Mobile Drawer */}
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title="меню" id="mobile-drawer">
+        {/* Navigation Links */}
+        <nav className="space-y-2">
+          <Link
+            href="/catalog"
+            onClick={() => setDrawerOpen(false)}
+            className="block px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
           >
-            <div className="px-4 py-3 flex items-center justify-between">
-              <div id={`${dialogId}-label`} className="font-serif text-lg">Menu</div>
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200"
-              >
-                <span className="sr-only">Close</span>
-                <div className="relative h-5 w-5">
-                  <span className="absolute inset-0 rotate-45 block h-0.5 w-5 bg-neutral-900 top-1/2" />
-                  <span className="absolute inset-0 -rotate-45 block h-0.5 w-5 bg-neutral-900 top-1/2" />
-                </div>
-              </button>
-            </div>
+            {t('header.collection')}
+          </Link>
+          <Link
+            href="/about"
+            onClick={() => setDrawerOpen(false)}
+            className="block px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
+          >
+            {t('header.about')}
+          </Link>
+        </nav>
 
-            <nav className="px-4 pb-4">
-              <ul className="divide-y divide-neutral-200">
-                {navLinks.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} onClick={() => setOpen(false)} className="block py-3 text-base text-neutral-800">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-                {/* Mobile cart and favorites */}
-                <li className="py-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-base text-neutral-800">Cart</span>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={() => {
-                        toggleCart()
-                        setOpen(false)
-                      }}
-                      className="relative hover:bg-sageTint/5 transition-all duration-500 ease-out rounded-xl h-10 w-10"
-                      aria-label={`Shopping cart (${mounted ? getTotalItems() : 0} items)`}
-                    >
-                      <ShoppingBag className="h-4 w-4" />
-                      {mounted && getTotalItems() > 0 && (
-                        <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-sageTint text-[10px] text-linenWhite flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
-                          {getTotalItems()}
-                        </span>
-                      )}
-                    </Button>
-                  </div>
-                </li>
-                <li className="py-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-base text-neutral-800">Favorites</span>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={() => {
-                        toggleFavorites()
-                        setOpen(false)
-                      }}
-                      className="relative hover:bg-sageTint/5 transition-all duration-500 ease-out rounded-xl h-10 w-10"
-                      aria-label={`Favorites (${mounted ? favorites.length : 0} items)`}
-                    >
-                      <Heart className="h-4 w-4" />
-                      {mounted && favorites.length > 0 && (
-                        <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-sageTint text-[10px] text-linenWhite flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
-                          {favorites.length}
-                        </span>
-                      )}
-                    </Button>
-                  </div>
-                </li>
-              </ul>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Divider */}
+        <div className="my-4 border-t border-mistGray/20" />
+
+        {/* Action Buttons */}
+        <div className="space-y-2">
+          {/* Cart */}
+          <button
+            type="button"
+            onClick={() => {
+              toggleCart()
+              setDrawerOpen(false)
+            }}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
+            aria-label={`Shopping cart (${mounted ? getTotalItems() : 0} items)`}
+          >
+            <div className="flex items-center gap-3">
+              <ShoppingBag className="h-5 w-5" />
+              <span>{t('header.cart')}</span>
+            </div>
+            {mounted && getTotalItems() > 0 && (
+              <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-sageTint text-xs text-white font-light">
+                {getTotalItems()}
+              </span>
+            )}
+          </button>
+
+          {/* Favorites */}
+          <button
+            type="button"
+            onClick={() => {
+              toggleFavorites()
+              setDrawerOpen(false)
+            }}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
+            aria-label={`Favorites (${mounted ? favorites.length : 0} items)`}
+          >
+            <div className="flex items-center gap-3">
+              <Heart className="h-5 w-5" />
+              <span>{t('header.favorites')}</span>
+            </div>
+            {mounted && favorites.length > 0 && (
+              <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-sageTint text-xs text-white font-light">
+                {favorites.length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Locale switcher in mobile drawer (last) */}
+        <div className="my-4 border-t border-mistGray/20" />
+        <div className="pt-2">
+          <LocaleSwitcher />
+        </div>
+      </MobileDrawer>
     </header>
   )
 }

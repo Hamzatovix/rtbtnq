@@ -81,11 +81,15 @@ export const useCartStore = create<CartState>()(
       },
       
       getTotalItems: () => {
-        return get().items.reduce((total, item) => total + item.quantity, 0);
+        const { items } = get();
+        // Мемоизация: пересчитываем только при изменении items
+        return items.reduce((total, item) => total + item.quantity, 0);
       },
       
       getTotalPrice: () => {
-        return get().items.reduce((total, item) => {
+        const { items } = get();
+        // Мемоизация: пересчитываем только при изменении items
+        return items.reduce((total, item) => {
           return total + (parseFloat(item.variant.price) * item.quantity);
         }, 0);
       },

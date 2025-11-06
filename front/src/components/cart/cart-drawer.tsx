@@ -5,8 +5,14 @@ import { X, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart-store'
 import Link from 'next/link'
+import { useTranslations } from '@/hooks/useTranslations'
+import { useLocaleStore } from '@/store/locale-store'
+import { formatPriceWithLocale } from '@/lib/utils'
+import { OptimizedImage } from '@/components/ui/optimized-image'
 
 export function CartDrawer() {
+  const t = useTranslations()
+  const { locale } = useLocaleStore()
   const {
     items,
     isOpen,
@@ -52,12 +58,12 @@ export function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-light text-neutral-800">
-                Cart ({totalItems})
+                {t('cart.title')} ({totalItems})
               </h2>
               <button
                 onClick={toggleCart}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                aria-label="Close cart"
+                aria-label={t('common.close')}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -68,10 +74,10 @@ export function CartDrawer() {
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center">
                   <ShoppingBag className="w-16 h-16 text-gray-300 mb-4" />
-                  <h3 className="text-lg font-light text-neutral-800 mb-2">Your cart is empty</h3>
-                  <p className="text-sm text-neutral-500 mb-6">Add items from the catalog</p>
+                  <h3 className="text-lg font-light text-neutral-800 mb-2">{t('cart.empty')}</h3>
+                  <p className="text-sm text-neutral-500 mb-6">{t('favorites.empty') || ''}</p>
                   <Button onClick={toggleCart} asChild>
-                    <Link href="/catalog">Browse catalog</Link>
+                    <Link href="/catalog">{t('favorites.continueShopping')}</Link>
                   </Button>
                 </div>
               ) : (
@@ -84,19 +90,31 @@ export function CartDrawer() {
                       exit={{ opacity: 0, y: -20 }}
                       className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl"
                     >
-                      {/* Product Image placeholder */}
-                      <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center">
-                        <ShoppingBag className="w-6 h-6 text-gray-500" />
-                      </div>
+                      {/* Product Image */}
+                      {item.image ? (
+                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200 relative">
+                          <OptimizedImage
+                            src={item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `/${item.image}`}
+                            alt={item.title}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center">
+                          <ShoppingBag className="w-6 h-6 text-gray-500" />
+                        </div>
+                      )}
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-neutral-900 truncate">{item.title}</h3>
+                        <h3 className="font-light text-neutral-900 truncate">{item.title}</h3>
                         <p className="text-sm text-neutral-500">
-                          {item.selectedColor || 'Color not selected'}
+                          {item.selectedColor || (locale === 'ru' ? 'цвет не выбран' : 'Color not selected')}
                         </p>
-                        <p className="text-sm font-medium text-neutral-900">
-                          {item.price.toLocaleString('ru-RU')} ₽
+                        <p className="text-sm font-light text-neutral-900">
+                          {formatPriceWithLocale(item.price, locale)}
                         </p>
                       </div>
 
@@ -105,15 +123,15 @@ export function CartDrawer() {
                         <button
                           onClick={() => handleQuantityChange(item.id, item.selectedColor, item.quantity - 1)}
                           className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                          aria-label="Decrease quantity"
+                          aria-label={locale === 'ru' ? 'уменьшить количество' : 'Decrease quantity'}
                         >
                           <Minus className="w-4 h-4" />
                         </button>
-                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <span className="w-8 text-center font-light">{item.quantity}</span>
                         <button
                           onClick={() => handleQuantityChange(item.id, item.selectedColor, item.quantity + 1)}
                           className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                          aria-label="Increase quantity"
+                          aria-label={locale === 'ru' ? 'увеличить количество' : 'Increase quantity'}
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -123,7 +141,7 @@ export function CartDrawer() {
                       <button
                         onClick={() => removeItem(item.id, item.selectedColor)}
                         className="p-1 hover:bg-red-100 rounded-full transition-colors text-red-500"
-                        aria-label="Remove item"
+                        aria-label={locale === 'ru' ? 'удалить товар' : 'Remove item'}
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -137,13 +155,13 @@ export function CartDrawer() {
             {items.length > 0 && (
               <div className="border-t border-gray-200 p-6 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-medium text-neutral-800">Total:</span>
-                  <span className="text-xl font-medium text-neutral-900">
-                    {totalPrice.toLocaleString('ru-RU')} ₽
+                  <span className="text-lg font-light text-neutral-800">{t('cart.total')}</span>
+                  <span className="text-xl font-light text-neutral-900">
+                    {formatPriceWithLocale(totalPrice, locale)}
                   </span>
                 </div>
                 <Button onClick={toggleCart} className="w-full" asChild>
-                  <Link href="/checkout">Checkout</Link>
+                  <Link href="/checkout">{t('cart.checkout')}</Link>
                 </Button>
               </div>
             )}

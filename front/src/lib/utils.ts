@@ -6,10 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'RUB',
     minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(price)
 }
 
@@ -66,4 +67,39 @@ export function getColorValue(color: string): string {
   return colorMap[color] || "#9CA3AF"
 }
 
+export function getColorDisplayName(color: string, locale: 'ru' | 'en' = 'ru'): string {
+  if (locale === 'en') return color
+  const map: Record<string, string> = {
+    linen: 'лен',
+    natural: 'натуральный',
+    cream: 'сливочный',
+    sage: 'шалфей',
+    'muted green': 'приглушённый зелёный',
+    canvas: 'холст',
+    stone: 'камень',
+    gray: 'серый',
+    hemp: 'конопляный',
+    cloud: 'облако',
+    'off-white': 'молочный',
+    cotton: 'хлопок',
+    'stone gray': 'серый камень',
+    tonal: 'тон‑в‑тон',
+    'storm gray': 'штормовой серый',
+    pistachio: 'фисташка',
+    black: 'чёрный',
+    reed: 'тростник',
+    red: 'красный',
+  }
+  return map[color] || color
+}
+
+export function formatPriceWithLocale(price: number, _locale: 'ru' | 'en'): string {
+  // Всегда показываем рубли независимо от языка
+  return new Intl.NumberFormat('ru-RU', {
+    style: 'currency',
+    currency: 'RUB',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price)
+}
 

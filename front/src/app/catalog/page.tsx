@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Lead } from '@/components/ui/typography'
 import { useProducts, useCategories, useColors } from '@/lib/hooks'
 import dynamic from 'next/dynamic'
+import { useTranslations } from '@/hooks/useTranslations'
 
 // Динамический импорт для ProductCard
 const ProductCard = dynamic(() => import('@/components/product/product-card').then(mod => ({ default: mod.ProductCard })), {
@@ -14,6 +15,7 @@ const ProductCard = dynamic(() => import('@/components/product/product-card').th
 })
 
 export default function CatalogPage() {
+  const t = useTranslations()
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [selectedColor, setSelectedColor] = useState<number | undefined>(undefined)
 
@@ -52,10 +54,10 @@ export default function CatalogPage() {
           className="text-center mb-16"
         >
           <h1 className="text-display-1 font-light text-ink-soft leading-[0.95] mb-6 tracking-normal">
-            collection
+            {t('catalog.title')}
           </h1>
           <Lead className="max-w-xl mx-auto">
-            Hand-stitched bags in natural tones for every moment.
+            {t('home.featuredProducts.lead')}
           </Lead>
         </motion.div>
 
@@ -66,62 +68,68 @@ export default function CatalogPage() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-16"
         >
-          <div className="flex flex-wrap gap-6 justify-center">
+          <div className="flex flex-col md:flex-row md:flex-wrap gap-4 md:gap-6 justify-center">
             {/* Category Filter */}
-            <div className="flex flex-wrap gap-3 items-center">
-              <span className="text-small font-medium text-ink-soft/70 tracking-wide">Category:</span>
-              <Button
-                variant={selectedCategory === '' ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedCategory('')}
-              >
-                All categories
-              </Button>
-              {categoriesLoading ? (
-                <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
-              ) : (
-                categories.map((category) => (
-                  <Button
-                    key={category.id}
-                    variant={selectedCategory === category.slug ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category.slug)}
-                  >
-                    {category.name}
-                  </Button>
-                ))
-              )}
+            <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 md:items-center">
+              <span className="text-small font-light text-ink-soft/70 tracking-wide md:hidden">{t('catalog.categoryLabel') || 'категория:'}</span>
+              <div className="flex flex-wrap gap-2 md:gap-3 items-center">
+                <span className="hidden md:inline text-small font-light text-ink-soft/70 tracking-wide">{t('catalog.categoryLabel') || 'категория:'}</span>
+                <Button
+                  variant={selectedCategory === '' ? 'primary' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCategory('')}
+                >
+                  {t('catalog.allCategories')}
+                </Button>
+                {categoriesLoading ? (
+                  <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
+                ) : (
+                  categories.map((category) => (
+                    <Button
+                      key={category.id}
+                      variant={selectedCategory === category.slug ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelectedCategory(category.slug)}
+                    >
+                      {category.name}
+                    </Button>
+                  ))
+                )}
+              </div>
             </div>
 
             {/* Color Filter */}
-            <div className="flex flex-wrap gap-3 items-center">
-              <span className="text-small font-medium text-ink-soft/70 tracking-wide">Color:</span>
-              <Button
-                variant={selectedColor === undefined ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedColor(undefined)}
-              >
-                All colors
-              </Button>
-              {colorsLoading ? (
-                <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
-              ) : (
-                colors.map((color) => (
-                  <Button
-                    key={color.id}
-                    variant={selectedColor === Number(color.id) ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => setSelectedColor(Number(color.id))}
-                    className="flex items-center gap-2"
-                  >
-                    <div 
-                      className="w-3 h-3 rounded-full border border-gray-300"
-                      style={{ backgroundColor: color.hex_code }}
-                    />
-                    {color.name}
-                  </Button>
-                ))
-              )}
+            <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 md:items-center">
+              <span className="text-small font-light text-ink-soft/70 tracking-wide md:hidden">{t('catalog.colorLabel') || 'цвет:'}</span>
+              <div className="flex flex-wrap gap-2 md:gap-3 items-center">
+                <span className="hidden md:inline text-small font-light text-ink-soft/70 tracking-wide">{t('catalog.colorLabel') || 'цвет:'}</span>
+                <Button
+                  variant={selectedColor === undefined ? 'primary' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedColor(undefined)}
+                >
+                  {t('catalog.allColors')}
+                </Button>
+                {colorsLoading ? (
+                  <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
+                ) : (
+                  colors.map((color) => (
+                    <Button
+                      key={color.id}
+                      variant={selectedColor === Number(color.id) ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelectedColor(Number(color.id))}
+                      className="flex items-center gap-2"
+                    >
+                      <div 
+                        className="w-3 h-3 rounded-full border border-gray-300"
+                        style={{ backgroundColor: color.hex_code }}
+                      />
+                      {color.name}
+                    </Button>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </motion.div>
@@ -141,10 +149,10 @@ export default function CatalogPage() {
           ) : productsError ? (
             <div className="col-span-full text-center py-16">
               <p className="text-body text-red-500 font-light tracking-wide mb-6">
-                Error loading products: {productsError}
+                {t('common.error')}: {productsError}
               </p>
               <Button variant="outline" onClick={refetch}>
-                Try again
+                {t('common.tryAgain') || 'повторить'}
               </Button>
             </div>
           ) : (
@@ -170,7 +178,7 @@ export default function CatalogPage() {
             className="text-center mt-12"
           >
             <Button variant="outline" onClick={loadMore}>
-              Load more products
+              {t('catalog.loadMore') || 'загрузить ещё товары'}
             </Button>
           </motion.div>
         )}
@@ -182,7 +190,7 @@ export default function CatalogPage() {
             transition={{ duration: 0.8 }}
             className="text-center py-16"
           >
-            <p className="text-body text-ink-soft/70 font-light tracking-wide mb-6">No products found</p>
+            <p className="text-body text-ink-soft/70 font-light tracking-wide mb-6">{t('catalog.empty') || 'товары не найдены'}</p>
             <Button
               variant="outline"
               onClick={() => {
@@ -190,7 +198,7 @@ export default function CatalogPage() {
                 setSelectedColor(undefined)
               }}
             >
-              Reset filters
+              {t('catalog.reset') || 'сбросить фильтры'}
             </Button>
           </motion.div>
         )}

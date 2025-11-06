@@ -1,0 +1,148 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "tryAgain": "Try again"
+  },
+  "header": {
+    "collection": "collection",
+    "about": "about",
+    "cart": "Cart",
+    "favorites": "Favorites",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "description": "Discover our collection of handcrafted bags inspired by nature.",
+    "quickLinks": "Quick Links",
+    "collection": "Collection",
+    "about": "About",
+    "contact": "Contact",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "copyright": "© 2025 rosebotanique store. All rights reserved."
+  },
+  "aboutPage": {
+    "heroAlt": "Atelier — quiet craftsmanship in natural materials",
+    "heroSubtitle": "Philosophy of simplicity, material quality and attention to detail",
+    "storyTitle": "Our story",
+    "paragraph1": "rosebotanique was born from a love of nature and the desire to create objects that are both beautiful and useful. Each piece is handcrafted using traditional techniques and natural materials.",
+    "paragraph2": "We believe quality objects should last and quietly live with you every day. That is why we choose reliable materials and work with artisans who share our values.",
+    "tagSustainability": "Sustainability",
+    "tagQuality": "Quality",
+    "tagTraditions": "Traditions",
+    "tagSimplicity": "Simplicity"
+  },
+  "home": {
+    "hero": {
+      "title": "Handcrafted Bags",
+      "subtitle": "Inspired by Nature",
+      "description": "Each piece is carefully made with love and attention to detail.",
+      "cta": "Shop collection",
+      "tagline": "we make things",
+      "badges": "Natural fabrics · Hand-stitched · Small batches"
+    },
+    "about": {
+      "title": "About Us",
+      "description": "made quietly.",
+      "readMore": "About the brand",
+      "alt": {
+        "process": "Handcrafted process",
+        "texture": "Linen texture",
+        "stitching": "Hand stitching"
+      }
+    },
+    "featuredProducts": {
+      "title": "Collection",
+      "lead": "Hand-stitched bags in natural tones for every moment."
+    }
+  },
+  "catalog": {
+    "title": "Collection",
+    "allCategories": "All categories",
+    "allProducts": "All products",
+    "categoryLabel": "Category:",
+    "colorLabel": "Color:",
+    "loadMore": "Load more products",
+    "empty": "No products found",
+    "reset": "Reset filters",
+    "shoulderBags": "Shoulder bags",
+    "toteBags": "Tote bags",
+    "duffelBags": "Duffel bags",
+    "crossbodyBags": "Crossbody bags",
+    "marketBags": "Market bags",
+    "backpacks": "Backpacks",
+    "things": "Things",
+    "allColors": "All colors"
+  },
+  "product": {
+    "title": "Product Details",
+    "priceOnRequest": "Price on request",
+    "colors": "Colors:",
+    "addToCart": "Add to cart",
+    "addedToCart": "Added to cart!",
+    "addToFavorites": "Add to favorites",
+    "addedToFavorites": "Added to favorites!",
+    "materials": "Materials",
+    "care": "Care",
+    "youMightLike": "You might like",
+    "backToCatalog": "Back to catalog"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "yourOrder": "Your order",
+    "contactInfo": "Contact information",
+    "shippingInfo": "Shipping information",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "phone": "Phone",
+    "phonePlaceholder": "+7 (999) 123-45-67",
+    "country": "Country",
+    "city": "City",
+    "cityPlaceholder": "Enter city",
+    "address": "Address",
+    "addressPlaceholder": "Enter address (optional)",
+    "pickupPoint": "Pickup point",
+    "pickupPointPlaceholder": "Enter pickup point",
+    "note": "Note",
+    "notePlaceholder": "Add a note (optional)",
+    "orderDetails": "Order details",
+    "total": "Total",
+    "placeOrder": "Place order",
+    "placingOrder": "Placing order...",
+    "productNotInStock": "Product is not in stock"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "continueShopping": "Continue shopping",
+    "checkout": "Checkout",
+    "total": "Total",
+    "remove": "Remove"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "You have no favorites yet",
+    "continueShopping": "Continue shopping"
+  },
+  "order": {
+    "success": {
+      "title": "Order placed!",
+      "message": "Thank you for your order. We've received your request and will contact you shortly for confirmation.",
+      "orderNumber": "Order number",
+      "continueShopping": "Continue shopping",
+      "printOrder": "Print order",
+      "orderNotFound": "Order not found",
+      "backToCatalog": "Browse catalog",
+      "loading": "Loading..."
+    }
+  }
+}

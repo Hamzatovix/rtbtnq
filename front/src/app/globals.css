@@ -84,6 +84,8 @@
   input, textarea, select {
     accent-color: rgb(var(--sageTint));
     caret-color: rgb(var(--inkSoft));
+    background-color: hsl(var(--background)) !important; /* жёстко фиксируем фон */
+    color: hsl(var(--foreground));
   }
   input:focus,
   input:focus-visible,
@@ -134,6 +136,8 @@
       forced-color-adjust: none;
       outline: 0 !important;
       border-color: hsl(var(--input)) !important;
+      background-color: Canvas !important; /* системный фон темы, убирает синий */
+      color: CanvasText !important;        /* системный цвет текста */
       box-shadow:
         0 0 0 2px var(--tw-ring-color, transparent),
         0 0 0 var(--tw-ring-offset-width, 0) var(--tw-ring-offset-color, transparent) !important;

@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { Plus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import type { Product, Category, Color } from '@/lib/api/mocks'
 
 type OrdersList = { results: Array<{ id: string; number: string; total: number; createdAt: string; customerName?: string | null; customerEmail?: string | null; paymentStatus: string; fulfillmentStatus: string; orderStatus: string }>; meta: any }
@@ -12,6 +14,7 @@ export default function BackofficeDashboard() {
   const [colors, setColors] = useState<Color[]>([])
   const [loading, setLoading] = useState(true)
   const [orders, setOrders] = useState<OrdersList | null>(null)
+  const newOrdersCount = (orders?.results || []).filter(o => o.orderStatus === 'new').length
 
   useEffect(() => {
     const loadData = async () => {
@@ -24,7 +27,7 @@ export default function BackofficeDashboard() {
         setProducts(productsRes.results)
         setCategories(cats)
         setColors(cols.results ?? cols)
-        // fetch orders summary
+        // fetch orders summary (без сброса флага "new")
         try {
           const res = await fetch('/api/orders')
           if (res.ok) {
@@ -52,19 +55,35 @@ export default function BackofficeDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-display-1 font-light text-inkSoft font-display mb-4">
-          Dashboard
+          Панель управления
         </h1>
         <p className="text-inkSoft/60 text-body">
-          Обзор системы управления RSBTQ
+          Системы управления RSBTNQ
         </p>
+        <div className="mt-4">
+          <Link href="/backoffice/products/new">
+            <Button className="inline-flex items-center gap-2 whitespace-nowrap">
+              <Plus className="h-4 w-4" />
+              <span>Добавить товар</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-roseBeige/40 rounded-2xl border border-mistGray/20 shadow-misty/50 p-6">
-          <h3 className="text-lg font-light text-inkSoft mb-2">Товары</h3>
-          <p className="text-3xl font-light text-inkSoft">{products.length}</p>
-          <Link href="/backoffice/products" className="text-sm text-sageTint hover:underline mt-2 inline-block">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-light text-inkSoft">Товары</h3>
+            <Link href="/backoffice/products/new">
+              <Button variant="outline" size="sm" className="h-8 px-3 text-xs">
+                <Plus className="h-3 w-3 mr-1" />
+                Добавить
+              </Button>
+            </Link>
+          </div>
+          <p className="text-3xl font-light text-inkSoft mb-2">{products.length}</p>
+          <Link href="/backoffice/products" className="text-sm text-sageTint hover:underline inline-block">
             Управление →
           </Link>
         </div>
@@ -78,9 +97,9 @@ export default function BackofficeDashboard() {
         </div>
 
         <div className="bg-roseBeige/40 rounded-2xl border border-mistGray/20 shadow-misty/50 p-6">
-          <h3 className="text-lg font-light text-inkSoft mb-2">Цвета</h3>
-          <p className="text-3xl font-light text-inkSoft">{colors.length}</p>
-          <Link href="/backoffice/colors" className="text-sm text-sageTint hover:underline mt-2 inline-block">
+          <h3 className="text-lg font-light text-inkSoft mb-2">Новые заказы</h3>
+          <p className="text-3xl font-light text-inkSoft">{newOrdersCount > 0 ? `+${newOrdersCount}` : '0'}</p>
+          <Link href="/backoffice/orders" className="text-sm text-sageTint hover:underline mt-2 inline-block">
             Управление →
           </Link>
         </div>

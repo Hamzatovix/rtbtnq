@@ -83,7 +83,7 @@ export async function placeOrder(formData: FormData) {
         subtotalCents,
         shippingCents,
         totalCents,
-        currency: 'USD'
+        currency: 'RUB'
       }
     }
 

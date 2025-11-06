@@ -1,9 +1,11 @@
 /**
- * React хуки для работы с mock данными
+ * React хуки для работы с API данными через SWR
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { mockProducts, mockCategories, colorMap } from './mock-data';
+import { useMemo } from 'react';
+import useSWR from 'swr';
+import { fetcher } from './swr-config';
+import { useLocaleStore } from '@/store/locale-store';
 import type { Product, Category } from '@/types';
 
 // Упрощённые типы для совместимости
@@ -15,112 +17,209 @@ export interface ProductListItem {
   thumbnail: string | null;
   price_range: string | number | null;
   colors: Array<{ id: string; name: string; hex_code: string }>;
+  colorImages?: Record<string, string>;
   is_featured: boolean;
 }
 
-// Хук для получения категорий
+// Хук для получения категорий с SWR
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, error, isLoading } = useSWR<Category[] | { results: any[] }>(
+    '/api/categories',
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000, // 1 минута
+    }
+  );
 
-  useEffect(() => {
-    // Имитация асинхронной загрузки
-    setTimeout(() => {
-      setCategories(mockCategories);
-      setLoading(false);
-    }, 100);
-  }, []);
+  const categories = useMemo(() => {
+    if (!data) return [];
+    
+    // API возвращает массив категорий
+    const apiCategories = Array.isArray(data) ? data : (data.results || []);
+    
+    // Фильтруем только активные (опубликованные) категории для каталога
+    const activeCategories = apiCategories.filter((cat: any) => cat.is_active !== false);
+    
+    // Преобразуем в нужный формат
+    const formatted: Category[] = activeCategories.map((cat: any) => ({
+      id: String(cat.id),
+      slug: cat.slug,
+      name: cat.name,
+    }));
+    
+    // Сортируем по position
+    formatted.sort((a, b) => {
+      const aPos = apiCategories.find((c: any) => String(c.id) === a.id)?.position || 0;
+      const bPos = apiCategories.find((c: any) => String(c.id) === b.id)?.position || 0;
+      return aPos - bPos;
+    });
+    
+    return formatted;
+  }, [data]);
 
-  return { categories, loading, error: null };
+  return { 
+    categories, 
+    loading: isLoading, 
+    error: error?.message || null 
+  };
 }
 
-// Хук для получения цветов
+// Хук для получения цветов с SWR
 export function useColors() {
-  const [colors, setColors] = useState<Array<{ id: string; name: string; hex_code: string }>>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, error, isLoading } = useSWR<{ results: any[] }>(
+    '/api/colors',
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000, // 1 минута
+    }
+  );
 
-  useEffect(() => {
-    setTimeout(() => {
-      const uniqueColors = Array.from(new Set(
-        mockProducts.flatMap(p => p.colors)
-      ));
-      
-      const colorsList = uniqueColors.map((colorName, index) => ({
-        id: `${index + 1}`,
-        name: colorName,
-        hex_code: colorMap[colorName.toLowerCase()] || '#9CA3AF'
-      }));
-      
-      setColors(colorsList);
-      setLoading(false);
-    }, 100);
-  }, []);
+  const colors = useMemo(() => {
+    if (!data) return [];
+    
+    const apiColors = data.results || [];
+    // Преобразуем в нужный формат
+    return apiColors.map((color: any) => ({
+      id: String(color.id),
+      name: color.name,
+      hex_code: color.hex || color.hex_code || '#9CA3AF',
+      hex: color.hex || color.hex_code || '#9CA3AF',
+      slug: color.slug || color.name.toLowerCase().replace(/\s+/g, '-'),
+    }));
+  }, [data]);
 
-  return { colors, loading, error: null };
+  return { 
+    colors, 
+    loading: isLoading, 
+    error: error?.message || null 
+  };
 }
 
-// Хук для получения товаров с фильтрацией
+// Хук для получения товаров с фильтрацией через SWR
 export function useProducts(filters: {
   category?: string;
   color?: number;
 } = {}) {
-  const [products, setProducts] = useState<ProductListItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { locale } = useLocaleStore();
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
+  // Загружаем все данные параллельно через SWR
+  const { data: productsData, error: productsError, isLoading: productsLoading } = useSWR<{ results: any[] }>(
+    '/api/products',
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+    }
+  );
 
-    // Имитация асинхронной загрузки
-    setTimeout(() => {
-      try {
-        let filtered = [...mockProducts];
+  const { data: categoriesData } = useSWR<Category[] | { results: any[] }>(
+    '/api/categories',
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+    }
+  );
 
-        // Фильтр по категории
-        if (filters.category) {
-          filtered = filtered.filter(p => 
-            p.category.toLowerCase() === filters.category?.toLowerCase()
-          );
-        }
+  const { data: colorsData } = useSWR<{ results: any[] }>(
+    '/api/colors',
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+    }
+  );
 
-        // Фильтр по цвету
-        if (filters.color !== undefined) {
-          const uniqueColors = Array.from(new Set(mockProducts.flatMap(p => p.colors)));
-          const colorName = uniqueColors[filters.color];
-          if (colorName) {
-            filtered = filtered.filter(p => p.colors.includes(colorName));
-          }
-        }
+  const products = useMemo(() => {
+    if (!productsData || !categoriesData || !colorsData) return [];
 
-        // Преобразуем в ProductListItem формат
-        const results: ProductListItem[] = filtered.map(product => ({
-          id: product.id,
-          slug: product.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-          name: product.title,
-          category: {
-            id: product.category,
-            name: product.category.charAt(0).toUpperCase() + product.category.slice(1),
-            slug: product.category.toLowerCase().replace(/\s+/g, '-')
-          },
-          thumbnail: product.image,
-          price_range: product.price,
-          colors: product.colors.map((colorName, idx) => ({
-            id: `${product.id}-${idx}`,
-            name: colorName,
-            hex_code: colorMap[colorName.toLowerCase()] || '#9CA3AF'
-          })),
-          is_featured: product.id <= 3
-        }));
+    try {
+      // Получаем массивы данных
+      const apiProducts = productsData.results || [];
+      const allCategories = Array.isArray(categoriesData) ? categoriesData : (categoriesData.results || []);
+      const colors = colorsData.results || [];
+      
+      // Фильтруем только опубликованные товары
+      let filtered = apiProducts.filter((p: any) => p.isPublished === true);
 
-        setProducts(results);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Ошибка загрузки товаров');
-      } finally {
-        setLoading(false);
+      // Фильтр по категории (по slug или id категории)
+      if (filters.category) {
+        filtered = filtered.filter((p: any) => {
+          const catId = String(p.categoryId || '');
+          // Находим категорию товара
+          const productCategory = allCategories.find((c: any) => String(c.id) === catId);
+          const catSlug = productCategory?.slug || '';
+          // Проверяем по ID или slug
+          return catId === filters.category || 
+                 catSlug === filters.category;
+        });
       }
-    }, 200);
-  }, [filters.category, filters.color]);
+
+      // Фильтр по цвету
+      if (filters.color !== undefined) {
+        const targetColor = colors.find((c: any) => Number(c.id) === filters.color);
+        if (targetColor) {
+          filtered = filtered.filter((p: any) => {
+            return (p.variants || []).some((v: any) => String(v.colorId) === String(targetColor.id));
+          });
+        }
+      }
+
+      // Преобразуем в ProductListItem формат
+      return filtered.map((product: any) => {
+        // Получаем первый вариант для цены
+        const firstVariant = (product.variants || [])[0];
+        const price = firstVariant ? (firstVariant.priceCents / 100) : 0;
+        
+        // Находим категорию товара
+        const productCategory = allCategories.find((c: any) => String(c.id) === String(product.categoryId));
+        
+        // Получаем изображения вариантов
+        const variantImages = (product.variants || []).reduce((acc: any, v: any) => {
+          if (v.colorId && v.images && v.images.length > 0) {
+            acc[v.colorId] = v.images[0].url;
+          }
+          return acc;
+        }, {});
+
+        // Получаем цвета из вариантов
+        const productColors = (product.variants || [])
+          .map((v: any) => {
+            const color = colors.find((c: any) => String(c.id) === String(v.colorId));
+            return color ? {
+              id: String(color.id),
+              name: color.name,
+              hex_code: color.hex || color.hex_code || '#9CA3AF'
+            } : null;
+          })
+          .filter(Boolean) as Array<{ id: string; name: string; hex_code: string }>;
+
+        return {
+          id: Number(product.id),
+          slug: product.slug,
+          name: product.name,
+          category: {
+            id: product.categoryId || '',
+            name: productCategory?.name || product.categoryId || '',
+            slug: productCategory?.slug || product.categoryId || '',
+          } as unknown as Category,
+          thumbnail: firstVariant?.images?.[0]?.url || null,
+          price_range: price,
+          colors: productColors,
+          colorImages: variantImages,
+          is_featured: product.is_featured || false,
+        }
+      });
+    } catch (err) {
+      console.error('Error processing products:', err);
+      return [];
+    }
+  }, [productsData, categoriesData, colorsData, filters.category, filters.color]);
+
+  const loading = productsLoading || !categoriesData || !colorsData;
+  const error = productsError?.message || null;
 
   return {
     products,
@@ -128,7 +227,27 @@ export function useProducts(filters: {
     error,
     hasMore: false,
     loadMore: () => {},
-    refetch: () => {}
+    refetch: () => {
+      // SWR автоматически обновит данные при изменении ключей
+    }
+  };
+}
+
+// Хук для получения отдельного продукта по ID/slug
+export function useProduct(idOrSlug: string) {
+  const { data, error, isLoading } = useSWR<any>(
+    idOrSlug ? `/api/products/${idOrSlug}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+    }
+  );
+
+  return {
+    product: data || null,
+    loading: isLoading,
+    error: error?.message || null,
   };
 }
 
@@ -163,10 +282,10 @@ export function useCart() {
       store.addItem({
         id: parseInt(variant.id) || Date.now(),
         title: productInfo.name || variant.name || 'Product',
-        description: '',
+        description: variant.description || '',
         price: parseFloat(variant.price || variant.price_range || '0'),
-        category: '',
-        image: '',
+        category: variant.category || '',
+        image: variant.image || '',
         colors: [],
         quantity: qty,
         selectedColor: colorInfo.name || ''

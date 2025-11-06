@@ -32,6 +32,7 @@ interface DropdownMenuItemProps {
   asChild?: boolean
   children: React.ReactNode
   className?: string
+  onClick?: () => void
 }
 
 export function DropdownMenu({ children }: DropdownMenuProps) {
@@ -96,15 +97,20 @@ export function DropdownMenuContent({ align = 'start', children, className = '' 
   )
 }
 
-export function DropdownMenuItem({ asChild, children, className = '' }: DropdownMenuItemProps) {
+export function DropdownMenuItem({ asChild, children, className = '', onClick }: DropdownMenuItemProps) {
   const { setOpen } = React.useContext(DropdownMenuContext)
+
+  const handleClick = () => {
+    onClick?.()
+    setOpen(false)
+  }
 
   if (asChild && React.isValidElement(children)) {
     const child = children as React.ReactElement<any>
     return React.cloneElement(child, {
       className: `block w-full text-left px-4 py-2 text-inkSoft hover:bg-roseBeige/40 transition-colors ${className}`,
       onClick: (e: React.MouseEvent) => {
-        setOpen(false)
+        handleClick()
         if (child.props && typeof (child.props as any).onClick === 'function') {
           ;(child.props as any).onClick(e)
         }
@@ -115,7 +121,7 @@ export function DropdownMenuItem({ asChild, children, className = '' }: Dropdown
   return (
     <div
       className={`block w-full text-left px-4 py-2 text-inkSoft hover:bg-roseBeige/40 transition-colors cursor-pointer ${className}`}
-      onClick={() => setOpen(false)}
+      onClick={handleClick}
     >
       {children}
     </div>

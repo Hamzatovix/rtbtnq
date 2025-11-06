@@ -10,21 +10,32 @@ export default function OrdersListPage() {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/orders')
+    fetch('/api/orders?markViewed=true')
       .then(r => r.json())
       .then(setData)
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="container mx-auto px-6 md:px-12 lg:px-24 py-10">Загрузка…</div>
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <p className="text-inkSoft/60">Загрузка…</p>
+    </div>
+  )
 
   return (
-    <div className="container mx-auto px-6 md:px-12 lg:px-24 py-10">
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-6">
+      {/* Breadcrumbs */}
+      <div className="flex items-center gap-2 text-sm text-inkSoft/60">
+        <Link href="/backoffice" className="hover:text-sageTint transition-colors">Панель</Link>
+        <span>/</span>
+        <span className="text-inkSoft">Заказы</span>
+      </div>
+
+      <div className="flex items-center justify-between">
         <h1 className="text-title-1 font-light">Заказы</h1>
-        <Button asChild>
-          <Link href="/backoffice">В админ-дэшборд</Link>
-        </Button>
+        <Link href="/backoffice" className="text-sageTint hover:underline transition-colors">
+          ← назад в панель
+        </Link>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -40,7 +51,16 @@ export default function OrdersListPage() {
           <tbody>
             {data?.results?.map((o) => (
               <tr key={o.id} className="border-b border-mistGray/10 hover:bg-mistGray/10">
-                <td className="py-3 px-4"><Link href={`/backoffice/orders/${o.id}`} className="text-sageTint">{o.number}</Link></td>
+                <td className="py-3 px-4">
+                  <Link href={`/backoffice/orders/${o.id}`} className="text-sageTint hover:underline transition-colors inline-flex items-center gap-2">
+                    {o.number}
+                    {o.orderStatus === 'new' && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-100 text-rose-700 border border-rose-200">
+                        ● Новый
+                      </span>
+                    )}
+                  </Link>
+                </td>
                 <td className="py-3 px-4">{o.customerName || o.customerEmail || '-'}</td>
                 <td className="py-3 px-4">{o.total}</td>
                 <td className="py-3 px-4 text-sm">{o.paymentStatus} / {o.fulfillmentStatus} / {o.orderStatus}</td>

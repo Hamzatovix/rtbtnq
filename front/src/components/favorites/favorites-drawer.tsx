@@ -4,12 +4,16 @@ import { X, Heart, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useFavoritesStore } from '@/store/favorites-store'
 import { useCartStore } from '@/store/cart-store'
-import { formatPrice } from '@/lib/utils'
+import { formatPriceWithLocale } from '@/lib/utils'
 import { Product } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from '@/hooks/useTranslations'
+import { useLocaleStore } from '@/store/locale-store'
 
 export function FavoritesDrawer() {
+  const t = useTranslations()
+  const { locale } = useLocaleStore()
   const { 
     items: favorites, 
     isOpen, 
@@ -39,7 +43,7 @@ export function FavoritesDrawer() {
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b">
                 <h2 className="font-serif text-xl font-semibold">
-                  Favorites (<span suppressHydrationWarning>{favorites.length}</span>)
+                  {t('favorites.title')} (<span suppressHydrationWarning>{favorites.length}</span>)
                 </h2>
                 <Button variant="ghost" size="icon" onClick={toggleFavorites}>
                   <X className="h-5 w-5" />
@@ -51,12 +55,12 @@ export function FavoritesDrawer() {
                 {favorites.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
                     <Heart className="h-16 w-16 text-neutral-300" />
-                    <h3 className="font-medium text-neutral-600">Your favorites is empty</h3>
+                    <h3 className="font-medium text-neutral-600">{t('favorites.empty')}</h3>
                     <p className="text-sm text-neutral-500">
-                      Add items to favorites from catalog
+                      {t('favorites.empty')}
                     </p>
                     <Button onClick={toggleFavorites} className="mt-4">
-                      <Link href="/catalog">Go to catalog</Link>
+                      <Link href="/catalog">{t('favorites.continueShopping')}</Link>
                     </Button>
                   </div>
                 ) : (
@@ -86,7 +90,7 @@ export function FavoritesDrawer() {
                           </p>
                           <div className="flex items-center justify-between mt-2">
                             <span className="font-medium text-neutral-900">
-                              {formatPrice(item.price)}
+                              {formatPriceWithLocale(item.price, locale)}
                             </span>
                             <div className="flex space-x-2">
                               <Button
@@ -96,7 +100,7 @@ export function FavoritesDrawer() {
                                 className="text-xs rounded-full"
                               >
                                 <ShoppingBag className="h-3 w-3 mr-1" />
-                                Add to cart
+                                {t('product.addToCart')}
                               </Button>
                               <Button
                                 variant="ghost"
@@ -119,7 +123,7 @@ export function FavoritesDrawer() {
               {favorites.length > 0 && (
                 <div className="border-t p-6 space-y-4">
                   <Button variant="outline" className="w-full rounded-full" onClick={toggleFavorites}>
-                    Continue shopping
+                    {t('favorites.continueShopping')}
                   </Button>
                 </div>
               )}

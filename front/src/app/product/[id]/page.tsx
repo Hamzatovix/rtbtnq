@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
@@ -9,76 +9,184 @@ import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/product/product-card'
 import { useCartStore } from '@/store/cart-store'
 import { useFavoritesStore } from '@/store/favorites-store'
-import { mockProducts } from '@/lib/mock-data'
-import { formatPrice } from '@/lib/utils'
+import { formatPriceWithLocale } from '@/lib/utils'
+import { useLocaleStore } from '@/store/locale-store'
+import { useTranslations } from '@/hooks/useTranslations'
 import Link from 'next/link'
 
+type ProductVariant = {
+  id?: string
+  colorId: string
+  sku?: string
+  priceCents: number
+  stockQty?: number
+  images: Array<{ url: string; position?: number }>
+}
+
+type Product = {
+  id: string
+  slug: string
+  name: string
+  description: string
+  materials?: string
+  care?: string
+  categoryId: string
+  isPublished: boolean
+  variants: ProductVariant[]
+}
+
+type Color = {
+  id: string
+  name: string
+  hex?: string
+  hex_code?: string
+}
+
 export default function ProductPage() {
+  const { locale } = useLocaleStore()
+  const t = useTranslations()
   const params = useParams()
-  const productId = parseInt(params.id as string)
-  const product = mockProducts.find(p => p.id === productId)
+  const productSlug = params.id as string
   
-  const [selectedColor, setSelectedColor] = useState(product?.colors[0] || '')
-  const [selectedImage, setSelectedImage] = useState(0)
+  const [product, setProduct] = useState<Product | null>(null)
+  const [colors, setColors] = useState<Color[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedColorId, setSelectedColorId] = useState<string>('')
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([])
 
   const { addItem } = useCartStore()
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesStore()
+
+  useEffect(() => {
+    // Загружаем товар и цвета (используем кеш браузера)
+    Promise.all([
+      fetch(`/api/products/${productSlug}`).then(r => r.json()),
+      fetch('/api/colors').then(r => r.json()),
+    ])
+      .then(([productData, colorsData]) => {
+        setProduct(productData)
+        setColors(colorsData.results || colorsData)
+        
+        // Выбираем первый доступный цвет
+        if (productData.variants && productData.variants.length > 0) {
+          setSelectedColorId(String(productData.variants[0].colorId || ''))
+        }
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Error loading product:', err)
+        setLoading(false)
+      })
+  }, [productSlug])
+
+  // Загружаем похожие товары для секции "Вам может понравиться" (используем кеш браузера)
+  useEffect(() => {
+    if (product) {
+      fetch('/api/products')
+        .then(r => r.json())
+        .then(data => {
+          const all = (data.results || []).filter((p: any) => 
+            p.id !== product.id && p.isPublished === true
+          ).slice(0, 4)
+          setRelatedProducts(all)
+        })
+        .catch(() => {
+          setRelatedProducts([])
+        })
+    }
+  }, [product])
+
+  // Получаем текущий выбранный вариант
+  const selectedVariant = product?.variants?.find(v => String(v.colorId) === String(selectedColorId))
+  const currentImages = selectedVariant?.images || []
+  const currentImage = currentImages[selectedImageIndex]?.url || currentImages[0]?.url || '/placeholder/about_main_placeholder.webp'
+  
+  // Получаем информацию о выбранном цвете
+  const selectedColor = colors.find(c => String(c.id) === String(selectedColorId))
+
+  // Получаем все доступные цвета для этого товара
+  const availableColors = product?.variants
+    ?.map(v => {
+      const color = colors.find(c => String(c.id) === String(v.colorId))
+      return color ? { ...color, variant: v } : null
+    })
+    .filter(Boolean) as Array<Color & { variant: ProductVariant }> || []
+
+  const favorite = product ? isFavorite(Number(product.id)) : false
+  const price = selectedVariant ? selectedVariant.priceCents / 100 : 0
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sageTint mx-auto mb-4"></div>
+          <p className="text-inkSoft/60">Загрузка...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-neutral-800 mb-4">Product not found</h1>
+          <h1 className="text-2xl font-light text-inkSoft mb-4">Товар не найден</h1>
           <Link href="/catalog">
-            <Button>Back to catalog</Button>
+            <Button>Вернуться в каталог</Button>
           </Link>
         </div>
       </div>
     )
   }
 
-  const favorite = isFavorite(product.id)
-  const relatedProducts = mockProducts.filter(p => p.id !== product.id).slice(0, 4)
-
   const handleAddToCart = () => {
-    addItem({ ...product, quantity: 1, selectedColor })
+    if (!selectedVariant) return
+    
+    const variant = {
+      id: selectedVariant.sku || `${product.id}-${selectedColorId}`,
+      product: {
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+      },
+      color: selectedColor,
+      price: price.toString(),
+      priceCents: selectedVariant.priceCents,
+      image: currentImage,
+      stockQty: selectedVariant.stockQty || 0,
+    }
+    
+    addItem({
+      id: Number(product.id),
+      title: product.name,
+      description: product.description,
+      price: price,
+      category: product.categoryId,
+      image: currentImage,
+      colors: [],
+      quantity: 1,
+      selectedColor: selectedColor?.name || '',
+    })
   }
 
   const handleToggleFavorite = () => {
     if (favorite) {
-      removeFromFavorites(product.id)
+      removeFromFavorites(Number(product.id))
     } else {
-      addToFavorites(product)
+      addToFavorites({
+        id: Number(product.id),
+        name: product.name,
+        slug: product.slug,
+        price: price,
+        image: currentImage,
+      } as any)
     }
   }
 
-  const getColorValue = (color: string): string => {
-    const colorMap: Record<string, string> = {
-      gray: "#9CA3AF",
-      sand: "#F3E5AB",
-      olive: "#808000",
-      natural: "#F5F5DC",
-      charcoal: "#36454F",
-      sage: "#9CAF88",
-      tan: "#D2B48C",
-      black: "#000000",
-      burgundy: "#800020",
-      beige: "#F5F5DC",
-      terracotta: "#E2725B",
-      forest: "#228B22",
-      cream: "#F5F5DC",
-      midnight: "#191970",
-      moss: "#8A9A5B",
-      camel: "#C19A6B",
-      navy: "#000080",
-      rust: "#B7410E",
-      earth: "#8B4513",
-      sunset: "#FD5E53",
-      moonlight: "#C0C0C0",
-      cognac: "#9F4636",
-      slate: "#708090"
-    }
-    return colorMap[color] || "#9CA3AF"
+  const handleColorChange = (colorId: string) => {
+    setSelectedColorId(colorId)
+    setSelectedImageIndex(0) // Сбрасываем индекс изображения при смене цвета
   }
 
   return (
@@ -94,7 +202,7 @@ export default function ProductPage() {
           <Link href="/catalog">
             <Button variant="ghost" className="flex items-center space-x-2 h-9 px-3 text-sm">
               <ArrowLeft className="h-4 w-4" />
-              <span>Назад к каталогу</span>
+              <span>{t('product.backToCatalog')}</span>
             </Button>
           </Link>
         </motion.div>
@@ -107,18 +215,49 @@ export default function ProductPage() {
             transition={{ duration: 0.8 }}
             className="space-y-4"
           >
-            <div className="relative aspect-square w-full max-w-[420px] md:max-w-[520px] mx-auto rounded-2xl overflow-hidden">
-              <Image
-                src={product.image}
-                alt={product.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
-                className="object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement
-                  target.src = '/placeholder/about_main_placeholder.webp'
-                }}
-              />
+            <div className="w-full max-w-[420px] md:max-w-[520px] mx-auto space-y-4">
+              <div className="relative aspect-square w-full rounded-2xl overflow-hidden">
+                <Image
+                  key={`${product.id}-${selectedColorId}-${selectedImageIndex}`}
+                  src={currentImage.startsWith('http') || currentImage.startsWith('/') 
+                    ? currentImage 
+                    : `/${currentImage}`}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                  className="object-cover transition-opacity duration-300"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = '/placeholder/about_main_placeholder.webp'
+                  }}
+                />
+              </div>
+              {/* Миниатюры изображений, если их несколько */}
+              {currentImages.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {currentImages.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                        selectedImageIndex === idx 
+                          ? 'border-sageTint ring-2 ring-sageTint/30' 
+                          : 'border-mistGray/30 hover:border-mistGray/50'
+                      }`}
+                    >
+                      <img
+                        src={img.url.startsWith('http') || img.url.startsWith('/') ? img.url : `/${img.url}`}
+                        alt={`${product.name} ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.src = '/placeholder/about_main_placeholder.webp'
+                        }}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -130,36 +269,53 @@ export default function ProductPage() {
             className="space-y-5"
           >
             <div>
-              <h1 className="font-serif text-2xl font-light text-neutral-800 mb-3.5">
-                {product.title}
+              <h1 className="font-serif text-2xl font-light text-inkSoft mb-3.5">
+                {product.name}
               </h1>
-              <p className="text-xl font-semibold text-neutral-900 mb-4">
-                {formatPrice(product.price)}
+              <p className="text-xl font-light text-inkSoft mb-4">
+                {formatPriceWithLocale(price, locale)}
               </p>
-              <p className="text-neutral-600 leading-relaxed text-sm">
+              <p className="text-inkSoft/70 leading-relaxed text-sm break-words max-w-[65ch]">
                 {product.description}
               </p>
             </div>
 
             {/* Colors */}
-            <div>
-              <h3 className="font-medium text-neutral-800 mb-2.5 text-sm">Colors:</h3>
-              <div className="flex space-x-2.5">
-                {product.colors.map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
-                    className={`w-8 h-8 rounded-full border-2 transition-all ${
-                      selectedColor === color 
-                        ? 'border-neutral-800 scale-105' 
-                        : 'border-neutral-200 hover:border-neutral-400'
-                    }`}
-                    style={{ backgroundColor: getColorValue(color) }}
-                    title={color}
-                  />
-                ))}
+            {availableColors.length > 0 && (
+              <div>
+                <h3 className="font-light text-inkSoft/80 mb-2.5 text-sm">{t('product.colors') || 'Цвет'}</h3>
+                <div className="flex flex-wrap gap-2.5">
+                  {availableColors.map((colorData) => {
+                    const isSelected = String(colorData.id) === String(selectedColorId)
+                    return (
+                      <button
+                        key={colorData.id}
+                        onClick={() => handleColorChange(String(colorData.id))}
+                        className={`w-8 h-8 rounded-full border-2 transition-all relative ${
+                          isSelected 
+                            ? 'border-inkSoft scale-105 ring-2 ring-sageTint' 
+                            : 'border-mistGray/40 hover:border-mistGray/60'
+                        }`}
+                        style={{ backgroundColor: colorData.hex || colorData.hex_code || '#cccccc' }}
+                        title={`${colorData.name}${isSelected ? ' (выбран)' : ''}`}
+                        aria-label={`вариант цвета: ${colorData.name}${isSelected ? ' (выбран)' : ''}`}
+                      >
+                        {isSelected && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+                {selectedColor && (
+                  <p className="text-xs text-inkSoft/60 mt-2">{selectedColor.name}</p>
+                )}
               </div>
-            </div>
+            )}
 
             {/* Actions */}
             <div className="flex space-x-3">
@@ -168,32 +324,38 @@ export default function ProductPage() {
                 onClick={handleAddToCart}
               >
                 <ShoppingBag className="h-4 w-4" />
-                <span>Add to cart</span>
+                <span>{t('product.addToCart')}</span>
               </Button>
               <Button
                 variant="outline"
                 onClick={handleToggleFavorite}
-                className={`px-3 h-10 text-sm ${favorite ? 'text-red-500' : 'text-neutral-600'}`}
+                className={`px-3 h-10 text-sm ${favorite ? 'text-red-500' : 'text-inkSoft/70'}`}
               >
                 <Heart className="h-4 w-4" fill={favorite ? 'currentColor' : 'none'} />
               </Button>
             </div>
 
             {/* Product Details */}
-            <div className="border-t pt-4 space-y-3.5">
-              <div>
-                <h4 className="font-medium text-neutral-800 mb-1.5 text-sm">Materials</h4>
-                <p className="text-sm text-neutral-600">
-                  Natural linen, cotton, vegetable-tanned leather
-                </p>
+            {(product.materials || product.care) && (
+              <div className="border-t pt-4 space-y-3.5">
+                {product.materials && (
+                  <div>
+                    <h4 className="font-light text-inkSoft/80 mb-1.5 text-sm">{t('product.materials') || 'Материалы'}</h4>
+                    <p className="text-sm text-inkSoft/70 whitespace-pre-line">
+                      {product.materials}
+                    </p>
+                  </div>
+                )}
+                {product.care && (
+                  <div>
+                    <h4 className="font-light text-inkSoft/80 mb-1.5 text-sm">{t('product.care') || 'Уход'}</h4>
+                    <p className="text-sm text-inkSoft/70 whitespace-pre-line">
+                      {product.care}
+                    </p>
+                  </div>
+                )}
               </div>
-              <div>
-                <h4 className="font-medium text-neutral-800 mb-1.5 text-sm">Care</h4>
-                <p className="text-sm text-neutral-600">
-                  Hand wash in cold water, dry flat
-                </p>
-              </div>
-            </div>
+            )}
           </motion.div>
         </div>
 
@@ -203,28 +365,40 @@ export default function ProductPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <h2 className="font-serif text-xl font-light text-neutral-800 mb-6 text-center">
-            You might like
+          <h2 className="font-serif text-xl font-light text-inkSoft mb-6 text-center">
+            {t('product.youMightLike')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedProducts.map((relatedProduct) => {
+              const firstVariant = (relatedProduct.variants || [])[0]
+              const relatedPrice = firstVariant ? firstVariant.priceCents / 100 : 0
+              const relatedThumbnail = firstVariant?.images?.[0]?.url || null
+              
+              const relatedColors = (relatedProduct.variants || [])
+                .map((v: ProductVariant) => {
+                  const color = colors.find(c => String(c.id) === String(v.colorId))
+                  return color ? {
+                    id: String(color.id),
+                    name: color.name,
+                    hex_code: color.hex || color.hex_code || '#9CA3AF'
+                  } : null
+                })
+                .filter(Boolean) as Array<{ id: string; name: string; hex_code: string }>
+
               const relatedItem = {
-                id: relatedProduct.id,
-                slug: relatedProduct.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-                name: relatedProduct.title,
+                id: Number(relatedProduct.id),
+                slug: relatedProduct.slug,
+                name: relatedProduct.name,
                 category: {
-                  id: relatedProduct.category,
-                  name: relatedProduct.category.charAt(0).toUpperCase() + relatedProduct.category.slice(1),
-                  slug: relatedProduct.category.toLowerCase().replace(/\s+/g, '-')
+                  id: relatedProduct.categoryId || '',
+                  name: relatedProduct.categoryId || '',
+                  slug: relatedProduct.categoryId || ''
                 },
-                thumbnail: relatedProduct.image,
-                price_range: relatedProduct.price,
-                colors: relatedProduct.colors.map((colorName: string, idx: number) => ({
-                  id: `${relatedProduct.id}-${idx}`,
-                  name: colorName,
-                  hex_code: getColorValue(colorName)
-                })),
-                is_featured: relatedProduct.id <= 3
+                thumbnail: relatedThumbnail,
+                price_range: relatedPrice,
+                colors: relatedColors,
+                colorImages: {},
+                is_featured: relatedProduct.is_featured || false
               }
               return <ProductCard key={relatedItem.id} product={relatedItem as any} />
             })}

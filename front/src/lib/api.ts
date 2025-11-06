@@ -15,6 +15,7 @@ export interface ProductListItem {
   thumbnail: string | null;
   price_range: string | number | null;
   colors: Array<{ id: string; name: string; hex_code: string }>;
+  colorImages?: Record<string, string>;
   is_featured: boolean;
 }
 
@@ -85,6 +86,7 @@ class MockApiClient {
           name: colorName,
           hex_code: colorMap[colorName.toLowerCase()] || '#9CA3AF'
         })),
+        colorImages: product.colorImages,
         is_featured: product.id <= 3
       }));
 

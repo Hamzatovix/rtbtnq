@@ -1,13 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { ArrowLeft } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 
 type Product = { id:string; slug:string; name:string; isPublished:boolean; variants: Array<{ id:string }> }
 
 export default function BackofficeProductsPage(){
   const [data, setData] = useState<{ results: Product[]; meta?: any } | null>(null)
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const pageSize = 10
 
   useEffect(()=>{
     setLoading(true)
@@ -17,13 +22,64 @@ export default function BackofficeProductsPage(){
       .finally(()=> setLoading(false))
   }, [])
 
+  const filtered = useMemo(()=>{
+    const all = data?.results ?? []
+    if (!search.trim()) return all
+    const s = search.toLowerCase()
+    return all.filter(p => p.name.toLowerCase().includes(s) || p.slug.toLowerCase().includes(s))
+  }, [data, search])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const paged = filtered.slice((page-1)*pageSize, page*pageSize)
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Удалить товар?')) return
+    const res = await fetch(`/api/products/${id}`, { method:'DELETE' })
+    if (res.ok){
+      setData(prev => prev ? { ...prev, results: prev.results.filter(p=> p.id !== id) } : prev)
+    } else {
+      alert('Не удалось удалить')
+    }
+  }
+
+  const togglePublish = async (p: Product) => {
+    const next = !p.isPublished
+    const res = await fetch(`/api/products/${p.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isPublished: next }),
+    })
+    if (res.ok) {
+      setData(prev => prev ? { ...prev, results: prev.results.map(it => it.id === p.id ? { ...it, isPublished: next } : it) } : prev)
+    } else {
+      alert('Не удалось изменить статус публикации')
+    }
+  }
+
   if (loading) return <div className="py-10">Загрузка…</div>
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Breadcrumbs */}
+      <div className="flex items-center gap-2 text-sm text-inkSoft/60">
+        <Link href="/backoffice" className="hover:text-sageTint transition-colors">Панель</Link>
+        <span>/</span>
+        <span className="text-inkSoft">Товары</span>
+      </div>
+
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <h1 className="text-title-1 font-light">Товары</h1>
-        <Link href="/backoffice/products/new" className="text-sageTint">+ создать</Link>
+        <div className="flex items-center gap-3">
+          <Input
+            placeholder="Поиск…"
+            value={search}
+            onChange={e=>{ setSearch(e.target.value); setPage(1) }}
+            className="w-48"
+          />
+          <Link href="/backoffice/products/new" className="text-sageTint hover:underline transition-colors">
+            + создать
+          </Link>
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -33,20 +89,47 @@ export default function BackofficeProductsPage(){
               <th className="text-left py-2 px-2">Slug</th>
               <th className="text-left py-2 px-2">Статус</th>
               <th className="text-left py-2 px-2">Варианты</th>
+              <th className="text-left py-2 px-2">Действия</th>
             </tr>
           </thead>
           <tbody>
-            {data?.results?.map(p=> (
+            {paged.map(p=> (
               <tr key={p.id} className="border-b hover:bg-mistGray/10">
                 <td className="py-2 px-2">{p.name}</td>
                 <td className="py-2 px-2">{p.slug}</td>
                 <td className="py-2 px-2">{p.isPublished ? 'Опубликован' : 'Черновик'}</td>
                 <td className="py-2 px-2">{p.variants?.length ?? 0}</td>
+                <td className="py-2 px-2">
+                  <button onClick={()=>togglePublish(p)} className={`mr-3 px-3 py-1 rounded-full border text-xs ${p.isPublished ? 'bg-mistGray/10 border-mistGray/30 text-inkSoft/80 hover:bg-mistGray/20' : 'bg-sageTint/15 border-sageTint/30 text-inkSoft hover:bg-sageTint/20'}`}>
+                    {p.isPublished ? 'снять с публикации' : 'опубликовать'}
+                  </button>
+                  <Link href={`/backoffice/products/${p.id}/edit`} className="text-sageTint hover:underline mr-3 transition-colors">редактировать</Link>
+                  <button onClick={()=>handleDelete(p.id)} className="text-red-500 hover:underline transition-colors">удалить</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {totalPages > 1 && (
+        <div className="flex items-center gap-3 justify-end">
+          <button 
+            disabled={page<=1} 
+            onClick={()=>setPage(p=>Math.max(1,p-1))} 
+            className="px-4 py-2 rounded-xl border border-mistGray/30 hover:bg-mistGray/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Назад
+          </button>
+          <span className="text-sm text-inkSoft/60">{page} / {totalPages}</span>
+          <button 
+            disabled={page>=totalPages} 
+            onClick={()=>setPage(p=>Math.min(totalPages,p+1))} 
+            className="px-4 py-2 rounded-xl border border-mistGray/30 hover:bg-mistGray/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Вперёд
+          </button>
+        </div>
+      )}
     </div>
   )
 }
