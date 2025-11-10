@@ -79,8 +79,8 @@ export async function POST(req: NextRequest) {
                 ? {
                     country: order.addresses[0].country,
                     city: order.addresses[0].city,
-                    line1: order.addresses[0].line1 ?? order.addresses[0].address ?? '',
-                    line2: order.addresses[0].line2 ?? order.addresses[0].pickupPoint ?? null,
+                    line1: order.addresses[0].line1 ?? '',
+                    line2: order.addresses[0].line2 ?? null,
                     postal: order.addresses[0].postal ?? '',
                   }
                 : null,
