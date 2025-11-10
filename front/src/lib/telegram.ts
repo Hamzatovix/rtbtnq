@@ -334,6 +334,8 @@ export async function sendOrderNotification(
   const itemsWithImages = data.items.filter(item => item.image)
   const canSendImages = !baseUrl.includes('localhost') && !baseUrl.includes('127.0.0.1')
   
+  let captionFallback: string | undefined
+
   if (itemsWithImages.length > 0 && canSendImages) {
     console.log('[Telegram] Найдено товаров с изображениями:', itemsWithImages.length)
     
@@ -357,9 +359,16 @@ export async function sendOrderNotification(
       }
     })
     
+    // Добавляем текст заказа в подпись к первой карточке (с ограничением 1024 символа)
+    captionFallback = message.length > 1024 ? `${message.substring(0, 1021)}...` : message
+    if (mediaItems.length > 0) {
+      const firstCaption = mediaItems[0].caption ? `${mediaItems[0].caption}\n\n` : ''
+      mediaItems[0].caption = `${firstCaption}${captionFallback}`
+    }
+    
     // Отправляем медиа-группу (если несколько товаров) или одно фото
     if (mediaItems.length === 1) {
-      await sendTelegramPhoto(token, chat, mediaItems[0].media, mediaItems[0].caption)
+      await sendTelegramPhoto(token, chat, mediaItems[0].media, mediaItems[0].caption ?? captionFallback)
     } else if (mediaItems.length > 1) {
       await sendTelegramMediaGroup(token, chat, mediaItems)
     }
