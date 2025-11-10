@@ -45,7 +45,7 @@ async function saveProductsToSupabase(products: any[]): Promise<void> {
     updated_at: new Date().toISOString(),
   }))
 
-  await supabaseDelete(SUPABASE_PRODUCTS_TABLE, 'id=is.not.null')
+  await supabaseDelete(SUPABASE_PRODUCTS_TABLE, 'id=not.is.null')
 
   if (rows.length) {
     await supabaseUpsert(SUPABASE_PRODUCTS_TABLE, rows)
