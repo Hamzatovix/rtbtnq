@@ -36,7 +36,17 @@ async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
     throw new Error(`${response.status} ${response.statusText}: ${text}`)
   }
 
-  return (await response.json()) as T
+  const contentLength = response.headers.get('content-length')
+  if (response.status === 204 || contentLength === '0' || (!contentLength && init.method === 'DELETE')) {
+    return undefined as T
+  }
+
+  const text = await response.text()
+  if (!text) {
+    return undefined as T
+  }
+
+  return JSON.parse(text) as T
 }
 
 export async function supabaseSelect<T>(table: string, query = ''): Promise<T> {
