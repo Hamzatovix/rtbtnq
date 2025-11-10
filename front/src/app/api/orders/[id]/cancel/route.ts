@@ -1,13 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { cancelOrder } from '@/server/orders/orders.service'
-import { CancelSchema } from '@/server/orders/validators'
+import { NextResponse } from 'next/server'
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const body = await req.json().catch(() => ({}))
-  const parsed = CancelSchema.safeParse(body)
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.format() }, { status: 400 })
-  await cancelOrder(params.id, parsed.data.reason)
-  return NextResponse.json({ ok: true })
+export async function POST() {
+  return NextResponse.json({ error: 'Not implemented' }, { status: 501 })
 }
 
 

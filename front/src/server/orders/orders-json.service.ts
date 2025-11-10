@@ -320,6 +320,10 @@ export async function updateOrder(id: string, updates: Partial<Order>): Promise<
   return orders[index]
 }
 
+export async function confirmOrder(id: string): Promise<Order | null> {
+  return updateOrder(id, { orderStatus: 'completed' })
+}
+
 export async function markNewOrdersAsViewed(): Promise<void> {
   const orders = await loadOrders()
   let changed = false
