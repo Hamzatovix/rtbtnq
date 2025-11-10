@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { listOrders, createOrder, markNewOrdersAsViewed } from '@/server/orders/orders-json.service'
+import { sendOrderNotification } from '@/lib/telegram'
+
+function buildBaseUrl(req: NextRequest): string | undefined {
+  const headerUrl = req.headers.get('x-forwarded-host') || req.headers.get('host')
+  if (!headerUrl) return undefined
+  const protocol = req.headers.get('x-forwarded-proto') ?? 'https'
+  return `${protocol}://${headerUrl}`
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -45,6 +53,30 @@ export async function POST(req: NextRequest) {
       total: total || items.reduce((sum: number, item: any) => sum + (item.total || item.price * item.qty || 0), 0),
       currency: currency || 'RUB',
     })
+    
+    const baseUrl = buildBaseUrl(req)
+    ;(async () => {
+      try {
+        await sendOrderNotification(
+          {
+            orderId: order.id,
+            orderNumber: order.number,
+            customerName: order.customerName ?? '—',
+            customerPhone: order.customerPhone ?? '',
+            items: order.items ?? [],
+            total: order.total,
+            currency: order.currency ?? 'RUB',
+            addresses: order.addresses ?? [],
+            note: order.note,
+            baseUrl,
+          },
+          process.env.TELEGRAM_BOT_TOKEN,
+          process.env.TELEGRAM_CHAT_ID,
+        )
+      } catch (error) {
+        console.error('[Order] Failed to send Telegram notification:', error)
+      }
+    })()
     
     return NextResponse.json(order, { status: 201 })
   } catch (error: any) {
