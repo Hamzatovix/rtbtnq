@@ -63,10 +63,27 @@ export async function POST(req: NextRequest) {
             orderNumber: order.number,
             customerName: order.customerName ?? '—',
             customerPhone: order.customerPhone ?? '',
-            items: order.items ?? [],
+            items:
+              order.items?.map((item: any) => ({
+                name: item.name,
+                qty: item.qty ?? item.quantity ?? 1,
+                color: item.color ?? null,
+                price: item.price ?? 0,
+                total: item.total ?? item.price ?? 0,
+                image: item.image ?? null,
+              })) ?? [],
             total: order.total,
             currency: order.currency ?? 'RUB',
-            addresses: order.addresses ?? [],
+            address:
+              order.addresses && order.addresses.length > 0
+                ? {
+                    country: order.addresses[0].country,
+                    city: order.addresses[0].city,
+                    line1: order.addresses[0].line1 ?? order.addresses[0].address ?? '',
+                    line2: order.addresses[0].line2 ?? order.addresses[0].pickupPoint ?? null,
+                    postal: order.addresses[0].postal ?? '',
+                  }
+                : null,
             note: order.note,
             baseUrl,
           },
