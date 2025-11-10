@@ -47,11 +47,6 @@ export function About() {
                 </Link>
               </Button>
             </div>
-
-            {/* Signature line — same in both locales */}
-            <div className="md:text-left text-center">
-              <span className="text-xs tracking-wide text-inkSoft/60">made in daymohk</span>
-            </div>
           </div>
 
           {/* Images — ULTRA COMPACT */}

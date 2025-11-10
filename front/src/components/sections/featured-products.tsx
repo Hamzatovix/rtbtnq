@@ -41,7 +41,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
             id="featured-heading" 
             className="text-title-1 font-light text-ink-soft leading-tight tracking-wide mb-4"
           >
-            {t('home.featuredProducts.title')}
+            <span suppressHydrationWarning>{t('home.featuredProducts.title')}</span>
           </h2>
         </div>
 
@@ -66,7 +66,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
             asChild
           >
             <Link href="/catalog">
-              {t('catalog.allProducts')}
+              <span suppressHydrationWarning>{t('catalog.allProducts')}</span>
               <ArrowRight className="ml-3 h-4 w-4 group-hover:translate-x-1 transition-transform duration-250 ease-brand" />
             </Link>
           </Button>

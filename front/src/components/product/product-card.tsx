@@ -68,7 +68,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   // Compact mode styles
   const isCompact = density === 'compact'
   const cardRadius = isCompact ? 'rounded-lg' : 'rounded-2xl'
-  const imageRatio = isCompact ? 'aspect-square' : 'aspect-[4/5]'
+  const imageRatio = isCompact ? 'aspect-[4/5] sm:aspect-square' : 'aspect-[4/5]'
   const imageScale = pointerMode ? '' : isCompact ? 'group-hover:scale-[1.02]' : 'group-hover:scale-103'
   const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
   const titleClass = isCompact ? 'text-sm' : 'text-base sm:text-lg'
@@ -79,6 +79,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const badgeTR = isCompact ? 'top-2.5 right-2.5' : 'top-6 right-6'
   const badgeTL = isCompact ? 'top-2.5 left-2.5' : 'top-6 left-6'
   const overlayPad = isCompact ? 'px-2.5 py-1 text-[11px]' : 'px-4 py-2 text-sm'
+  const priceSectionPadding = isCompact ? 'pt-1 sm:pt-1.5' : 'pt-2 sm:pt-2.5'
+  const swatchSectionPadding = isCompact ? 'pt-2.5 sm:pt-3' : 'pt-4 sm:pt-5'
   const numericId = useMemo(() => Number(product.id), [product.id])
 
   // Sync with store on client side
@@ -251,7 +253,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               </div>
             </Link>
             
-            <div className="flex items-center justify-between pt-1.5">
+            <div className={`flex items-center justify-between ${priceSectionPadding}`}>
               <div className="flex items-center space-x-2">
                 <span className={`text-inkSoft/80 ${priceClass}`}>
                   {typeof product.price === 'number'
@@ -262,7 +264,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               </div>
             </div>
 
-            <div className="pt-3 grid grid-cols-[1fr_auto] items-center gap-3">
+            <div className={`${swatchSectionPadding} grid grid-cols-[1fr_auto] items-center gap-3`}>
               <ProductCardSwatches
                 colors={product.colors}
                 locale={locale}

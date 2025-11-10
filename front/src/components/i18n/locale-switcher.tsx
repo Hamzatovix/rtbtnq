@@ -18,12 +18,15 @@ export function LocaleSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-xl md:rounded-2xl h-10 w-10 md:h-11 md:w-11 border border-mistGray/30 bg-transparent hover:bg-sageTint/5 transition-all duration-500 ease-out">
+        <button
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl md:rounded-2xl border border-mistGray/30 bg-white/80 px-4 py-2 text-sm font-light uppercase tracking-wide text-inkSoft hover:bg-white transition-all duration-500 ease-out shadow-sm"
+        >
           <Globe className="h-4 w-4 md:h-5 md:w-5" />
+          <span suppressHydrationWarning>{locale.toUpperCase()}</span>
           <span className="sr-only">Switch language</span>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
+      <DropdownMenuContent side="top" align="center" sideOffset={8} className="w-40">
         {Object.values(localeConfigs).map((config) => (
           <DropdownMenuItem
             key={config.locale}

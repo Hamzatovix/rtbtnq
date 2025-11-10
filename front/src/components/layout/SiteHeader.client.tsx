@@ -40,14 +40,14 @@ export default function SiteHeader() {
               href="/catalog"
               className="text-whisper hover:text-sageTint transition-colors font-light text-base tracking-wide relative group"
             >
-              {t('header.collection')}
+              <span suppressHydrationWarning>{t('header.collection')}</span>
               <span className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-sageTint to-transparent group-hover:w-full transition-all duration-500 ease-out" />
             </Link>
             <Link
               href="/about"
               className="text-whisper hover:text-sageTint transition-colors font-light text-base tracking-wide relative group"
             >
-              {t('header.about')}
+              <span suppressHydrationWarning>{t('header.about')}</span>
               <span className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-sageTint to-transparent group-hover:w-full transition-all duration-500 ease-out" />
             </Link>
           </nav>
@@ -57,12 +57,12 @@ export default function SiteHeader() {
             {(() => {
               const favCount = mounted ? favorites.length : 0
               return (
-          <Button 
+          <Button
             variant="ghost" 
               size="icon" 
             onClick={toggleFavorites}
               className="relative hover:bg-sageTint/5 transition-all duration-500 ease-out rounded-xl md:rounded-2xl h-10 w-10 md:h-11 md:w-11"
-                aria-label={`Favorites (${favCount} items)`}
+                aria-label={`Favorites ${favCount} items`}
           >
                 <Heart className="h-4 w-4 md:h-5 md:w-5" />
                 {favCount > 0 && (
@@ -76,12 +76,12 @@ export default function SiteHeader() {
             {(() => {
               const cartCount = mounted ? getTotalItems() : 0
               return (
-              <Button 
+              <Button
             variant="ghost" 
               size="icon" 
             onClick={toggleCart}
               className="relative hover:bg-sageTint/5 transition-all duration-500 ease-out rounded-xl md:rounded-2xl h-10 w-10 md:h-11 md:w-11"
-                aria-label={`Shopping cart (${cartCount} items)`}
+                aria-label={`Shopping cart ${cartCount} items`}
           >
                 <ShoppingBag className="h-4 w-4 md:h-5 md:w-5" />
                 {cartCount > 0 && (
@@ -117,76 +117,75 @@ export default function SiteHeader() {
 
       {/* Mobile Drawer */}
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title="меню" id="mobile-drawer">
-        {/* Navigation Links */}
-        <nav className="space-y-2">
-          <Link
-            href="/catalog"
-            onClick={() => setDrawerOpen(false)}
-            className="block px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
-          >
-            {t('header.collection')}
-          </Link>
-          <Link
-            href="/about"
-            onClick={() => setDrawerOpen(false)}
-            className="block px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
-          >
-            {t('header.about')}
-          </Link>
-        </nav>
+        <div className="flex flex-1 flex-col gap-4">
+          {/* Navigation Links */}
+          <nav className="ml-auto flex w-full max-w-[320px] flex-col gap-2 rounded-3xl border border-mistGray/25 bg-sageTint/5 p-4 shadow-breathing">
+            <Link
+              href="/catalog"
+              onClick={() => setDrawerOpen(false)}
+              className="group relative block rounded-2xl px-5 py-3 text-right text-base font-light text-inkSoft transition-[transform,background-color,color] duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98 hover:bg-white hover:text-sageTint"
+            >
+              <span suppressHydrationWarning>{t('header.collection')}</span>
+              <span className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent group-hover:border-sageTint/40 transition-colors duration-300 ease-brand" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/about"
+              onClick={() => setDrawerOpen(false)}
+              className="group relative block rounded-2xl px-5 py-3 text-right text-base font-light text-inkSoft transition-[transform,background-color,color] duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98 hover:bg-white hover:text-sageTint"
+            >
+              <span suppressHydrationWarning>{t('header.about')}</span>
+              <span className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent group-hover:border-sageTint/40 transition-colors duration-300 ease-brand" aria-hidden="true" />
+            </Link>
+          </nav>
 
-        {/* Divider */}
-        <div className="my-4 border-t border-mistGray/20" />
+          {/* Divider */}
+          <div className="mx-auto w-full max-w-[320px] border-t border-mistGray/20" />
 
-        {/* Action Buttons */}
-        <div className="space-y-2">
-          {/* Cart */}
-          <button
-            type="button"
-            onClick={() => {
-              toggleCart()
-              setDrawerOpen(false)
-            }}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
-            aria-label={`Shopping cart (${mounted ? getTotalItems() : 0} items)`}
-          >
-            <div className="flex items-center gap-3">
+          {/* Action Buttons */}
+          <div className="ml-auto w-full max-w-[320px] space-y-2">
+            <button
+              type="button"
+              onClick={() => {
+                toggleCart()
+                setDrawerOpen(false)
+              }}
+              className="flex w-full items-center justify-end gap-3 rounded-full px-4 py-2.5 text-right text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
+              aria-label={`Shopping cart ${mounted ? getTotalItems() : 0} items`}
+            >
+              {mounted && getTotalItems() > 0 && (
+                <span className="inline-flex h-6 min-w-[24px] items-center justify-center rounded-full bg-sageTint px-2 text-xs font-light text-white">
+                  {getTotalItems()}
+                </span>
+              )}
               <ShoppingBag className="h-5 w-5" />
-              <span>{t('header.cart')}</span>
-            </div>
-            {mounted && getTotalItems() > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-sageTint text-xs text-white font-light">
-                {getTotalItems()}
-              </span>
-            )}
-          </button>
+              <span className="sr-only">{t('header.cart')}</span>
+            </button>
 
-          {/* Favorites */}
-          <button
-            type="button"
-            onClick={() => {
-              toggleFavorites()
-              setDrawerOpen(false)
-            }}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-full text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
-            aria-label={`Favorites (${mounted ? favorites.length : 0} items)`}
-          >
-            <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                toggleFavorites()
+                setDrawerOpen(false)
+              }}
+              className="flex w-full items-center justify-end gap-3 rounded-full px-4 py-2.5 text-right text-base font-light text-inkSoft hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
+              aria-label={`Favorites ${mounted ? favorites.length : 0} items`}
+            >
+              {mounted && favorites.length > 0 && (
+                <span className="inline-flex h-6 min-w-[24px] items-center justify-center rounded-full bg-sageTint px-2 text-xs font-light text-white">
+                  {favorites.length}
+                </span>
+              )}
               <Heart className="h-5 w-5" />
-              <span>{t('header.favorites')}</span>
-            </div>
-            {mounted && favorites.length > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-sageTint text-xs text-white font-light">
-                {favorites.length}
-              </span>
-            )}
-          </button>
+              <span className="sr-only">{t('header.favorites')}</span>
+            </button>
+          </div>
         </div>
 
         {/* Locale switcher in mobile drawer (last) */}
-        <div className="my-4 border-t border-mistGray/20" />
-        <div className="pt-2">
-          <LocaleSwitcher />
+        <div className="mt-auto w-full border-t border-mistGray/20 pt-1.5 pb-1.5">
+          <div className="flex w-full items-center justify-center">
+            <LocaleSwitcher />
+          </div>
         </div>
       </MobileDrawer>
     </header>

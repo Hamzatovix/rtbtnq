@@ -345,9 +345,15 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
       </div>
 
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 relative">
+        <div className="text-center mb-16">
+          <h1 className="text-display-1 font-light text-ink-soft leading-[0.95] mb-6 tracking-normal">
+            {t('catalog.title')}
+          </h1>
+        </div>
+
         {isMounted && (
           <Sheet>
-            <div className="md:hidden sticky top-4 z-30">
+            <div className="md:hidden mb-10">
               <SheetTrigger asChild>
                 <Button variant="outline" size="lg" className="w-full justify-center gap-2 rounded-full shadow-sm">
                   <SlidersHorizontal className="h-4 w-4" />
@@ -369,12 +375,6 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
             </SheetContent>
           </Sheet>
         )}
-
-        <div className="text-center mb-16">
-          <h1 className="text-display-1 font-light text-ink-soft leading-[0.95] mb-6 tracking-normal">
-            {t('catalog.title')}
-          </h1>
-        </div>
 
         <div className="mb-12">
           {(selectedCategory || selectedColor) && (

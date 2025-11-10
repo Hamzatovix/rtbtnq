@@ -57,36 +57,46 @@ export default function AboutPage() {
       </section>
 
       {/* Short story */}
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-18">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           variants={fade}
-          className="mx-auto max-w-3xl container px-4 md:px-6 lg:px-8 leading-relaxed text-inkSoft/80"
+          className="container mx-auto px-6 md:px-12 lg:px-24 max-w-5xl"
           role="region"
           aria-labelledby="about-title"
         >
-          <h2 id="about-title" className="sr-only">{t('aboutPage.storyTitle')}</h2>
+          <h2
+            id="about-title"
+            className="text-title-1 font-light text-ink-soft leading-tight tracking-wide text-center md:text-left"
+          >
+            {t('aboutPage.storyTitle')}
+          </h2>
 
+          <div className="mt-6 space-y-6 text-base md:text-lg font-light leading-relaxed text-inkSoft/80 text-center md:text-left">
+            <p className="indent-6 md:indent-8">
+              {t('aboutPage.paragraph1')}
+            </p>
+            <p className="indent-6 md:indent-8">
+              {t('aboutPage.paragraph2')}
+            </p>
+          </div>
 
-          <p className="mb-4">
-            {t('aboutPage.paragraph1')}
-          </p>
-          <p>
-            {t('aboutPage.paragraph2')}
-          </p>
-
-          <div className="mt-10 flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm">
-            {[t('aboutPage.tagSustainability'), t('aboutPage.tagQuality'), t('aboutPage.tagTraditions'), t('aboutPage.tagSimplicity')].map((tag) => (
+          <div className="mt-10 flex flex-wrap justify-center md:justify-start gap-2.5 md:gap-3 text-xs md:text-sm">
+            {[t('aboutPage.tagQuality'), t('aboutPage.tagTraditions'), t('aboutPage.tagSimplicity')].map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-mistGray/30 px-2.5 md:px-3 py-1 text-inkSoft/70"
+                className="rounded-full border border-mistGray/30 px-3 md:px-3.5 py-1.5 text-inkSoft/70 tracking-wide uppercase"
               >
                 {tag}
               </span>
             ))}
           </div>
+
+          <p className="mt-8 text-xs md:text-sm font-light tracking-wide text-inkSoft/60 text-center md:text-left">
+            made in daymohk
+          </p>
         </motion.div>
       </section>
     </div>

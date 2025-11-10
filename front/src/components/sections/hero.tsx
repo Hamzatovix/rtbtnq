@@ -58,12 +58,15 @@ export function Hero() {
               asChild
             >
               <Link href="/catalog" aria-label={t('home.hero.cta') + ' rosebotanique'}>
-                {t('home.hero.cta')}
+                <span suppressHydrationWarning>{t('home.hero.cta')}</span>
                 <ArrowRight className="ml-3 h-4 w-4 transition-transform duration-250 ease-brand group-hover:translate-x-1" />
               </Link>
             </Button>
 
-            <span className="text-sm sm:text-body font-light tracking-wide leading-relaxed text-inkSoft/80 text-center max-w-[20rem]">
+            <span
+              className="text-sm sm:text-body font-light tracking-wide leading-relaxed text-inkSoft/80 text-center max-w-[20rem]"
+              suppressHydrationWarning
+            >
               {t('home.hero.tagline')}
             </span>
           </div>
@@ -72,7 +75,7 @@ export function Hero() {
 
       {/* Микро-бейджи — в самом низу секции */}
       <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 text-center px-6">
-        <div className="text-[13px] sm:text-xs text-ink-soft/75 leading-relaxed">
+        <div className="text-[13px] sm:text-xs text-ink-soft/75 leading-relaxed" suppressHydrationWarning>
           {t('home.hero.badges')}
         </div>
       </div>

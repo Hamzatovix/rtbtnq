@@ -166,7 +166,7 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: Mo
             </div>
 
             {/* Content */}
-            <div className="pt-8 space-y-2">{children}</div>
+            <div className="flex h-full flex-col gap-2 pt-6">{children}</div>
           </motion.div>
         </>
       )}

@@ -24,6 +24,8 @@ interface DropdownMenuTriggerProps {
 
 interface DropdownMenuContentProps {
   align?: 'start' | 'end' | 'center'
+  side?: 'top' | 'bottom'
+  sideOffset?: number
   children: React.ReactNode
   className?: string
 }
@@ -81,16 +83,27 @@ export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerPr
   )
 }
 
-export function DropdownMenuContent({ align = 'start', children, className = '' }: DropdownMenuContentProps) {
+export function DropdownMenuContent({
+  align = 'start',
+  side = 'bottom',
+  sideOffset = 8,
+  children,
+  className = '',
+}: DropdownMenuContentProps) {
   const { open } = React.useContext(DropdownMenuContext)
 
   if (!open) return null
 
+  const positionClass =
+    align === 'end' ? 'right-0' : align === 'center' ? 'left-1/2 -translate-x-1/2' : 'left-0'
+  const verticalClass = side === 'top' ? 'bottom-full' : 'top-full'
+  const offsetStyle =
+    side === 'top' ? { marginBottom: sideOffset } : { marginTop: sideOffset }
+
   return (
     <div
-      className={`absolute ${
-        align === 'end' ? 'right-0' : align === 'center' ? 'left-1/2 -translate-x-1/2' : 'left-0'
-      } top-full mt-2 bg-linenWhite border border-mistGray/20 rounded-2xl shadow-misty py-2 z-50 ${className}`}
+      className={`absolute ${positionClass} ${verticalClass} bg-linenWhite border border-mistGray/20 rounded-2xl shadow-misty py-2 z-50 ${className}`}
+      style={offsetStyle}
     >
       {children}
     </div>
