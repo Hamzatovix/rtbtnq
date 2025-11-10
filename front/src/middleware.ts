@@ -23,7 +23,9 @@ export async function middleware(request: NextRequest) {
   const isBackofficeRoute = pathname.startsWith('/backoffice')
   const isApiRoute = pathname.startsWith('/api')
   const isAuthRoute = pathname.startsWith('/api/auth')
-  const isPublicApiRoute = pathname.startsWith('/api/catalog')
+  const isPublicApiRoute =
+    request.method === 'GET' &&
+    (pathname.startsWith('/api/catalog') || pathname.startsWith('/api/products'))
 
   const isLoginPage = pathname === '/backoffice/login'
 
