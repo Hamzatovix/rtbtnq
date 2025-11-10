@@ -2,6 +2,9 @@ import { readFile, writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { nanoid } from 'nanoid'
 import { sendOrderNotification } from '@/lib/telegram'
+import { isSupabaseEnabled, supabaseDelete, supabaseSelect, supabaseUpsert } from '@/lib/supabase-admin'
+
+const SUPABASE_ORDERS_TABLE = process.env.SUPABASE_ORDERS_TABLE || 'orders'
 
 interface Order {
   id: string
@@ -56,6 +59,46 @@ async function ensureOrdersFile(): Promise<void> {
   }
 }
 
+async function loadOrdersFromSupabase(): Promise<Order[]> {
+  try {
+    const data = await supabaseSelect<Array<{ id: string; number?: string; order_status?: string; data?: Order; created_at?: string; updated_at?: string }>>(
+      `${SUPABASE_ORDERS_TABLE}?select=id,number,order_status,data,created_at,updated_at&order=created_at.desc`,
+    )
+
+    return (Array.isArray(data) ? data : []).map((row) => {
+      const payload = row.data ?? ({} as Order)
+      return {
+        ...payload,
+        id: payload.id ?? row.id,
+        number: payload.number ?? row.number ?? '',
+        orderStatus: payload.orderStatus ?? row.order_status ?? 'new',
+        createdAt: payload.createdAt ?? row.created_at ?? new Date().toISOString(),
+        updatedAt: payload.updatedAt ?? row.updated_at ?? new Date().toISOString(),
+      }
+    })
+  } catch (error) {
+    console.error('Supabase loadOrders error:', error)
+    return []
+  }
+}
+
+async function saveOrdersToSupabase(orders: Order[]): Promise<void> {
+  const rows = orders.map((order) => ({
+    id: order.id,
+    number: order.number,
+    order_status: order.orderStatus,
+    data: order,
+    created_at: order.createdAt ?? new Date().toISOString(),
+    updated_at: order.updatedAt ?? new Date().toISOString(),
+  }))
+
+  await supabaseDelete(SUPABASE_ORDERS_TABLE, 'id=not.is.null')
+
+  if (rows.length) {
+    await supabaseUpsert(SUPABASE_ORDERS_TABLE, rows)
+  }
+}
+
 // Кеш в памяти для оптимизации
 let ordersCache: Order[] = []
 let cacheTimestamp = 0
@@ -64,30 +107,44 @@ const CACHE_TTL = 5000 // 5 секунд
 
 export async function loadOrders(): Promise<Order[]> {
   const now = Date.now()
-  
-  // Возвращаем из кеша если не истек
-  if (cacheInitialized && (now - cacheTimestamp) < CACHE_TTL) {
+
+  if (cacheInitialized && now - cacheTimestamp < CACHE_TTL) {
     return ordersCache
   }
-  
-  // Загружаем из файла
-  await ensureOrdersFile()
-  const filePath = getOrdersPath()
-  try {
-    const content = await readFile(filePath, 'utf-8')
-    ordersCache = JSON.parse(content)
-    cacheTimestamp = now
-    cacheInitialized = true
-    return ordersCache
-  } catch {
-    return []
+
+  let orders: Order[]
+
+  if (isSupabaseEnabled()) {
+    orders = await loadOrdersFromSupabase()
+  } else {
+    await ensureOrdersFile()
+    const filePath = getOrdersPath()
+    try {
+      const content = await readFile(filePath, 'utf-8')
+      orders = JSON.parse(content)
+    } catch {
+      orders = []
+    }
   }
+
+  ordersCache = orders
+  cacheTimestamp = now
+  cacheInitialized = true
+
+  return ordersCache
 }
 
 export async function saveOrders(orders: Order[]): Promise<void> {
+  if (isSupabaseEnabled()) {
+    await saveOrdersToSupabase(orders)
+    ordersCache = orders
+    cacheTimestamp = Date.now()
+    cacheInitialized = true
+    return
+  }
+
   const filePath = getOrdersPath()
   await writeFile(filePath, JSON.stringify(orders, null, 2), 'utf-8')
-  // Обновляем кеш после записи
   ordersCache = orders
   cacheTimestamp = Date.now()
   cacheInitialized = true
