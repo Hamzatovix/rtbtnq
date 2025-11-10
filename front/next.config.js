@@ -2,13 +2,26 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob:;
+  img-src 'self' data: blob: https://*.public.blob.vercel-storage.com;
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self';
+  connect-src 'self' https://*.supabase.co;
   media-src 'self';
   object-src 'none';
   frame-ancestors 'none';
 `.replace(/\s{2,}/g, ' ').trim()
+
+// ...
+images: {
+  formats: ['image/avif', 'image/webp'],
+  remotePatterns: [
+    {
+      protocol: 'https',
+      hostname: '*.public.blob.vercel-storage.com',
+      pathname: '/products/**',
+    },
+  ],
+  // остальные опции как были
+}
 
 const securityHeaders = [
   {
