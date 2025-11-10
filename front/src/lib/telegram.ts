@@ -298,8 +298,25 @@ export async function sendOrderNotification(
   // Форматируем сообщение
   const message = formatOrderNotification(data)
 
-  // Формируем URL для кнопки
-  const baseUrl = data.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  // Определяем базовый URL: используем data.baseUrl, валидный NEXT_PUBLIC_BASE_URL или VERCEL_URL
+  const resolveBaseUrl = () => {
+    if (data.baseUrl) return data.baseUrl
+
+    const envBaseUrl = process.env.NEXT_PUBLIC_BASE_URL
+    const isEnvBaseUrlValid =
+      envBaseUrl && !envBaseUrl.includes('localhost') && !envBaseUrl.includes('127.0.0.1')
+    if (isEnvBaseUrlValid) return envBaseUrl
+
+    const vercelUrl = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL
+    if (vercelUrl) {
+      const normalized = vercelUrl.startsWith('http') ? vercelUrl : `https://${vercelUrl}`
+      return normalized
+    }
+
+    return 'http://localhost:3000'
+  }
+
+  const baseUrl = resolveBaseUrl()
   const orderUrl = `${baseUrl}/backoffice/orders/${data.orderId}`
 
   // Проверяем, можно ли использовать URL для кнопки
