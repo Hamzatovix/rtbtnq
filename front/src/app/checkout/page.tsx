@@ -132,6 +132,19 @@ export default function CheckoutPage() {
       }
       
       const order = await response.json()
+      try {
+        if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+          navigator.vibrate?.([20, 30, 20])
+        }
+        navigator.serviceWorker?.ready.then(reg =>
+          reg.active?.postMessage({
+            type: 'rb-haptic',
+            pattern: [20, 30, 20],
+          }),
+        )
+      } catch (err) {
+        console.warn('Vibration not supported:', err)
+      }
       clearCart()
       router.push(`/order/success?number=${order.number || order.id}`)
     } catch (error: any) {
