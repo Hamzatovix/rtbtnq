@@ -1,42 +1,74 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { jwtVerify } from 'jose'
 
-export function middleware(request: NextRequest) {
-  // Проверяем, является ли запрос к backoffice
-  if (request.nextUrl.pathname.startsWith('/backoffice')) {
-    // Пропускаем страницу логина и API маршруты авторизации
-    if (
-      request.nextUrl.pathname === '/backoffice/login' ||
-      request.nextUrl.pathname.startsWith('/api/auth/')
-    ) {
-      return NextResponse.next()
-    }
+const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-key'
+const JWT_SECRET_KEY = new TextEncoder().encode(JWT_SECRET)
 
-    // Проверяем наличие и валидность токена в cookies или заголовке Authorization
-    let token = request.cookies.get('auth-token')?.value
-    
-    // Если токена нет в cookie, проверяем заголовок Authorization
-    if (!token) {
-      const authHeader = request.headers.get('authorization')
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        token = authHeader.substring(7)
-      }
-    }
-
-    // Логирование для отладки (только в development)
+async function verifyToken(token: string) {
+  try {
+    await jwtVerify(token, JWT_SECRET_KEY)
+    return true
+  } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Middleware]', request.nextUrl.pathname, 'Token exists:', !!token)
+      console.warn('[middleware] Invalid token:', error)
+    }
+    return false
+  }
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  const isBackofficeRoute = pathname.startsWith('/backoffice')
+  const isApiRoute = pathname.startsWith('/api')
+  const isAuthRoute = pathname.startsWith('/api/auth')
+  const isPublicApiRoute = pathname.startsWith('/api/catalog')
+
+  const isLoginPage = pathname === '/backoffice/login'
+
+  if (isBackofficeRoute && isLoginPage) {
+    return NextResponse.next()
+  }
+
+  if (!isBackofficeRoute && (!isApiRoute || isAuthRoute || isPublicApiRoute)) {
+    return NextResponse.next()
+  }
+
+  // Разрешаем технические запросы
+  if (isApiRoute && (request.method === 'OPTIONS' || request.method === 'HEAD')) {
+    return NextResponse.next()
+  }
+
+  const token = request.cookies.get('auth-token')?.value
+
+  if (!token) {
+    if (isApiRoute) {
+      return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
     }
 
-    if (!token) {
-      // Перенаправляем на страницу логина, если токена нет
+    if (isBackofficeRoute) {
       const loginUrl = new URL('/backoffice/login', request.url)
-      loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
+      loginUrl.searchParams.set('redirect', pathname)
       return NextResponse.redirect(loginUrl)
     }
+    if (isApiRoute) {
+      return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
+    }
+    return NextResponse.next()
+  }
 
-    // На уровне middleware в dev-режиме не выполняем криптопроверку JWT,
-    // т.к. edge-runtime может не поддерживать jsonwebtoken. Доверяем наличию cookie.
+  const isValid = await verifyToken(token)
+
+  if (!isValid) {
+    if (isBackofficeRoute) {
+      const loginUrl = new URL('/backoffice/login', request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+    if (isApiRoute) {
+      return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
+    }
     return NextResponse.next()
   }
 
@@ -46,6 +78,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/backoffice/:path*',
+    '/api/:path*',
   ],
 }
 

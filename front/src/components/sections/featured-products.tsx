@@ -2,23 +2,27 @@
 
 import { ProductCard } from '@/components/product/product-card'
 import { Button } from '@/components/ui/button'
-import { Lead } from '@/components/ui/typography'
-import { mockProducts, mockCategories, colorMap } from '@/lib/mock-data'
+import type { CatalogProduct } from '@/types/catalog'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { useTranslations } from '@/hooks/useTranslations'
+import { useClientLocale } from '@/hooks/useClientLocale'
 
-// Динамический импорт для тяжелых компонентов
-const DynamicProductCard = dynamic(
-  () => import('@/components/product/product-card').then(mod => ({ default: mod.ProductCard })),
-  { loading: () => <div className="animate-pulse bg-gray-200 rounded-xl aspect-square" /> }
-)
+interface FeaturedProductsProps {
+  products: CatalogProduct[]
+}
 
-export function FeaturedProducts() {
+export function FeaturedProducts({ products }: FeaturedProductsProps) {
   const t = useTranslations()
-  const featuredProducts = mockProducts.slice(0, 6) // Show all 6 products
-  const locale = typeof window !== 'undefined' ? (localStorage.getItem('locale-storage') ? JSON.parse(localStorage.getItem('locale-storage') as string).state?.locale : 'ru') : 'ru'
+  const locale = useClientLocale()
+
+  const hasProducts = products.length > 0
+  const emptyMessageRaw = t('home.featuredProducts.empty')
+  const emptyMessage = emptyMessageRaw && emptyMessageRaw !== 'home.featuredProducts.empty'
+    ? emptyMessageRaw
+    : (locale === 'ru'
+      ? 'Скоро добавим новые изделия.'
+      : 'New pieces are coming soon.')
 
   return (
     <section 
@@ -39,41 +43,20 @@ export function FeaturedProducts() {
           >
             {t('home.featuredProducts.title')}
           </h2>
-          <Lead className="max-w-xl mx-auto">
-            {t('home.featuredProducts.lead')}
-          </Lead>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-12">
-          {featuredProducts.map((product) => {
-            const title = locale === 'ru' ? product.title_ru : product.title_en
-            const description = locale === 'ru' ? product.description_ru : product.description_en
-            const cat = mockCategories.find(c => c.id === product.category_id)
-            const categoryName = cat ? (locale === 'ru' ? cat.name_ru : cat.name_en) : ''
-            const item = {
-              id: product.id,
-              slug: product.slug,
-              name: title,
-              category: {
-                id: product.category_id,
-                name: categoryName,
-                slug: product.category_id
-              },
-              thumbnail: product.image,
-              price_range: product.price,
-              colors: product.colors.map((colorName: string, idx: number) => ({
-                id: `${product.id}-${idx}`,
-                name: colorName,
-                hex_code: colorMap[colorName.toLowerCase()] || '#9CA3AF'
-              })),
-              is_featured: product.id <= 3
-            }
-            return (
-              <div key={item.id}>
-                <DynamicProductCard product={item as any} density="compact" />
+          {hasProducts ? (
+            products.slice(0, 6).map((product) => (
+              <div key={product.id}>
+                <ProductCard product={product} density="compact" />
               </div>
-            )
-          })}
+            ))
+          ) : (
+            <p className="col-span-full text-center text-ink-soft/70 text-base font-light tracking-wide">
+              {emptyMessage}
+            </p>
+          )}
         </div>
 
         <div className="text-center">

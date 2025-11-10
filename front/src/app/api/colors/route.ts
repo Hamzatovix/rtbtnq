@@ -1,28 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { loadColors, saveColors } from '@/server/colors/colors-json.service'
+import { getCatalogData } from '@/server/catalog/catalog.service'
 
 // Цвета меняются редко - кешируем на 1 час
 export const revalidate = 3600
 
 export async function GET(req: NextRequest) {
   try {
-    // Используем сервис с кешем в памяти
-    const colors = await loadColors()
-    
-    // Форматируем ID как строки и нормализуем hex/hex_code
-    const formatted = Array.isArray(colors)
-      ? colors.map((color: any) => {
-          // Убеждаемся, что есть и hex, и hex_code для совместимости
-          const hex = color.hex || color.hex_code || '#000000'
-          return {
-            ...color,
-            id: String(color.id),
-            hex: hex,
-            hex_code: hex,
-          }
-        })
-      : []
-    
+    const catalog = await getCatalogData({ includeRaw: true })
+    const rawColors = Array.isArray(catalog.rawColors) ? catalog.rawColors : []
+
+    const formatted = rawColors.map((color: any) => {
+      const hex = color.hex || color.hex_code || '#000000'
+      return {
+        ...color,
+        id: String(color.id),
+        hex,
+        hex_code: hex,
+      }
+    })
+
     // Удаляем дубликаты по slug
     const uniqueColors = formatted.reduce((acc: any[], color: any) => {
       const existing = acc.find(c => c.slug === color.slug)

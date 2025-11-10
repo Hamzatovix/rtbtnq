@@ -26,31 +26,44 @@ export const FulfillmentStatus = {
   RETURNED: 'RETURNED',
 } as const
 
-const transitions = {
-  order: new Map([
-    [OrderStatus.NEW, new Set([OrderStatus.CONFIRMED, OrderStatus.CANCELED])],
-    [OrderStatus.CONFIRMED, new Set([OrderStatus.IN_PROGRESS, OrderStatus.CANCELED])],
-    [OrderStatus.IN_PROGRESS, new Set([OrderStatus.COMPLETED, OrderStatus.CANCELED])],
-    [OrderStatus.COMPLETED, new Set([])],
-    [OrderStatus.CANCELED, new Set([])],
-  ]),
-  payment: new Map([
-    [PaymentStatus.UNPAID, new Set([PaymentStatus.PENDING, PaymentStatus.PAID])],
-    [PaymentStatus.PENDING, new Set([PaymentStatus.PAID, PaymentStatus.UNPAID])],
-    [PaymentStatus.PAID, new Set([PaymentStatus.PARTIALLY_REFUNDED, PaymentStatus.REFUNDED])],
-    [PaymentStatus.PARTIALLY_REFUNDED, new Set([PaymentStatus.REFUNDED])],
-    [PaymentStatus.REFUNDED, new Set([])],
-  ]),
-  fulfillment: new Map([
-    [FulfillmentStatus.UNFULFILLED, new Set([FulfillmentStatus.PICKING])],
-    [FulfillmentStatus.PICKING, new Set([FulfillmentStatus.PACKED])],
-    [FulfillmentStatus.PACKED, new Set([FulfillmentStatus.SHIPPED])],
-    [FulfillmentStatus.SHIPPED, new Set([FulfillmentStatus.DELIVERED])],
-    [FulfillmentStatus.DELIVERED, new Set([FulfillmentStatus.PARTIALLY_RETURNED, FulfillmentStatus.RETURNED])],
-    [FulfillmentStatus.PARTIALLY_RETURNED, new Set([FulfillmentStatus.RETURNED])],
-    [FulfillmentStatus.RETURNED, new Set([])],
-  ]),
-} as const
+type OrderStatusValue = (typeof OrderStatus)[keyof typeof OrderStatus]
+type PaymentStatusValue = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+type FulfillmentStatusValue = (typeof FulfillmentStatus)[keyof typeof FulfillmentStatus]
+
+const orderTransitions: Array<[OrderStatusValue, Set<OrderStatusValue>]> = [
+  [OrderStatus.NEW, new Set<OrderStatusValue>([OrderStatus.CONFIRMED, OrderStatus.CANCELED])],
+  [OrderStatus.CONFIRMED, new Set<OrderStatusValue>([OrderStatus.IN_PROGRESS, OrderStatus.CANCELED])],
+  [OrderStatus.IN_PROGRESS, new Set<OrderStatusValue>([OrderStatus.COMPLETED, OrderStatus.CANCELED])],
+  [OrderStatus.COMPLETED, new Set<OrderStatusValue>()],
+  [OrderStatus.CANCELED, new Set<OrderStatusValue>()],
+]
+
+const paymentTransitions: Array<[PaymentStatusValue, Set<PaymentStatusValue>]> = [
+  [PaymentStatus.UNPAID, new Set<PaymentStatusValue>([PaymentStatus.PENDING, PaymentStatus.PAID])],
+  [PaymentStatus.PENDING, new Set<PaymentStatusValue>([PaymentStatus.PAID, PaymentStatus.UNPAID])],
+  [PaymentStatus.PAID, new Set<PaymentStatusValue>([PaymentStatus.PARTIALLY_REFUNDED, PaymentStatus.REFUNDED])],
+  [PaymentStatus.PARTIALLY_REFUNDED, new Set<PaymentStatusValue>([PaymentStatus.REFUNDED])],
+  [PaymentStatus.REFUNDED, new Set<PaymentStatusValue>()],
+]
+
+const fulfillmentTransitions: Array<[FulfillmentStatusValue, Set<FulfillmentStatusValue>]> = [
+  [FulfillmentStatus.UNFULFILLED, new Set<FulfillmentStatusValue>([FulfillmentStatus.PICKING])],
+  [FulfillmentStatus.PICKING, new Set<FulfillmentStatusValue>([FulfillmentStatus.PACKED])],
+  [FulfillmentStatus.PACKED, new Set<FulfillmentStatusValue>([FulfillmentStatus.SHIPPED])],
+  [FulfillmentStatus.SHIPPED, new Set<FulfillmentStatusValue>([FulfillmentStatus.DELIVERED])],
+  [
+    FulfillmentStatus.DELIVERED,
+    new Set<FulfillmentStatusValue>([FulfillmentStatus.PARTIALLY_RETURNED, FulfillmentStatus.RETURNED]),
+  ],
+  [FulfillmentStatus.PARTIALLY_RETURNED, new Set<FulfillmentStatusValue>([FulfillmentStatus.RETURNED])],
+  [FulfillmentStatus.RETURNED, new Set<FulfillmentStatusValue>()],
+]
+
+const transitions: Record<Kind, Map<string, Set<string>>> = {
+  order: new Map(orderTransitions),
+  payment: new Map(paymentTransitions),
+  fulfillment: new Map(fulfillmentTransitions),
+}
 
 export function assertTransition(current: string, next: string, kind: Kind) {
   const map = transitions[kind] as unknown as Map<string, Set<string>>

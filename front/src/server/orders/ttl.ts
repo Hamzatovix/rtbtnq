@@ -2,6 +2,7 @@ import { prisma } from '@/server/prisma'
 import { OrderStatus, PaymentStatus, FulfillmentStatus } from './status'
 import { release } from './inventory'
 import { addOrderEvent } from './events'
+import type { Prisma } from '@prisma/client'
 
 export async function expireReservations(now = new Date()) {
   const expired = await prisma.order.findMany({
@@ -12,7 +13,7 @@ export async function expireReservations(now = new Date()) {
     select: { id: true },
   })
   for (const o of expired) {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.order.update({
         where: { id: o.id },
         data: {

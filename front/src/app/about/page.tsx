@@ -26,7 +26,8 @@ export default function AboutPage() {
           src="/images/about-m.jpg.png"
           alt={t('aboutPage.heroAlt') || 'atelier'}
           fill
-          priority
+          priority={false}
+          loading="lazy"
           sizes="100vw"
           className="object-cover"
         />

@@ -1,13 +1,22 @@
 import type { Metadata } from 'next'
 import { Inter, Cormorant_Garamond } from 'next/font/google'
 import './globals.css'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 import { Providers } from '@/components/providers'
 import SiteHeader from '@/components/layout/SiteHeader.client'
 import { Footer } from '@/components/layout/footer'
 import { HideOnBackoffice } from '@/components/layout/HideOnBackoffice'
-import { CartDrawer } from '@/components/cart/cart-drawer'
-import { FavoritesDrawer } from '@/components/favorites/favorites-drawer'
+const CartDrawer = dynamic(
+  () => import('@/components/cart/cart-drawer'),
+  { ssr: false, loading: () => null }
+)
+const FavoritesDrawer = dynamic(
+  () => import('@/components/favorites/favorites-drawer'),
+  { ssr: false, loading: () => null }
+)
 import ErrorBoundary from '@/components/ui/error-boundary'
+import { ScrollToTop } from '@/components/layout/scroll-to-top'
 
 const inter = Inter({ 
   subsets: ['latin', 'cyrillic'],
@@ -43,6 +52,7 @@ export default function RootLayout({
             </HideOnBackoffice>
             <CartDrawer />
             <FavoritesDrawer />
+            <ScrollToTop />
           </Providers>
         </ErrorBoundary>
       </body>

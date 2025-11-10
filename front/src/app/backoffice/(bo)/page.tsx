@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { Product, Category, Color } from '@/lib/api/mocks'
+import type { BackofficeProduct as Product, BackofficeCategory as Category, BackofficeColor as Color } from '@/types/backoffice'
 
 type OrdersList = { results: Array<{ id: string; number: string; total: number; createdAt: string; customerName?: string | null; customerEmail?: string | null; paymentStatus: string; fulfillmentStatus: string; orderStatus: string }>; meta: any }
 

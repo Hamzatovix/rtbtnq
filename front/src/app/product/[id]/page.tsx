@@ -10,7 +10,7 @@ import { ProductCard } from '@/components/product/product-card'
 import { useCartStore } from '@/store/cart-store'
 import { useFavoritesStore } from '@/store/favorites-store'
 import { formatPriceWithLocale } from '@/lib/utils'
-import { useLocaleStore } from '@/store/locale-store'
+import { useClientLocale } from '@/hooks/useClientLocale'
 import { useTranslations } from '@/hooks/useTranslations'
 import Link from 'next/link'
 
@@ -43,7 +43,7 @@ type Color = {
 }
 
 export default function ProductPage() {
-  const { locale } = useLocaleStore()
+  const locale = useClientLocale()
   const t = useTranslations()
   const params = useParams()
   const productSlug = params.id as string
@@ -386,19 +386,19 @@ export default function ProductPage() {
                 .filter(Boolean) as Array<{ id: string; name: string; hex_code: string }>
 
               const relatedItem = {
-                id: Number(relatedProduct.id),
+                id: String(relatedProduct.id),
                 slug: relatedProduct.slug,
                 name: relatedProduct.name,
                 category: {
-                  id: relatedProduct.categoryId || '',
-                  name: relatedProduct.categoryId || '',
-                  slug: relatedProduct.categoryId || ''
+                  id: String(relatedProduct.categoryId || ''),
+                  name: String(relatedProduct.categoryId || ''),
+                  slug: String(relatedProduct.categoryId || ''),
                 },
                 thumbnail: relatedThumbnail,
-                price_range: relatedPrice,
+                price: relatedPrice,
                 colors: relatedColors,
-                colorImages: {},
-                is_featured: relatedProduct.is_featured || false
+                colorImages: undefined,
+                is_featured: Boolean(relatedProduct.is_featured),
               }
               return <ProductCard key={relatedItem.id} product={relatedItem as any} />
             })}

@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { nanoid } from 'nanoid'
-import { mockProducts } from '@/lib/mock-data'
+import { loadProducts } from '@/server/products/products-json.service'
 
 const CartItemSchema = z.object({
   id: z.number(),
@@ -26,9 +26,31 @@ const CheckoutSchema = z.object({
 })
 
 function priceCentsFromLabel(label: string): number {
-  // ожидаем "$4,200" → 420000
   const digits = label.replace(/[^\d]/g, '')
-  return Number(digits) * 100 // если ценник без копеек
+  return Number(digits) * 100
+}
+
+function pickUnitPriceCents(product: any): number {
+  const variants = Array.isArray(product?.variants) ? product.variants : []
+  const preferredVariant = variants.find((v: any) => v?.isDefault) ?? variants[0]
+
+  if (preferredVariant?.priceCents != null) {
+    return Number(preferredVariant.priceCents)
+  }
+
+  if (preferredVariant?.price != null) {
+    return Math.round(Number(preferredVariant.price) * 100)
+  }
+
+  if (typeof product?.price === 'number') {
+    return Math.round(Number(product.price) * 100)
+  }
+
+  if (typeof product?.price === 'string') {
+    return priceCentsFromLabel(product.price)
+  }
+
+  return 0
 }
 
 export async function placeOrder(formData: FormData) {
@@ -41,18 +63,23 @@ export async function placeOrder(formData: FormData) {
     const cart = z.array(CartItemSchema).parse(cartParsed)
 
     // Пересчитываем на сервере (анти-манипуляция)
-    const productsMap = new Map(mockProducts.map(p => [p.id, p]))
+    const products = await loadProducts()
+    const productsMap = new Map(products.map((p: any) => [String(p.id), p]))
     let items: Array<{
       id: number, title: string, qty: number, unitPriceCents: number, subtotalCents: number
     }> = []
     let subtotalCents = 0
 
     for (const ci of cart) {
-      const p = productsMap.get(ci.id)
+      const p = productsMap.get(String(ci.id))
       if (!p) continue
-      const unitPriceCents = priceCentsFromLabel(String(p.price))
+      const unitPriceCents = pickUnitPriceCents(p)
       const subtotal = unitPriceCents * ci.qty
-      items.push({ id: p.id, title: p.title, qty: ci.qty, unitPriceCents, subtotalCents: subtotal })
+      const productIdRaw = p.id ?? ci.id
+      const productId = Number(productIdRaw)
+      const safeProductId = Number.isFinite(productId) ? productId : Number(ci.id)
+      const title = p.name || p.title || `Product ${safeProductId || ''}`
+      items.push({ id: safeProductId, title, qty: ci.qty, unitPriceCents, subtotalCents: subtotal })
       subtotalCents += subtotal
     }
 

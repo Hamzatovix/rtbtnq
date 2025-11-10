@@ -6,14 +6,15 @@ import { useFavoritesStore } from '@/store/favorites-store'
 import { useCartStore } from '@/store/cart-store'
 import { formatPriceWithLocale } from '@/lib/utils'
 import { Product } from '@/types'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from '@/hooks/useTranslations'
-import { useLocaleStore } from '@/store/locale-store'
+import { useClientLocale } from '@/hooks/useClientLocale'
+import { OptimizedImage } from '@/components/ui/optimized-image'
+import { getOptimizedAsset } from '@/lib/optimized-assets'
 
 export function FavoritesDrawer() {
   const t = useTranslations()
-  const { locale } = useLocaleStore()
+  const locale = useClientLocale()
   const { 
     items: favorites, 
     isOpen, 
@@ -68,17 +69,36 @@ export function FavoritesDrawer() {
                     {favorites.map((item) => (
                       <div key={item.id} className="flex space-x-4 p-4 border rounded-xl">
                         <div className="relative w-16 h-16 flex-shrink-0">
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            fill
-                            sizes="(max-width: 768px) 80px, 100px"
-                            className="object-cover rounded-lg"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = '/placeholder/about_main_placeholder.webp'
-                            }}
-                          />
+                          {(() => {
+                            if (item.image.startsWith('http')) {
+                              return (
+                                <OptimizedImage
+                                  src={item.image}
+                                  fallbackSrc={item.image}
+                                  placeholder="empty"
+                                  alt={item.title}
+                                  fill
+                                  sizes="(max-width: 768px) 80px, 100px"
+                                  className="object-cover rounded-lg"
+                                />
+                              )
+                            }
+
+                            const normalizedPath = item.image.startsWith('/') ? item.image : `/${item.image}`
+                            const asset = getOptimizedAsset(normalizedPath, 360)
+                            return (
+                              <OptimizedImage
+                                src={asset.src}
+                                fallbackSrc={asset.fallback}
+                                placeholder={asset.placeholder ? 'blur' : 'empty'}
+                                blurDataURL={asset.placeholder}
+                                alt={item.title}
+                                fill
+                                sizes="(max-width: 768px) 80px, 100px"
+                                className="object-cover rounded-lg"
+                              />
+                            )
+                          })()}
                         </div>
                         
                         <div className="flex-1 min-w-0">
@@ -134,4 +154,6 @@ export function FavoritesDrawer() {
     </>
   )
 }
+
+export default FavoritesDrawer
 

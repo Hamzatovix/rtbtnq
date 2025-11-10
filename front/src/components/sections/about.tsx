@@ -62,8 +62,8 @@ export function About() {
                 src="/images/about-one.png"
                 alt={t('home.about.alt.process')}
                 fill
-                priority
-                loading="eager"
+                priority={false}
+                loading="lazy"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out group-hover:scale-[1.03]"
                 onError={(e) => {

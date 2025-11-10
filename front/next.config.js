@@ -1,3 +1,69 @@
+const ContentSecurityPolicy = `
+  default-src 'self';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  img-src 'self' data: blob:;
+  font-src 'self' https://fonts.gstatic.com;
+  connect-src 'self';
+  media-src 'self';
+  object-src 'none';
+  frame-ancestors 'none';
+`.replace(/\s{2,}/g, ' ').trim()
+
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: ContentSecurityPolicy,
+  },
+  {
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin',
+  },
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+]
+
+const staticAssetHeaders = [
+  {
+    source: '/_next/static/:path*',
+    headers: [
+      { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+    ],
+  },
+  {
+    source: '/images/:path*',
+    headers: [
+      { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+    ],
+  },
+  {
+    source: '/collection/:path*',
+    headers: [
+      { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+    ],
+  },
+  {
+    source: '/uploads/:path*',
+    headers: [
+      { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+    ],
+  },
+  {
+    source: '/placeholder/:path*',
+    headers: [
+      { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+    ],
+  },
+  {
+    source: '/textures/:path*',
+    headers: [
+      { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+    ],
+  },
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Оптимизация изображений
@@ -29,9 +95,14 @@ const nextConfig = {
     return config
   },
   
-  // Экспериментальные оптимизации
-  experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+      ...staticAssetHeaders,
+    ]
   },
 };
 

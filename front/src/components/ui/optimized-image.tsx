@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 interface OptimizedImageProps {
   src: string
@@ -14,6 +14,8 @@ interface OptimizedImageProps {
   priority?: boolean
   placeholder?: 'blur' | 'empty'
   blurDataURL?: string
+  loading?: 'lazy' | 'eager'
+  fallbackSrc?: string
   onLoad?: () => void
   onError?: () => void
 }
@@ -29,11 +31,20 @@ export function OptimizedImage({
   priority = false,
   placeholder = 'empty',
   blurDataURL,
+  loading = 'lazy',
+  fallbackSrc,
   onLoad,
   onError,
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
+  const [currentSrc, setCurrentSrc] = useState(src)
+
+  useEffect(() => {
+    setCurrentSrc(src)
+    setIsLoaded(false)
+    setHasError(false)
+  }, [src])
 
   const handleLoad = () => {
     setIsLoaded(true)
@@ -41,21 +52,15 @@ export function OptimizedImage({
   }
 
   const handleError = () => {
+    if (fallbackSrc && currentSrc !== fallbackSrc) {
+      setCurrentSrc(fallbackSrc)
+      setIsLoaded(false)
+      setHasError(false)
+      return
+    }
     setHasError(true)
     onError?.()
   }
-
-  // Проверяем, загружено ли изображение из кеша
-  useEffect(() => {
-    if (fill) {
-      const img = new window.Image()
-      img.onload = () => setIsLoaded(true)
-      img.src = src
-      if (img.complete) {
-        setIsLoaded(true)
-      }
-    }
-  }, [src, fill])
 
   // Для fill изображений
   if (fill) {
@@ -67,11 +72,12 @@ export function OptimizedImage({
         )}
         
         <Image
-          src={hasError ? '/placeholder/about_main_placeholder.webp' : src}
+          src={hasError ? '/placeholder/about_main_placeholder.webp' : currentSrc}
           alt={alt}
           fill
           sizes={sizes}
           priority={priority}
+          loading={priority ? undefined : loading}
           placeholder={placeholder}
           blurDataURL={blurDataURL}
           onLoad={handleLoad}
@@ -91,12 +97,13 @@ export function OptimizedImage({
         <div className="absolute inset-0 bg-gray-200 animate-pulse" />
       )}
       <Image
-        src={hasError ? '/placeholder/about_main_placeholder.webp' : src}
+        src={hasError ? '/placeholder/about_main_placeholder.webp' : currentSrc}
         alt={alt}
         width={width}
         height={height}
         sizes={sizes}
         priority={priority}
+        loading={priority ? undefined : loading}
         placeholder={placeholder}
         blurDataURL={blurDataURL}
         onLoad={handleLoad}

@@ -62,7 +62,7 @@
     },
     "featuredProducts": {
       "title": "коллекция",
-      "lead": "сумки с ручной отстрочкой в природных оттенках на каждый день."
+      "lead": ""
     }
   },
   "catalog": {
@@ -72,6 +72,8 @@
     "categoryLabel": "категория:",
     "colorLabel": "цвет:",
     "loadMore": "загрузить ещё товары",
+    "filtersButton": "Фильтры",
+    "filtersTitle": "Фильтры",
     "empty": "товары не найдены",
     "reset": "сбросить фильтры",
     "shoulderBags": "сумки на плечо",

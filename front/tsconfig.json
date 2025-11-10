@@ -5,9 +5,16 @@
       "dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "useUnknownInCatchVariables": true,
     "noEmit": true,
     "incremental": true,
     "module": "esnext",
@@ -36,6 +43,9 @@
   ],
   "exclude": [
     "node_modules",
-    "tailwind.config.ts"
+    "tailwind.config.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__tests__/**"
   ]
 }

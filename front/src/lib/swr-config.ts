@@ -2,10 +2,37 @@
  * SWR конфигурация и fetcher функции
  */
 
-// Базовый fetcher для SWR
-export const fetcher = async (url: string) => {
-  const res = await fetch(url)
-  
+const DEFAULT_TIMEOUT_MS = 8000
+
+// Базовый fetcher для SWR с таймаутом
+export const fetcher = async (input: RequestInfo, init?: RequestInit) => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS)
+
+  const { signal: externalSignal, ...restInit } = init || {}
+  if (externalSignal) {
+    externalSignal.addEventListener('abort', () => controller.abort(), { once: true })
+  }
+
+  let res: Response
+  try {
+    res = await fetch(input, {
+      ...restInit,
+      signal: controller.signal,
+    })
+  } catch (error: any) {
+    clearTimeout(timeout)
+    if (error?.name === 'AbortError') {
+      const timeoutError = new Error('Request timed out')
+      // @ts-ignore
+      timeoutError.status = 504
+      throw timeoutError
+    }
+    throw error
+  } finally {
+    clearTimeout(timeout)
+  }
+
   if (!res.ok) {
     const error = new Error('An error occurred while fetching the data.')
     // @ts-ignore

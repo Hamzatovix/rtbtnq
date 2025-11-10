@@ -13,7 +13,7 @@ export default function ElvenFlower({ size = 180, className = '', ariaLabel = 'D
 
   return (
     <div
-      className={`rb-flower group absolute -translate-y-1 md:-translate-y-2 pointer-events-auto select-none ${className}`}
+      className={`rb-flower group -translate-y-1 md:-translate-y-2 pointer-events-auto select-none ${className}`}
       style={{ width: size, height: size }}
       tabIndex={0}
       aria-label={ariaLabel}

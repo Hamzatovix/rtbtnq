@@ -1,17 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { loadProducts, saveProducts } from '@/server/products/products-json.service'
+import { getCatalogData } from '@/server/catalog/catalog.service'
 
 // Кеширование для API routes (ISR)
 export const revalidate = 60 // Обновлять каждые 60 секунд
 
 export async function GET(req: NextRequest) {
   try {
-    // Используем сервис с кешем в памяти
-    const products = await loadProducts()
-    
-    // Форматируем ID как строки
-    const formatted = products.map((prod: any) => ({ ...prod, id: String(prod.id) }))
-    
+    const catalog = await getCatalogData({ includeRaw: true })
+    const rawProducts = Array.isArray(catalog.rawProducts) ? catalog.rawProducts : []
+    const formatted = rawProducts.map((prod: any) => ({
+      ...prod,
+      id: String(prod.id),
+    }))
+
     return NextResponse.json({ results: formatted }, {
       headers: {
         'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'

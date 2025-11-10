@@ -6,13 +6,14 @@ import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart-store'
 import Link from 'next/link'
 import { useTranslations } from '@/hooks/useTranslations'
-import { useLocaleStore } from '@/store/locale-store'
+import { useClientLocale } from '@/hooks/useClientLocale'
 import { formatPriceWithLocale } from '@/lib/utils'
 import { OptimizedImage } from '@/components/ui/optimized-image'
+import { getOptimizedAsset } from '@/lib/optimized-assets'
 
 export function CartDrawer() {
   const t = useTranslations()
-  const { locale } = useLocaleStore()
+  const locale = useClientLocale()
   const {
     items,
     isOpen,
@@ -82,19 +83,37 @@ export function CartDrawer() {
                 </div>
               ) : (
                 <div className="p-6 space-y-4">
-                  {items.map((item) => (
-                    <motion.div
-                      key={`${item.id}-${item.selectedColor || 'default'}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl"
-                    >
+                  {items.map((item) => {
+                    const normalizedSource = item.image
+                      ? item.image.startsWith('http')
+                        ? item.image
+                        : item.image.startsWith('/')
+                          ? item.image
+                          : `/${item.image}`
+                      : undefined
+
+                    const asset = normalizedSource
+                      ? normalizedSource.startsWith('http')
+                        ? { src: normalizedSource, fallback: normalizedSource, placeholder: undefined }
+                        : getOptimizedAsset(normalizedSource, 360)
+                      : undefined
+
+                    return (
+                      <motion.div
+                        key={`${item.id}-${item.selectedColor || 'default'}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl"
+                      >
                       {/* Product Image */}
-                      {item.image ? (
+                      {asset ? (
                         <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200 relative">
                           <OptimizedImage
-                            src={item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `/${item.image}`}
+                            src={asset.src}
+                            fallbackSrc={asset.fallback}
+                            placeholder={asset.placeholder ? 'blur' : 'empty'}
+                            blurDataURL={asset.placeholder}
                             alt={item.title}
                             width={64}
                             height={64}
@@ -145,8 +164,9 @@ export function CartDrawer() {
                       >
                         <X className="w-4 h-4" />
                       </button>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    )
+                  })}
                 </div>
               )}
             </div>
@@ -171,3 +191,5 @@ export function CartDrawer() {
     </AnimatePresence>
   )
 }
+
+export default CartDrawer

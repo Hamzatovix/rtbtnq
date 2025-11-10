@@ -107,14 +107,11 @@ function MobileNav() {
 }
 
 function QuickActions() {
-  const router = usePathname()
   const handleLogout = async () => {
     try {
-      // Удаляем токен из localStorage
-      localStorage.removeItem('auth-token')
-      
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
+        credentials: 'include',
       })
       if (response.ok) {
         window.location.href = '/backoffice/login'
@@ -123,7 +120,6 @@ function QuickActions() {
       }
     } catch (error) {
       console.error('Ошибка при выходе:', error)
-      localStorage.removeItem('auth-token')
       window.location.href = '/backoffice/login'
     }
   }
@@ -165,14 +161,9 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
   useEffect(() => {
     // Проверяем авторизацию при загрузке
     if (pathname !== '/backoffice/login') {
-      // Небольшая задержка, чтобы дать время cookie установиться после редиректа
       const checkAuth = async () => {
-        await new Promise(resolve => setTimeout(resolve, 100))
-        
-        const token = localStorage.getItem('auth-token')
         try {
           const res = await fetch('/api/auth/verify', {
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
             credentials: 'include',
             cache: 'no-store',
           })
@@ -181,40 +172,12 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
           setIsAuthenticated(data.authenticated)
           
           if (!data.authenticated) {
-            localStorage.removeItem('auth-token')
             window.location.href = '/backoffice/login'
           }
         } catch (err) {
           console.error('Auth check error:', err)
-          // Даём второй шанс - возможно cookie ещё не успела примениться
-          setTimeout(() => {
-            const token2 = localStorage.getItem('auth-token')
-            if (token2) {
-              fetch('/api/auth/verify', {
-                headers: { 'Authorization': `Bearer ${token2}` },
-                credentials: 'include',
-                cache: 'no-store',
-              })
-                .then(res => res.json())
-                .then(data => {
-                  if (data.authenticated) {
-                    setIsAuthenticated(true)
-                  } else {
-                    setIsAuthenticated(false)
-                    localStorage.removeItem('auth-token')
-                    window.location.href = '/backoffice/login'
-                  }
-                })
-                .catch(() => {
-                  setIsAuthenticated(false)
-                  localStorage.removeItem('auth-token')
-                  window.location.href = '/backoffice/login'
-                })
-            } else {
-              setIsAuthenticated(false)
-              window.location.href = '/backoffice/login'
-            }
-          }, 500)
+          setIsAuthenticated(false)
+          window.location.href = '/backoffice/login'
         }
       }
       

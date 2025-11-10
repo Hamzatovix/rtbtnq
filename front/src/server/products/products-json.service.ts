@@ -2,8 +2,9 @@ import { readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 // Кеш в памяти для оптимизации
-let productsCache: any[] | null = null
+let productsCache: any[] = []
 let cacheTimestamp = 0
+let cacheInitialized = false
 const CACHE_TTL = 5000 // 5 секунд
 
 function getProductsPath(): string {
@@ -15,7 +16,7 @@ export async function loadProducts(): Promise<any[]> {
   const now = Date.now()
   
   // Возвращаем из кеша если не истек
-  if (productsCache && (now - cacheTimestamp) < CACHE_TTL) {
+  if (cacheInitialized && (now - cacheTimestamp) < CACHE_TTL) {
     return productsCache
   }
   
@@ -35,6 +36,7 @@ export async function loadProducts(): Promise<any[]> {
     }
     
     cacheTimestamp = now
+    cacheInitialized = true
     return productsCache
   } catch (error) {
     console.error('Error loading products:', error)
@@ -63,6 +65,7 @@ export async function saveProducts(products: any[], originalFormat: 'array' | 'w
   // Обновляем кеш после записи
   productsCache = products
   cacheTimestamp = Date.now()
+  cacheInitialized = true
 }
 
 export async function getProductById(id: string): Promise<any | null> {

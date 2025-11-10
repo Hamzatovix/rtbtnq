@@ -57,15 +57,16 @@ async function ensureOrdersFile(): Promise<void> {
 }
 
 // Кеш в памяти для оптимизации
-let ordersCache: Order[] | null = null
+let ordersCache: Order[] = []
 let cacheTimestamp = 0
+let cacheInitialized = false
 const CACHE_TTL = 5000 // 5 секунд
 
 export async function loadOrders(): Promise<Order[]> {
   const now = Date.now()
   
   // Возвращаем из кеша если не истек
-  if (ordersCache && (now - cacheTimestamp) < CACHE_TTL) {
+  if (cacheInitialized && (now - cacheTimestamp) < CACHE_TTL) {
     return ordersCache
   }
   
@@ -76,6 +77,7 @@ export async function loadOrders(): Promise<Order[]> {
     const content = await readFile(filePath, 'utf-8')
     ordersCache = JSON.parse(content)
     cacheTimestamp = now
+    cacheInitialized = true
     return ordersCache
   } catch {
     return []
@@ -88,6 +90,7 @@ export async function saveOrders(orders: Order[]): Promise<void> {
   // Обновляем кеш после записи
   ordersCache = orders
   cacheTimestamp = Date.now()
+  cacheInitialized = true
 }
 
 export async function createOrder(data: {
@@ -141,13 +144,13 @@ export async function createOrder(data: {
     })),
     addresses: data.addresses?.map(addr => ({
       id: nanoid(),
-      type: addr.type || 'shipping',
-      country: addr.country || '',
-      city: addr.city || '',
-      line1: addr.address || addr.line1 || '',
-      line2: addr.line2 || addr.pickupPoint || '',
-      postal: addr.postal || '',
+      type: addr.type ?? 'shipping',
       ...addr,
+      country: addr.country ?? '',
+      city: addr.city ?? '',
+      line1: addr.address ?? addr.line1 ?? '',
+      line2: addr.line2 ?? addr.pickupPoint ?? '',
+      postal: addr.postal ?? '',
     })),
     paymentStatus: 'pending',
     fulfillmentStatus: 'unfulfilled',

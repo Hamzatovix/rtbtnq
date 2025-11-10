@@ -78,7 +78,8 @@ export default function BackofficeNewProductPage(){
       setError('Добавьте хотя бы один вариант')
       return false
     }
-    for (const [idx, v] of variants.entries()) {
+    for (let idx = 0; idx < variants.length; idx++) {
+      const v = variants[idx]
       if (!v.colorId) {
         setError(`Вариант ${idx + 1}: выберите цвет`)
         return false

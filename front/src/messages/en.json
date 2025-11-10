@@ -62,7 +62,7 @@
     },
     "featuredProducts": {
       "title": "Collection",
-      "lead": "Hand-stitched bags in natural tones for every moment."
+      "lead": ""
     }
   },
   "catalog": {
@@ -72,6 +72,8 @@
     "categoryLabel": "Category:",
     "colorLabel": "Color:",
     "loadMore": "Load more products",
+    "filtersButton": "Filters",
+    "filtersTitle": "Filters",
     "empty": "No products found",
     "reset": "Reset filters",
     "shoulderBags": "Shoulder bags",

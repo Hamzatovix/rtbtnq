@@ -2,6 +2,9 @@
  * @jest-environment jsdom
  */
 
+import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals'
+import type { ReactNode } from 'react'
+import '@testing-library/jest-dom'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { usePathname } from 'next/navigation'
 import { MobileDrawer } from '../MobileDrawer'
@@ -12,10 +15,13 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock createPortal for React 18
-jest.mock('react-dom', () => ({
-  ...jest.requireActual('react-dom'),
-  createPortal: jest.fn((element) => element),
-}))
+jest.mock('react-dom', () => {
+  const actual = jest.requireActual('react-dom')
+  return {
+    ...actual,
+    createPortal: jest.fn((element: ReactNode) => element),
+  }
+})
 
 describe('MobileDrawer', () => {
   const defaultProps = {
@@ -31,7 +37,7 @@ describe('MobileDrawer', () => {
     // Reset prefers-reduced-motion mock
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: jest.fn().mockImplementation((query) => ({
+      value: jest.fn().mockImplementation((query: string) => ({
         matches: false,
         media: query,
         onchange: null,

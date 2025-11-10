@@ -1,4 +1,5 @@
 import { prisma } from '@/server/prisma'
+import type { Prisma } from '@prisma/client'
 import { addOrderEvent } from './events'
 import { assertTransition, OrderStatus, PaymentStatus, FulfillmentStatus } from './status'
 import { reserve, release, commit } from './inventory'
@@ -11,7 +12,7 @@ export async function createOrder(input: any) {
   const items = input.items || []
   const subtotal = items.reduce((s: number, i: any) => s + Number(i.total || i.price * i.qty || 0), 0)
   const total = subtotal
-  const order = await prisma.$transaction(async (tx) => {
+  const order = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const o = await tx.order.create({
       data: {
         number,
@@ -76,7 +77,7 @@ export async function confirmOrder(id: string) {
 export async function addPayment(id: string, amount: number, method: string) {
   const order = await prisma.order.findUnique({ where: { id } })
   if (!order) throw new Error('Order not found')
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.payment.create({ data: { orderId: id, amount, method: method as any, status: 'posted' } })
     const paidTotal = (await tx.payment.aggregate({ _sum: { amount: true }, where: { orderId: id, status: 'posted' } }))._sum.amount || 0
     const next = Number(paidTotal) >= Number(order.total) ? PaymentStatus.PAID : PaymentStatus.PENDING
@@ -96,7 +97,7 @@ export async function createShipment(id: string, input: any) {
 }
 
 export async function markShipped(id: string) {
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.order.update({ where: { id }, data: { fulfillmentStatus: FulfillmentStatus.SHIPPED } })
     await commit(id)
   })

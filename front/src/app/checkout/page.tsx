@@ -10,14 +10,14 @@ import { Textarea } from '@/components/ui/textarea'
 import { Lead } from '@/components/ui/typography'
 import { useCartStore } from '@/store/cart-store'
 import { useTranslations } from '@/hooks/useTranslations'
-import { useLocaleStore } from '@/store/locale-store'
+import { useClientLocale } from '@/hooks/useClientLocale'
 import { formatPriceWithLocale } from '@/lib/utils'
 
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, getTotalPrice, clearCart } = useCartStore()
   const t = useTranslations()
-  const { locale } = useLocaleStore()
+  const locale = useClientLocale()
 
   const [form, setForm] = useState({
     name: '',
@@ -34,6 +34,15 @@ export default function CheckoutPage() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    setForm(prev => ({
+      ...prev,
+      country: prev.country && prev.country !== 'Россия' && prev.country !== 'Russia'
+        ? prev.country
+        : (locale === 'ru' ? 'Россия' : 'Russia')
+    }))
+  }, [locale])
 
   // Mark fields that were autofilled by browser/password manager before first focus
   useEffect(() => {

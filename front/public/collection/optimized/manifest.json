@@ -1,0 +1,137 @@
+{
+  "/collection/linen-back.png": {
+    "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4ILAAAACwBQCdASogACAAPt1kqU+opSOiKAqpEBuJZwABHoIFMCaBuLSmw2h724UEVFGKf5Z/otjzNgAA/vHMpp9OCrV0y5lmtZB/RVWmETRZnnNPwnJvUPoUps4oKYB20T6pCAA/br9c+icX8lGtvKvNaNf+mkUv2tRQKrfQTIGj5K0EeptPZR1C52oNrTG2RuSuPOaWhlT+YJtllrJIQGGOk6JOiqlVYA5I+v+t54GZO/SIAA==",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/linen-back-360.webp",
+        "720": "/collection/optimized/linen-back-720.webp",
+        "1024": "/collection/optimized/linen-back-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/linen-back-360.avif",
+        "720": "/collection/optimized/linen-back-720.avif",
+        "1024": "/collection/optimized/linen-back-1024.avif"
+      }
+    }
+  },
+  "/collection/storm-shell-duffel-gray.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAADwBACdASogACAAPt1cpkyopSOiMAgBEBuJZwDI1Glf7wUB2QBA7SK/X2XUD4M03EAA/u/TNLcqZyYXljA2SFUqylIhEIcppeLjn9EAlN8/DeuqFl7sTn45ADQjbF12Ff1rmVf87vTX496nnQ1w4KncPKRFcZMK9/S+wIGCOwlypym8y1GmCVSQAAA=",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/storm-shell-duffel-gray-360.webp",
+        "720": "/collection/optimized/storm-shell-duffel-gray-720.webp",
+        "1024": "/collection/optimized/storm-shell-duffel-gray-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/storm-shell-duffel-gray-360.avif",
+        "720": "/collection/optimized/storm-shell-duffel-gray-720.avif",
+        "1024": "/collection/optimized/storm-shell-duffel-gray-1024.avif"
+      }
+    }
+  },
+  "/collection/storm-shell-duffel.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4IKIAAAAQBQCdASogACAAPt1cpUyopSOiMAgBEBuJZwDO7GlfwNhI2R9REC24R4SkhwuNaeaAAP7qkTUycd3+aqFrwx0b4abD4s3E8cZKJR7zeWfGnuXrea5gbb8ISmc8rB2Fn+n0qYqnSGHwBjdzLw/G+rn8NLhPD8c6Xlx7RK6RFfslxJnOoGJbK8RFG1yL/GYkIHUVUn1g7NkQSHJBgh2nckYQAAA=",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/storm-shell-duffel-360.webp",
+        "720": "/collection/optimized/storm-shell-duffel-720.webp",
+        "1024": "/collection/optimized/storm-shell-duffel-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/storm-shell-duffel-360.avif",
+        "720": "/collection/optimized/storm-shell-duffel-720.avif",
+        "1024": "/collection/optimized/storm-shell-duffel-1024.avif"
+      }
+    }
+  },
+  "/collection/tote-cloud.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAADQBACdASogACAAPtFWpkyoJKOiMAwBABoJZwAA8HYCJb30L0fYQGT9ESMjOpOOQAD+3q9O3La9F7AyVV8v4lSv0zA6GJgi8T5dlm5dn2KsAokWKdxXzEJp89IYKQUx4dVhc2UT3i2WCmxYhz92yk0YAAA=",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/tote-cloud-360.webp",
+        "720": "/collection/optimized/tote-cloud-720.webp",
+        "1024": "/collection/optimized/tote-cloud-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/tote-cloud-360.avif",
+        "720": "/collection/optimized/tote-cloud-720.avif",
+        "1024": "/collection/optimized/tote-cloud-1024.avif"
+      }
+    }
+  },
+  "/collection/tote-linen.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAQBQCdASogACAAPs1UoUynpSMiN/qoAPAZiWcAzYRXb2ts4RfY2r3genEd8Ot7bv7AAP7nGGwwa7LeSD5/A7rurgD00xXoq3uyWexRsvVlu+PfgLs9/mAJ5Al08wdvoUg3NgfA+iwVxama2Y2qDuh93FJDZBCRRZbJQAAA",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/tote-linen-360.webp",
+        "720": "/collection/optimized/tote-linen-720.webp",
+        "1024": "/collection/optimized/tote-linen-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/tote-linen-360.avif",
+        "720": "/collection/optimized/tote-linen-720.avif",
+        "1024": "/collection/optimized/tote-linen-1024.avif"
+      }
+    }
+  },
+  "/collection/tote-sage.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAACQBQCdASogACAAPt1irE8opaSiKAqpEBuJZwDIXGlf4NsB4gtgT+pPqUZ7JPEU434/ofFpYAD+83REs/7EkY1R/M6tYyTyNNuvv+Tx1ggAHuMiN+8hPXmTGteVmMvE3TUjFSGpBSfQikDlL9bT4voD2PY9KjvLDUGrbvu1u/OXX+12nILwYTRwcGuvSAMjtpqjqs/CSSHyfGAHHZGvhsw73YpflXuAAAA=",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/tote-sage-360.webp",
+        "720": "/collection/optimized/tote-sage-720.webp",
+        "1024": "/collection/optimized/tote-sage-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/tote-sage-360.avif",
+        "720": "/collection/optimized/tote-sage-720.avif",
+        "1024": "/collection/optimized/tote-sage-1024.avif"
+      }
+    }
+  },
+  "/collection/tote-stone.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAADQBACdASogACAAPt1iq0+opSQiKAqpEBuJZwAAi0/TPYggaWeqEW3cBv5niIeMUAD90kPmweNBC2WefpEITCtNr2acDlYinra5yG/85yiKaLeckP9bC1xBTaetzCA8YafrCDtIh2DFUp90X7gvmtNOPiYAmXuQErxeJtqiiVH2EnbgqKa6OXifCjX9mOx9Hl4vqyLqR7aHPgAA",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/tote-stone-360.webp",
+        "720": "/collection/optimized/tote-stone-720.webp",
+        "1024": "/collection/optimized/tote-stone-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/tote-stone-360.avif",
+        "720": "/collection/optimized/tote-stone-720.avif",
+        "1024": "/collection/optimized/tote-stone-1024.avif"
+      }
+    }
+  },
+  "/collection/weekender-sling-reed.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRtwAAABXRUJQVlA4INAAAABQBQCdASogACAAPslYoUynpaMiN/qoAPAZCWQAAOz2BFegNaJJ1600bmPae3ssKPZmj6AA/u1OaGBOthtDt/om16+t3jpI/6l4J6vEWey++H+r7yIxlALt+YEILZ2Qc87bh/fqykaBqQj2XKm3n7pvJe4StDOYQ0DwF2cBWI11LnsfHwB2TwdoImzhveuMbX06azrMKW7epTtadUsr38/qHDpni282Pob4YWgwzoDFmtgQdQOCjTIPc/mAW6WJFeK3mijZwhcX5HhV3flOQAAA",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/weekender-sling-reed-360.webp",
+        "720": "/collection/optimized/weekender-sling-reed-720.webp",
+        "1024": "/collection/optimized/weekender-sling-reed-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/weekender-sling-reed-360.avif",
+        "720": "/collection/optimized/weekender-sling-reed-720.avif",
+        "1024": "/collection/optimized/weekender-sling-reed-1024.avif"
+      }
+    }
+  },
+  "/collection/weekender-sling.jpg.png": {
+    "placeholder": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAABQBQCdASogACAAPs1QoUynpKMiN/qoAPAZiWkAzjhXcM5L0gKmx2f1mlp0YU3/OxyitAAA/ucpnCEMu4Ayk5NiS111N/no9y1gr29FWr510NpmaWwNpaY/wZ7ZNaPeQmFocG0tZKw7QhV0t0TJLcDLk0MlKhWYHebUsCroO2zYkx91kQ/gangPRCWU62hue2QKt4aWaMdEtLdXAmdH+cSiVDQj2IAAAAA=",
+    "sources": {
+      "webp": {
+        "360": "/collection/optimized/weekender-sling-360.webp",
+        "720": "/collection/optimized/weekender-sling-720.webp",
+        "1024": "/collection/optimized/weekender-sling-1024.webp"
+      },
+      "avif": {
+        "360": "/collection/optimized/weekender-sling-360.avif",
+        "720": "/collection/optimized/weekender-sling-720.avif",
+        "1024": "/collection/optimized/weekender-sling-1024.avif"
+      }
+    }
+  }
+}

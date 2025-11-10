@@ -2,8 +2,9 @@ import { readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 // Кеш в памяти для оптимизации
-let colorsCache: any[] | null = null
+let colorsCache: any[] = []
 let cacheTimestamp = 0
+let cacheInitialized = false
 const CACHE_TTL = 5000 // 5 секунд
 
 function getColorsPath(): string {
@@ -15,7 +16,7 @@ export async function loadColors(): Promise<any[]> {
   const now = Date.now()
   
   // Возвращаем из кеша если не истек
-  if (colorsCache && (now - cacheTimestamp) < CACHE_TTL) {
+  if (cacheInitialized && (now - cacheTimestamp) < CACHE_TTL) {
     return colorsCache
   }
   
@@ -25,6 +26,7 @@ export async function loadColors(): Promise<any[]> {
     const content = await readFile(filePath, 'utf-8')
     colorsCache = JSON.parse(content)
     cacheTimestamp = now
+    cacheInitialized = true
     return colorsCache
   } catch (error) {
     console.error('Error loading colors:', error)
@@ -39,5 +41,6 @@ export async function saveColors(colors: any[]): Promise<void> {
   // Обновляем кеш после записи
   colorsCache = colors
   cacheTimestamp = Date.now()
+  cacheInitialized = true
 }
 

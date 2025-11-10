@@ -2,8 +2,9 @@ import { readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 // Кеш в памяти для оптимизации
-let categoriesCache: any[] | null = null
+let categoriesCache: any[] = []
 let cacheTimestamp = 0
+let cacheInitialized = false
 const CACHE_TTL = 5000 // 5 секунд
 
 function getCategoriesPath(): string {
@@ -15,7 +16,7 @@ export async function loadCategories(): Promise<any[]> {
   const now = Date.now()
   
   // Возвращаем из кеша если не истек
-  if (categoriesCache && (now - cacheTimestamp) < CACHE_TTL) {
+  if (cacheInitialized && (now - cacheTimestamp) < CACHE_TTL) {
     return categoriesCache
   }
   
@@ -25,6 +26,7 @@ export async function loadCategories(): Promise<any[]> {
     const content = await readFile(filePath, 'utf-8')
     categoriesCache = JSON.parse(content)
     cacheTimestamp = now
+    cacheInitialized = true
     return categoriesCache
   } catch (error) {
     console.error('Error loading categories:', error)
@@ -39,5 +41,6 @@ export async function saveCategories(categories: any[]): Promise<void> {
   // Обновляем кеш после записи
   categoriesCache = categories
   cacheTimestamp = Date.now()
+  cacheInitialized = true
 }
 

@@ -23,33 +23,22 @@ function LoginForm() {
     
     const checkAuth = async () => {
       try {
-        // Получаем токен из localStorage
-        const token = localStorage.getItem('auth-token')
-        
-        // Используем полный URL для избежания проблем с относительными путями
-        const res = await fetch('/api/auth/verify', { 
+        const res = await fetch('/api/auth/verify', {
           method: 'GET',
-          credentials: 'include', // Важно для отправки cookies
+          credentials: 'include',
           cache: 'no-store',
-          headers: {
-            'Accept': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}), // Отправляем токен в заголовке, если есть
-          }
         })
-        
+
         if (!res.ok) {
-          // Если не авторизован, это нормально
           return
         }
-        
+
         const data = await res.json()
         if (data.authenticated) {
-          // Если уже авторизованы — просто уходим в панель, не трогаем hasRedirectedRef,
-          // чтобы не блокировать дальнейший submit
           router.replace('/backoffice')
         }
-      } catch (error) {
-        // Игнорируем ошибки - это нормально, если пользователь не авторизован
+      } catch {
+        // игнорируем – пользователь не авторизован
       }
     }
     
@@ -104,45 +93,14 @@ function LoginForm() {
         return
       }
 
-      // Успешный вход - сохраняем токен
-      if (data.token) {
-        localStorage.setItem('auth-token', data.token)
-        console.log('Token saved to localStorage')
-      }
-
-      // Синхронизируем HttpOnly cookie через отдельный endpoint (надёжно для middleware)
-      try {
-        const syncRes = await fetch('/api/auth/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ token: data.token }),
-        })
-        console.log('Cookie sync response:', syncRes.ok)
-        if (!syncRes.ok) {
-          throw new Error('Failed to sync cookie')
-        }
-      } catch (syncErr) {
-        console.error('Cookie sync error:', syncErr)
-        setError('Ошибка синхронизации сессии. Попробуйте ещё раз.')
-        setLoading(false)
-        return
-      }
-
-      // Дублируем cookie (не HttpOnly) для немедленной отправки в следующий запрос
-      try {
-        document.cookie = `auth-token=${data.token}; Path=/; Max-Age=86400; SameSite=Lax`
-      } catch {}
-
       // Небольшая пауза для гарантированного применения cookie
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise(resolve => setTimeout(resolve, 150))
 
       // Проверяем на сервере, что токен принят
       try {
         const verifyRes = await fetch('/api/auth/verify', {
           method: 'GET',
           credentials: 'include',
-          headers: { 'Authorization': `Bearer ${data.token}` },
           cache: 'no-store',
         })
         if (!verifyRes.ok) {

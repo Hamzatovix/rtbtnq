@@ -219,12 +219,12 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 4500,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T19:23:13.150Z",
-    "updatedAt": "2025-11-05T19:23:13.150Z"
+    "updatedAt": "2025-11-07T00:08:45.985Z"
   },
   {
     "id": "Sa_Qg-A9ynRLqTO6oLLyt",
@@ -262,12 +262,12 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 4500,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T19:25:53.813Z",
-    "updatedAt": "2025-11-05T19:25:53.813Z"
+    "updatedAt": "2025-11-07T00:08:45.985Z"
   },
   {
     "id": "TLTAdqRhCg-KPf9fGnnQg",
@@ -305,12 +305,12 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 4000,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T19:27:39.830Z",
-    "updatedAt": "2025-11-05T19:27:39.830Z"
+    "updatedAt": "2025-11-07T00:08:45.985Z"
   },
   {
     "id": "3YRE0YI82rdFbtsyHSTvk",
@@ -348,12 +348,12 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 2900,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T19:31:17.319Z",
-    "updatedAt": "2025-11-05T19:31:17.319Z"
+    "updatedAt": "2025-11-07T00:08:45.986Z"
   },
   {
     "id": "j9NFWjypElQKXNlrzcLl6",
@@ -391,12 +391,12 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 2900,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T19:38:04.951Z",
-    "updatedAt": "2025-11-05T19:38:04.951Z"
+    "updatedAt": "2025-11-07T00:08:45.986Z"
   },
   {
     "id": "_JFR1yoT_cd94QXTuJaUx",
@@ -434,12 +434,12 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 8500,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T19:49:20.217Z",
-    "updatedAt": "2025-11-05T19:49:20.217Z"
+    "updatedAt": "2025-11-07T00:08:45.986Z"
   },
   {
     "id": "TGAILJUgO3ZGDtoMzvapa",
@@ -477,12 +477,12 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 4000,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T20:03:57.036Z",
-    "updatedAt": "2025-11-05T20:03:57.036Z"
+    "updatedAt": "2025-11-07T00:08:45.986Z"
   },
   {
     "id": "SiztMGZsURuuo239gY4P5",
@@ -520,11 +520,97 @@
     ],
     "paymentStatus": "pending",
     "fulfillmentStatus": "unfulfilled",
-    "orderStatus": "new",
+    "orderStatus": "in_progress",
     "total": 7700,
     "currency": "RUB",
     "note": null,
     "createdAt": "2025-11-05T20:09:45.194Z",
-    "updatedAt": "2025-11-05T20:09:45.194Z"
+    "updatedAt": "2025-11-07T00:08:45.986Z"
+  },
+  {
+    "id": "0ykND9gm2bh4uhrsIEArF",
+    "number": "RB-20251108-0YKND9",
+    "customerName": "М М",
+    "customerEmail": null,
+    "customerPhone": "89999999999",
+    "items": [
+      {
+        "id": "cAXTll1uvldddOdZ2VXSj",
+        "name": "fr",
+        "productName": "fr",
+        "sku": "4-Stone",
+        "qty": 1,
+        "quantity": 1,
+        "price": 12222,
+        "unitPrice": 12222,
+        "total": 12222,
+        "image": "/uploads/products/1762605077349-SlxvinM0j2.png",
+        "color": "Stone"
+      }
+    ],
+    "addresses": [
+      {
+        "id": "sneHAnKYHcyvk5nd5HFAa",
+        "type": "shipping",
+        "country": "Россия",
+        "city": "Грозный ",
+        "address": "ул.м",
+        "pickupPoint": "",
+        "line1": "ул.м",
+        "line2": "",
+        "postal": ""
+      }
+    ],
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "unfulfilled",
+    "orderStatus": "in_progress",
+    "total": 12722,
+    "currency": "RUB",
+    "note": null,
+    "createdAt": "2025-11-08T12:52:56.323Z",
+    "updatedAt": "2025-11-08T12:53:14.463Z"
+  },
+  {
+    "id": "0mQSuTbQ4-tZrBWnfTa9-",
+    "number": "RB-20251108-0MQSUT",
+    "customerName": "dev",
+    "customerEmail": null,
+    "customerPhone": "89890000101",
+    "items": [
+      {
+        "id": "i6B6VSIvibL2yC_WRVHVW",
+        "name": "bagone",
+        "productName": "bagone",
+        "sku": "5-Cloud",
+        "qty": 1,
+        "quantity": 1,
+        "price": 123,
+        "unitPrice": 123,
+        "total": 123,
+        "image": "/uploads/products/1762616459379-WKWTqmYHQg.png",
+        "color": "Cloud"
+      }
+    ],
+    "addresses": [
+      {
+        "id": "r63LWI1DUTkbY_nWC9gOr",
+        "type": "shipping",
+        "country": "Россия",
+        "city": "Грозный",
+        "address": "ул. А",
+        "pickupPoint": "пункт выдачи",
+        "line1": "ул. А",
+        "line2": "пункт выдачи",
+        "postal": ""
+      }
+    ],
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "unfulfilled",
+    "orderStatus": "in_progress",
+    "total": 623,
+    "currency": "RUB",
+    "note": null,
+    "createdAt": "2025-11-08T15:42:48.505Z",
+    "updatedAt": "2025-11-08T15:43:16.180Z"
   }
 ]

@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import { useLocaleStore } from '@/store/locale-store'
+import { useClientLocale } from '@/hooks/useClientLocale'
 import enMessages from '@/messages/en.json'
 import ruMessages from '@/messages/ru.json'
 
 const messages = { en: enMessages, ru: ruMessages }
 
 export function useTranslations() {
-  const { locale } = useLocaleStore()
+  const locale = useClientLocale()
   
   const t = useMemo(() => {
     return (path: string) => {

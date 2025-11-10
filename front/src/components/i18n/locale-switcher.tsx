@@ -1,6 +1,7 @@
 'use client'
 
 import { useLocaleStore } from '@/store/locale-store'
+import { useClientLocale } from '@/hooks/useClientLocale'
 import { localeConfigs } from '@/i18n/config'
 import { Globe } from 'lucide-react'
 import {
@@ -11,7 +12,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 export function LocaleSwitcher() {
-  const { locale, setLocale } = useLocaleStore()
+  const locale = useClientLocale()
+  const setLocale = useLocaleStore((state) => state.setLocale)
 
   return (
     <DropdownMenu>

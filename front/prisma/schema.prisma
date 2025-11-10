@@ -11,3 +11,199 @@ datasource db {
 // Для реальной работы API добавьте модели, соответствующие используемым сущностям.
 
 
+model Color {
+  id        String   @id
+  name      String
+  hex       String?
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  variants  ProductVariant[]
+}
+
+model Category {
+  id        String    @id
+  name      String
+  slug      String    @unique
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Self relation
+  parent    Category? @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  children  Category[] @relation("CategoryToCategory")
+
+  // Relations
+  products  Product[]
+}
+
+model Product {
+  id          String     @id
+  name        String
+  slug        String     @unique
+  description String?
+  materials   String?
+  care        String?
+  categoryId  String?
+  isPublished Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  variants    ProductVariant[]
+  images      ProductImage[]
+}
+
+model ProductVariant {
+  id         String   @id
+  productId  String
+  sku        String?
+  priceCents Int
+  currency   String   @default("EUR")
+  stockQty   Int      @default(0)
+  colorId    String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  color      Color?   @relation(fields: [colorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
+
+model ProductImage {
+  id        String   @id
+  productId String
+  url       String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  // Relations
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([productId])
+}
+
+// ----------------------------
+// Orders domain (used by backoffice/services)
+// ----------------------------
+
+model Order {
+  id                 String   @id @default(cuid())
+  number             String
+  customerEmail      String?
+  customerPhone      String?
+  customerName       String?
+  subtotal           Int      @default(0)
+  total              Int      @default(0)
+  reservationExpiresAt DateTime?
+
+  orderStatus        String   @default("NEW")
+  paymentStatus      String   @default("UNPAID")
+  fulfillmentStatus  String   @default("UNFULFILLED")
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  items              OrderItem[]
+  addresses          OrderAddress[]
+  payments           Payment[]
+  shipments          Shipment[]
+  events             OrderEvent[]
+  tags               OrderTag[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  sku       String
+  name      String?
+  price     Int     @default(0)
+  qty       Int     @default(1)
+
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model OrderAddress {
+  id        String   @id @default(cuid())
+  orderId   String
+  type      String?  // e.g. SHIPPING/BILLING
+  data      String?  // JSON-serialized blob
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  orderId   String
+  amount    Int      @default(0)
+  method    String
+  status    String   @default("posted")
+  createdAt DateTime @default(now())
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Shipment {
+  id        String   @id @default(cuid())
+  orderId   String
+  carrier   String
+  service   String
+  tracking  String?
+  createdAt DateTime @default(now())
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model OrderEvent {
+  id        String   @id @default(cuid())
+  orderId   String
+  type      String
+  data      String?  // JSON-serialized blob
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Inventory {
+  sku         String @id
+  qtyOnHand   Int    @default(0)
+  qtyReserved Int    @default(0)
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders    OrderTag[]
+}
+
+model OrderTag {
+  orderId String
+  tagId   String
+
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  tag     Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([orderId, tagId])
+}
+
+

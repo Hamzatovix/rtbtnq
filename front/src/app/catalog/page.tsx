@@ -1,209 +1,32 @@
-'use client'
+import { getCatalogData } from '@/server/catalog/catalog.service'
+import CatalogClient from './CatalogClient'
 
-import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Lead } from '@/components/ui/typography'
-import { useProducts, useCategories, useColors } from '@/lib/hooks'
-import dynamic from 'next/dynamic'
-import { useTranslations } from '@/hooks/useTranslations'
+export const revalidate = 60
 
-// Динамический импорт для ProductCard
-const ProductCard = dynamic(() => import('@/components/product/product-card').then(mod => ({ default: mod.ProductCard })), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-2xl aspect-[4/5]" />,
-  ssr: false
-})
+interface CatalogPageProps {
+  searchParams?: Record<string, string | string[] | undefined>
+}
 
-export default function CatalogPage() {
-  const t = useTranslations()
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [selectedColor, setSelectedColor] = useState<number | undefined>(undefined)
+export default async function CatalogPage({ searchParams = {} }: CatalogPageProps) {
+  const categoryParam = searchParams.category
+  const colorParam = searchParams.color
 
-  // Memoize filter object to avoid infinite requests
-  const filters = useMemo(() => ({
-    category: selectedCategory || undefined,
-    color: selectedColor,
-  }), [selectedCategory, selectedColor])
+  const category = Array.isArray(categoryParam) ? categoryParam[0] : categoryParam || undefined
+  const color = Array.isArray(colorParam) ? colorParam[0] : colorParam || undefined
 
-  // Fetch data from API
-  const { categories, loading: categoriesLoading } = useCategories()
-  const { colors, loading: colorsLoading } = useColors()
-  const { 
-    products, 
-    loading: productsLoading, 
-    error: productsError,
-    hasMore,
-    loadMore,
-    refetch
-  } = useProducts(filters)
+  const initialData = await getCatalogData({
+    categorySlug: category,
+    colorId: color,
+  })
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
-      {/* Subtle decorative elements */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/6 w-32 h-32 bg-sageTint/6 rounded-full blur-2xl anim-breath" />
-        <div className="absolute bottom-1/4 right-1/6 w-40 h-40 bg-mistGray/15 rounded-full blur-3xl anim-breath" style={{ animationDelay: '3s' }} />
-      </div>
-      
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 relative">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-display-1 font-light text-ink-soft leading-[0.95] mb-6 tracking-normal">
-            {t('catalog.title')}
-          </h1>
-          <Lead className="max-w-xl mx-auto">
-            {t('home.featuredProducts.lead')}
-          </Lead>
-        </motion.div>
-
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-16"
-        >
-          <div className="flex flex-col md:flex-row md:flex-wrap gap-4 md:gap-6 justify-center">
-            {/* Category Filter */}
-            <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 md:items-center">
-              <span className="text-small font-light text-ink-soft/70 tracking-wide md:hidden">{t('catalog.categoryLabel') || 'категория:'}</span>
-              <div className="flex flex-wrap gap-2 md:gap-3 items-center">
-                <span className="hidden md:inline text-small font-light text-ink-soft/70 tracking-wide">{t('catalog.categoryLabel') || 'категория:'}</span>
-                <Button
-                  variant={selectedCategory === '' ? 'primary' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory('')}
-                >
-                  {t('catalog.allCategories')}
-                </Button>
-                {categoriesLoading ? (
-                  <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
-                ) : (
-                  categories.map((category) => (
-                    <Button
-                      key={category.id}
-                      variant={selectedCategory === category.slug ? 'primary' : 'outline'}
-                      size="sm"
-                      onClick={() => setSelectedCategory(category.slug)}
-                    >
-                      {category.name}
-                    </Button>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Color Filter */}
-            <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 md:items-center">
-              <span className="text-small font-light text-ink-soft/70 tracking-wide md:hidden">{t('catalog.colorLabel') || 'цвет:'}</span>
-              <div className="flex flex-wrap gap-2 md:gap-3 items-center">
-                <span className="hidden md:inline text-small font-light text-ink-soft/70 tracking-wide">{t('catalog.colorLabel') || 'цвет:'}</span>
-                <Button
-                  variant={selectedColor === undefined ? 'primary' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedColor(undefined)}
-                >
-                  {t('catalog.allColors')}
-                </Button>
-                {colorsLoading ? (
-                  <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
-                ) : (
-                  colors.map((color) => (
-                    <Button
-                      key={color.id}
-                      variant={selectedColor === Number(color.id) ? 'primary' : 'outline'}
-                      size="sm"
-                      onClick={() => setSelectedColor(Number(color.id))}
-                      className="flex items-center gap-2"
-                    >
-                      <div 
-                        className="w-3 h-3 rounded-full border border-gray-300"
-                        style={{ backgroundColor: color.hex_code }}
-                      />
-                      {color.name}
-                    </Button>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Products Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-8"
-        >
-          {productsLoading ? (
-            // Skeleton loading
-            Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="animate-pulse bg-gray-200 rounded-2xl aspect-[4/5]" />
-            ))
-          ) : productsError ? (
-            <div className="col-span-full text-center py-16">
-              <p className="text-body text-red-500 font-light tracking-wide mb-6">
-                {t('common.error')}: {productsError}
-              </p>
-              <Button variant="outline" onClick={refetch}>
-                {t('common.tryAgain') || 'повторить'}
-              </Button>
-            </div>
-          ) : (
-            products.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))
-          )}
-        </motion.div>
-
-        {/* Load More Button */}
-        {hasMore && !productsLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mt-12"
-          >
-            <Button variant="outline" onClick={loadMore}>
-              {t('catalog.loadMore') || 'загрузить ещё товары'}
-            </Button>
-          </motion.div>
-        )}
-
-        {products.length === 0 && !productsLoading && !productsError && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="text-center py-16"
-          >
-            <p className="text-body text-ink-soft/70 font-light tracking-wide mb-6">{t('catalog.empty') || 'товары не найдены'}</p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSelectedCategory('')
-                setSelectedColor(undefined)
-              }}
-            >
-              {t('catalog.reset') || 'сбросить фильтры'}
-            </Button>
-          </motion.div>
-        )}
-      </div>
-    </div>
+    <CatalogClient
+      initialData={initialData}
+      initialFilters={{
+        category,
+        color,
+      }}
+    />
   )
 }
 

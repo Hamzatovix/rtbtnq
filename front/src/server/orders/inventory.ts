@@ -1,7 +1,8 @@
 import { prisma } from '@/server/prisma'
+import type { Prisma } from '@prisma/client'
 
 export async function reserve(orderId: string) {
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const items = await tx.orderItem.findMany({ where: { orderId } })
     for (const item of items) {
       const inv = await tx.inventory.findUnique({ where: { sku: item.sku } })
@@ -17,7 +18,7 @@ export async function reserve(orderId: string) {
 }
 
 export async function release(orderId: string) {
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const items = await tx.orderItem.findMany({ where: { orderId } })
     for (const item of items) {
       const inv = await tx.inventory.findUnique({ where: { sku: item.sku } })
@@ -31,7 +32,7 @@ export async function release(orderId: string) {
 }
 
 export async function commit(orderId: string) {
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const items = await tx.orderItem.findMany({ where: { orderId } })
     for (const item of items) {
       const inv = await tx.inventory.findUnique({ where: { sku: item.sku } })

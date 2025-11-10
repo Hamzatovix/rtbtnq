@@ -1,20 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { loadCategories, saveCategories } from '@/server/categories/categories-json.service'
+import { getCatalogData } from '@/server/catalog/catalog.service'
 
 // Категории меняются редко - кешируем на 1 час
 export const revalidate = 3600
 
 export async function GET(req: NextRequest) {
   try {
-    // Используем сервис с кешем в памяти
-    const categories = await loadCategories()
-    
-    // Форматируем ID как строки
-    const formatted = Array.isArray(categories) 
-      ? categories.map(cat => ({ ...cat, id: String(cat.id) }))
-      : []
-    
-    // Возвращаем массив категорий (для совместимости с каталогом)
+    const catalog = await getCatalogData({ includeRaw: true })
+    const rawCategories = Array.isArray(catalog.rawCategories) ? catalog.rawCategories : []
+    const formatted = rawCategories.map((cat: any) => ({ ...cat, id: String(cat.id) }))
+
     return NextResponse.json(formatted, {
       headers: {
         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'

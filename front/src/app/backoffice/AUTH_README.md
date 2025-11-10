@@ -2,7 +2,7 @@
 
 ## Обзор
 
-Система аутентификации для backoffice использует JWT (JSON Web Tokens) для безопасной авторизации пользователей. Токены хранятся как в HTTP-only cookies (для серверной проверки), так и в `localStorage` (для клиентских запросов).
+Система аутентификации для backoffice использует JWT (JSON Web Tokens) и хранит токен только в HTTP-only cookie. Клиентская часть полагается на cookie и не взаимодействует напрямую с токеном.
 
 ## API Endpoints
 
@@ -23,8 +23,7 @@
   "success": true,
   "user": {
     "username": "rosebotanique"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
@@ -44,16 +43,6 @@
 }
 ```
 
-### POST `/api/auth/sync`
-Синхронизирует HttpOnly cookie с токеном из тела запроса.
-
-**Request Body:**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
 ## Страница логина
 
 ### `/backoffice/login`
@@ -62,7 +51,7 @@
 **Особенности:**
 - Автоматическая проверка авторизации при загрузке
 - Перенаправление на `/backoffice` после успешного входа
-- Сохранение токена в `localStorage` и установка cookie
+- Работа только с HTTP-only cookie (без localStorage)
 - Обработка ошибок и отображение сообщений
 
 ## Middleware
@@ -71,9 +60,9 @@
 Next.js middleware для защиты маршрутов backoffice.
 
 **Функциональность:**
-- Проверяет наличие и валидность токена в cookies или заголовке `Authorization`
+- Проверяет наличие и валидность токена в cookies
 - Перенаправляет неавторизованных пользователей на `/backoffice/login`
-- Исключает маршруты `/backoffice/login` и `/api/auth/*` из проверки
+- Исключает публичные маршруты (`/backoffice/login`, `/api/auth/*`, `/api/catalog`)
 
 ## Layout Integration
 
@@ -89,9 +78,8 @@ Next.js middleware для защиты маршрутов backoffice.
 ## Безопасность
 
 ### Хранение токенов
-- **HTTP-only cookies**: Используются для серверной проверки через middleware
-- **localStorage**: Используется для клиентских API запросов (fallback)
-- **Authorization header**: Поддерживается для совместимости
+- **HTTP-only cookies**: Используются для серверной проверки через middleware и API
+- **Authorization header**: Опционально поддерживается для совместимости
 
 ### Пароли
 Пароли хешируются с помощью `bcryptjs` перед сохранением.
@@ -101,6 +89,14 @@ Next.js middleware для защиты маршрутов backoffice.
 ```env
 JWT_SECRET=your-very-secure-random-secret-key
 ```
+
+### Учетные данные администратора
+Для production задайте хешированный пароль и логин в переменных окружения:
+```env
+ADMIN_USERNAME=your-admin
+ADMIN_PASSWORD_HASH=$2b$10$...
+```
+> Хеш можно получить командой `node -e "console.log(require('bcryptjs').hashSync('Пароль', 10))"`
 
 ## Учетные данные по умолчанию
 
@@ -121,8 +117,7 @@ JWT_SECRET=your-very-secure-random-secret-key
 Если возникают проблемы с входом:
 
 1. Проверьте консоль браузера на наличие ошибок
-2. Проверьте, что токен сохраняется в `localStorage`
-3. Проверьте, что cookie `auth-token` устанавливается в браузере
-4. Убедитесь, что `JWT_SECRET` одинаковый на сервере и в middleware
-5. Очистите `localStorage` и cookies для `localhost`
+2. Проверьте, что cookie `auth-token` устанавливается в браузере
+3. Убедитесь, что `JWT_SECRET` одинаковый на сервере и в middleware
+4. Очистите cookies для `localhost`
 
