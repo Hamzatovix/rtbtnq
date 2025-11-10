@@ -23,9 +23,9 @@ export async function middleware(request: NextRequest) {
   const isBackofficeRoute = pathname.startsWith('/backoffice')
   const isApiRoute = pathname.startsWith('/api')
   const isAuthRoute = pathname.startsWith('/api/auth')
+  const publicApiPrefixes = ['/api/catalog', '/api/products', '/api/colors']
   const isPublicApiRoute =
-    request.method === 'GET' &&
-    (pathname.startsWith('/api/catalog') || pathname.startsWith('/api/products'))
+    request.method === 'GET' && publicApiPrefixes.some((prefix) => pathname.startsWith(prefix))
 
   const isLoginPage = pathname === '/backoffice/login'
 
