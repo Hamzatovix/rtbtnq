@@ -12,7 +12,7 @@ const CartDrawer = dynamic(
   { ssr: false, loading: () => null }
 )
 const FavoritesDrawer = dynamic(
-  () => import('@/components/favorites/favorites-drawer'),
+  () => import('@/components/favorites'),
   { ssr: false, loading: () => null }
 )
 import ErrorBoundary from '@/components/ui/error-boundary'
