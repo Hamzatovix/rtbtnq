@@ -29,3 +29,38 @@ front/.env
 front/.env.*
 !front/.env.example
 .vercel
+
+# Системные файлы Windows
+*.ini
+NTUSER.*
+AppData/
+Contacts/
+Desktop/
+Downloads/
+Favorites/
+Links/
+Music/
+Videos/
+Saved Games/
+Searches/
+*.LOG*
+*.blf
+*.regtrans-ms
+
+# Кэши и временные файлы
+.gradle/
+.android/
+.config/
+.cursor/
+.Ld9VirtualBox/
+.logseq/
+.next/
+.skiko/
+.ssh/
+.vite/
+.vscode/
+Nox_share/
+PCManger/
+MediaGet2/
+IntelGraphicsProfiles/
+Creative Cloud Files Personal Account*/
