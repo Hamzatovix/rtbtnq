@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import type { CatalogProduct } from '@/types/catalog'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { StarFieldSubtle } from '@/components/visuals/StarFieldSubtle'
 import { useTranslations } from '@/hooks/useTranslations'
 import { useClientLocale } from '@/hooks/useClientLocale'
 
@@ -26,20 +27,16 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
   return (
     <section 
-      className="py-16 md:py-18 bg-white relative overflow-hidden"
+      className="py-16 md:py-18 bg-white dark:bg-background relative overflow-hidden"
       aria-labelledby="featured-heading"
     >
-      {/* Subtle decorative elements */}
-      <div className="absolute inset-0" aria-hidden="true">
-        <div className="absolute top-1/3 left-1/4 w-48 h-48 bg-sageTint/8 rounded-full blur-3xl anim-breath" />
-        <div className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-mistGray/20 rounded-full blur-3xl anim-breath" style={{ animationDelay: '4s' }} />
-      </div>
-
-      <div className="container mx-auto px-6 md:px-12 lg:px-24 relative">
+      {/* Менее яркие звезды - только в темной теме */}
+      <StarFieldSubtle />
+      <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
         <div className="text-center mb-12 md:mb-14">
           <h2 
             id="featured-heading" 
-            className="text-title-1 font-light text-ink-soft leading-tight tracking-wide mb-4"
+            className="text-title-1 font-light text-ink-soft dark:text-foreground leading-tight tracking-wide mb-4"
           >
             <span suppressHydrationWarning>{t('home.featuredProducts.title')}</span>
           </h2>
@@ -53,7 +50,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
               </div>
             ))
           ) : (
-            <p className="col-span-full text-center text-ink-soft/70 text-base font-light tracking-wide">
+            <p className="col-span-full text-center text-ink-soft/70 dark:text-muted-foreground text-base font-light tracking-wide">
               {emptyMessage}
             </p>
           )}

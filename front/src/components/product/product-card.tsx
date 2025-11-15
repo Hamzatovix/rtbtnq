@@ -12,6 +12,7 @@ import { getOptimizedAsset } from '@/lib/optimized-assets'
 import { useIsCoarsePointer } from '@/hooks/useIsCoarsePointer'
 import { useClientLocale } from '@/hooks/useClientLocale'
 import { formatPriceWithLocale, getColorDisplayName } from '@/lib/utils'
+import { triggerHapticFeedback } from '@/lib/haptics'
 import ProductCardSwatches from './product-card-swatches'
 import ProductCardNotification from './product-card-notification'
 import ProductCardQuickActions from './product-card-quick-actions'
@@ -45,31 +46,16 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const pointerMode = isHydrated ? isCoarsePointer : false
 
   const triggerMobileHaptics = useCallback(() => {
-    if (!pointerMode || typeof window === 'undefined') return
-    try {
-      const nav = window.navigator as Navigator & { vibrate?: (pattern: number | number[]) => boolean }
-      if (typeof nav?.vibrate === 'function') {
-        nav.vibrate([10, 15, 10])
-        return
-      }
-      const webkit = (window as any).webkit
-      const hapticHandler =
-        webkit?.messageHandlers?.notificationFeedback ??
-        webkit?.messageHandlers?.hapticFeedback ??
-        webkit?.messageHandlers?.impactFeedback
-      if (hapticHandler?.postMessage) {
-        hapticHandler.postMessage('success')
-      }
-    } catch {
-      // haptics unsupported — silently ignore
-    }
+    if (!pointerMode) return
+    triggerHapticFeedback('success')
   }, [pointerMode])
 
   // Compact mode styles
   const isCompact = density === 'compact'
   const cardRadius = isCompact ? 'rounded-lg' : 'rounded-2xl'
   const imageRatio = isCompact ? 'aspect-[4/5] sm:aspect-square' : 'aspect-[4/5]'
-  const imageScale = pointerMode ? '' : isCompact ? 'group-hover:scale-[1.02]' : 'group-hover:scale-103'
+  // Уменьшено масштабирование для более тонкого эффекта
+  const imageScale = pointerMode ? '' : 'group-hover:scale-[1.01]'
   const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
   const titleClass = isCompact ? 'text-sm' : 'text-base sm:text-lg'
   const descClass = isCompact ? 'text-xs line-clamp-1' : 'text-xs sm:text-sm line-clamp-2'
@@ -147,7 +133,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     
     addToCart(mockVariant, 1)
     setShowCartNotification(true)
-    triggerMobileHaptics()
+    triggerMobileHaptics() // Вибрация при добавлении в корзину
     
     // Clear existing timeout
     if (cartTimeoutRef.current) {
@@ -179,6 +165,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       addToFavorites(favProduct)
       setFavorite(true)
       setShowFavoriteNotification(true)
+      triggerMobileHaptics() // Вибрация при добавлении в избранное
       if (favoriteTimeoutRef.current) {
         clearTimeout(favoriteTimeoutRef.current)
       }
@@ -204,7 +191,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
         className="top-4 left-4 translate-y-12"
       />
 
-      <Card className={`overflow-hidden border border-mistGray/20 shadow-misty/50 hover:shadow-misty transition-breathing backdrop-misty ${cardRadius}`} style={{ backgroundColor: '#f9f9f9' }}>
+      <Card className={`overflow-hidden border border-mistGray/20 dark:border-border shadow-misty/50 dark:shadow-misty hover:shadow-misty dark:hover:shadow-misty transition-breathing backdrop-misty dark:backdrop-misty ${cardRadius}`}>
         <CardContent className="p-0">
           {/* Image */}
           <div className={`relative overflow-hidden rounded-t-[inherit] ${imageRatio}`}>
@@ -218,13 +205,13 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                 alt={selectedColor ? `${product.name} · ${locale === 'ru' ? 'оттенок ' + getColorDisplayName(selectedColor.name, 'ru') : 'shade ' + selectedColor.name}` : product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className={`object-cover transition-transform duration-300 ease-brand ${imageScale}`}
+                className={`object-cover transition-transform duration-250 ease-brand ${imageScale}`}
                 priority={false}
               />
             </Link>
             
             {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-sageTint/10 via-transparent to-transparent opacity-0 transition-opacity duration-250 hidden sm:block group-hover:opacity-100" aria-hidden="true" />
+            <div className="absolute inset-0 bg-gradient-to-t from-sageTint/10 dark:from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-250 hidden sm:block group-hover:opacity-100" aria-hidden="true" />
             
             {/* Action buttons */}
             <ProductCardQuickActions
@@ -235,7 +222,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
 
             {/* View details overlay */}
             {!pointerMode && (
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-250 flex items-center justify-center bg-sageTint/20">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-250 flex items-center justify-center bg-sageTint/20 dark:bg-primary/20">
               </div>
             )}
           </div>
@@ -244,10 +231,10 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
           <div className={bodyPadding}>
             <Link href={`/product/${product.slug}`} aria-label={`просмотреть ${product.name}`}>
               <div className="space-y-1.5">
-                <h3 className={`text-graceful font-light transition-colors duration-250 leading-tight ${titleClass}`} style={{ color: '#4b4b4b' }}>
+                <h3 className={`text-graceful font-light transition-colors duration-250 leading-tight text-inkSoft dark:text-foreground ${titleClass}`}>
                   {product.name}
                 </h3>
-                <p className={`leading-relaxed font-light tracking-wide ${descClass}`} style={{ color: 'rgba(75, 75, 75, 0.6)' }}>
+                <p className={`leading-relaxed font-light tracking-wide text-whisper dark:text-muted-foreground ${descClass}`}>
                   {product.category.name}
                 </p>
               </div>
@@ -255,7 +242,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
             
             <div className={`flex items-center justify-between ${priceSectionPadding}`}>
               <div className="flex items-center space-x-2">
-                <span className={`text-inkSoft/80 ${priceClass}`}>
+                <span className={`text-inkSoft/80 dark:text-foreground ${priceClass}`}>
                   {typeof product.price === 'number'
                     ? formatPriceWithLocale(product.price, locale)
                     : (locale === 'ru' ? 'цена по запросу' : 'Price on request')
@@ -284,9 +271,10 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     </>
   )
 
+  // Унифицированы easing (ease-brand) и duration (200ms для hover)
   const interactiveWrapperClass = pointerMode
     ? wrapperClass
-    : `${wrapperClass} transition-transform duration-200 ease-out hover:-translate-y-1.5`
+    : `${wrapperClass} transition-transform duration-200 ease-brand hover:-translate-y-1`
 
   return <div className={interactiveWrapperClass}>{cardContent}</div>
 }

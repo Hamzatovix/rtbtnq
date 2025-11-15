@@ -13,6 +13,7 @@ import { useIsCoarsePointer } from '@/hooks/useIsCoarsePointer'
 import { useWindowSize } from '@/hooks/useWindowSize'
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
 import useSWR from 'swr'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface CatalogClientProps {
   initialData: CatalogData
@@ -110,37 +111,84 @@ const FiltersPanel = ({
 interface ProductGridProps {
   products: CatalogProduct[]
   isCoarsePointer: boolean
+  filterKey: string // Ключ для пересоздания анимации при изменении фильтров
 }
 
 interface VirtualizedProductGridProps extends ProductGridProps {
   windowWidth: number
 }
 
-const DefaultProductGrid = ({ products, isCoarsePointer }: ProductGridProps) => {
+const DefaultProductGrid = ({ products, isCoarsePointer, filterKey }: ProductGridProps) => {
+  // Stagger анимация для последовательного появления карточек
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0.22, 1, 0.36, 1], // ease-brand
+      },
+    },
+  }
+
   if (isCoarsePointer) {
+    // Мобильная версия - без hover эффектов, с stagger анимацией
     return (
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-8">
-        {products.map((product) => (
-          <div key={product.id}>
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={filterKey}
+          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {products.map((product) => (
+            <motion.div key={product.id} variants={itemVariants}>
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
     )
   }
 
+  // Desktop версия - без двойной анимации подъема (убрана из CatalogClient)
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-8 transition-opacity duration-500">
-      {products.map((product) => (
-        <div key={product.id} className="transition-transform duration-200 ease-out hover:-translate-y-1">
-          <ProductCard product={product} />
-        </div>
-      ))}
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={filterKey}
+        className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        {products.map((product) => (
+          <motion.div key={product.id} variants={itemVariants}>
+            <ProductCard product={product} />
+          </motion.div>
+        ))}
+      </motion.div>
+    </AnimatePresence>
   )
 }
 
-const VirtualizedProductGrid = ({ products, isCoarsePointer, windowWidth }: VirtualizedProductGridProps) => {
+const VirtualizedProductGrid = ({ products, isCoarsePointer, windowWidth, filterKey }: VirtualizedProductGridProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState(0)
 
@@ -180,7 +228,7 @@ const VirtualizedProductGrid = ({ products, isCoarsePointer, windowWidth }: Virt
   const shouldVirtualize = containerWidth > 0 && cardWidth > 0 && products.length > columnCount * 3
 
   if (!shouldVirtualize) {
-    return <DefaultProductGrid products={products} isCoarsePointer={isCoarsePointer} />
+    return <DefaultProductGrid products={products} isCoarsePointer={isCoarsePointer} filterKey={filterKey} />
   }
 
   const virtualizer = useWindowVirtualizer({
@@ -315,11 +363,7 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
 
   if (!isMounted) {
     return (
-      <div className="min-h-screen bg-white relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute top-1/4 left-1/6 w-32 h-32 bg-sageTint/6 rounded-full blur-2xl anim-breath" />
-          <div className="absolute bottom-1/4 right-1/6 w-40 h-40 bg-mistGray/15 rounded-full blur-3xl anim-breath" style={{ animationDelay: '3s' }} />
-        </div>
+      <div className="min-h-screen bg-white dark:bg-background relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 relative">
           <div className="text-center mb-16">
             <div className="h-10 w-48 bg-mistGray/20 rounded mx-auto animate-pulse" />
@@ -335,18 +379,10 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
   }
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/6 w-32 h-32 bg-sageTint/6 rounded-full blur-2xl anim-breath" />
-        <div
-          className="absolute bottom-1/4 right-1/6 w-40 h-40 bg-mistGray/15 rounded-full blur-3xl anim-breath"
-          style={{ animationDelay: '3s' }}
-        />
-      </div>
-
+    <div className="min-h-screen bg-white dark:bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 relative">
         <div className="text-center mb-16">
-          <h1 className="text-display-1 font-light text-ink-soft leading-[0.95] mb-6 tracking-normal">
+          <h1 className="text-display-1 font-light text-ink-soft dark:text-foreground leading-[0.95] mb-6 tracking-normal">
             {t('catalog.title')}
           </h1>
         </div>
@@ -361,7 +397,7 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
                 </Button>
               </SheetTrigger>
             </div>
-            <SheetContent side="bottom" className="bg-white rounded-t-3xl shadow-2xl !h-auto max-h-[75vh] w-full px-5 pt-6 pb-10 overflow-y-auto">
+            <SheetContent side="bottom" className="bg-white dark:bg-card rounded-t-3xl shadow-2xl dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] !h-auto max-h-[75vh] w-full px-5 pt-6 pb-10 overflow-y-auto">
               <FiltersPanel
                 className="flex flex-col gap-6"
                 categories={categories}
@@ -412,13 +448,14 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
                 products={products}
                 isCoarsePointer={coarsePointer}
                 windowWidth={windowWidth}
+                filterKey={queryString}
               />
             ) : (
-              <DefaultProductGrid products={products} isCoarsePointer={coarsePointer} />
+              <DefaultProductGrid products={products} isCoarsePointer={coarsePointer} filterKey={queryString} />
             )
           ) : (
             <div className="text-center py-16">
-              <p className="text-body text-ink-soft/70 font-light tracking-wide mb-6">
+              <p className="text-body text-ink-soft/70 dark:text-muted-foreground font-light tracking-wide mb-6">
                 {t('catalog.empty') || 'товары не найдены'}
               </p>
               <Button variant="outline" onClick={handleResetFilters}>

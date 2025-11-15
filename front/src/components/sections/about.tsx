@@ -4,16 +4,21 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { StarFieldMedium } from '@/components/visuals/StarFieldMedium'
 import { useTranslations } from '@/hooks/useTranslations'
 
 export function About() {
   const t = useTranslations()
   return (
     <section
-      className="relative min-h-[88svh] flex items-center justify-center bg-white"
+      className="relative min-h-[88svh] flex items-center justify-center bg-white dark:bg-background"
       aria-labelledby="about-heading"
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-24">
+      {/* Промежуточные звезды для плавного перехода - только в темной теме */}
+      <StarFieldMedium />
+      {/* Градиентное появление звезд сверху для плавного перехода */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent pointer-events-none z-[5]" aria-hidden="true" />
+      <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
         {/* Wrap grid in relative to position connector */}
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
@@ -22,14 +27,14 @@ export function About() {
             <div className="flex flex-col items-center md:items-start gap-1 mb-4">
               <h2
                 id="about-heading"
-                className="text-title-1 font-light text-ink-soft leading-tight tracking-wide"
+                className="text-title-1 font-light text-ink-soft dark:text-foreground leading-tight tracking-wide"
               >
                 {t('home.about.title')}
               </h2>
             </div>
               
             <div className="flex items-center justify-center md:justify-start gap-4 min-h-[60px]">
-              <p className="text-body font-light tracking-wide leading-relaxed">
+              <p className="text-body font-light tracking-wide leading-relaxed text-inkSoft dark:text-muted-foreground">
                 {t('home.about.description')}
               </p>
               
@@ -67,8 +72,8 @@ export function About() {
                 }}
               />
               {/* more delicate mask */}
-              <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_70%)] bg-sageTint/10 pointer-events-none" aria-hidden="true" />
-              <div className="absolute inset-0 bg-gradient-to-t from-sageTint/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true" />
+              <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_70%)] bg-sageTint/10 dark:bg-primary/10 pointer-events-none" aria-hidden="true" />
+              <div className="absolute inset-0 bg-gradient-to-t from-sageTint/10 dark:from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true" />
             </div>
 
             {/* Two smaller images — more compact */}
@@ -86,7 +91,7 @@ export function About() {
                     target.src = '/placeholder/about_square_macro_placeholder.webp'
                   }}
                 />
-                <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_80%)] bg-sageTint/10 pointer-events-none" aria-hidden="true" />
+                <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_80%)] bg-sageTint/10 dark:bg-primary/10 pointer-events-none" aria-hidden="true" />
               </div>
 
               <div className="relative aspect-square md:aspect-square rounded-md overflow-hidden group">
@@ -102,7 +107,7 @@ export function About() {
                     target.src = '/placeholder/about_square_tools_placeholder.webp'
                   }}
                 />
-                <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_80%)] bg-sageTint/10 pointer-events-none" aria-hidden="true" />
+                <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_80%)] bg-sageTint/10 dark:bg-primary/10 pointer-events-none" aria-hidden="true" />
               </div>
             </div>
           </div>

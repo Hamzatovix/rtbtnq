@@ -136,13 +136,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center relative overflow-hidden">
-      {/* Декоративные элементы */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/6 w-32 h-32 bg-sageTint/6 rounded-full blur-2xl anim-breath" />
-        <div className="absolute bottom-1/4 right-1/6 w-40 h-40 bg-mistGray/15 rounded-full blur-3xl anim-breath" style={{ animationDelay: '3s' }} />
-      </div>
-
+    <div className="min-h-screen bg-white dark:bg-background flex items-center justify-center relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -150,13 +144,13 @@ function LoginForm() {
           transition={{ duration: 0.8 }}
           className="max-w-md mx-auto"
         >
-          <div className="bg-white rounded-2xl border border-mistGray/20 shadow-xl p-8 md:p-10">
+          <div className="bg-white dark:bg-card rounded-2xl border border-mistGray/20 dark:border-border shadow-xl dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] p-8 md:p-10">
             <div className="text-center mb-8">
-              <h1 className="text-2xl sm:text-3xl font-light text-inkSoft mb-2">
+              <h1 className="text-2xl sm:text-3xl font-light text-inkSoft dark:text-foreground mb-2">
                 rosebotanique
               </h1>
-              <p className="text-sm text-inkSoft/60">Панель управления</p>
-              <p className="text-xs text-inkSoft/40 mt-2">Логин: rosebotanique</p>
+              <p className="text-sm text-inkSoft/60 dark:text-muted-foreground">Панель управления</p>
+              <p className="text-xs text-inkSoft/40 dark:text-muted-foreground/60 mt-2">Логин: rosebotanique</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -192,7 +186,7 @@ function LoginForm() {
               </div>
 
               {error && (
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-sm">
                   {error}
                 </div>
               )}
@@ -215,8 +209,8 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sageTint mx-auto"></div>
+      <div className="min-h-screen bg-white dark:bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sageTint dark:border-primary mx-auto"></div>
       </div>
     }>
       <LoginForm />

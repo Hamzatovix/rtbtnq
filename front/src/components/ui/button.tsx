@@ -5,13 +5,13 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'group inline-flex items-center justify-center whitespace-nowrap font-light ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 transition-[transform,background-color] duration-250 ease-brand disabled:opacity-50 disabled:pointer-events-none',
+  'group inline-flex items-center justify-center whitespace-nowrap font-light ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-ring focus-visible:ring-offset-2 transition-[transform,background-color] duration-250 ease-brand disabled:opacity-50 disabled:pointer-events-none',
   {
     variants: {
       variant: {
-        primary: 'text-ink-soft border border-mistGray/60 bg-sageTint hover:bg-mistGray/20',
-        ghost: 'text-ink-soft hover:bg-mistGray/20',
-        outline: 'text-ink-soft border border-mistGray/60 bg-transparent hover:bg-mistGray/10',
+        primary: 'text-ink-soft dark:text-primary-foreground border border-mistGray/60 dark:border-border bg-sageTint dark:bg-primary hover:bg-mistGray/20 dark:hover:bg-[hsl(35_18%_67%)]',
+        ghost: 'text-ink-soft dark:text-foreground hover:bg-mistGray/20 dark:hover:bg-muted/30',
+        outline: 'text-ink-soft dark:text-foreground border border-mistGray/60 dark:border-border bg-transparent hover:bg-mistGray/10 dark:hover:bg-muted/20',
       },
       size: {
         sm: 'h-9 px-3 rounded-full text-subtle',

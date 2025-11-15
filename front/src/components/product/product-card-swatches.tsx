@@ -92,8 +92,8 @@ export default function ProductCardSwatches({
               event.stopPropagation()
               onSelect(color, index)
             }}
-            className={`${swatchSizeClass} rounded-full border-2 shadow-warm transition-transform duration-250 ease-brand focus:outline-none focus:ring-2 focus:ring-sageTint ${
-              checked ? 'ring-2 ring-sageTint scale-110 shadow-medium' : 'border-mistGray/30 hover:border-mistGray/50 hover:scale-110'
+            className={`${swatchSizeClass} rounded-full border-2 shadow-warm transition-transform duration-250 ease-brand focus:outline-none focus:ring-2 focus:ring-sageTint dark:focus:ring-primary ${
+              checked ? 'ring-2 ring-sageTint dark:ring-primary scale-110 shadow-medium' : 'border-mistGray/30 dark:border-border hover:border-mistGray/50 dark:hover:border-border/60 hover:scale-110'
             }`}
             style={{ backgroundColor: color.hex_code }}
             title={
@@ -112,7 +112,7 @@ export default function ProductCardSwatches({
 
       {moreCount > 0 && (
         <div
-          className={`${swatchSizeClass} rounded-full border-2 flex items-center justify-center text-[10px] font-medium text-muted-foreground shadow-warm bg-roseBeige border-mistGray/30`}
+          className={`${swatchSizeClass} rounded-full border-2 flex items-center justify-center text-[10px] font-medium text-muted-foreground shadow-warm bg-roseBeige dark:bg-card border-mistGray/30 dark:border-border`}
           role="img"
           aria-label={locale === 'ru' ? `ещё ${moreCount} цветов доступно` : `${moreCount} more colors available`}
         >

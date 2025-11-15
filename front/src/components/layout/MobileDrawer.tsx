@@ -131,7 +131,7 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: Mo
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={motionConfig}
-            className="fixed inset-0 z-50 bg-black/40 md:hidden"
+            className="fixed inset-0 z-[59] bg-black/40 md:hidden dark:bg-black/50"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -139,34 +139,40 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: Mo
           {/* Drawer Panel */}
           <motion.div
             ref={panelRef}
-            initial={reducedMotion ? {} : { x: '100%' }}
-            animate={reducedMotion ? {} : { x: 0 }}
-            exit={reducedMotion ? {} : { x: '100%' }}
-            transition={motionConfig}
+            initial={reducedMotion ? {} : { x: '100%', opacity: 0 }}
+            animate={reducedMotion ? {} : { x: 0, opacity: 1 }}
+            exit={reducedMotion ? {} : { x: '100%', opacity: 0 }}
+            transition={{
+              ...motionConfig,
+              opacity: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+            }}
             role="dialog"
             aria-modal="true"
             aria-labelledby={`${drawerId}-label`}
             id={drawerId}
-            className="fixed right-0 top-0 z-50 h-dvh w-[min(88vw,360px)] bg-white border-l border-mistGray/20 p-6 pb-[max(env(safe-area-inset-bottom,0px),1rem)] shadow-xl overflow-y-auto"
+            className="fixed right-0 top-0 z-[60] h-dvh w-[min(88vw,380px)] bg-gradient-to-b from-white via-white to-white/95 dark:from-card dark:via-card dark:to-card/98 border-l border-mistGray/20 dark:border-border backdrop-blur-xl dark:backdrop-blur-xl shadow-2xl dark:shadow-[0_8px_40px_rgba(0,0,0,0.6)] overflow-y-auto will-change-[transform,opacity]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Декоративный градиент сверху */}
+            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-sageTint/5 dark:from-primary/5 to-transparent pointer-events-none" aria-hidden="true" />
+            
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-              <h2 id={`${drawerId}-label`} className="text-title-1 font-light text-inkSoft">
+            <div className="relative flex items-center justify-between mb-6 pt-8 pb-4 px-5 border-b border-mistGray/10 dark:border-border/50">
+              <h2 id={`${drawerId}-label`} className="text-title-1 font-light text-inkSoft dark:text-foreground tracking-wide">
                 {title}
               </h2>
               <button
                 type="button"
                 aria-label="Close menu"
                 onClick={onClose}
-                className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-mistGray/20 bg-transparent hover:bg-mistGray/10 transition-[transform,background-color] duration-250 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint focus-visible:ring-offset-2 active:scale-98"
+                className="group inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-mistGray/20 dark:border-border bg-white/50 dark:bg-card/50 backdrop-blur-sm hover:bg-mistGray/10 dark:hover:bg-muted/30 transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-95 hover:scale-105"
               >
-                <X className="h-5 w-5 text-inkSoft" />
+                <X className="h-5 w-5 text-inkSoft dark:text-foreground transition-transform duration-300 group-hover:rotate-90" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="flex h-full flex-col gap-2 pt-6">{children}</div>
+            <div className="relative flex flex-col flex-1 overflow-y-auto">{children}</div>
           </motion.div>
         </>
       )}

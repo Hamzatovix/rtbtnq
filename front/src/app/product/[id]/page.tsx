@@ -12,6 +12,7 @@ import { useFavoritesStore } from '@/store/favorites-store'
 import { formatPriceWithLocale } from '@/lib/utils'
 import { useClientLocale } from '@/hooks/useClientLocale'
 import { useTranslations } from '@/hooks/useTranslations'
+import { triggerHapticFeedback } from '@/lib/haptics'
 import Link from 'next/link'
 
 type ProductVariant = {
@@ -118,10 +119,10 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sageTint mx-auto mb-4"></div>
-          <p className="text-inkSoft/60">Загрузка...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sageTint dark:border-primary mx-auto mb-4"></div>
+          <p className="text-inkSoft/60 dark:text-muted-foreground">Загрузка...</p>
         </div>
       </div>
     )
@@ -129,9 +130,9 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-background">
         <div className="text-center">
-          <h1 className="text-2xl font-light text-inkSoft mb-4">Товар не найден</h1>
+          <h1 className="text-2xl font-light text-inkSoft dark:text-foreground mb-4">Товар не найден</h1>
           <Link href="/catalog">
             <Button>Вернуться в каталог</Button>
           </Link>
@@ -168,6 +169,9 @@ export default function ProductPage() {
       quantity: 1,
       selectedColor: selectedColor?.name || '',
     })
+    
+    // Вибрация при добавлении в корзину
+    triggerHapticFeedback('success')
   }
 
   const handleToggleFavorite = () => {
@@ -181,6 +185,9 @@ export default function ProductPage() {
         price: price,
         image: currentImage,
       } as any)
+      
+      // Вибрация при добавлении в избранное
+      triggerHapticFeedback('success')
     }
   }
 
@@ -190,7 +197,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-background">
       <div className="container mx-auto px-6 md:px-10 lg:px-16 py-8">
         {/* Back Button */}
         <motion.div
@@ -241,8 +248,8 @@ export default function ProductPage() {
                       onClick={() => setSelectedImageIndex(idx)}
                       className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                         selectedImageIndex === idx 
-                          ? 'border-sageTint ring-2 ring-sageTint/30' 
-                          : 'border-mistGray/30 hover:border-mistGray/50'
+                          ? 'border-sageTint dark:border-primary ring-2 ring-sageTint/30 dark:ring-primary/30' 
+                          : 'border-mistGray/30 dark:border-border hover:border-mistGray/50 dark:hover:border-border/60'
                       }`}
                     >
                       <img
@@ -269,13 +276,13 @@ export default function ProductPage() {
             className="space-y-5"
           >
             <div>
-              <h1 className="font-serif text-2xl font-light text-inkSoft mb-3.5">
+              <h1 className="font-serif text-2xl font-light text-inkSoft dark:text-foreground mb-3.5">
                 {product.name}
               </h1>
-              <p className="text-xl font-light text-inkSoft mb-4">
+              <p className="text-xl font-light text-inkSoft dark:text-foreground mb-4">
                 {formatPriceWithLocale(price, locale)}
               </p>
-              <p className="text-inkSoft/70 leading-relaxed text-sm break-words max-w-[65ch]">
+              <p className="text-inkSoft/70 dark:text-muted-foreground leading-relaxed text-sm break-words max-w-[65ch]">
                 {product.description}
               </p>
             </div>
@@ -283,7 +290,7 @@ export default function ProductPage() {
             {/* Colors */}
             {availableColors.length > 0 && (
               <div>
-                <h3 className="font-light text-inkSoft/80 mb-2.5 text-sm">{t('product.colors') || 'Цвет'}</h3>
+                <h3 className="font-light text-inkSoft/80 dark:text-muted-foreground mb-2.5 text-sm">{t('product.colors') || 'Цвет'}</h3>
                 <div className="flex flex-wrap gap-2.5">
                   {availableColors.map((colorData) => {
                     const isSelected = String(colorData.id) === String(selectedColorId)
@@ -293,8 +300,8 @@ export default function ProductPage() {
                         onClick={() => handleColorChange(String(colorData.id))}
                         className={`w-8 h-8 rounded-full border-2 transition-all relative ${
                           isSelected 
-                            ? 'border-inkSoft scale-105 ring-2 ring-sageTint' 
-                            : 'border-mistGray/40 hover:border-mistGray/60'
+                            ? 'border-inkSoft dark:border-foreground scale-105 ring-2 ring-sageTint dark:ring-primary' 
+                            : 'border-mistGray/40 dark:border-border hover:border-mistGray/60 dark:hover:border-border/60'
                         }`}
                         style={{ backgroundColor: colorData.hex || colorData.hex_code || '#cccccc' }}
                         title={`${colorData.name}${isSelected ? ' (выбран)' : ''}`}
@@ -312,7 +319,7 @@ export default function ProductPage() {
                   })}
                 </div>
                 {selectedColor && (
-                  <p className="text-xs text-inkSoft/60 mt-2">{selectedColor.name}</p>
+                  <p className="text-xs text-inkSoft/60 dark:text-muted-foreground mt-2">{selectedColor.name}</p>
                 )}
               </div>
             )}
@@ -329,7 +336,7 @@ export default function ProductPage() {
               <Button
                 variant="outline"
                 onClick={handleToggleFavorite}
-                className={`px-3 h-10 text-sm ${favorite ? 'text-red-500' : 'text-inkSoft/70'}`}
+                className={`px-3 h-10 text-sm ${favorite ? 'text-red-500 dark:text-red-400' : 'text-inkSoft/70 dark:text-muted-foreground'}`}
               >
                 <Heart className="h-4 w-4" fill={favorite ? 'currentColor' : 'none'} />
               </Button>
@@ -337,19 +344,19 @@ export default function ProductPage() {
 
             {/* Product Details */}
             {(product.materials || product.care) && (
-              <div className="border-t pt-4 space-y-3.5">
+              <div className="border-t border-mistGray/30 dark:border-border pt-4 space-y-3.5">
                 {product.materials && (
                   <div>
-                    <h4 className="font-light text-inkSoft/80 mb-1.5 text-sm">{t('product.materials') || 'Материалы'}</h4>
-                    <p className="text-sm text-inkSoft/70 whitespace-pre-line">
+                    <h4 className="font-light text-inkSoft/80 dark:text-muted-foreground mb-1.5 text-sm">{t('product.materials') || 'Материалы'}</h4>
+                    <p className="text-sm text-inkSoft/70 dark:text-muted-foreground whitespace-pre-line">
                       {product.materials}
                     </p>
                   </div>
                 )}
                 {product.care && (
                   <div>
-                    <h4 className="font-light text-inkSoft/80 mb-1.5 text-sm">{t('product.care') || 'Уход'}</h4>
-                    <p className="text-sm text-inkSoft/70 whitespace-pre-line">
+                    <h4 className="font-light text-inkSoft/80 dark:text-muted-foreground mb-1.5 text-sm">{t('product.care') || 'Уход'}</h4>
+                    <p className="text-sm text-inkSoft/70 dark:text-muted-foreground whitespace-pre-line">
                       {product.care}
                     </p>
                   </div>
@@ -365,7 +372,7 @@ export default function ProductPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <h2 className="font-serif text-xl font-light text-inkSoft mb-6 text-center">
+          <h2 className="font-serif text-xl font-light text-inkSoft dark:text-foreground mb-6 text-center">
             {t('product.youMightLike')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

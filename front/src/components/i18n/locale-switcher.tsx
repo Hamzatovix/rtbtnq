@@ -3,44 +3,57 @@
 import { useLocaleStore } from '@/store/locale-store'
 import { useClientLocale } from '@/hooks/useClientLocale'
 import { localeConfigs } from '@/i18n/config'
-import { Globe } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { useEffect, useState } from 'react'
 
 export function LocaleSwitcher() {
   const locale = useClientLocale()
   const setLocale = useLocaleStore((state) => state.setLocale)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const toggleLocale = () => {
+    const nextLocale = locale === 'ru' ? 'en' : 'ru'
+    setLocale(nextLocale)
+  }
+
+  // Всегда используем locale напрямую, но с fallback на 'ru' для SSR
+  const currentConfig = localeConfigs[locale as keyof typeof localeConfigs] || localeConfigs.ru
+  const nextConfig = localeConfigs[locale === 'ru' ? 'en' : 'ru']
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl md:rounded-2xl border border-mistGray/30 bg-white/80 px-4 py-2 text-sm font-light uppercase tracking-wide text-inkSoft hover:bg-white transition-all duration-500 ease-out shadow-sm"
-        >
-          <Globe className="h-4 w-4 md:h-5 md:w-5" />
-          <span suppressHydrationWarning>{locale.toUpperCase()}</span>
-          <span className="sr-only">Switch language</span>
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" align="center" sideOffset={8} className="w-40">
-        {Object.values(localeConfigs).map((config) => (
-          <DropdownMenuItem
-            key={config.locale}
-            onClick={() => setLocale(config.locale)}
-            className={locale === config.locale ? 'bg-sageTint/10' : ''}
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-lg">{config.flag}</span>
-              <span className="text-sm font-light">{config.label}</span>
-            </div>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={mounted ? toggleLocale : undefined}
+      className="rounded-lg border border-mistGray/30 dark:border-border bg-white/80 dark:bg-card/80 hover:bg-white dark:hover:bg-card transition-all duration-500 ease-out shadow-sm relative group"
+      aria-label={mounted ? `Переключить язык на ${nextConfig.label}` : 'Переключить язык'}
+      title={mounted ? `Текущий язык: ${currentConfig.label}. Нажмите для переключения на ${nextConfig.label}` : undefined}
+      suppressHydrationWarning
+    >
+      {/* Текущий флаг - всегда рендерится с suppressHydrationWarning */}
+      <span 
+        className="text-lg transition-opacity duration-300 group-hover:opacity-0" 
+        role="img" 
+        aria-hidden="true"
+        suppressHydrationWarning
+      >
+        {currentConfig.flag}
+      </span>
+      {/* Следующий флаг при hover - всегда рендерится */}
+      <span 
+        className="absolute text-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100" 
+        role="img" 
+        aria-hidden="true"
+        suppressHydrationWarning
+      >
+        {nextConfig.flag}
+      </span>
+      <span className="sr-only">Switch language</span>
+    </Button>
   )
 }
 

@@ -42,12 +42,12 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
 
 function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError: () => void }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-background">
       <div className="max-w-md mx-auto text-center px-6">
         <div className="mb-6">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-mistGray/10 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-mistGray/10 dark:bg-muted/20 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-inkSoft/60"
+              className="w-8 h-8 text-inkSoft/60 dark:text-muted-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -61,8 +61,8 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
               />
             </svg>
           </div>
-          <h1 className="text-xl font-light text-inkSoft mb-2">Something went wrong</h1>
-          <p className="text-sm text-inkSoft/70 mb-6">
+          <h1 className="text-xl font-light text-inkSoft dark:text-foreground mb-2">Something went wrong</h1>
+          <p className="text-sm text-inkSoft/70 dark:text-muted-foreground mb-6">
             We're sorry, but something unexpected happened. Please try refreshing the page.
           </p>
         </div>
@@ -70,14 +70,14 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
         <div className="space-y-3">
           <button
             onClick={resetError}
-            className="w-full px-4 py-2 bg-sageTint/90 hover:bg-sageTint text-inkSoft text-sm font-medium rounded-full transition-colors duration-200"
+            className="w-full px-4 py-2 bg-sageTint/90 dark:bg-primary hover:bg-sageTint dark:hover:bg-primary/80 text-inkSoft dark:text-primary-foreground text-sm font-medium rounded-full transition-colors duration-200"
           >
             Try again
           </button>
           
           <button
             onClick={() => window.location.reload()}
-            className="w-full px-4 py-2 border border-mistGray/60 hover:border-mistGray text-inkSoft/80 text-sm font-medium rounded-full transition-colors duration-200"
+            className="w-full px-4 py-2 border border-mistGray/60 dark:border-border hover:border-mistGray dark:hover:border-border/60 text-inkSoft/80 dark:text-foreground text-sm font-medium rounded-full transition-colors duration-200"
           >
             Refresh page
           </button>
@@ -85,10 +85,10 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
 
         {process.env.NODE_ENV === 'development' && error && (
           <details className="mt-6 text-left">
-            <summary className="text-xs text-inkSoft/50 cursor-pointer mb-2">
+            <summary className="text-xs text-inkSoft/50 dark:text-muted-foreground cursor-pointer mb-2">
               Error details (development only)
             </summary>
-            <pre className="text-xs text-inkSoft/60 bg-mistGray/5 p-3 rounded border overflow-auto">
+            <pre className="text-xs text-inkSoft/60 dark:text-muted-foreground bg-mistGray/5 dark:bg-muted/10 p-3 rounded border border-mistGray/20 dark:border-border overflow-auto">
               {error.message}
               {error.stack && `\n\n${error.stack}`}
             </pre>

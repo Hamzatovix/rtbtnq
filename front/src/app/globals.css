@@ -5,19 +5,19 @@
 @layer base {
   :root {
     --background: 0 0% 98%;
-    --foreground: 240 6% 18%;
+    --foreground: 0 0% 18%;  /* Нейтральный темно-серый вместо синеватого */
     --card: 0 0% 98%;
-    --card-foreground: 240 6% 18%;
+    --card-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
     --popover: 0 0% 98%;
-    --popover-foreground: 240 6% 18%;
+    --popover-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
     --primary: 160 8% 65%;
     --primary-foreground: 0 0% 98%;
     --secondary: 45 18% 95%;
-    --secondary-foreground: 240 6% 18%;
+    --secondary-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
     --muted: 45 18% 95%;
-    --muted-foreground: 240 4% 46%;
+    --muted-foreground: 0 0% 46%;  /* Нейтральный серый */
     --accent: 45 18% 95%;
-    --accent-foreground: 240 6% 18%;
+    --accent-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 45 15% 88%;
@@ -29,38 +29,66 @@
     --font-display: var(--font-cormorant);
     --font-body: var(--font-inter);
     
-    /* New brand colors for natural minimalism */
-    --roseBeige: 244 239 232;
-    --mistGray: 214 211 206;
-    --linenWhite: 249 249 249;
-    --sageTint: 174 182 175;
-    --inkSoft: 75 75 75;
+    /* New brand colors for natural minimalism (HSL format) */
+    --roseBeige: 34 35% 93%;   /* #f4efe8 - Rose Beige */
+    --mistGray: 39 9% 82%;     /* #d6d3ce - Mist Gray */
+    --linenWhite: 0 0% 98%;    /* #f9f9f9 - Linen White */
+    --sageTint: 125 8% 70%;    /* #aeb6af - Sage Tint */
+    --inkSoft: 0 0% 29%;       /* #4b4b4b - Ink Soft */
     --soft-shadow: 0 4px 20px rgba(174, 182, 175, 0.08);
     --medium-shadow: 0 8px 30px rgba(174, 182, 175, 0.15);
     --warm-shadow: 0 6px 25px rgba(244, 239, 232, 0.4);
     --breathing-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
   }
 
+  /* Dark Mode Variables */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 142 76% 36%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 142 76% 36%;
+    /* Основные фоны */
+    --background: 30 11% 9%;           /* Deep Earth */
+    --foreground: 35 18% 91%;         /* Moonlit Glow - доработанный лунный свет текста (более яркий и гармоничный) */
+    
+    /* Карточки и контейнеры */
+    --card: 30 9% 15%;                /* Warm Charcoal */
+    --card-foreground: 35 18% 91%;    /* Moonlit Glow */
+    --popover: 30 9% 15%;             /* Warm Charcoal */
+    --popover-foreground: 35 18% 91%; /* Moonlit Glow */
+    
+    /* Акценты */
+    --primary: 35 18% 62%;            /* Moonlit Linen - доработанный лунный свет (более светлый и серебристый) */
+    --primary-foreground: 35 18% 91%; /* Moonlit Glow */
+    --secondary: 40 5% 22%;           /* Moss Shadow */
+    --secondary-foreground: 35 18% 91%; /* Moonlit Glow */
+    
+    /* Приглушенные элементы */
+    --muted: 40 5% 22%;               /* Moss Shadow */
+    --muted-foreground: 35 12% 68%;   /* Приглушенный текст - доработанный */
+    --accent: 40 5% 22%;              /* Moss Shadow */
+    --accent-foreground: 35 18% 91%;  /* Moonlit Glow */
+    
+    /* Границы и инпуты */
+    --border: 40 5% 22%;              /* Moss Shadow */
+    --input: 40 5% 22%;               /* Moss Shadow */
+    
+    /* Фокус и кольца */
+    --ring: 35 18% 62%;               /* Moonlit Linen - доработанный */
+    
+    /* Деструктивные действия */
+    --destructive: 0 65% 50%;         /* Приглушенный красный */
+    --destructive-foreground: 35 18% 91%; /* Moonlit Glow */
+    
+    /* Брендовые цвета (Dark Mode адаптация) */
+    --roseBeige: 30 9% 15%;           /* Warm Charcoal */
+    --mistGray: 40 5% 22%;            /* Moss Shadow */
+    --linenWhite: 30 11% 9%;          /* Deep Earth */
+    --sageTint: 120 10% 61%;          /* Sage Glow */
+    --inkSoft: 35 18% 91%;            /* Moonlit Glow - доработанный */
+    
+    /* Тени для темной темы */
+    --soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --medium-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    --warm-shadow: 0 6px 25px rgba(143, 166, 143, 0.15);
+    --breathing-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    --glow-shadow: 0 0 20px rgba(143, 166, 143, 0.2);
   }
 }
 
@@ -69,22 +97,103 @@
     border-color: hsl(var(--border));
   }
   body {
-    @apply bg-white font-sans;
+    @apply bg-white dark:bg-background font-sans;
     font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 17px;
     line-height: 1.8;
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Принудительное переопределение цвета для body в темной теме */
+  .dark body {
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Плавный переход при смене темы */
+  * {
+    transition: 
+      background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  /* Исключения для анимаций */
+  .anim-breath,
+  .anim-float,
+  .rb-flower,
+  .anim-breath-slow,
+  .anim-float-slow,
+  .rb-bloom-in {
+    transition: none; /* Анимации не должны прерываться */
   }
   
   h1, h2, h3 {
     font-family: var(--font-display), "Cormorant Garamond", serif;
     letter-spacing: 0.02em;
+    color: hsl(var(--foreground));
+  }
+  
+  /* Явное переопределение цвета для всех текстовых элементов в темной теме */
+  .dark {
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Переопределение для всех дочерних элементов - принудительно убираем синий */
+  .dark *:not([class*="text-"]):not(svg):not(path):not(circle):not(rect):not(line):not(polygon) {
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Исключения для элементов с явно заданным цветом через классы Tailwind */
+  .dark [class*="text-"] {
+    color: inherit !important;
+  }
+  
+  /* SVG элементы не должны менять цвет */
+  .dark svg,
+  .dark svg * {
+    color: inherit !important;
+  }
+  
+  /* Ссылки без классов - наследуют цвет */
+  .dark a:not([class*="text-"]) {
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Кнопки без классов - наследуют цвет текста */
+  .dark button:not([class*="text-"]) {
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Переопределение для всех текстовых элементов */
+  .dark p,
+  .dark span:not([class*="text-"]),
+  .dark div:not([class*="text-"]),
+  .dark h1:not([class*="text-"]),
+  .dark h2:not([class*="text-"]),
+  .dark h3:not([class*="text-"]),
+  .dark h4:not([class*="text-"]),
+  .dark h5:not([class*="text-"]),
+  .dark h6:not([class*="text-"]),
+  .dark li,
+  .dark td,
+  .dark th {
+    color: hsl(var(--foreground)) !important;
   }
 
   /* Form controls: brand focus and autofill reset */
   input, textarea, select {
-    accent-color: rgb(var(--sageTint));
-    caret-color: rgb(var(--inkSoft));
+    accent-color: hsl(var(--sageTint));
+    caret-color: hsl(var(--inkSoft));
     background-color: hsl(var(--background)) !important; /* жёстко фиксируем фон */
+    color: hsl(var(--foreground));
+  }
+  
+  /* Переопределение для темной темы */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    accent-color: hsl(var(--sageTint));
+    caret-color: hsl(var(--inkSoft));
     color: hsl(var(--foreground));
   }
   input:focus,
@@ -94,9 +203,20 @@
   select:focus,
   select:focus-visible {
     outline: none !important;
-    border-color: rgb(var(--sageTint)) !important;
+    border-color: hsl(var(--sageTint)) !important;
     /* Эмулируем tailwind ring, перекрывая системный синий */
-    box-shadow: 0 0 0 2px rgba(var(--sageTint), 1) !important;
+    box-shadow: 0 0 0 2px hsl(var(--sageTint) / 1) !important;
+  }
+  
+  /* Focus для темной темы */
+  .dark input:focus,
+  .dark input:focus-visible,
+  .dark textarea:focus,
+  .dark textarea:focus-visible,
+  .dark select:focus,
+  .dark select:focus-visible {
+    border-color: hsl(var(--ring)) !important;
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3) !important;
   }
   
 }
@@ -276,6 +396,12 @@
     background: rgba(250, 249, 247, 0.6);
   }
   
+  /* Backdrop для темной темы */
+  .dark .backdrop-breathing {
+    backdrop-filter: blur(12px);
+    background: rgba(26, 24, 21, 0.7);  /* Deep Earth с прозрачностью */
+  }
+  
   .transition-breathing {
     transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -286,8 +412,33 @@
       radial-gradient(circle at 75% 25%, rgba(214, 211, 206, 0.2) 0%, transparent 50%);
   }
   
+  /* Фоновые текстуры для темной темы */
+  .dark .bg-texture {
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(143, 166, 143, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(58, 56, 52, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(42, 39, 35, 0.1) 0%, transparent 50%);
+  }
+  
+  .dark .bg-linen {
+    background-image: 
+      radial-gradient(circle at 30% 70%, rgba(143, 166, 143, 0.1) 0%, transparent 60%),
+      radial-gradient(circle at 70% 30%, rgba(58, 56, 52, 0.15) 0%, transparent 60%);
+  }
+  
+  .dark .bg-misty {
+    background-image: 
+      radial-gradient(circle at 25% 75%, rgba(143, 166, 143, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 75% 25%, rgba(58, 56, 52, 0.18) 0%, transparent 50%);
+  }
+  
   .text-whisper {
     color: rgba(75, 75, 75, 0.6);
+  }
+  
+  /* Text Whisper для темной темы */
+  .dark .text-whisper {
+    color: hsl(35 12% 68%);  /* Приглушенный Moonlit Glow - доработанный */
   }
   
   .shadow-misty {
@@ -297,6 +448,36 @@
   .backdrop-misty {
     backdrop-filter: blur(8px);
     background: rgba(250, 249, 247, 0.7);
+  }
+  
+  /* Backdrop misty для темной темы */
+  .dark .backdrop-misty {
+    backdrop-filter: blur(16px);
+    background: rgba(26, 24, 21, 0.8);  /* Более непрозрачный */
+  }
+  
+  /* Shadow misty для темной темы */
+  .dark .shadow-misty {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Halo эффект для темной темы */
+  .dark .halo {
+    background: radial-gradient(
+      closest-side,
+      rgba(143, 166, 143, 0.18),      /* Sage Glow */
+      rgba(143, 166, 143, 0.10) 60%,  /* Приглушенное свечение */
+      transparent 70%
+    );
+  }
+  
+  /* Veil Bottom для темной темы */
+  .dark .veil-bottom {
+    background: linear-gradient(
+      to top, 
+      rgba(255, 255, 255, 0.04),      /* Легкое белое свечение */
+      rgba(255, 255, 255, 0)
+    );
   }
   
   /* use anim-breath */
@@ -359,23 +540,8 @@
   animation: rb-float-slow 18s ease-in-out infinite; 
 }
 
-.rb-bloom-in { 
-  animation: rb-bloom-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; 
-}
-  
-  /* halo: мягкий узел фокуса (фон радиальный) */
-  .halo {
-    background: radial-gradient(
-      closest-side,
-      rgba(174,182,175,0.14),
-      rgba(174,182,175,0.08) 60%,
-      transparent 70%
-    );
-  }
-  
-  /* нижняя «вуаль» — деликатная подпорка снизу */
-  .veil-bottom {
-    background: linear-gradient(to top, rgba(0,0,0,0.06), rgba(0,0,0,0));
+  .rb-bloom-in { 
+    animation: rb-bloom-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; 
   }
   
   /* уважение к reduced motion */
@@ -482,6 +648,18 @@
   0%, 40%   { opacity: 1 }
   50%, 90%  { opacity: 0 }
   100%      { opacity: 1 }
+}
+
+/* Тонкое мерцание звезд */
+@keyframes star-twinkle {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% { 
+    opacity: 0.85;
+    filter: brightness(0.9);
+  }
 }
 .rb-crossfade { position: absolute; inset: 0; object-fit: cover; opacity: 0; }
 .rb-crossfade--top { animation: rb-crossfade 22s cubic-bezier(0.22,1,0.36,1) infinite; }
@@ -729,5 +907,79 @@
 input:-webkit-autofill {
   animation-name: rb-autofill-start;
   animation-duration: 0.01s;
+}
+
+/* ============================================
+   StarField - Реалистичное звездное небо для темной темы
+   ============================================ */
+
+/* Контейнер звезд - только в темной теме */
+.dark .stars-container {
+  opacity: 1;
+  transition: opacity 0.8s ease-in-out;
+}
+
+/* Базовые стили для звезд - статичные, без анимации */
+.stars {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  border-radius: 50%;
+  /* Убрана анимация - звезды статичны */
+}
+
+/* Яркие звезды (самые заметные) - с тонким мерцанием */
+.stars-bright {
+  width: 2px;
+  height: 2px;
+  animation: star-twinkle 8s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+/* Большие звезды - с тонким мерцанием */
+.stars-large {
+  width: 1.5px;
+  height: 1.5px;
+  animation: star-twinkle 10s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+/* Средние звезды - с тонким мерцанием */
+.stars-medium {
+  width: 1.2px;
+  height: 1.2px;
+  animation: star-twinkle 12s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+/* Маленькие звезды - без мерцания для производительности */
+.stars-small {
+  width: 1px;
+  height: 1px;
+}
+
+/* Очень маленькие звезды - без мерцания для производительности */
+.stars-tiny {
+  width: 0.7px;
+  height: 0.7px;
+}
+
+/* Отключаем мерцание на мобильных для производительности */
+@media (max-width: 768px) {
+  .stars-bright,
+  .stars-large,
+  .stars-medium {
+    animation: none;
+  }
+}
+
+/* Уважение к reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .stars-bright,
+  .stars-large,
+  .stars-medium {
+    animation: none !important;
+  }
 }
 

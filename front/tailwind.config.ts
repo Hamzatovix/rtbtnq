@@ -4,13 +4,14 @@ import type { Config } from 'tailwindcss'
 function withAlpha(colorVar: string) {
   return ({ opacityValue }: { opacityValue?: string }) => {
     if (opacityValue) {
-      return `rgb(var(${colorVar}) / ${opacityValue})`
+      return `hsl(var(${colorVar}) / ${opacityValue})`
     }
-    return `rgb(var(${colorVar}))`
+    return `hsl(var(${colorVar}))`
   }
 }
 
 const config = {
+  darkMode: 'class',
   content: ['./src/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {

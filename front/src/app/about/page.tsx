@@ -16,7 +16,7 @@ export default function AboutPage() {
   const t = useTranslations()
 
   return (
-    <div className="bg-white text-inkSoft">
+    <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground">
       {/* One-shot hero with NordicSunDisc */}
       <section
         aria-label={t('home.about.title')}
@@ -32,10 +32,10 @@ export default function AboutPage() {
           className="object-cover"
         />
 
-        {/* универсальный overlay для читаемости в light/dark */}
+        {/* универсальный overlay для читаемости */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent dark:from-black/45"
+          className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent"
         />
 
         <motion.div
@@ -57,46 +57,54 @@ export default function AboutPage() {
       </section>
 
       {/* Short story */}
-      <section className="py-12 md:py-18">
+      <section className="py-16 md:py-24">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           variants={fade}
-          className="container mx-auto px-6 md:px-12 lg:px-24 max-w-5xl"
+          className="container mx-auto px-6 md:px-12 lg:px-24 max-w-4xl"
           role="region"
           aria-labelledby="about-title"
         >
+          {/* Заголовок */}
           <h2
             id="about-title"
-            className="text-title-1 font-light text-ink-soft leading-tight tracking-wide text-center md:text-left"
+            className="text-title-1 md:text-display-2 font-light text-inkSoft dark:text-foreground leading-tight tracking-wide mb-10 md:mb-14"
           >
             {t('aboutPage.storyTitle')}
           </h2>
 
-          <div className="mt-6 space-y-6 text-base md:text-lg font-light leading-relaxed text-inkSoft/80 text-center md:text-left">
-            <p className="indent-6 md:indent-8">
+          {/* Основной текст */}
+          <div className="space-y-6 md:space-y-7 text-base md:text-lg lg:text-xl font-light leading-relaxed md:leading-loose text-inkSoft dark:text-foreground">
+            <p className="text-inkSoft/90 dark:text-foreground/90">
               {t('aboutPage.paragraph1')}
             </p>
-            <p className="indent-6 md:indent-8">
+            <p className="text-inkSoft/90 dark:text-foreground/90">
               {t('aboutPage.paragraph2')}
             </p>
           </div>
 
-          <div className="mt-10 flex flex-wrap justify-center md:justify-start gap-2.5 md:gap-3 text-xs md:text-sm">
-            {[t('aboutPage.tagQuality'), t('aboutPage.tagTraditions'), t('aboutPage.tagSimplicity')].map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-mistGray/30 px-3 md:px-3.5 py-1.5 text-inkSoft/70 tracking-wide uppercase"
-              >
-                {tag}
-              </span>
-            ))}
+          {/* Теги ценностей */}
+          <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-mistGray/20 dark:border-border/50">
+            <div className="flex flex-wrap gap-3 md:gap-4">
+              {[t('aboutPage.tagQuality'), t('aboutPage.tagTraditions'), t('aboutPage.tagSimplicity')].map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center rounded-full border border-mistGray/30 dark:border-border/60 bg-mistGray/5 dark:bg-muted/10 px-4 md:px-5 py-2 md:py-2.5 text-sm md:text-base font-light text-inkSoft dark:text-foreground tracking-wide uppercase"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <p className="mt-8 text-xs md:text-sm font-light tracking-wide text-inkSoft/60 text-center md:text-left">
-            made in daymohk
-          </p>
+          {/* Подпись */}
+          <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-mistGray/15 dark:border-border/30">
+            <p className="text-xs md:text-sm font-light tracking-[0.15em] uppercase text-inkSoft/60 dark:text-muted-foreground">
+              made in daymohk
+            </p>
+          </div>
         </motion.div>
       </section>
     </div>

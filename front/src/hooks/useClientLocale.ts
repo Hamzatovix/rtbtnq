@@ -3,21 +3,48 @@
 import { useEffect, useState } from 'react'
 import { useLocaleStore } from '@/store/locale-store'
 
+// Дефолтное значение локали для SSR (должно совпадать с дефолтом в store)
+const DEFAULT_LOCALE: 'ru' | 'en' = 'ru'
+
 export function useClientLocale() {
-  const locale = useLocaleStore((state) => state.locale)
+  // На сервере и при первом рендере всегда используем дефолтное значение
+  const [locale, setLocale] = useState<'ru' | 'en'>(DEFAULT_LOCALE)
   const [hasHydrated, setHasHydrated] = useState(false)
 
   useEffect(() => {
-    if (!useLocaleStore.persist.hasHydrated()) {
-      Promise.resolve(useLocaleStore.persist.rehydrate()).finally(() => {
-        setHasHydrated(true)
-      })
-      return
+    // Только на клиенте после монтирования
+    if (typeof window === 'undefined') return
+
+    // Гидратируем store
+    const initLocale = async () => {
+      if (!useLocaleStore.persist.hasHydrated()) {
+        await useLocaleStore.persist.rehydrate()
+      }
+      
+      // Берем значение из store после гидратации
+      const storeLocale = useLocaleStore.getState().locale
+      setLocale(storeLocale)
+      setHasHydrated(true)
     }
 
-    setHasHydrated(true)
-  }, [])
+    initLocale()
 
-  return hasHydrated ? locale : useLocaleStore.getState().locale
+    // Подписываемся на изменения локали в store
+    const unsubscribe = useLocaleStore.subscribe(
+      (state) => state.locale,
+      (newLocale) => {
+        if (hasHydrated) {
+          setLocale(newLocale)
+        }
+      }
+    )
+
+    return () => {
+      unsubscribe()
+    }
+  }, [hasHydrated])
+
+  // Всегда возвращаем одно и то же значение до гидратации
+  return locale
 }
 
