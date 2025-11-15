@@ -71,7 +71,7 @@ export function StarFieldSubtle() {
 
     // Применяем через inline style box-shadow
     const applyStars = (
-      ref: React.RefObject<HTMLDivElement>,
+      ref: React.RefObject<HTMLDivElement | null>,
       stars: Array<{ x: number; y: number; opacity: number; size: number; twinkleDelay: number }>
     ) => {
       if (ref.current) {

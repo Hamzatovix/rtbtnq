@@ -30,14 +30,11 @@ export function useClientLocale() {
     initLocale()
 
     // Подписываемся на изменения локали в store
-    const unsubscribe = useLocaleStore.subscribe(
-      (state) => state.locale,
-      (newLocale) => {
-        if (hasHydrated) {
-          setLocale(newLocale)
-        }
+    const unsubscribe = useLocaleStore.subscribe((state) => {
+      if (hasHydrated) {
+        setLocale(state.locale)
       }
-    )
+    })
 
     return () => {
       unsubscribe()

@@ -131,17 +131,17 @@ const DefaultProductGrid = ({ products, isCoarsePointer, filterKey }: ProductGri
     },
   }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: [0.22, 1, 0.36, 1], // ease-brand
-      },
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number], // ease-brand
     },
-  }
+  },
+}
 
   if (isCoarsePointer) {
     // Мобильная версия - без hover эффектов, с stagger анимацией
