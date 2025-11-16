@@ -7,6 +7,7 @@ import { Providers } from '@/components/providers'
 import SiteHeader from '@/components/layout/SiteHeader.client'
 import { Footer } from '@/components/layout/footer'
 import { HideOnBackoffice } from '@/components/layout/HideOnBackoffice'
+import { getLocale } from 'next-intl/server'
 const CartDrawer = dynamic(
   () => import('@/components/cart/cart-drawer'),
   { ssr: false, loading: () => null }
@@ -28,18 +29,77 @@ const cormorantGaramond = Cormorant_Garamond({
   variable: '--font-cormorant'
 })
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL 
+  ? `https://${process.env.VERCEL_URL}` 
+  : 'https://rosebotanique.com'
+
 export const metadata: Metadata = {
-  title: 'rosebotanique store - Handcrafted Bags',
-  description: 'Discover our collection of handcrafted bags inspired by nature. Each piece is carefully made with love and attention to detail.',
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: 'Rosebotanique - Сумки ручной работы',
+    template: '%s | Rosebotanique'
+  },
+  description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique. Каждое изделие создано с любовью и вниманием к деталям, вдохновлено природой. Мастерская в Грозном, Чеченская Республика.',
+  keywords: ['сумки ручной работы', 'handcrafted bags', 'rosebotanique', 'сумки из кожи', 'дизайнерские сумки', 'россия', 'грозный', 'чеченская республика', 'сумки грозный', 'мастерская сумок'],
+  authors: [{ name: 'Rosebotanique' }],
+  creator: 'Rosebotanique',
+  publisher: 'Rosebotanique',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    url: baseUrl,
+    siteName: 'Rosebotanique',
+    title: 'Rosebotanique - Сумки ручной работы',
+    description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique. Каждое изделие создано с любовью и вниманием к деталям. Мастерская в Грозном, Чеченская Республика.',
+    images: [
+      {
+        url: '/images/about-m.jpg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Rosebotanique - Сумки ручной работы',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Rosebotanique - Сумки ручной работы',
+    description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique',
+    images: ['/images/about-m.jpg.png'],
+  },
+  alternates: {
+    canonical: baseUrl,
+    languages: {
+      'ru': baseUrl,
+      'en': `${baseUrl}/en`,
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const locale = await getLocale()
+  
   return (
-    <html lang="en" className={`${inter.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
+    <html lang={locale} className={`${inter.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
       <body className="font-body antialiased">
         <ErrorBoundary>
           <Providers>

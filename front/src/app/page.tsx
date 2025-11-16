@@ -2,6 +2,8 @@ import { Hero } from '@/components/sections/hero'
 import { About } from '@/components/sections/about'
 import { FeaturedProducts } from '@/components/sections/featured-products'
 import { getCatalogData } from '@/server/catalog/catalog.service'
+import { OrganizationStructuredData } from '@/components/seo/OrganizationStructuredData'
+import { LocalBusinessStructuredData } from '@/components/seo/LocalBusinessStructuredData'
 
 export const revalidate = 60
 
@@ -12,6 +14,8 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen">
+      <OrganizationStructuredData />
+      <LocalBusinessStructuredData />
       <Hero />
       <About />
       <FeaturedProducts products={fallback} />

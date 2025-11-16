@@ -14,6 +14,7 @@ import { useClientLocale } from '@/hooks/useClientLocale'
 import { useTranslations } from '@/hooks/useTranslations'
 import { triggerHapticFeedback } from '@/lib/haptics'
 import Link from 'next/link'
+import { ProductStructuredData } from '@/components/seo/ProductStructuredData'
 
 type ProductVariant = {
   id?: string
@@ -198,6 +199,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-background">
+      {product && <ProductStructuredData product={product} variant={selectedVariant} />}
       <div className="container mx-auto px-6 md:px-10 lg:px-16 py-8">
         {/* Back Button */}
         <motion.div
