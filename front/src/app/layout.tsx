@@ -95,7 +95,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const locale = await getLocale()
+  let locale = 'ru' // Дефолтная локаль
+  try {
+    locale = await getLocale()
+  } catch (error) {
+    // Fallback на дефолтную локаль если next-intl не настроен
+    console.warn('next-intl config not found, using default locale:', error)
+  }
   
   return (
     <html lang={locale} className={`${inter.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
