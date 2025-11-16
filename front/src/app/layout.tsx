@@ -11,11 +11,10 @@ const CartDrawer = dynamic(
   () => import('@/components/cart/cart-drawer'),
   { ssr: false, loading: () => null }
 )
-// Временно закомментировано до исправления проблемы с импортом на Vercel
-// const FavoritesDrawer = dynamic(
-//   () => import('@/components/favorites/favorites-drawer'),
-//   { ssr: false, loading: () => null }
-// )
+const FavoritesDrawer = dynamic(
+  () => import('@/components/favorites/favorites-drawer'),
+  { ssr: false, loading: () => null }
+)
 import ErrorBoundary from '@/components/ui/error-boundary'
 import { ScrollToTop } from '@/components/layout/scroll-to-top'
 
@@ -52,7 +51,7 @@ export default function RootLayout({
               <Footer />
             </HideOnBackoffice>
             <CartDrawer />
-            {/* <FavoritesDrawer /> */}
+            <FavoritesDrawer />
             <ScrollToTop />
           </Providers>
         </ErrorBoundary>
