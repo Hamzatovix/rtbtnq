@@ -1,8 +1,7 @@
 import { Metadata } from 'next'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}` 
-  : 'https://rosebotanique.com'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.com')
 
 export const metadata: Metadata = {
   title: 'О нас - Rosebotanique',

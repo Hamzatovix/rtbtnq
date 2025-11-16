@@ -1,9 +1,8 @@
 import { Metadata } from 'next'
 import { getProductById } from '@/server/products/products-json.service'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}` 
-  : 'https://rosebotanique.com'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.com')
 
 export async function generateMetadata({ 
   params 
@@ -28,21 +27,23 @@ export async function generateMetadata({
 
   const description = product.description || `Купить ${product.name} в интернет-магазине Rosebotanique. ${product.materials ? `Материалы: ${product.materials}.` : ''} Ручная работа, качественные материалы.`
 
+  const keywords: string[] = [
+    product.name.toLowerCase(),
+    'сумка',
+    'сумки ручной работы',
+    'rosebotanique',
+    'россия',
+  ]
+  if (product.categoryId) keywords.push(String(product.categoryId))
+
   return {
     title: `${product.name} - Rosebotanique`,
     description,
-    keywords: [
-      product.name.toLowerCase(),
-      'сумка',
-      'сумки ручной работы',
-      'rosebotanique',
-      product.categoryId,
-      'россия',
-    ].filter(Boolean),
+    keywords,
     openGraph: {
       title: product.name,
       description,
-      type: 'product',
+      type: 'website',
       url: `${baseUrl}/product/${product.slug}`,
       siteName: 'Rosebotanique',
       locale: 'ru_RU',

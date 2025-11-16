@@ -29,9 +29,8 @@ const cormorantGaramond = Cormorant_Garamond({
   variable: '--font-cormorant'
 })
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}` 
-  : 'https://rosebotanique.com'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.com')
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
