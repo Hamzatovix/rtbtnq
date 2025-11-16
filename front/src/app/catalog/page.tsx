@@ -41,7 +41,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: ['каталог сумок', 'сумки ручной работы', 'rosebotanique каталог', category, color].filter(Boolean),
+    keywords: ['каталог сумок', 'сумки ручной работы', 'rosebotanique каталог', category, color].filter((k): k is string => Boolean(k)),
     openGraph: {
       title,
       description,
