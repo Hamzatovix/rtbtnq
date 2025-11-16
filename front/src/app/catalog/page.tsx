@@ -38,10 +38,14 @@ export async function generateMetadata({
     canonicalUrl = `${baseUrl}/catalog?color=${color}`
   }
   
+  const keywords: string[] = ['каталог сумок', 'сумки ручной работы', 'rosebotanique каталог']
+  if (category) keywords.push(category)
+  if (color) keywords.push(color)
+  
   return {
     title,
     description,
-    keywords: ['каталог сумок', 'сумки ручной работы', 'rosebotanique каталог', category, color].filter((k): k is string => Boolean(k)),
+    keywords,
     openGraph: {
       title,
       description,
