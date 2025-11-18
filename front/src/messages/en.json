@@ -104,6 +104,14 @@
     "yourOrder": "Your order",
     "contactInfo": "Contact information",
     "shippingInfo": "Shipping information",
+    "shippingMethod": "Shipping method",
+    "shippingMethods": {
+      "ozon": "Ozon delivery",
+      "courier": "Courier delivery (Grozny)",
+      "russianPost": "Russian Post",
+      "cdek": "CDEK",
+      "international": "International delivery"
+    },
     "name": "Name",
     "namePlaceholder": "Enter your name",
     "phone": "Phone",
@@ -112,7 +120,7 @@
     "city": "City",
     "cityPlaceholder": "Enter city",
     "address": "Address",
-    "addressPlaceholder": "Enter address (optional)",
+    "addressPlaceholder": "For example: 123 Main St, Apt 5",
     "pickupPoint": "Pickup point",
     "pickupPointPlaceholder": "Enter pickup point",
     "note": "Note",

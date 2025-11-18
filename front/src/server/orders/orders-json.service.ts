@@ -176,11 +176,15 @@ export async function createOrder(data: {
     line2?: string
     postal?: string
     pickupPoint?: string
+    shippingMethod?: string
+    shippingPrice?: number
     [key: string]: any
   }>
   total: number
   currency?: string
   note?: string
+  shippingMethod?: string
+  shippingPrice?: number
 }): Promise<Order> {
   const orders = await loadOrders()
   
@@ -258,6 +262,8 @@ export async function createOrder(data: {
           line2: shippingAddress.line2 || null,
           postal: shippingAddress.postal,
         } : null,
+        shippingMethod: (shippingAddress as any)?.shippingMethod ?? (order as any).shippingMethod ?? null,
+        shippingPrice: (shippingAddress as any)?.shippingPrice ?? (order as any).shippingPrice ?? null,
         note: order.note,
       })
       

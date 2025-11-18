@@ -228,7 +228,7 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
             onClick={(e) => e.stopPropagation()}
           >
             {/* Swipe indicator - улучшенный, более заметный */}
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
 
             {/* Container с контентом */}
             <div className="container mx-auto px-4 md:px-6 lg:px-8">

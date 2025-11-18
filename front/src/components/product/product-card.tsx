@@ -35,8 +35,13 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const [showFavoriteNotification, setShowFavoriteNotification] = useState(false)
   const [selectedColor, setSelectedColor] = useState<ProductColor | null>(product.colors?.[0] ?? null)
   const [selectedColorIndex, setSelectedColorIndex] = useState(0)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchEndX, setTouchEndX] = useState<number | null>(null)
+  const [hasSwiped, setHasSwiped] = useState(false)
   const cartTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const favoriteTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const imageContainerRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     setIsHydrated(true)
   }, [])
@@ -99,6 +104,112 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     }
 
     return getOptimizedAsset(path)
+  }
+
+  // Create array of all available images for swipe gallery
+  const allImages = useMemo(() => {
+    const images: Array<{ path: string; color: ProductColor | null }> = []
+    
+    // Add main thumbnail first
+    if (product.thumbnail) {
+      images.push({ path: product.thumbnail, color: null })
+    }
+    
+    // Add color-specific images
+    if (product.colors && product.colorImages) {
+      product.colors.forEach((color) => {
+        let path: string | undefined
+        if (color.id && product.colorImages![color.id]) {
+          path = product.colorImages![color.id]
+        } else if (color.name && product.colorImages![color.name]) {
+          path = product.colorImages![color.name]
+        }
+        
+        // Only add if it's different from thumbnail
+        if (path && path !== product.thumbnail) {
+          images.push({ path, color })
+        }
+      })
+    }
+    
+    // If no images, add placeholder
+    if (images.length === 0) {
+      images.push({ path: '/placeholder/about_main_placeholder.webp', color: null })
+    }
+    
+    return images
+  }, [product.thumbnail, product.colors, product.colorImages])
+
+  // Get current image from gallery
+  const currentImage = useMemo(() => {
+    const imageData = allImages[currentImageIndex] || allImages[0]
+    return getOptimizedAsset(imageData.path)
+  }, [allImages, currentImageIndex])
+
+  // Sync currentImageIndex with selectedColor when color changes
+  useEffect(() => {
+    if (selectedColor && allImages.length > 0) {
+      const index = allImages.findIndex(img => 
+        img.color && (
+          (img.color.id === selectedColor.id) || 
+          (img.color.name === selectedColor.name)
+        )
+      )
+      if (index !== -1) {
+        setCurrentImageIndex(index)
+      }
+    }
+  }, [selectedColor, allImages])
+
+  // Handle swipe gestures
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (!pointerMode) return
+    setTouchEndX(null)
+    setTouchStartX(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!pointerMode) return
+    setTouchEndX(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!pointerMode || touchStartX === null || touchEndX === null) {
+      setTouchStartX(null)
+      setTouchEndX(null)
+      return
+    }
+    
+    const distance = touchStartX - touchEndX
+    
+    if (Math.abs(distance) > minSwipeDistance) {
+      setHasSwiped(true)
+      if (distance > 0) {
+        // Swipe left - next image
+        setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
+        triggerMobileHaptics()
+      } else {
+        // Swipe right - previous image
+        setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+        triggerMobileHaptics()
+      }
+      // Reset swipe flag after a short delay
+      setTimeout(() => setHasSwiped(false), 300)
+    } else {
+      setHasSwiped(false)
+    }
+    
+    setTouchStartX(null)
+    setTouchEndX(null)
+  }
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    if (hasSwiped) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
   }
 
   const handleColorSelect = (color: ProductColor, index: number) => {
@@ -173,7 +284,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     }
   }
 
-  const asset = getImageForColor(selectedColor)
+  // Use current image from gallery on mobile, selected color image on desktop
+  const asset = pointerMode && allImages.length > 1 ? currentImage : getImageForColor(selectedColor)
   const placeholderType = asset.placeholder ? 'blur' : 'empty'
 
   const wrapperClass = `group relative ${className || ''}`
@@ -194,15 +306,30 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       <Card className={`overflow-hidden border border-mistGray/20 dark:border-border shadow-misty/50 dark:shadow-misty hover:shadow-misty dark:hover:shadow-misty transition-breathing backdrop-misty dark:backdrop-misty ${cardRadius}`}>
         <CardContent className="p-0">
           {/* Image */}
-          <div className={`relative overflow-hidden rounded-t-[inherit] ${imageRatio}`}>
-            <Link href={`/product/${product.slug}`} className="absolute inset-0" aria-label={`посмотреть детали ${product.name}`}>
+          <div 
+            ref={imageContainerRef}
+            className={`relative overflow-hidden rounded-t-[inherit] ${imageRatio} ${pointerMode && allImages.length > 1 ? 'touch-none' : ''}`}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            <Link 
+              href={`/product/${product.slug}`} 
+              className="absolute inset-0 z-10" 
+              aria-label={`посмотреть детали ${product.name}`}
+              onClick={handleLinkClick}
+            >
               <OptimizedImage
-                key={`${product.id}-${selectedColor?.id || selectedColor?.name || 'default'}`}
+                key={`${product.id}-${pointerMode && allImages.length > 1 ? currentImageIndex : (selectedColor?.id || selectedColor?.name || 'default')}`}
                 src={asset.src}
                 fallbackSrc={asset.fallback}
                 placeholder={placeholderType}
                 blurDataURL={asset.placeholder}
-                alt={selectedColor ? `${product.name} · ${locale === 'ru' ? 'оттенок ' + getColorDisplayName(selectedColor.name, 'ru') : 'shade ' + selectedColor.name}` : product.name}
+                alt={pointerMode && allImages.length > 1 && allImages[currentImageIndex]?.color
+                  ? `${product.name} · ${locale === 'ru' ? 'оттенок ' + getColorDisplayName(allImages[currentImageIndex].color!.name, 'ru') : 'shade ' + allImages[currentImageIndex].color!.name}`
+                  : selectedColor 
+                    ? `${product.name} · ${locale === 'ru' ? 'оттенок ' + getColorDisplayName(selectedColor.name, 'ru') : 'shade ' + selectedColor.name}` 
+                    : product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 className={`object-cover transition-transform duration-250 ease-brand ${imageScale}`}
@@ -213,6 +340,29 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
             {/* Subtle gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-sageTint/10 dark:from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-250 hidden sm:block group-hover:opacity-100" aria-hidden="true" />
             
+            {/* Image indicators (dots) for mobile swipe */}
+            {pointerMode && allImages.length > 1 && (
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5" aria-hidden="true">
+                {allImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      setCurrentImageIndex(index)
+                      triggerMobileHaptics()
+                    }}
+                    className={`transition-all duration-300 ease-brand rounded-full ${
+                      index === currentImageIndex
+                        ? 'w-2 h-2 bg-primary dark:bg-primary shadow-sm'
+                        : 'w-1.5 h-1.5 bg-white/60 dark:bg-white/40'
+                    }`}
+                    aria-label={locale === 'ru' ? `Изображение ${index + 1} из ${allImages.length}` : `Image ${index + 1} of ${allImages.length}`}
+                  />
+                ))}
+              </div>
+            )}
+            
             {/* Action buttons */}
             <ProductCardQuickActions
               favorite={favorite}
@@ -222,7 +372,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
 
             {/* View details overlay */}
             {!pointerMode && (
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-250 flex items-center justify-center bg-sageTint/20 dark:bg-primary/20">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-250 flex items-center justify-center bg-sageTint/20 dark:bg-primary/20 z-0">
               </div>
             )}
           </div>

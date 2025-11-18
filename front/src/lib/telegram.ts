@@ -189,6 +189,8 @@ interface OrderNotificationData {
     line2?: string | null
     postal?: string
   } | null
+  shippingMethod?: string | null
+  shippingPrice?: number | null
   note?: string | null
   baseUrl?: string
 }
@@ -196,8 +198,17 @@ interface OrderNotificationData {
 /**
  * Форматирует сообщение о новом заказе для Telegram
  */
+// Маппинг способов доставки для отображения
+const shippingMethodNames: Record<string, { ru: string; en: string }> = {
+  ozon: { ru: 'Ozon доставка', en: 'Ozon delivery' },
+  courier: { ru: 'Доставка курьером (г. Грозный)', en: 'Courier delivery (Grozny)' },
+  russianPost: { ru: 'Почта России', en: 'Russian Post' },
+  cdek: { ru: 'СДЭК', en: 'CDEK' },
+  international: { ru: 'Международная доставка', en: 'International delivery' },
+}
+
 export function formatOrderNotification(data: OrderNotificationData): string {
-  const { orderNumber, customerName, customerPhone, items, total, currency, address, note } = data
+  const { orderNumber, customerName, customerPhone, items, total, currency, address, shippingMethod, shippingPrice, note } = data
 
   // Форматируем список товаров
   const itemsText = items
@@ -221,6 +232,16 @@ export function formatOrderNotification(data: OrderNotificationData): string {
     addressText = addressParts.join(', ')
   }
 
+  // Форматируем способ доставки
+  let shippingText = ''
+  if (shippingMethod) {
+    const methodName = shippingMethodNames[shippingMethod]?.ru || shippingMethod
+    shippingText = methodName
+    if (shippingPrice !== null && shippingPrice !== undefined) {
+      shippingText += ` — ${formatPrice(shippingPrice, currency)}`
+    }
+  }
+
   // Форматируем телефон
   const phoneText = customerPhone ? formatPhone(customerPhone) : '—'
 
@@ -233,8 +254,12 @@ export function formatOrderNotification(data: OrderNotificationData): string {
   message += `🛒 *Товары:*\n${itemsText}\n\n`
   message += `💰 *Итого:* ${formatPrice(total, currency)}\n`
 
+  if (shippingText) {
+    message += `\n🚚 *Способ доставки:*\n${shippingText}\n`
+  }
+
   if (addressText) {
-    message += `\n📍 *Доставка:*\n${addressText}\n`
+    message += `\n📍 *Адрес:*\n${addressText}\n`
   }
 
   if (note) {

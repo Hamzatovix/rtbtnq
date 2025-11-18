@@ -22,11 +22,9 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     name: '',
     phone: '',
-    country: locale === 'ru' ? 'Россия' : 'Russia',
-    city: '',
     addressOptional: '',
-    pickupPoint: '',
     note: '',
+    shippingMethod: 'ozon' as 'ozon' | 'courier' | 'russianPost' | 'cdek' | 'international',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -35,14 +33,6 @@ export default function CheckoutPage() {
     setMounted(true)
   }, [])
 
-  useEffect(() => {
-    setForm(prev => ({
-      ...prev,
-      country: prev.country && prev.country !== 'Россия' && prev.country !== 'Russia'
-        ? prev.country
-        : (locale === 'ru' ? 'Россия' : 'Russia')
-    }))
-  }, [locale])
 
   // Mark fields that were autofilled by browser/password manager before first focus
   useEffect(() => {
@@ -78,6 +68,19 @@ export default function CheckoutPage() {
     setForm(p => ({ ...p, [k]: e.target.value }))
   }
 
+  // Стоимость доставки в зависимости от выбранного способа
+  const shippingPrices = {
+    ozon: 250,
+    courier: 250,
+    russianPost: 300,
+    cdek: 700,
+    international: 1000,
+  }
+
+  const total = mounted ? getTotalPrice() : 0
+  const shipping = shippingPrices[form.shippingMethod]
+  const grand = total + shipping
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!items.length) return alert(locale === 'ru' ? 'Корзина пуста' : 'Cart is empty')
@@ -100,10 +103,9 @@ export default function CheckoutPage() {
       
       // Формируем адрес доставки
       const shippingAddress = {
-        country: form.country,
-        city: form.city,
         address: form.addressOptional,
-        pickupPoint: form.pickupPoint,
+        shippingMethod: form.shippingMethod,
+        shippingPrice: shipping,
       }
       
       // Создаём заказ через API
@@ -118,6 +120,8 @@ export default function CheckoutPage() {
           customerPhone: form.phone,
           items: orderItems,
           addresses: [shippingAddress],
+          shippingMethod: form.shippingMethod,
+          shippingPrice: shipping,
           total: grand,
           currency: 'RUB',
           note: form.note || '',
@@ -154,10 +158,6 @@ export default function CheckoutPage() {
     }
   }
 
-  const total = mounted ? getTotalPrice() : 0
-  const shipping = 500
-  const grand = total + shipping
-
   return (
     <div className="min-h-screen bg-white dark:bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 relative">
@@ -182,22 +182,52 @@ export default function CheckoutPage() {
 
             <div className="space-y-4">
               <h2 className="text-h3 font-light text-inkSoft dark:text-foreground mb-2">{t('checkout.shippingInfo')}</h2>
-              <div>
-                <Label htmlFor="country">{t('checkout.country')}</Label>
-                <Input id="country" value={form.country} onChange={onChange('country')} required />
-              </div>
-              <div>
-                <Label htmlFor="city">{t('checkout.city')}</Label>
-                <Input id="city" placeholder={t('checkout.cityPlaceholder')} value={form.city} onChange={onChange('city')} required />
+              
+              <div className="space-y-3">
+                <Label className="text-base font-light">{t('checkout.shippingMethod')}</Label>
+                <div className="space-y-2">
+                  {(['ozon', 'courier', 'russianPost', 'cdek', 'international'] as const).map((method) => (
+                    <label
+                      key={method}
+                      className={`group relative flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-300 ease-brand ${
+                        form.shippingMethod === method
+                          ? 'border-sageTint/40 dark:border-primary/40 bg-sageTint/5 dark:bg-primary/5 shadow-sm'
+                          : 'border-mistGray/20 dark:border-border bg-white/50 dark:bg-card/50 hover:border-sageTint/30 dark:hover:border-primary/30 hover:bg-white/80 dark:hover:bg-card/80'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={method}
+                        checked={form.shippingMethod === method}
+                        onChange={(e) => setForm(p => ({ ...p, shippingMethod: e.target.value as typeof form.shippingMethod }))}
+                        className="sr-only"
+                      />
+                      <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                        form.shippingMethod === method
+                          ? 'border-sageTint dark:border-primary bg-sageTint dark:bg-primary'
+                          : 'border-mistGray/40 dark:border-border/60 group-hover:border-sageTint/50 dark:group-hover:border-primary/50'
+                      }`}>
+                        {form.shippingMethod === method && (
+                          <div className="w-2.5 h-2.5 rounded-full bg-white dark:bg-background" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-base font-light text-inkSoft dark:text-foreground">
+                          {t(`checkout.shippingMethods.${method}`)}
+                        </span>
+                      </div>
+                      <span className="text-base font-light text-inkSoft dark:text-foreground whitespace-nowrap" suppressHydrationWarning>
+                        {formatPriceWithLocale(shippingPrices[method], locale)}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div>
                 <Label htmlFor="addressOptional">{t('checkout.address')}</Label>
                 <Input id="addressOptional" placeholder={t('checkout.addressPlaceholder')} value={form.addressOptional} onChange={onChange('addressOptional')} />
-              </div>
-              <div>
-                <Label htmlFor="pickup">{t('checkout.pickupPoint')}</Label>
-                <Input id="pickup" placeholder={t('checkout.pickupPointPlaceholder')} value={form.pickupPoint} onChange={onChange('pickupPoint')} />
               </div>
             </div>
 

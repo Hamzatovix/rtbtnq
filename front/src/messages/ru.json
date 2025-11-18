@@ -104,6 +104,14 @@
     "yourOrder": "Ваш заказ",
     "contactInfo": "Контактная информация",
     "shippingInfo": "Доставка",
+    "shippingMethod": "Способ доставки",
+    "shippingMethods": {
+      "ozon": "Ozon доставка",
+      "courier": "Доставка курьером (г. Грозный)",
+      "russianPost": "Почта России",
+      "cdek": "СДЭК",
+      "international": "Международная доставка"
+    },
     "name": "Имя",
     "namePlaceholder": "Введите ваше имя",
     "phone": "Телефон",
@@ -112,7 +120,7 @@
     "city": "Город",
     "cityPlaceholder": "Введите город",
     "address": "Адрес",
-    "addressPlaceholder": "Введите адрес (необязательно)",
+    "addressPlaceholder": "Например: ул. Ленина, д. 10, кв. 5",
     "pickupPoint": "Пункт выдачи",
     "pickupPointPlaceholder": "Введите пункт выдачи",
     "note": "Комментарий",

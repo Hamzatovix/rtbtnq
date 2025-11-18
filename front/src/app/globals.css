@@ -10,7 +10,7 @@
     --card-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
     --popover: 0 0% 98%;
     --popover-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
-    --primary: 160 8% 65%;
+    --primary: 160 12% 55%;  /* Улучшенная контрастность для доступности */
     --primary-foreground: 0 0% 98%;
     --secondary: 45 18% 95%;
     --secondary-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
@@ -22,7 +22,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 45 15% 88%;
     --input: 45 15% 88%;
-    --ring: 160 8% 65%;
+    --ring: 160 12% 55%;  /* Синхронизировано с primary для консистентности */
     --radius: 1rem;
     
     /* Font variables */
@@ -133,6 +133,19 @@
     color: hsl(var(--foreground));
   }
   
+  /* Адаптивные line-height для заголовков - улучшает читаемость на мобильных */
+  h1 {
+    line-height: clamp(1.1, 1.2vw + 0.95, 0.95);
+  }
+  
+  h2 {
+    line-height: clamp(1.15, 1.1vw + 1.0, 1.0);
+  }
+  
+  h3 {
+    line-height: clamp(1.2, 1.0vw + 1.05, 1.05);
+  }
+  
   /* Явное переопределение цвета для всех текстовых элементов в темной теме */
   .dark {
     color: hsl(var(--foreground)) !important;
@@ -204,8 +217,8 @@
   select:focus-visible {
     outline: none !important;
     border-color: hsl(var(--sageTint)) !important;
-    /* Эмулируем tailwind ring, перекрывая системный синий */
-    box-shadow: 0 0 0 2px hsl(var(--sageTint) / 1) !important;
+    /* Мягкий фокус для лучшего UX - уменьшена непрозрачность */
+    box-shadow: 0 0 0 2px hsl(var(--sageTint) / 0.3) !important;
   }
   
   /* Focus для темной темы */
@@ -396,10 +409,24 @@
     background: rgba(250, 249, 247, 0.6);
   }
   
+  /* Оптимизация backdrop-filter для мобильных устройств */
+  @media (max-width: 768px) {
+    .backdrop-breathing {
+      backdrop-filter: blur(4px);  /* Меньше размытие для лучшей производительности */
+    }
+  }
+  
   /* Backdrop для темной темы */
   .dark .backdrop-breathing {
     backdrop-filter: blur(12px);
     background: rgba(26, 24, 21, 0.7);  /* Deep Earth с прозрачностью */
+  }
+  
+  /* Оптимизация для темной темы на мобильных */
+  @media (max-width: 768px) {
+    .dark .backdrop-breathing {
+      backdrop-filter: blur(6px);  /* Уменьшено размытие для производительности */
+    }
   }
   
   .transition-breathing {
@@ -450,10 +477,24 @@
     background: rgba(250, 249, 247, 0.7);
   }
   
+  /* Оптимизация backdrop-misty для мобильных */
+  @media (max-width: 768px) {
+    .backdrop-misty {
+      backdrop-filter: blur(4px);  /* Меньше размытие для производительности */
+    }
+  }
+  
   /* Backdrop misty для темной темы */
   .dark .backdrop-misty {
     backdrop-filter: blur(16px);
     background: rgba(26, 24, 21, 0.8);  /* Более непрозрачный */
+  }
+  
+  /* Оптимизация для темной темы на мобильных */
+  @media (max-width: 768px) {
+    .dark .backdrop-misty {
+      backdrop-filter: blur(8px);  /* Уменьшено размытие для производительности */
+    }
   }
   
   /* Shadow misty для темной темы */

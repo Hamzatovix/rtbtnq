@@ -36,28 +36,64 @@ export default function SiteHeader() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group" aria-label="на главную">
             <span
-              className="text-graceful text-xl font-light text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors duration-500 ease-out"
+              className="text-graceful text-xl font-light text-inkSoft dark:text-foreground group-hover:text-primary dark:group-hover:text-primary transition-colors duration-500 ease-out"
             >
               rosebotanique store
             </span>
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-12">
-            <Link
-              href="/catalog"
-              className="text-whisper dark:text-muted-foreground hover:text-sageTint dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
-            >
-              <span suppressHydrationWarning>{t('header.collection')}</span>
-              <span className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-sageTint dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" />
-            </Link>
-            <Link
-              href="/about"
-              className="text-whisper dark:text-muted-foreground hover:text-sageTint dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
-            >
-              <span suppressHydrationWarning>{t('header.about')}</span>
-              <span className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-sageTint dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" />
-            </Link>
+          <nav 
+            className="hidden md:flex items-center space-x-12"
+            aria-label="Основная навигация"
+          >
+            {(() => {
+              // Нормализуем pathname для сравнения (убираем локализацию)
+              const normalizedPathname = pathname.replace(/^\/[a-z]{2}(\/|$)/, '/') || '/'
+              const isCatalogActive = normalizedPathname === '/catalog'
+              const isAboutActive = normalizedPathname === '/about'
+              
+              return (
+                <>
+                  <Link
+                    href="/catalog"
+                    className="text-inkSoft/75 dark:text-muted-foreground hover:text-primary dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
+                    suppressHydrationWarning
+                    aria-current={isCatalogActive ? 'page' : undefined}
+                  >
+                    {t('header.collection')}
+                    <span 
+                      className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-primary dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" 
+                      aria-hidden="true"
+                    />
+                    {isCatalogActive && (
+                      <span 
+                        className="absolute -bottom-2 left-0 w-full h-px bg-primary dark:bg-primary" 
+                        aria-hidden="true"
+                      />
+                    )}
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="text-inkSoft/75 dark:text-muted-foreground hover:text-primary dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
+                    suppressHydrationWarning
+                    aria-current={isAboutActive ? 'page' : undefined}
+                  >
+                    {t('header.about')}
+                    <span 
+                      className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-primary dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" 
+                      aria-hidden="true"
+                    />
+                    {isAboutActive && (
+                      <span 
+                        className="absolute -bottom-2 left-0 w-full h-px bg-primary dark:bg-primary" 
+                        aria-hidden="true"
+                      />
+                    )}
+                  </Link>
+                </>
+              )
+            })()}
           </nav>
 
           {/* Actions */}
@@ -73,8 +109,10 @@ export default function SiteHeader() {
                 aria-label={`Favorites ${favCount} items`}
           >
                 <Heart className="h-4 w-4 md:h-5 md:w-5" />
-                {favCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-sageTint dark:bg-primary text-[10px] md:text-xs text-linenWhite dark:text-primary-foreground flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
+                {!mounted ? (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-mistGray/30 dark:bg-muted/30 animate-pulse" aria-hidden="true" />
+                ) : favCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-primary dark:bg-primary text-[10px] md:text-xs text-primary-foreground dark:text-primary-foreground flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
                     {favCount}
                   </span>
                 )}
@@ -92,8 +130,10 @@ export default function SiteHeader() {
                 aria-label={`Shopping cart ${cartCount} items`}
           >
                 <ShoppingBag className="h-4 w-4 md:h-5 md:w-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-sageTint dark:bg-primary text-[10px] md:text-xs text-linenWhite dark:text-primary-foreground flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
+                {!mounted ? (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-mistGray/30 dark:bg-muted/30 animate-pulse" aria-hidden="true" />
+                ) : cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-primary dark:bg-primary text-[10px] md:text-xs text-primary-foreground dark:text-primary-foreground flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
                     {cartCount}
                   </span>
                 )}
@@ -111,7 +151,7 @@ export default function SiteHeader() {
             aria-expanded={drawerOpen}
             aria-controls="mobile-drawer"
             onClick={() => setDrawerOpen(!drawerOpen)}
-            className="md:hidden hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-full inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-mistGray/30 dark:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-98 relative"
+            className="md:hidden hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-full inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-mistGray/30 dark:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-98 relative"
           >
             <span className="sr-only">{drawerOpen ? "Close menu" : "Open menu"}</span>
             <div className="relative w-5 h-5 flex items-center justify-center">
@@ -256,10 +296,10 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'group relative flex items-center justify-between rounded-xl px-5 py-4 text-base font-light transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]',
+                  'group relative flex items-center justify-between rounded-xl px-5 py-4 text-base font-light transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]',
                   isActive
-                    ? 'bg-sageTint/10 dark:bg-primary/10 text-sageTint dark:text-primary border border-sageTint/20 dark:border-primary/20 shadow-sm dark:shadow-md'
-                    : 'text-inkSoft dark:text-foreground hover:bg-white/60 dark:hover:bg-card/60 hover:text-sageTint dark:hover:text-primary border border-transparent hover:border-mistGray/20 dark:hover:border-border/40'
+                    ? 'bg-primary/10 dark:bg-primary/10 text-primary dark:text-primary border border-primary/20 dark:border-primary/20 shadow-sm dark:shadow-md'
+                    : 'text-inkSoft dark:text-foreground hover:bg-white/60 dark:hover:bg-card/60 hover:text-primary dark:hover:text-primary border border-transparent hover:border-mistGray/20 dark:hover:border-border/40'
                 )}
               >
                 <span suppressHydrationWarning className="relative z-10 flex-1">
@@ -268,7 +308,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="w-1.5 h-1.5 rounded-full bg-sageTint dark:bg-primary"
+                    className="w-1.5 h-1.5 rounded-full bg-primary dark:bg-primary"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
@@ -358,16 +398,16 @@ const ActionButton = memo(function ActionButton({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="group relative flex w-full items-center justify-between gap-3 rounded-xl px-5 py-4 bg-white/50 dark:bg-card/50 border border-mistGray/20 dark:border-border hover:bg-white dark:hover:bg-card hover:border-sageTint/30 dark:hover:border-primary/30 transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98] overflow-hidden"
+      className="group relative flex w-full items-center justify-between gap-3 rounded-xl px-5 py-4 bg-white/50 dark:bg-card/50 border border-mistGray/20 dark:border-border hover:bg-white dark:hover:bg-card hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98] overflow-hidden"
     >
       {/* Hover effect background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-sageTint/5 to-transparent dark:from-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent dark:from-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
       <div className="relative flex items-center gap-3 flex-1">
-        <div className="p-2 rounded-lg bg-sageTint/10 dark:bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-sageTint/20 dark:group-hover:bg-primary/20">
+        <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/20 dark:group-hover:bg-primary/20">
           {icon}
         </div>
-        <span className="text-base font-light text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors duration-300">
+        <span className="text-base font-light text-inkSoft dark:text-foreground group-hover:text-primary dark:group-hover:text-primary transition-colors duration-300">
           {label}
         </span>
       </div>
@@ -375,7 +415,7 @@ const ActionButton = memo(function ActionButton({
         <motion.span
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="relative inline-flex h-6 min-w-[24px] items-center justify-center rounded-full bg-sageTint dark:bg-primary px-2.5 text-xs font-medium text-white dark:text-primary-foreground shadow-md dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+          className="relative inline-flex h-6 min-w-[24px] items-center justify-center rounded-full bg-primary dark:bg-primary px-2.5 text-xs font-medium text-primary-foreground dark:text-primary-foreground shadow-md dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
         >
           {count}
         </motion.span>
@@ -393,11 +433,11 @@ const SettingsCard = memo(function SettingsCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="group flex flex-col items-center gap-1.5 p-2.5 rounded-lg border border-transparent hover:border-mistGray/20 dark:hover:border-border/50 hover:bg-white/50 dark:hover:bg-card/50 backdrop-blur-sm transition-all duration-300 ease-brand cursor-pointer">
+    <div className="group flex flex-col items-center gap-1.5 p-2.5 rounded-lg border border-transparent hover:border-mistGray/20 dark:hover:border-border/50 transition-all duration-300 ease-brand cursor-pointer">
       <div className="flex items-center justify-center scale-90">
         {icon}
       </div>
-      <span className="text-xs font-light text-inkSoft/60 dark:text-muted-foreground/80 group-hover:text-sageTint dark:group-hover:text-primary transition-colors duration-300 leading-tight">
+      <span className="text-xs font-light text-inkSoft/60 dark:text-muted-foreground/80 group-hover:text-primary dark:group-hover:text-primary transition-colors duration-300 leading-tight">
         {label}
       </span>
     </div>
