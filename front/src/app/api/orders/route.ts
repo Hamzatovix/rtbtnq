@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { listOrders, createOrder, markNewOrdersAsViewed } from '@/server/orders/orders-json.service'
-import { sendOrderNotification } from '@/lib/telegram'
 
 function buildBaseUrl(req: NextRequest): string | undefined {
   const headerUrl = req.headers.get('x-forwarded-host') || req.headers.get('host')
@@ -44,6 +43,7 @@ export async function POST(req: NextRequest) {
       )
     }
     
+    const baseUrl = buildBaseUrl(req)
     const order = await createOrder({
       customerName,
       customerPhone,
@@ -54,51 +54,10 @@ export async function POST(req: NextRequest) {
       note,
       shippingMethod,
       shippingPrice,
+      baseUrl, // Передаем baseUrl в createOrder для использования в уведомлении
     })
     
-    const baseUrl = buildBaseUrl(req)
-    ;(async () => {
-      try {
-        const shippingAddress = order.addresses && order.addresses.length > 0 ? order.addresses[0] : null
-        
-        await sendOrderNotification(
-          {
-            orderId: order.id,
-            orderNumber: order.number,
-            customerName: order.customerName ?? '—',
-            customerPhone: order.customerPhone ?? '',
-            items:
-              order.items?.map((item: any) => ({
-                name: item.name,
-                qty: item.qty ?? item.quantity ?? 1,
-                color: item.color ?? null,
-                price: item.price ?? 0,
-                total: item.total ?? item.price ?? 0,
-                image: item.image ?? null,
-              })) ?? [],
-            total: order.total,
-            currency: order.currency ?? 'RUB',
-            address: shippingAddress
-              ? {
-                  country: shippingAddress.country ?? '',
-                  city: shippingAddress.city ?? '',
-                  line1: shippingAddress.line1 ?? '',
-                  line2: shippingAddress.line2 ?? null,
-                  postal: shippingAddress.postal ?? '',
-                }
-              : null,
-            shippingMethod: (shippingAddress as any)?.shippingMethod ?? (order as any).shippingMethod ?? null,
-            shippingPrice: (shippingAddress as any)?.shippingPrice ?? (order as any).shippingPrice ?? null,
-            note: order.note,
-            baseUrl,
-          },
-          process.env.TELEGRAM_BOT_TOKEN,
-          process.env.TELEGRAM_CHAT_ID,
-        )
-      } catch (error) {
-        console.error('[Order] Failed to send Telegram notification:', error)
-      }
-    })()
+    // Уведомление отправляется внутри createOrder, не нужно дублировать
     
     return NextResponse.json(order, { status: 201 })
   } catch (error: any) {

@@ -185,6 +185,7 @@ export async function createOrder(data: {
   note?: string
   shippingMethod?: string
   shippingPrice?: number
+  baseUrl?: string
 }): Promise<Order> {
   const orders = await loadOrders()
   
@@ -265,6 +266,7 @@ export async function createOrder(data: {
         shippingMethod: (shippingAddress as any)?.shippingMethod ?? (order as any).shippingMethod ?? null,
         shippingPrice: (shippingAddress as any)?.shippingPrice ?? (order as any).shippingPrice ?? null,
         note: order.note,
+        baseUrl: data.baseUrl,
       })
       
       console.log('[Order] Результат отправки в Telegram:', notificationResult ? 'успешно' : 'не удалось')

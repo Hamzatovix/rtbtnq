@@ -40,20 +40,32 @@ export async function sendTelegramPhoto(
     })
     
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 секунд таймаут
+    const timeoutId = setTimeout(() => {
+      console.error('[Telegram] Таймаут запроса отправки фото (30s)')
+      controller.abort()
+    }, 30000) // 30 секунд таймаут
     
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    }).finally(() => {
+    console.log('[Telegram] Начало fetch запроса отправки фото...')
+    let response: Response
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      })
       clearTimeout(timeoutId)
-    })
+      console.log('[Telegram] Fetch запрос завершен, статус:', response.status)
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      throw fetchError
+    }
 
+    console.log('[Telegram] Чтение ответа от Telegram API...')
     const responseText = await response.text()
+    console.log('[Telegram] Ответ получен, длина:', responseText.length)
     let responseData: any
     try {
       responseData = JSON.parse(responseText)
@@ -115,20 +127,32 @@ export async function sendTelegramMediaGroup(
     })
     
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 секунд таймаут
+    const timeoutId = setTimeout(() => {
+      console.error('[Telegram] Таймаут запроса отправки медиа-группы (30s)')
+      controller.abort()
+    }, 30000) // 30 секунд таймаут
     
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    }).finally(() => {
+    console.log('[Telegram] Начало fetch запроса отправки медиа-группы...')
+    let response: Response
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      })
       clearTimeout(timeoutId)
-    })
+      console.log('[Telegram] Fetch запрос завершен, статус:', response.status)
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      throw fetchError
+    }
 
+    console.log('[Telegram] Чтение ответа от Telegram API...')
     const responseText = await response.text()
+    console.log('[Telegram] Ответ получен, длина:', responseText.length)
     let responseData: any
     try {
       responseData = JSON.parse(responseText)
@@ -193,20 +217,32 @@ export async function sendTelegramMessage(
     })
     
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 секунд таймаут
+    const timeoutId = setTimeout(() => {
+      console.error('[Telegram] Таймаут запроса отправки сообщения (30s)')
+      controller.abort()
+    }, 30000) // 30 секунд таймаут
     
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    }).finally(() => {
+    console.log('[Telegram] Начало fetch запроса отправки сообщения...')
+    let response: Response
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      })
       clearTimeout(timeoutId)
-    })
+      console.log('[Telegram] Fetch запрос завершен, статус:', response.status)
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      throw fetchError
+    }
 
+    console.log('[Telegram] Чтение ответа от Telegram API...')
     const responseText = await response.text()
+    console.log('[Telegram] Ответ получен, длина:', responseText.length)
     let responseData: any
     try {
       responseData = JSON.parse(responseText)
