@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     
-    const { customerName, customerEmail, customerPhone, items, addresses, total, currency, shippingMethod, shippingPrice, note } = body
+    const { customerName, customerPhone, items, addresses, total, currency, shippingMethod, shippingPrice, note } = body
     
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -46,7 +46,6 @@ export async function POST(req: NextRequest) {
     
     const order = await createOrder({
       customerName,
-      customerEmail,
       customerPhone,
       items,
       addresses,

@@ -13,7 +13,8 @@
   "header": {
     "home": "Home",
     "collection": "collection",
-    "about": "about",
+    "about": "brand",
+    "gallery": "gallery",
     "cart": "Cart",
     "favorites": "Favorites",
     "menu": "Menu",
@@ -24,12 +25,25 @@
     "description": "Discover our collection of handcrafted bags inspired by nature.",
     "quickLinks": "Quick Links",
     "collection": "Collection",
-    "about": "About",
+    "about": "Brand",
+    "gallery": "Gallery",
     "contact": "Contact",
     "legal": "Legal",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "copyright": "© 2025 rosebotanique store. All rights reserved."
+  },
+  "brandPage": {
+    "heroAlt": "Atelier — quiet craftsmanship in natural materials",
+    "heroSubtitle": "Philosophy of simplicity, material quality and attention to detail",
+    "storyTitle": "Our story",
+    "paragraph1": "rosebotanique was born from a love of nature and the desire to create objects that are both beautiful and useful. Each piece is handcrafted using traditional techniques and natural materials.",
+    "paragraph2": "We believe quality objects should last and quietly live with you every day. That is why we choose reliable materials and work with artisans who share our values.",
+    "tagSustainability": "Sustainability",
+    "tagQuality": "Quality",
+    "tagTraditions": "Traditions",
+    "tagSimplicity": "Simplicity",
+    "galleryTitle": "Gallery"
   },
   "aboutPage": {
     "heroAlt": "Atelier — quiet craftsmanship in natural materials",
@@ -52,7 +66,17 @@
       "badges": "Natural fabrics · Hand-stitched · Small batches"
     },
     "about": {
-      "title": "About Us",
+      "title": "Brand",
+      "description": "made quietly.",
+      "readMore": "About the brand",
+      "alt": {
+        "process": "Handcrafted process",
+        "texture": "Linen texture",
+        "stitching": "Hand stitching"
+      }
+    },
+    "brand": {
+      "title": "Brand",
       "description": "made quietly.",
       "readMore": "About the brand",
       "alt": {
@@ -155,5 +179,9 @@
       "backToCatalog": "Browse catalog",
       "loading": "Loading..."
     }
+  },
+  "gallery": {
+    "title": "Gallery",
+    "description": "works and products created in our workshop"
   }
 }

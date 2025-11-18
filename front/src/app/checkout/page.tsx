@@ -101,13 +101,6 @@ export default function CheckoutPage() {
         color: item.selectedColor || '',
       }))
       
-      // Формируем адрес доставки
-      const shippingAddress = {
-        address: form.addressOptional,
-        shippingMethod: form.shippingMethod,
-        shippingPrice: shipping,
-      }
-      
       // Создаём заказ через API
       const response = await fetch('/api/orders', {
         method: 'POST',
@@ -116,10 +109,17 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           customerName: form.name,
-          customerEmail: '', // Можно добавить поле email в форму
           customerPhone: form.phone,
           items: orderItems,
-          addresses: [shippingAddress],
+          addresses: [{
+            type: 'shipping',
+            country: '', // Страна не запрашивается в форме
+            city: '', // Город не запрашивается в форме
+            line1: form.addressOptional || '',
+            postal: '', // Индекс не запрашивается в форме
+            shippingMethod: form.shippingMethod,
+            shippingPrice: shipping,
+          }],
           shippingMethod: form.shippingMethod,
           shippingPrice: shipping,
           total: grand,

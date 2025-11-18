@@ -61,17 +61,17 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const imageRatio = isCompact ? 'aspect-[4/5] sm:aspect-square' : 'aspect-[4/5]'
   // Уменьшено масштабирование для более тонкого эффекта
   const imageScale = pointerMode ? '' : 'group-hover:scale-[1.01]'
-  const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
-  const titleClass = isCompact ? 'text-sm' : 'text-base sm:text-lg'
-  const descClass = isCompact ? 'text-xs line-clamp-1' : 'text-xs sm:text-sm line-clamp-2'
-  const priceClass = isCompact ? 'text-sm font-light' : 'text-base sm:text-lg font-light'
-  const colorsGap = isCompact ? 'space-x-1' : 'space-x-1 sm:space-x-2'
-  const swatchSize = isCompact ? 'w-3.5 h-3.5 sm:w-4 sm:h-4' : 'w-5 h-5 sm:w-6 sm:h-6'
-  const badgeTR = isCompact ? 'top-2.5 right-2.5' : 'top-6 right-6'
-  const badgeTL = isCompact ? 'top-2.5 left-2.5' : 'top-6 left-6'
-  const overlayPad = isCompact ? 'px-2.5 py-1 text-[11px]' : 'px-4 py-2 text-sm'
-  const priceSectionPadding = isCompact ? 'pt-1 sm:pt-1.5' : 'pt-2 sm:pt-2.5'
-  const swatchSectionPadding = isCompact ? 'pt-2.5 sm:pt-3' : 'pt-4 sm:pt-5'
+  const bodyPadding = isCompact ? 'p-2 sm:p-2.5 space-y-1' : 'p-4 sm:p-5 space-y-3'
+  const titleClass = isCompact ? 'text-xs sm:text-sm' : 'text-base sm:text-lg'
+  const descClass = isCompact ? 'text-[10px] sm:text-xs line-clamp-1' : 'text-xs sm:text-sm line-clamp-2'
+  const priceClass = isCompact ? 'text-xs sm:text-sm font-light' : 'text-base sm:text-lg font-light'
+  const colorsGap = isCompact ? 'space-x-0.5 sm:space-x-1' : 'space-x-1 sm:space-x-2'
+  const swatchSize = isCompact ? 'w-3 h-3 sm:w-3.5 sm:h-3.5' : 'w-5 h-5 sm:w-6 sm:h-6'
+  const badgeTR = isCompact ? 'top-2 right-2' : 'top-6 right-6'
+  const badgeTL = isCompact ? 'top-2 left-2' : 'top-6 left-6'
+  const overlayPad = isCompact ? 'px-2 py-0.5 text-[10px]' : 'px-4 py-2 text-sm'
+  const priceSectionPadding = isCompact ? 'pt-0.5 sm:pt-1' : 'pt-2 sm:pt-2.5'
+  const swatchSectionPadding = isCompact ? 'pt-1.5 sm:pt-2' : 'pt-4 sm:pt-5'
   const numericId = useMemo(() => Number(product.id), [product.id])
 
   // Sync with store on client side
@@ -368,6 +368,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               favorite={favorite}
               onToggleFavorite={handleToggleFavorite}
               positionClass={badgeTR}
+              isCompact={isCompact}
             />
 
             {/* View details overlay */}
@@ -413,6 +414,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               <ProductCardCartButton
                 onClick={handleAddToCart}
                 ariaLabel={locale === 'ru' ? 'в корзину' : 'add to cart'}
+                isCompact={isCompact}
               />
             </div>
           </div>

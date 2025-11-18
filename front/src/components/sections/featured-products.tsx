@@ -27,25 +27,28 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
   return (
     <section 
-      className="py-16 md:py-18 bg-white dark:bg-background relative overflow-hidden"
+      className="py-10 md:py-12 bg-white dark:bg-background relative overflow-hidden"
       aria-labelledby="featured-heading"
     >
       {/* Менее яркие звезды - только в темной теме */}
       <StarFieldSubtle />
       <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
-        <div className="text-center mb-12 md:mb-14">
+        <div className="text-center mb-6 md:mb-8">
           <h2 
             id="featured-heading" 
-            className="text-title-1 font-light text-ink-soft dark:text-foreground leading-tight tracking-wide mb-4"
+            className="text-title-1 font-light text-ink-soft dark:text-foreground leading-tight tracking-wide mb-2"
           >
             <span suppressHydrationWarning>{t('home.featuredProducts.title')}</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 mb-8">
           {hasProducts ? (
-            products.slice(0, 6).map((product) => (
-              <div key={product.id}>
+            products.slice(0, 6).map((product, index) => (
+              <div 
+                key={product.id}
+                className={index >= 3 ? 'lg:hidden' : ''}
+              >
                 <ProductCard product={product} density="compact" />
               </div>
             ))

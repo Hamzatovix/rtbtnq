@@ -5,19 +5,19 @@
 @layer base {
   :root {
     --background: 0 0% 98%;
-    --foreground: 0 0% 18%;  /* Нейтральный темно-серый вместо синеватого */
+    --foreground: 0 0% 15%;  /* Улучшенная контрастность - темнее для лучшей читаемости */
     --card: 0 0% 98%;
-    --card-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
+    --card-foreground: 0 0% 15%;  /* Улучшенная контрастность */
     --popover: 0 0% 98%;
-    --popover-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
+    --popover-foreground: 0 0% 15%;  /* Улучшенная контрастность */
     --primary: 160 12% 55%;  /* Улучшенная контрастность для доступности */
     --primary-foreground: 0 0% 98%;
     --secondary: 45 18% 95%;
-    --secondary-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
+    --secondary-foreground: 0 0% 15%;  /* Улучшенная контрастность */
     --muted: 45 18% 95%;
-    --muted-foreground: 0 0% 46%;  /* Нейтральный серый */
+    --muted-foreground: 0 0% 40%;  /* Улучшенная контрастность для приглушенного текста */
     --accent: 45 18% 95%;
-    --accent-foreground: 0 0% 18%;  /* Нейтральный темно-серый */
+    --accent-foreground: 0 0% 15%;  /* Улучшенная контрастность */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 45 15% 88%;
@@ -34,7 +34,7 @@
     --mistGray: 39 9% 82%;     /* #d6d3ce - Mist Gray */
     --linenWhite: 0 0% 98%;    /* #f9f9f9 - Linen White */
     --sageTint: 125 8% 70%;    /* #aeb6af - Sage Tint */
-    --inkSoft: 0 0% 29%;       /* #4b4b4b - Ink Soft */
+    --inkSoft: 0 0% 22%;       /* Улучшенная контрастность - темнее для лучшей заметности текста */
     --soft-shadow: 0 4px 20px rgba(174, 182, 175, 0.08);
     --medium-shadow: 0 8px 30px rgba(174, 182, 175, 0.15);
     --warm-shadow: 0 6px 25px rgba(244, 239, 232, 0.4);
@@ -100,6 +100,7 @@
     @apply bg-white dark:bg-background font-sans;
     font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 17px;
+    font-weight: 400; /* Нормальный вес для лучшей читаемости */
     line-height: 1.8;
     color: hsl(var(--foreground)) !important;
   }
@@ -129,6 +130,7 @@
   
   h1, h2, h3 {
     font-family: var(--font-display), "Cormorant Garamond", serif;
+    font-weight: 400; /* Нормальный вес для лучшей заметности */
     letter-spacing: 0.02em;
     color: hsl(var(--foreground));
   }
@@ -460,12 +462,12 @@
   }
   
   .text-whisper {
-    color: rgba(75, 75, 75, 0.6);
+    color: rgba(56, 56, 56, 0.7); /* Улучшенная контрастность - темнее и заметнее */
   }
   
   /* Text Whisper для темной темы */
   .dark .text-whisper {
-    color: hsl(35 12% 68%);  /* Приглушенный Moonlit Glow - доработанный */
+    color: hsl(35 15% 72%);  /* Улучшенная контрастность для темной темы */
   }
   
   .shadow-misty {

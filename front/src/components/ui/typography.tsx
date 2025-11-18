@@ -8,7 +8,7 @@ const H1 = React.forwardRef<
   <h1
     ref={ref}
     className={cn(
-      'text-display-1 font-light text-ink-soft leading-[0.95] tracking-normal',
+      'text-display-1 font-normal text-ink-soft leading-[0.95] tracking-normal',
       className
     )}
     {...props}
@@ -23,7 +23,7 @@ const H2 = React.forwardRef<
   <h2
     ref={ref}
     className={cn(
-      size === 'display' ? 'text-display-2 font-light text-ink-soft leading-tight tracking-wide' : 'text-title-1 font-light text-ink-soft leading-tight tracking-wide',
+      size === 'display' ? 'text-display-2 font-normal text-ink-soft leading-tight tracking-wide' : 'text-title-1 font-normal text-ink-soft leading-tight tracking-wide',
       className
     )}
     {...props}
@@ -38,7 +38,7 @@ const H3 = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      'text-title-1 font-light text-ink-soft leading-tight tracking-wide',
+      'text-title-1 font-normal text-ink-soft leading-tight tracking-wide',
       className
     )}
     {...props}
@@ -53,7 +53,7 @@ const Lead = React.forwardRef<
   <p
     ref={ref}
     className={cn(
-      'text-body-lg font-light text-ink-soft/80 leading-relaxed tracking-wide',
+      'text-body-lg font-normal text-ink-soft/85 leading-relaxed tracking-wide',
       className
     )}
     {...props}
@@ -68,7 +68,7 @@ const Body = React.forwardRef<
   <p
     ref={ref}
     className={cn(
-      'text-body font-light text-ink-soft leading-relaxed',
+      'text-body font-normal text-ink-soft leading-relaxed',
       className
     )}
     {...props}
@@ -83,7 +83,7 @@ const Small = React.forwardRef<
   <p
     ref={ref}
     className={cn(
-      'text-small font-light text-ink-soft/70 leading-relaxed',
+      'text-small font-normal text-ink-soft/75 leading-relaxed',
       className
     )}
     {...props}

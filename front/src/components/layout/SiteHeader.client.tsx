@@ -51,7 +51,8 @@ export default function SiteHeader() {
               // Нормализуем pathname для сравнения (убираем локализацию)
               const normalizedPathname = pathname.replace(/^\/[a-z]{2}(\/|$)/, '/') || '/'
               const isCatalogActive = normalizedPathname === '/catalog'
-              const isAboutActive = normalizedPathname === '/about'
+              const isBrandActive = normalizedPathname === '/brand' || normalizedPathname === '/about'
+              const isGalleryActive = normalizedPathname === '/gallery'
               
               return (
                 <>
@@ -74,17 +75,35 @@ export default function SiteHeader() {
                     )}
                   </Link>
                   <Link
-                    href="/about"
+                    href="/brand"
                     className="text-inkSoft/75 dark:text-muted-foreground hover:text-primary dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
                     suppressHydrationWarning
-                    aria-current={isAboutActive ? 'page' : undefined}
+                    aria-current={isBrandActive ? 'page' : undefined}
                   >
                     {t('header.about')}
                     <span 
                       className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-primary dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" 
                       aria-hidden="true"
                     />
-                    {isAboutActive && (
+                    {isBrandActive && (
+                      <span 
+                        className="absolute -bottom-2 left-0 w-full h-px bg-primary dark:bg-primary" 
+                        aria-hidden="true"
+                      />
+                    )}
+                  </Link>
+                  <Link
+                    href="/gallery"
+                    className="text-inkSoft/75 dark:text-muted-foreground hover:text-primary dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
+                    suppressHydrationWarning
+                    aria-current={isGalleryActive ? 'page' : undefined}
+                  >
+                    {t('header.gallery')}
+                    <span 
+                      className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-primary dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" 
+                      aria-hidden="true"
+                    />
+                    {isGalleryActive && (
                       <span 
                         className="absolute -bottom-2 left-0 w-full h-px bg-primary dark:bg-primary" 
                         aria-hidden="true"
@@ -268,7 +287,8 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
   const navigationLinks = [
     { href: '/', label: t('header.home') },
     { href: '/catalog', label: t('header.collection') },
-    { href: '/about', label: t('header.about') },
+    { href: '/brand', label: t('header.about') },
+    { href: '/gallery', label: t('header.gallery') },
   ]
 
   return (

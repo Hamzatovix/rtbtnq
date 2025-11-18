@@ -19,9 +19,12 @@ export async function POST(req: NextRequest) {
 
     const ext = file.name.split('.').pop() || 'png'
     const filename = `${Date.now()}-${nanoid(10)}.${ext}`
+    
+    // Определяем папку для сохранения (по умолчанию products)
+    const folder = (formData.get('folder') as string) || 'products'
 
     const arrayBuffer = await file.arrayBuffer()
-    const { url } = await put(`products/${filename}`, Buffer.from(arrayBuffer), {
+    const { url } = await put(`${folder}/${filename}`, Buffer.from(arrayBuffer), {
       access: 'public',
       contentType: file.type,
     })

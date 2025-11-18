@@ -46,6 +46,7 @@ function DesktopNav() {
       <NavLink href="/backoffice/products">товары</NavLink>
       <NavLink href="/backoffice/categories">категории</NavLink>
       <NavLink href="/backoffice/orders">заказы</NavLink>
+      <NavLink href="/backoffice/gallery">галерея</NavLink>
     </nav>
   )
 }
@@ -86,6 +87,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
     { href: '/backoffice/products', label: 'товары' },
     { href: '/backoffice/categories', label: 'категории' },
     { href: '/backoffice/orders', label: 'заказы' },
+    { href: '/backoffice/gallery', label: 'галерея' },
   ]
 
   return (

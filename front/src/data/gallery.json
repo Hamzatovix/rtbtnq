@@ -1,0 +1,25 @@
+{
+  "images": [
+    {
+      "id": "1",
+      "src": "/images/about-one.png",
+      "alt": "Процесс создания"
+    },
+    {
+      "id": "2",
+      "src": "/images/about-two.png",
+      "alt": "Текстура материалов"
+    },
+    {
+      "id": "3",
+      "src": "/images/about-three.png",
+      "alt": "Ручная отстрочка"
+    },
+    {
+      "id": "4",
+      "src": "/images/about-m.jpg.png",
+      "alt": "Мастерская"
+    }
+  ]
+}
+

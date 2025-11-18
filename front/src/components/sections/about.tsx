@@ -29,13 +29,13 @@ export function About() {
                 id="about-heading"
                 className="text-title-1 font-light text-ink-soft dark:text-foreground leading-tight tracking-wide"
               >
-                {t('home.about.title')}
+                {t('home.brand.title')}
               </h2>
             </div>
               
             <div className="flex items-center justify-center md:justify-start gap-4 min-h-[60px]">
               <p className="text-body font-light tracking-wide leading-relaxed text-inkSoft dark:text-muted-foreground">
-                {t('home.about.description')}
+                {t('home.brand.description')}
               </p>
               
               <Button 
@@ -44,10 +44,10 @@ export function About() {
                 asChild
               >
                 <Link 
-                  href="/about" 
-                  aria-label={t('home.about.readMore') + ' rosebotanique'}
+                  href="/brand" 
+                  aria-label={t('home.brand.readMore') + ' rosebotanique'}
                 >
-                  {t('home.about.readMore')}
+                  {t('home.brand.readMore')}
                   <ArrowRight className="ml-3 h-4 w-4 transition-transform duration-250 ease-brand group-hover:translate-x-1" />
                 </Link>
               </Button>
@@ -60,7 +60,7 @@ export function About() {
             <div className="relative aspect-[16/9] md:aspect-[4/3] rounded-lg overflow-hidden group">
               <Image
                 src="/images/about-one.png"
-                alt={t('home.about.alt.process')}
+                alt={t('home.brand.alt.process')}
                 fill
                 priority={false}
                 loading="lazy"
@@ -81,7 +81,7 @@ export function About() {
               <div className="relative aspect-square md:aspect-square rounded-md overflow-hidden group">
               <Image
                 src="/images/about-two.png"
-                alt={t('home.about.alt.texture')}
+                alt={t('home.brand.alt.texture')}
                   fill
                   loading="lazy"
                   sizes="(max-width: 1024px) 50vw, 25vw"
@@ -97,7 +97,7 @@ export function About() {
               <div className="relative aspect-square md:aspect-square rounded-md overflow-hidden group">
               <Image
                 src="/images/about-three.png"
-                alt={t('home.about.alt.stitching')}
+                alt={t('home.brand.alt.stitching')}
                   fill
                   loading="lazy"
                   sizes="(max-width: 1024px) 50vw, 25vw"

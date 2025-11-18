@@ -612,5 +612,93 @@
     "note": null,
     "createdAt": "2025-11-08T15:42:48.505Z",
     "updatedAt": "2025-11-08T15:43:16.180Z"
+  },
+  {
+    "id": "l0fBbcMoU5sgWanZ82Q3N",
+    "number": "RB-20251118-L0FBBC",
+    "customerName": "М М",
+    "customerEmail": null,
+    "customerPhone": "+79890050505",
+    "items": [
+      {
+        "id": "Pio-pPYFJiDX1Jv5vh72E",
+        "name": "Minimal Backpack",
+        "productName": "Minimal Backpack",
+        "sku": "2-Black",
+        "qty": 1,
+        "quantity": 1,
+        "price": 6500,
+        "unitPrice": 6500,
+        "total": 6500,
+        "image": "/images/about-m.jpg.png",
+        "color": "Black"
+      }
+    ],
+    "addresses": [
+      {
+        "id": "xxceIEFNGK67wKKneU8vA",
+        "type": "shipping",
+        "address": "ул асуева ",
+        "shippingMethod": "ozon",
+        "shippingPrice": 250,
+        "country": "",
+        "city": "",
+        "line1": "ул асуева ",
+        "line2": "",
+        "postal": ""
+      }
+    ],
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "unfulfilled",
+    "orderStatus": "new",
+    "total": 6750,
+    "currency": "RUB",
+    "note": "четко ",
+    "createdAt": "2025-11-18T16:38:00.744Z",
+    "updatedAt": "2025-11-18T16:38:00.744Z"
+  },
+  {
+    "id": "tvjLtsZ55-_xZayhWiZEn",
+    "number": "RB-20251118-TVJLTS",
+    "customerName": "м",
+    "customerEmail": null,
+    "customerPhone": "+79890050505",
+    "items": [
+      {
+        "id": "5uLvnmDOtZpjcKeLhK_gf",
+        "name": "Minimal Backpack",
+        "productName": "Minimal Backpack",
+        "sku": "2-Black",
+        "qty": 1,
+        "quantity": 1,
+        "price": 6500,
+        "unitPrice": 6500,
+        "total": 6500,
+        "image": "/images/about-m.jpg.png",
+        "color": "Black"
+      }
+    ],
+    "addresses": [
+      {
+        "id": "6JzlxaCxWBFr74gif2AnT",
+        "type": "shipping",
+        "address": "ул асуева",
+        "shippingMethod": "ozon",
+        "shippingPrice": 250,
+        "country": "",
+        "city": "",
+        "line1": "ул асуева",
+        "line2": "",
+        "postal": ""
+      }
+    ],
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "unfulfilled",
+    "orderStatus": "new",
+    "total": 6750,
+    "currency": "RUB",
+    "note": "четко ",
+    "createdAt": "2025-11-18T16:41:22.675Z",
+    "updatedAt": "2025-11-18T16:41:22.675Z"
   }
 ]
