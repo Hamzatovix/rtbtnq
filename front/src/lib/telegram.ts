@@ -39,29 +39,55 @@ export async function sendTelegramPhoto(
       photoUrl: photoUrl.substring(0, 50) + '...'
     })
     
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 секунд таймаут
+    
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
+    }).finally(() => {
+      clearTimeout(timeoutId)
     })
 
-    const responseData = await response.json().catch(() => ({ ok: false, description: 'Failed to parse response' }))
+    const responseText = await response.text()
+    let responseData: any
+    try {
+      responseData = JSON.parse(responseText)
+    } catch {
+      responseData = { ok: false, description: `Failed to parse response: ${responseText.substring(0, 200)}` }
+    }
 
     if (!response.ok || !responseData.ok) {
       console.error('[Telegram] API error при отправке фото:', {
         status: response.status,
         statusText: response.statusText,
-        error: responseData
+        error: responseData,
+        responseText: responseText.substring(0, 500)
       })
       return false
     }
 
-    console.log('[Telegram] Фото успешно отправлено')
+    console.log('[Telegram] Фото успешно отправлено:', {
+      messageId: responseData.result?.message_id,
+      chatId: responseData.result?.chat?.id
+    })
     return true
   } catch (error) {
     console.error('[Telegram] Failed to send Telegram photo:', error)
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.error('[Telegram] Request timeout (30s) при отправке фото')
+      }
+      console.error('[Telegram] Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
+    }
     return false
   }
 }
@@ -88,29 +114,55 @@ export async function sendTelegramMediaGroup(
       mediaCount: media.length
     })
     
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 секунд таймаут
+    
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
+    }).finally(() => {
+      clearTimeout(timeoutId)
     })
 
-    const responseData = await response.json().catch(() => ({ ok: false, description: 'Failed to parse response' }))
+    const responseText = await response.text()
+    let responseData: any
+    try {
+      responseData = JSON.parse(responseText)
+    } catch {
+      responseData = { ok: false, description: `Failed to parse response: ${responseText.substring(0, 200)}` }
+    }
 
     if (!response.ok || !responseData.ok) {
       console.error('[Telegram] API error при отправке медиа-группы:', {
         status: response.status,
         statusText: response.statusText,
-        error: responseData
+        error: responseData,
+        responseText: responseText.substring(0, 500)
       })
       return false
     }
 
-    console.log('[Telegram] Медиа-группа успешно отправлена')
+    console.log('[Telegram] Медиа-группа успешно отправлена:', {
+      messageIds: responseData.result?.map((r: any) => r.message_id),
+      chatId: responseData.result?.[0]?.chat?.id
+    })
     return true
   } catch (error) {
     console.error('[Telegram] Failed to send Telegram media group:', error)
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.error('[Telegram] Request timeout (30s) при отправке медиа-группы')
+      }
+      console.error('[Telegram] Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
+    }
     return false
   }
 }
@@ -140,29 +192,55 @@ export async function sendTelegramMessage(
       textLength: options.text.length
     })
     
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 секунд таймаут
+    
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
+    }).finally(() => {
+      clearTimeout(timeoutId)
     })
 
-    const responseData = await response.json().catch(() => ({ ok: false, description: 'Failed to parse response' }))
+    const responseText = await response.text()
+    let responseData: any
+    try {
+      responseData = JSON.parse(responseText)
+    } catch {
+      responseData = { ok: false, description: `Failed to parse response: ${responseText.substring(0, 200)}` }
+    }
 
     if (!response.ok || !responseData.ok) {
-      console.error('[Telegram] API error:', {
+      console.error('[Telegram] API error при отправке сообщения:', {
         status: response.status,
         statusText: response.statusText,
-        error: responseData
+        error: responseData,
+        responseText: responseText.substring(0, 500)
       })
       return false
     }
 
-    console.log('[Telegram] Сообщение успешно отправлено в Telegram')
+    console.log('[Telegram] Сообщение успешно отправлено в Telegram:', {
+      messageId: responseData.result?.message_id,
+      chatId: responseData.result?.chat?.id
+    })
     return true
   } catch (error) {
     console.error('[Telegram] Failed to send Telegram message:', error)
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.error('[Telegram] Request timeout (30s) при отправке сообщения')
+      }
+      console.error('[Telegram] Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
+    }
     return false
   }
 }
@@ -392,10 +470,20 @@ export async function sendOrderNotification(
     }
     
     // Отправляем медиа-группу (если несколько товаров) или одно фото
+    let photoSent = false
     if (mediaItems.length === 1) {
-      await sendTelegramPhoto(token, chat, mediaItems[0].media, mediaItems[0].caption ?? captionFallback)
+      console.log('[Telegram] Попытка отправить одно фото:', {
+        photoUrl: mediaItems[0].media.substring(0, 100) + '...',
+        captionLength: (mediaItems[0].caption ?? captionFallback).length
+      })
+      photoSent = await sendTelegramPhoto(token, chat, mediaItems[0].media, mediaItems[0].caption ?? captionFallback)
+      console.log('[Telegram] Результат отправки фото:', photoSent ? 'успешно' : 'ошибка')
     } else if (mediaItems.length > 1) {
-      await sendTelegramMediaGroup(token, chat, mediaItems)
+      console.log('[Telegram] Попытка отправить медиа-группу:', {
+        count: mediaItems.length
+      })
+      photoSent = await sendTelegramMediaGroup(token, chat, mediaItems)
+      console.log('[Telegram] Результат отправки медиа-группы:', photoSent ? 'успешно' : 'ошибка')
     }
   } else if (itemsWithImages.length > 0 && !canSendImages) {
     console.log('[Telegram] Изображения товаров пропущены (localhost недоступен для Telegram)')
@@ -423,12 +511,16 @@ export async function sendOrderNotification(
     messageOptions.text = `${message}\n\n🔗 *Ссылка на заказ:*\n${orderUrl}`
   }
   
+  console.log('[Telegram] Попытка отправить текстовое сообщение:', {
+    textLength: messageOptions.text.length,
+    hasButton: !!messageOptions.replyMarkup
+  })
   const success = await sendTelegramMessage(token, chat, messageOptions)
   
   if (success) {
-    console.log('[Telegram] Уведомление успешно отправлено')
+    console.log('[Telegram] Уведомление успешно отправлено в Telegram')
   } else {
-    console.error('[Telegram] Ошибка при отправке уведомления')
+    console.error('[Telegram] Ошибка при отправке уведомления в Telegram')
   }
   
   return success
