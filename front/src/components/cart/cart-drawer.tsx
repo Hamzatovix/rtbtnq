@@ -1,19 +1,37 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, PanInfo } from 'framer-motion'
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart-store'
+import { useFavoritesStore } from '@/store/favorites-store'
 import Link from 'next/link'
 import { useTranslations } from '@/hooks/useTranslations'
 import { useClientLocale } from '@/hooks/useClientLocale'
 import { formatPriceWithLocale } from '@/lib/utils'
 import { OptimizedImage } from '@/components/ui/optimized-image'
 import { getOptimizedAsset } from '@/lib/optimized-assets'
+import { createPortal } from 'react-dom'
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
+import { MOBILE_MENU_CONFIG } from '@/components/layout/mobile-menu.constants'
 
 export function CartDrawer() {
   const t = useTranslations()
   const locale = useClientLocale()
+  const [mounted, setMounted] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(false)
+  const reducedMotion = useReducedMotion()
+  const panelRef = useRef<HTMLDivElement>(null)
+  const focusableElementsRef = useRef<NodeListOf<HTMLElement> | null>(null)
+  
+  // Motion values for swipe gesture
+  const y = useMotionValue(0)
+  const x = useMotionValue(0)
+  const opacityY = useTransform(y, [-100, 0], [0, 1])
+  const opacityX = useTransform(x, [100, 0], [0, 1])
+  const [isDragging, setIsDragging] = useState(false)
+
   const {
     items,
     isOpen,
@@ -23,6 +41,149 @@ export function CartDrawer() {
     getTotalPrice,
     getTotalItems,
   } = useCartStore()
+
+  const { isOpen: favoritesIsOpen, toggleFavorites } = useFavoritesStore()
+  const prevIsOpenRef = useRef(false)
+
+  useLockBodyScroll(isOpen)
+
+  // Закрываем избранное при открытии корзины
+  useEffect(() => {
+    // Если корзина только что открылась (была закрыта, стала открыта)
+    if (isOpen && !prevIsOpenRef.current && favoritesIsOpen) {
+      // Небольшая задержка для плавного закрытия
+      const timeoutId = setTimeout(() => {
+        toggleFavorites()
+      }, 50)
+      prevIsOpenRef.current = isOpen
+      return () => clearTimeout(timeoutId)
+    }
+    prevIsOpenRef.current = isOpen
+  }, [isOpen, favoritesIsOpen, toggleFavorites])
+
+  // Mount check for SSR and detect desktop
+  useEffect(() => {
+    setMounted(true)
+    
+    // Check if desktop (md breakpoint = 768px)
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768)
+    }
+    
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
+
+  // Reset motion values when drawer closes
+  useEffect(() => {
+    if (!isOpen) {
+      y.set(0)
+      x.set(0)
+      setIsDragging(false)
+    }
+  }, [isOpen, y, x])
+
+  // Keyboard navigation and focus trap
+  useEffect(() => {
+    if (!isOpen || !mounted) return
+
+    const panel = panelRef.current
+    if (!panel) return
+
+    const focusableSelectors = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(', ')
+
+    const focusableElements = panel.querySelectorAll<HTMLElement>(focusableSelectors)
+    focusableElementsRef.current = focusableElements
+    const firstElement = focusableElements[0]
+
+    if (firstElement) {
+      setTimeout(() => firstElement.focus(), MOBILE_MENU_CONFIG.FOCUS_DELAY)
+    }
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+
+      const elements = focusableElementsRef.current
+      if (!elements || elements.length === 0) {
+        e.preventDefault()
+        return
+      }
+
+      const firstEl = elements[0]
+      const lastEl = elements[elements.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) {
+          e.preventDefault()
+          lastEl.focus()
+        }
+      } else {
+        if (document.activeElement === lastEl) {
+          e.preventDefault()
+          firstEl.focus()
+        }
+      }
+    }
+
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        toggleCart()
+      }
+    }
+
+    document.addEventListener('keydown', handleTab)
+    document.addEventListener('keydown', handleEsc)
+    return () => {
+      document.removeEventListener('keydown', handleTab)
+      document.removeEventListener('keydown', handleEsc)
+    }
+  }, [isOpen, mounted, toggleCart])
+
+  // Handle swipe gesture - вертикальный для мобильных, горизонтальный для десктопа
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = MOBILE_MENU_CONFIG.SWIPE_THRESHOLD
+    
+    if (isDesktop) {
+      // Десктоп: свайп вправо для закрытия
+      const velocity = info.velocity.x
+      if (info.offset.x > threshold || velocity > MOBILE_MENU_CONFIG.SWIPE_VELOCITY) {
+        toggleCart()
+      } else {
+        x.set(0)
+      }
+    } else {
+      // Мобильные: свайп вверх для закрытия
+      const velocity = info.velocity.y
+      if (info.offset.y < -threshold || velocity < -MOBILE_MENU_CONFIG.SWIPE_VELOCITY) {
+        toggleCart()
+      } else {
+        y.set(0)
+      }
+    }
+    setIsDragging(false)
+  }
+
+  const handleDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (isDesktop) {
+      // Десктоп: разрешаем drag только вправо
+      if (info.offset.x < 0) {
+        x.set(0)
+      }
+    } else {
+      // Мобильные: разрешаем drag только вверх
+      if (info.offset.y > 0) {
+        y.set(0)
+      }
+    }
+  }
 
   const handleQuantityChange = (id: number, color: string | undefined, qty: number) => {
     if (qty <= 0) {
@@ -35,7 +196,17 @@ export function CartDrawer() {
   const totalPrice = getTotalPrice()
   const totalItems = getTotalItems()
 
-  return (
+  if (!mounted) return null
+
+  const headerHeight = MOBILE_MENU_CONFIG.HEADER_HEIGHT
+  const motionConfig = reducedMotion
+    ? { duration: 0 }
+    : { 
+        duration: MOBILE_MENU_CONFIG.ANIMATION_DURATION, 
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number] 
+      }
+
+  const content = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -44,30 +215,80 @@ export function CartDrawer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-[49]"
+            transition={{ duration: 0.25 }}
+            style={isDesktop ? {} : { top: `${headerHeight}px` }}
+            className={`fixed inset-0 z-[48] bg-black/20 dark:bg-black/30 backdrop-blur-sm ${isDesktop ? '' : 'md:hidden'}`}
             onClick={toggleCart}
             aria-hidden="true"
           />
 
-          {/* Drawer */}
+          {/* Drawer Panel - справа на десктопе, сверху на мобильных */}
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-white dark:bg-card shadow-xl dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] z-[50] flex flex-col"
+            ref={panelRef}
+            drag={isDesktop ? "x" : "y"}
+            dragConstraints={isDesktop 
+              ? { left: 0, right: Infinity } 
+              : { top: -Infinity, bottom: 0 }
+            }
+            dragElastic={isDesktop
+              ? { right: MOBILE_MENU_CONFIG.DRAG_ELASTIC, left: 0 }
+              : { top: MOBILE_MENU_CONFIG.DRAG_ELASTIC, bottom: 0 }
+            }
+            onDragStart={() => setIsDragging(true)}
+            onDrag={handleDrag}
+            onDragEnd={handleDragEnd}
+            style={{
+              ...(isDesktop 
+                ? { top: `${headerHeight}px`, right: 0, height: `calc(100vh - ${headerHeight}px)` }
+                : { top: `${headerHeight}px`, left: 0, right: 0 }
+              ),
+              ...(isDragging 
+                ? isDesktop 
+                  ? { x, opacity: opacityX } 
+                  : { y, opacity: opacityY }
+                : {}
+              ),
+            }}
+            initial={reducedMotion 
+              ? {} 
+              : isDesktop 
+                ? { x: '100%', opacity: 0 }
+                : { y: '-100%', opacity: 0 }
+            }
+            animate={reducedMotion || isDragging 
+              ? {} 
+              : { x: 0, y: 0, opacity: 1 }
+            }
+            exit={reducedMotion 
+              ? {} 
+              : isDesktop 
+                ? { x: '100%', opacity: 0 }
+                : { y: '-100%', opacity: 0 }
+            }
+            transition={isDragging ? { duration: 0 } : motionConfig}
+            className={`fixed z-[49] bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 border-mistGray/30 dark:border-border shadow-breathing dark:shadow-breathing will-change-[transform,opacity] flex flex-col ${
+              isDesktop
+                ? 'right-0 w-full max-w-md border-l'
+                : 'left-0 right-0 w-full max-h-[calc(100vh-96px)] border-b'
+            }`}
             role="dialog"
             aria-modal="true"
             aria-label={t('cart.title')}
+            onClick={(e) => e.stopPropagation()}
           >
+            {/* Swipe indicator - только на мобильных */}
+            {!isDesktop && (
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
+            )}
+
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-mistGray/20 dark:border-border">
+            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b border-mistGray/20 dark:border-border/50">
               <h2 className="text-xl font-light text-inkSoft dark:text-foreground">
                 {t('cart.title')} ({totalItems})
               </h2>
               <button
                 onClick={toggleCart}
-                className="p-2 hover:bg-mistGray/10 dark:hover:bg-muted/30 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="p-2 hover:bg-mistGray/10 dark:hover:bg-muted/30 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2"
                 aria-label={t('common.close')}
               >
                 <X className="w-5 h-5 text-inkSoft dark:text-foreground" />
@@ -75,7 +296,7 @@ export function CartDrawer() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto px-4 md:px-6 lg:px-8">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center">
                   <ShoppingBag className="w-16 h-16 text-mistGray dark:text-muted-foreground mb-4" />
@@ -86,7 +307,7 @@ export function CartDrawer() {
                   </Button>
                 </div>
               ) : (
-                <div className="p-6 space-y-4">
+                <div className="py-6 space-y-4">
                   {items.map((item) => {
                     const normalizedSource = item.image
                       ? item.image.startsWith('http')
@@ -177,7 +398,7 @@ export function CartDrawer() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="border-t border-mistGray/20 dark:border-border p-6 space-y-4">
+              <div className="border-t border-mistGray/20 dark:border-border/50 px-4 md:px-6 lg:px-8 py-6 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-light text-inkSoft dark:text-foreground">{t('cart.total')}</span>
                   <span className="text-xl font-light text-inkSoft dark:text-foreground">
@@ -194,6 +415,8 @@ export function CartDrawer() {
       )}
     </AnimatePresence>
   )
+
+  return createPortal(content, document.body)
 }
 
 export default CartDrawer

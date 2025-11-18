@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { X } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion, useMotionValue, useTransform, PanInfo } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
+import { MOBILE_MENU_CONFIG } from './mobile-menu.constants'
 
 export type MobileDrawerProps = {
   open: boolean
@@ -13,26 +13,41 @@ export type MobileDrawerProps = {
   title?: string
   id?: string
   children: React.ReactNode
+  /** Ref на кнопку открытия меню для восстановления фокуса */
+  triggerRef?: React.RefObject<HTMLButtonElement>
 }
 
 /**
  * Mobile slide-out drawer component.
  * Renders in a portal to document.body.
  * Features:
- * - Slide-in animation from right (Framer Motion)
- * - Backdrop with click-to-close
+ * - Slide-in animation from top (under header)
+ * - Styled to match header appearance
+ * - Swipe gesture to close (swipe up)
  * - Focus trap management
- * - ESC key to close
- * - Closes on route change
+ * - Multiple ways to close:
+ *   - ESC key
+ *   - Click on backdrop (area below menu)
+ *   - Click on close button (X)
+ *   - Swipe up gesture
+ *   - Click on navigation links
+ *   - Click on action buttons (cart, favorites)
+ *   - Automatically closes on route change
  * - Respects prefers-reduced-motion
  * - ARIA attributes for accessibility
  */
-export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: MobileDrawerProps) {
+export function MobileDrawer({ open, onClose, title = 'Menu', id, children, triggerRef }: MobileDrawerProps) {
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const reducedMotion = useReducedMotion()
   const panelRef = useRef<HTMLDivElement>(null)
   const firstFocusableRef = useRef<HTMLElement | null>(null)
+  const focusableElementsRef = useRef<NodeListOf<HTMLElement> | null>(null)
+  
+  // Motion values for swipe gesture
+  const y = useMotionValue(0)
+  const opacity = useTransform(y, [-100, 0], [0, 1])
+  const [isDragging, setIsDragging] = useState(false)
 
   useLockBodyScroll(open)
 
@@ -41,21 +56,40 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: Mo
     setMounted(true)
   }, [])
 
-  // Close on pathname change
+  // Reset motion values when menu closes
+  useEffect(() => {
+    if (!open) {
+      y.set(0)
+      setIsDragging(false)
+    }
+  }, [open, y])
+
+  // Close on pathname change and restore focus
   useEffect(() => {
     if (open) {
       onClose()
     }
   }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Focus trap: focus first element on open, restore on close
+  // Восстановление фокуса после закрытия меню
+  useEffect(() => {
+    if (!open && triggerRef?.current) {
+      // Небольшая задержка для завершения анимации закрытия
+      const timeoutId = setTimeout(() => {
+        triggerRef.current?.focus()
+      }, MOBILE_MENU_CONFIG.ANIMATION_DURATION * 1000)
+      return () => clearTimeout(timeoutId)
+    }
+  }, [open, triggerRef])
+
+  // Объединенный useEffect для keyboard navigation и focus trap
   useEffect(() => {
     if (!open || !mounted) return
 
     const panel = panelRef.current
     if (!panel) return
 
-    // Get first focusable element
+    // Get focusable elements (кешируем для оптимизации)
     const focusableSelectors = [
       'a[href]',
       'button:not([disabled])',
@@ -66,24 +100,27 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: Mo
     ].join(', ')
 
     const focusableElements = panel.querySelectorAll<HTMLElement>(focusableSelectors)
+    focusableElementsRef.current = focusableElements
     const firstElement = focusableElements[0]
 
     if (firstElement) {
       firstFocusableRef.current = firstElement
-      firstElement.focus()
+      // Delay focus to allow animation to complete
+      setTimeout(() => firstElement.focus(), MOBILE_MENU_CONFIG.FOCUS_DELAY)
     }
 
     // Handle Tab key to trap focus
     const handleTab = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return
 
-      if (focusableElements.length === 0) {
+      const elements = focusableElementsRef.current
+      if (!elements || elements.length === 0) {
         e.preventDefault()
         return
       }
 
-      const firstEl = focusableElements[0]
-      const lastEl = focusableElements[focusableElements.length - 1]
+      const firstEl = elements[0]
+      const lastEl = elements[elements.length - 1]
 
       if (e.shiftKey) {
         // Shift+Tab
@@ -100,79 +137,106 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: Mo
       }
     }
 
-    document.addEventListener('keydown', handleTab)
-    return () => document.removeEventListener('keydown', handleTab)
-  }, [open, mounted])
-
-  // ESC key handler
-  useEffect(() => {
-    if (!open) return
+    // Handle ESC key
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose()
+      }
     }
+
+    document.addEventListener('keydown', handleTab)
     document.addEventListener('keydown', handleEsc)
-    return () => document.removeEventListener('keydown', handleEsc)
-  }, [open, onClose])
+    return () => {
+      document.removeEventListener('keydown', handleTab)
+      document.removeEventListener('keydown', handleEsc)
+    }
+  }, [open, mounted, onClose])
+
+  // Handle swipe gesture - только вверх для закрытия
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = MOBILE_MENU_CONFIG.SWIPE_THRESHOLD
+    const velocity = info.velocity.y
+
+    // Закрываем только при свайпе вверх (отрицательное значение y)
+    if (info.offset.y < -threshold || velocity < -MOBILE_MENU_CONFIG.SWIPE_VELOCITY) {
+      // Swipe up - close menu
+      onClose()
+    } else {
+      // Return to original position
+      y.set(0)
+    }
+    setIsDragging(false)
+  }
+
+  // Ограничиваем drag только вверх
+  const handleDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    // Разрешаем drag только вверх (отрицательные значения y)
+    if (info.offset.y > 0) {
+      y.set(0)
+    }
+  }
 
   if (!mounted) return null
 
   const drawerId = id || 'mobile-drawer'
+  const headerHeight = MOBILE_MENU_CONFIG.HEADER_HEIGHT
   const motionConfig = reducedMotion
     ? { duration: 0 }
-    : { duration: 0.25, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
+    : { 
+        duration: MOBILE_MENU_CONFIG.ANIMATION_DURATION, 
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number] 
+      }
 
   const content = (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop - под меню для закрытия при клике */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={motionConfig}
-            className="fixed inset-0 z-[59] bg-black/40 md:hidden dark:bg-black/50"
+            transition={{ duration: 0.25 }}
+            style={{ top: `${headerHeight}px` }}
+            className="fixed inset-0 z-[48] bg-black/20 dark:bg-black/30 md:hidden backdrop-blur-sm"
             onClick={onClose}
             aria-hidden="true"
           />
 
-          {/* Drawer Panel */}
+          {/* Drawer Panel - под хедером */}
           <motion.div
             ref={panelRef}
-            initial={reducedMotion ? {} : { x: '100%', opacity: 0 }}
-            animate={reducedMotion ? {} : { x: 0, opacity: 1 }}
-            exit={reducedMotion ? {} : { x: '100%', opacity: 0 }}
-            transition={{
-              ...motionConfig,
-              opacity: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+            drag="y"
+            dragConstraints={{ top: -Infinity, bottom: 0 }}
+            dragElastic={{ top: MOBILE_MENU_CONFIG.DRAG_ELASTIC, bottom: 0 }}
+            onDragStart={() => setIsDragging(true)}
+            onDrag={handleDrag}
+            onDragEnd={handleDragEnd}
+            style={{
+              top: `${headerHeight}px`,
+              ...(isDragging ? { y, opacity } : {}),
             }}
+            initial={reducedMotion ? {} : { y: '-100%', opacity: 0 }}
+            animate={reducedMotion || isDragging ? {} : { y: 0, opacity: 1 }}
+            exit={reducedMotion ? {} : { y: '-100%', opacity: 0 }}
+            transition={isDragging ? { duration: 0 } : motionConfig}
             role="dialog"
             aria-modal="true"
-            aria-labelledby={`${drawerId}-label`}
+            aria-label={title || 'Mobile menu'}
             id={drawerId}
-            className="fixed right-0 top-0 z-[60] h-dvh w-[min(88vw,380px)] bg-gradient-to-b from-white via-white to-white/95 dark:from-card dark:via-card dark:to-card/98 border-l border-mistGray/20 dark:border-border backdrop-blur-xl dark:backdrop-blur-xl shadow-2xl dark:shadow-[0_8px_40px_rgba(0,0,0,0.6)] overflow-y-auto will-change-[transform,opacity]"
+            className="fixed left-0 right-0 z-[49] w-full bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 border-b border-mistGray/30 dark:border-border shadow-breathing dark:shadow-breathing will-change-[transform,opacity]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Декоративный градиент сверху */}
-            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-sageTint/5 dark:from-primary/5 to-transparent pointer-events-none" aria-hidden="true" />
-            
-            {/* Header */}
-            <div className="relative flex items-center justify-between mb-6 pt-8 pb-4 px-5 border-b border-mistGray/10 dark:border-border/50">
-              <h2 id={`${drawerId}-label`} className="text-title-1 font-light text-inkSoft dark:text-foreground tracking-wide">
-                {title}
-              </h2>
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={onClose}
-                className="group inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-mistGray/20 dark:border-border bg-white/50 dark:bg-card/50 backdrop-blur-sm hover:bg-mistGray/10 dark:hover:bg-muted/30 transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-95 hover:scale-105"
-              >
-                <X className="h-5 w-5 text-inkSoft dark:text-foreground transition-transform duration-300 group-hover:rotate-90" />
-              </button>
-            </div>
+            {/* Swipe indicator - улучшенный, более заметный */}
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
 
-            {/* Content */}
-            <div className="relative flex flex-col flex-1 overflow-y-auto">{children}</div>
+            {/* Container с контентом */}
+            <div className="container mx-auto px-4 md:px-6 lg:px-8">
+              {/* Content */}
+              <div className="relative flex flex-col pb-6 pt-4">
+                {children}
+              </div>
+            </div>
           </motion.div>
         </>
       )}
@@ -181,4 +245,3 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children }: Mo
 
   return createPortal(content, document.body)
 }
-

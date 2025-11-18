@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState, memo, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ShoppingBag, Heart } from 'lucide-react'
@@ -14,6 +14,7 @@ import { SettingsPanel } from '@/components/settings-panel'
 import { useTranslations } from '@/hooks/useTranslations'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
+import { MOBILE_MENU_CONFIG } from './mobile-menu.constants'
 
 export default function SiteHeader() {
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -22,6 +23,7 @@ export default function SiteHeader() {
   const { toggleCart, getTotalItems } = useCartStore()
   const { items: favorites, toggleFavorites } = useFavoritesStore()
   const t = useTranslations()
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -103,18 +105,52 @@ export default function SiteHeader() {
               <SettingsPanel />
             </div>
           <button
+            ref={menuButtonRef}
             type="button"
-            aria-label="открыть меню"
+            aria-label={drawerOpen ? "закрыть меню" : "открыть меню"}
             aria-expanded={drawerOpen}
             aria-controls="mobile-drawer"
-            onClick={() => setDrawerOpen(true)}
-            className="md:hidden hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-full inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-mistGray/30 dark:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-98"
+            onClick={() => setDrawerOpen(!drawerOpen)}
+            className="md:hidden hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-full inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-mistGray/30 dark:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-98 relative"
           >
-            <span className="sr-only">Open menu</span>
-            <div className="space-y-1.5">
-              <span className="block h-0.5 w-5 bg-inkSoft dark:bg-foreground" />
-              <span className="block h-0.5 w-5 bg-inkSoft dark:bg-foreground" />
-              <span className="block h-0.5 w-5 bg-inkSoft dark:bg-foreground" />
+            <span className="sr-only">{drawerOpen ? "Close menu" : "Open menu"}</span>
+            <div className="relative w-5 h-5 flex items-center justify-center">
+              {/* Верхняя полоска */}
+              <motion.span
+                className="absolute block h-0.5 w-5 bg-inkSoft dark:bg-foreground origin-center"
+                animate={{
+                  rotate: drawerOpen ? 45 : 0,
+                  y: drawerOpen ? 0 : -6,
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              />
+              {/* Средняя полоска */}
+              <motion.span
+                className="absolute block h-0.5 w-5 bg-inkSoft dark:bg-foreground origin-center"
+                animate={{
+                  opacity: drawerOpen ? 0 : 1,
+                  scale: drawerOpen ? 0 : 1,
+                }}
+                transition={{
+                  duration: 0.2,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              />
+              {/* Нижняя полоска */}
+              <motion.span
+                className="absolute block h-0.5 w-5 bg-inkSoft dark:bg-foreground origin-center"
+                animate={{
+                  rotate: drawerOpen ? -45 : 0,
+                  y: drawerOpen ? 0 : 6,
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              />
             </div>
           </button>
           </div>
@@ -122,7 +158,13 @@ export default function SiteHeader() {
       </div>
 
       {/* Mobile Drawer */}
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title="меню" id="mobile-drawer">
+      <MobileDrawer 
+        open={drawerOpen} 
+        onClose={() => setDrawerOpen(false)} 
+        title="меню" 
+        id="mobile-drawer"
+        triggerRef={menuButtonRef}
+      >
         <MobileDrawerContent
           pathname={pathname}
           mounted={mounted}
@@ -138,25 +180,26 @@ export default function SiteHeader() {
   )
 }
 
-// Stagger animation variants
+// Stagger animation variants - улучшенные с использованием констант
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.1,
+      staggerChildren: MOBILE_MENU_CONFIG.STAGGER_DELAY,
+      delayChildren: MOBILE_MENU_CONFIG.STAGGER_DELAY_CHILDREN,
     },
   },
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, x: 20 },
+  hidden: { opacity: 0, y: 8, scale: 0.96 },
   visible: {
     opacity: 1,
-    x: 0,
+    y: 0,
+    scale: 1,
     transition: {
-      duration: 0.3,
+      duration: MOBILE_MENU_CONFIG.ITEM_ANIMATION_DURATION,
       ease: [0.22, 1, 0.36, 1] as [number, number, number, number], // ease-brand
     },
   },
@@ -183,41 +226,50 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
   t: (key: string) => string
 }) {
   const navigationLinks = [
+    { href: '/', label: t('header.home') },
     { href: '/catalog', label: t('header.collection') },
     { href: '/about', label: t('header.about') },
   ]
 
   return (
     <motion.div
-      className="flex flex-col"
+      className="flex flex-col min-h-full"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      {/* Navigation */}
-      <nav className="px-4 pt-6 pb-4 space-y-2">
-        {navigationLinks.map((link) => {
-          const isActive = pathname === link.href
+      {/* Navigation - улучшенная структура */}
+      <nav className="px-2 pt-2 pb-3 space-y-2">
+        {navigationLinks.map((link, index) => {
+          // Нормализуем pathname для сравнения (убираем локализацию)
+          const normalizedPathname = pathname.replace(/^\/[a-z]{2}(\/|$)/, '/') || '/'
+          const normalizedHref = link.href
+          const isActive = normalizedPathname === normalizedHref
           return (
-            <motion.div key={link.href} variants={itemVariants}>
+            <motion.div 
+              key={link.href} 
+              variants={itemVariants}
+              custom={index}
+            >
               <Link
                 href={link.href}
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'group relative block rounded-xl px-5 py-4 text-right text-base font-light transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]',
+                  'group relative flex items-center justify-between rounded-xl px-5 py-4 text-base font-light transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]',
                   isActive
                     ? 'bg-sageTint/10 dark:bg-primary/10 text-sageTint dark:text-primary border border-sageTint/20 dark:border-primary/20 shadow-sm dark:shadow-md'
-                    : 'text-inkSoft dark:text-foreground hover:bg-white/60 dark:hover:bg-card/60 hover:text-sageTint dark:hover:text-primary'
+                    : 'text-inkSoft dark:text-foreground hover:bg-white/60 dark:hover:bg-card/60 hover:text-sageTint dark:hover:text-primary border border-transparent hover:border-mistGray/20 dark:hover:border-border/40'
                 )}
               >
-                <span suppressHydrationWarning className="relative z-10">
+                <span suppressHydrationWarning className="relative z-10 flex-1">
                   {link.label}
                 </span>
-                {!isActive && (
-                  <span
-                    className="pointer-events-none absolute inset-0 rounded-xl border border-transparent group-hover:border-sageTint/20 dark:group-hover:border-primary/20 transition-all duration-300 ease-brand"
-                    aria-hidden="true"
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="w-1.5 h-1.5 rounded-full bg-sageTint dark:bg-primary"
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
               </Link>
@@ -226,11 +278,14 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
         })}
       </nav>
 
-      {/* Divider */}
-      <div className="border-t border-mistGray/15 dark:border-border/40 mx-4" />
+      {/* Divider - улучшенный с лучшим визуальным разделением */}
+      <motion.div 
+        variants={itemVariants}
+        className="border-t border-mistGray/20 dark:border-border/50 mx-2 my-4" 
+      />
 
-      {/* Action Buttons */}
-      <div className="px-4 py-4 space-y-2">
+      {/* Action Buttons - улучшенные */}
+      <div className="px-2 pb-3 space-y-2.5">
         <motion.div variants={itemVariants}>
           <ActionButton
             icon={<ShoppingBag className="h-5 w-5" />}
@@ -258,26 +313,33 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
         </motion.div>
       </div>
 
-      {/* Settings Section - внизу */}
-      <div className="mt-auto border-t border-mistGray/15 dark:border-border/40 px-4 py-4">
-        <div className="flex gap-2">
-          <motion.div variants={itemVariants} className="flex-1">
-            <SettingsCard>
-              <ThemeToggle />
-            </SettingsCard>
-          </motion.div>
-          <motion.div variants={itemVariants} className="flex-1">
-            <SettingsCard>
-              <LocaleSwitcher />
-            </SettingsCard>
-          </motion.div>
+      {/* Settings Section - компактная с улучшенным разделением */}
+      <motion.div 
+        variants={itemVariants}
+        className="mt-auto pt-4 border-t border-mistGray/20 dark:border-border/50"
+      >
+        <div className="px-2 pb-2">
+          <div className="flex gap-2">
+            <motion.div variants={itemVariants} className="flex-1">
+              <SettingsCard 
+                label="Тема"
+                icon={<ThemeToggle />}
+              />
+            </motion.div>
+            <motion.div variants={itemVariants} className="flex-1">
+              <SettingsCard 
+                label="Язык"
+                icon={<LocaleSwitcher />}
+              />
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   )
 })
 
-// Компонент кнопки действия
+// Компонент кнопки действия - улучшенный
 const ActionButton = memo(function ActionButton({
   icon,
   label,
@@ -296,34 +358,48 @@ const ActionButton = memo(function ActionButton({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="group flex w-full items-center justify-between gap-3 rounded-xl px-5 py-4 bg-white/50 dark:bg-card/50 border border-mistGray/20 dark:border-border hover:bg-white dark:hover:bg-card transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]"
+      className="group relative flex w-full items-center justify-between gap-3 rounded-xl px-5 py-4 bg-white/50 dark:bg-card/50 border border-mistGray/20 dark:border-border hover:bg-white dark:hover:bg-card hover:border-sageTint/30 dark:hover:border-primary/30 transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98] overflow-hidden"
     >
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-sageTint/10 dark:bg-primary/10 transition-transform duration-300 group-hover:scale-110">
+      {/* Hover effect background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-sageTint/5 to-transparent dark:from-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="relative flex items-center gap-3 flex-1">
+        <div className="p-2 rounded-lg bg-sageTint/10 dark:bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-sageTint/20 dark:group-hover:bg-primary/20">
           {icon}
         </div>
-        <span className="text-base font-light text-inkSoft dark:text-foreground">
+        <span className="text-base font-light text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors duration-300">
           {label}
         </span>
       </div>
       {count > 0 && (
-        <span className="inline-flex h-6 min-w-[24px] items-center justify-center rounded-full bg-sageTint dark:bg-primary px-2.5 text-xs font-light text-white dark:text-primary-foreground shadow-md dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+        <motion.span
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="relative inline-flex h-6 min-w-[24px] items-center justify-center rounded-full bg-sageTint dark:bg-primary px-2.5 text-xs font-medium text-white dark:text-primary-foreground shadow-md dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+        >
           {count}
-        </span>
+        </motion.span>
       )}
     </button>
   )
 })
 
-// Компонент карточки настроек
+// Компонент карточки настроек - минималистичный без фона по умолчанию
 const SettingsCard = memo(function SettingsCard({
-  children,
+  label,
+  icon,
 }: {
-  children: React.ReactNode
+  label: string
+  icon: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-mistGray/20 dark:border-border/60 bg-white/60 dark:bg-card/60 backdrop-blur-sm shadow-sm dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:shadow-md dark:hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-300 ease-brand">
-      {children}
+    <div className="group flex flex-col items-center gap-1.5 p-2.5 rounded-lg border border-transparent hover:border-mistGray/20 dark:hover:border-border/50 hover:bg-white/50 dark:hover:bg-card/50 backdrop-blur-sm transition-all duration-300 ease-brand cursor-pointer">
+      <div className="flex items-center justify-center scale-90">
+        {icon}
+      </div>
+      <span className="text-xs font-light text-inkSoft/60 dark:text-muted-foreground/80 group-hover:text-sageTint dark:group-hover:text-primary transition-colors duration-300 leading-tight">
+        {label}
+      </span>
     </div>
   )
 })

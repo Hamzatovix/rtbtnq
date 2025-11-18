@@ -9,6 +9,7 @@ import { Button } from './ui/button'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
+import { MOBILE_MENU_CONFIG } from '@/components/layout/mobile-menu.constants'
 
 export function SettingsPanel() {
   const [open, setOpen] = useState(false)
@@ -94,7 +95,10 @@ export function SettingsPanel() {
 
   const motionConfig = reducedMotion
     ? { duration: 0 }
-    : { duration: 0.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
+    : { 
+        duration: MOBILE_MENU_CONFIG.ANIMATION_DURATION, 
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number] 
+      }
 
   const panelContent = mounted && open ? (
     <AnimatePresence>
@@ -110,14 +114,14 @@ export function SettingsPanel() {
           aria-hidden="true"
         />
 
-        {/* Panel - должна быть выше backdrop */}
+        {/* Panel - стиль как у мобильного меню */}
         <motion.div
           ref={panelRef}
           initial={reducedMotion ? {} : { opacity: 0, y: -10, scale: 0.95 }}
           animate={reducedMotion ? {} : { opacity: 1, y: 0, scale: 1 }}
           exit={reducedMotion ? {} : { opacity: 0, y: -10, scale: 0.95 }}
           transition={motionConfig}
-          className="fixed right-4 top-24 z-[60] w-auto rounded-xl border border-mistGray/20 dark:border-border bg-white dark:bg-card shadow-xl dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] p-3"
+          className="fixed right-4 top-24 z-[60] w-auto rounded-xl border border-mistGray/30 dark:border-border bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 shadow-breathing dark:shadow-breathing p-3"
           role="dialog"
           aria-modal="true"
           aria-label="Настройки"
