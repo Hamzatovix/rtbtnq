@@ -16,8 +16,29 @@ interface TelegramMessageOptions {
 
 /**
  * Отправляет фото в Telegram через Bot API
+ * Пытается сначала отправить по URL, если не получается - загружает в буфер и отправляет как файл
  */
 export async function sendTelegramPhoto(
+  botToken: string,
+  chatId: string,
+  photoUrl: string,
+  caption?: string
+): Promise<boolean> {
+  // Сначала пробуем отправить по URL
+  const urlResult = await sendTelegramPhotoByUrl(botToken, chatId, photoUrl, caption)
+  if (urlResult) {
+    return true
+  }
+  
+  // Если не получилось, пробуем загрузить в буфер и отправить как файл
+  console.log('[Telegram] Попытка отправить фото через загрузку в буфер...')
+  return await sendTelegramPhotoByFile(botToken, chatId, photoUrl, caption)
+}
+
+/**
+ * Отправляет фото в Telegram по URL
+ */
+async function sendTelegramPhotoByUrl(
   botToken: string,
   chatId: string,
   photoUrl: string,
@@ -45,7 +66,8 @@ export async function sendTelegramPhoto(
       controller.abort()
     }, 30000) // 30 секунд таймаут
     
-    console.log('[Telegram] Начало fetch запроса отправки фото...')
+    const startTime = Date.now()
+    console.log('[Telegram] Начало fetch запроса отправки фото...', { timestamp: new Date().toISOString() })
     let response: Response
     try {
       response = await fetch(url, {
@@ -56,10 +78,13 @@ export async function sendTelegramPhoto(
         body: JSON.stringify(payload),
         signal: controller.signal,
       })
+      const elapsed = Date.now() - startTime
       clearTimeout(timeoutId)
-      console.log('[Telegram] Fetch запрос завершен, статус:', response.status)
+      console.log('[Telegram] Fetch запрос завершен, статус:', response.status, { elapsed: `${elapsed}ms`, timestamp: new Date().toISOString() })
     } catch (fetchError) {
+      const elapsed = Date.now() - startTime
       clearTimeout(timeoutId)
+      console.error('[Telegram] Fetch запрос завершился с ошибкой:', { elapsed: `${elapsed}ms`, timestamp: new Date().toISOString() })
       throw fetchError
     }
 
@@ -93,6 +118,106 @@ export async function sendTelegramPhoto(
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
         console.error('[Telegram] Request timeout (30s) при отправке фото')
+      }
+      console.error('[Telegram] Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
+    }
+    return false
+  }
+}
+
+/**
+ * Отправляет фото в Telegram, загружая его в буфер и отправляя как файл
+ */
+async function sendTelegramPhotoByFile(
+  botToken: string,
+  chatId: string,
+  photoUrl: string,
+  caption?: string
+): Promise<boolean> {
+  try {
+    console.log('[Telegram] Загрузка изображения в буфер...', { photoUrl: photoUrl.substring(0, 100) + '...' })
+    
+    // Загружаем изображение в буфер
+    const imageResponse = await fetch(photoUrl, { signal: AbortSignal.timeout(10000) })
+    if (!imageResponse.ok) {
+      console.error('[Telegram] Не удалось загрузить изображение:', { status: imageResponse.status })
+      return false
+    }
+    
+    const imageBuffer = await imageResponse.arrayBuffer()
+    const blob = new Blob([imageBuffer], { type: imageResponse.headers.get('content-type') || 'image/jpeg' })
+    
+    console.log('[Telegram] Изображение загружено, размер:', blob.size, 'bytes')
+    
+    // Формируем FormData для отправки файла
+    const formData = new FormData()
+    formData.append('chat_id', chatId)
+    formData.append('photo', blob, 'photo.jpg')
+    if (caption) {
+      formData.append('caption', caption)
+    }
+    
+    const url = `https://api.telegram.org/bot${botToken}/sendPhoto`
+    console.log('[Telegram] Отправка фото как файла...')
+    
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => {
+      console.error('[Telegram] Таймаут запроса отправки фото как файла (30s)')
+      controller.abort()
+    }, 30000)
+    
+    const startTime = Date.now()
+    let response: Response
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        signal: controller.signal,
+      })
+      const elapsed = Date.now() - startTime
+      clearTimeout(timeoutId)
+      console.log('[Telegram] Fetch запрос завершен, статус:', response.status, { elapsed: `${elapsed}ms` })
+    } catch (fetchError) {
+      const elapsed = Date.now() - startTime
+      clearTimeout(timeoutId)
+      console.error('[Telegram] Fetch запрос завершился с ошибкой:', { elapsed: `${elapsed}ms` })
+      throw fetchError
+    }
+    
+    const responseText = await response.text()
+    console.log('[Telegram] Ответ получен, длина:', responseText.length)
+    
+    let responseData: any
+    try {
+      responseData = JSON.parse(responseText)
+    } catch {
+      responseData = { ok: false, description: `Failed to parse response: ${responseText.substring(0, 200)}` }
+    }
+    
+    if (!response.ok || !responseData.ok) {
+      console.error('[Telegram] API error при отправке фото как файла:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: responseData,
+        responseText: responseText.substring(0, 500)
+      })
+      return false
+    }
+    
+    console.log('[Telegram] Фото успешно отправлено как файл:', {
+      messageId: responseData.result?.message_id,
+      chatId: responseData.result?.chat?.id
+    })
+    return true
+  } catch (error) {
+    console.error('[Telegram] Failed to send Telegram photo as file:', error)
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.error('[Telegram] Request timeout (30s) при отправке фото как файла')
       }
       console.error('[Telegram] Error details:', {
         name: error.name,
@@ -514,16 +639,28 @@ export async function sendOrderNotification(
       })
       photoSent = await sendTelegramPhoto(token, chat, mediaItems[0].media, mediaItems[0].caption ?? captionFallback)
       console.log('[Telegram] Результат отправки фото:', photoSent ? 'успешно' : 'ошибка')
+      
+      // Если фото не отправилось, добавляем информацию о товаре в текстовое сообщение
+      if (!photoSent) {
+        console.log('[Telegram] Фото не отправилось, информация о товаре будет в текстовом сообщении')
+      }
     } else if (mediaItems.length > 1) {
       console.log('[Telegram] Попытка отправить медиа-группу:', {
         count: mediaItems.length
       })
       photoSent = await sendTelegramMediaGroup(token, chat, mediaItems)
       console.log('[Telegram] Результат отправки медиа-группы:', photoSent ? 'успешно' : 'ошибка')
+      
+      // Если фото не отправилось, добавляем информацию о товарах в текстовое сообщение
+      if (!photoSent) {
+        console.log('[Telegram] Медиа-группа не отправилась, информация о товарах будет в текстовом сообщении')
+      }
     }
   } else if (itemsWithImages.length > 0 && !canSendImages) {
     console.log('[Telegram] Изображения товаров пропущены (localhost недоступен для Telegram)')
   }
+  
+  // Текстовое сообщение отправляется ВСЕГДА, независимо от результата отправки фото
 
   // Формируем сообщение с кнопкой или без (если localhost)
   const messageOptions: TelegramMessageOptions = {
