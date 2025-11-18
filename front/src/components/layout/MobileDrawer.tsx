@@ -14,7 +14,7 @@ export type MobileDrawerProps = {
   id?: string
   children: React.ReactNode
   /** Ref на кнопку открытия меню для восстановления фокуса */
-  triggerRef?: React.RefObject<HTMLButtonElement>
+  triggerRef?: React.RefObject<HTMLButtonElement | null>
 }
 
 /**
