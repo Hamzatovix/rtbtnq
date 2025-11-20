@@ -1,30 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
-import path from 'path'
 import { nanoid } from 'nanoid'
-
-const GALLERY_FILE = path.join(process.cwd(), 'src', 'data', 'gallery.json')
-
-async function loadGallery() {
-  try {
-    const fileContents = await fs.readFile(GALLERY_FILE, 'utf8')
-    const data = JSON.parse(fileContents)
-    return data.images || []
-  } catch (error) {
-    console.error('Ошибка при загрузке галереи:', error)
-    return []
-  }
-}
-
-async function saveGallery(images: Array<{ id: string; src: string; alt: string }>) {
-  try {
-    await fs.writeFile(GALLERY_FILE, JSON.stringify({ images }, null, 2), 'utf8')
-    return true
-  } catch (error) {
-    console.error('Ошибка при сохранении галереи:', error)
-    return false
-  }
-}
+import { loadGallery, saveGallery } from '@/server/gallery/gallery-json.service'
 
 // GET - получить все изображения галереи
 export async function GET() {
@@ -58,11 +34,22 @@ export async function POST(req: NextRequest) {
     }
 
     images.push(newImage)
-    const saved = await saveGallery(images)
-
-    if (!saved) {
+    
+    try {
+      const saved = await saveGallery(images)
+      if (!saved) {
+        return NextResponse.json(
+          { error: 'Ошибка при сохранении галереи' },
+          { status: 500 }
+        )
+      }
+    } catch (error: any) {
+      console.error('Ошибка при сохранении галереи:', error)
       return NextResponse.json(
-        { error: 'Ошибка при сохранении галереи' },
+        { 
+          error: error.message || 'Ошибка при сохранении галереи',
+          details: error.message?.includes('Supabase') ? 'Настройте Supabase для production. См. md/GALLERY_SUPABASE_SETUP.md' : undefined
+        },
         { status: 500 }
       )
     }
@@ -90,11 +77,21 @@ export async function PUT(req: NextRequest) {
       )
     }
 
-    const saved = await saveGallery(images)
-
-    if (!saved) {
+    try {
+      const saved = await saveGallery(images)
+      if (!saved) {
+        return NextResponse.json(
+          { error: 'Ошибка при сохранении галереи' },
+          { status: 500 }
+        )
+      }
+    } catch (error: any) {
+      console.error('Ошибка при обновлении галереи:', error)
       return NextResponse.json(
-        { error: 'Ошибка при сохранении галереи' },
+        { 
+          error: error.message || 'Ошибка при обновлении галереи',
+          details: error.message?.includes('Supabase') ? 'Настройте Supabase для production. См. md/GALLERY_SUPABASE_SETUP.md' : undefined
+        },
         { status: 500 }
       )
     }
@@ -132,11 +129,21 @@ export async function DELETE(req: NextRequest) {
       )
     }
 
-    const saved = await saveGallery(filtered)
-
-    if (!saved) {
+    try {
+      const saved = await saveGallery(filtered)
+      if (!saved) {
+        return NextResponse.json(
+          { error: 'Ошибка при сохранении галереи' },
+          { status: 500 }
+        )
+      }
+    } catch (error: any) {
+      console.error('Ошибка при удалении изображения:', error)
       return NextResponse.json(
-        { error: 'Ошибка при сохранении галереи' },
+        { 
+          error: error.message || 'Ошибка при удалении изображения',
+          details: error.message?.includes('Supabase') ? 'Настройте Supabase для production. См. md/GALLERY_SUPABASE_SETUP.md' : undefined
+        },
         { status: 500 }
       )
     }
