@@ -27,12 +27,17 @@ export default function BackofficeGalleryPage() {
   const loadGallery = async () => {
     try {
       setLoading(true)
+      console.log('[Gallery Frontend] Загрузка галереи...')
       const res = await fetch('/api/gallery', { cache: 'no-store' })
       const data = await res.json()
+      console.log('[Gallery Frontend] Получены данные:', {
+        imagesCount: data.images?.length || 0,
+        images: data.images,
+      })
       setImages(data.images || [])
       setError(null)
     } catch (err) {
-      console.error('Ошибка при загрузке галереи:', err)
+      console.error('[Gallery Frontend] Ошибка при загрузке галереи:', err)
       setError('Не удалось загрузить галерею')
     } finally {
       setLoading(false)

@@ -6,9 +6,13 @@ import { loadGallery, saveGallery } from '@/server/gallery/gallery-json.service'
 export async function GET() {
   try {
     const images = await loadGallery()
+    console.log('[Gallery API] GET запрос, возвращено изображений:', images.length)
+    if (images.length > 0) {
+      console.log('[Gallery API] Первое изображение:', images[0])
+    }
     return NextResponse.json({ images })
   } catch (error: any) {
-    console.error('Ошибка при получении галереи:', error)
+    console.error('[Gallery API] Ошибка при получении галереи:', error)
     return NextResponse.json({ images: [] }, { status: 200 })
   }
 }

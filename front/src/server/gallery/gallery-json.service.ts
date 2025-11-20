@@ -17,28 +17,47 @@ function getGalleryPath(): string {
 
 async function loadGalleryFromSupabase(): Promise<GalleryImage[]> {
   try {
+    console.log('[Gallery] Загрузка из Supabase, таблица:', SUPABASE_GALLERY_TABLE)
     const data = await supabaseSelect<Array<{ id: string; src?: string; alt?: string; data?: GalleryImage }>>(
       SUPABASE_GALLERY_TABLE,
       'select=id,src,alt,data&order=created_at.asc',
     )
 
-    return (Array.isArray(data) ? data : []).map((row) => {
+    console.log('[Gallery] Получены данные из Supabase:', {
+      isArray: Array.isArray(data),
+      count: Array.isArray(data) ? data.length : 0,
+      firstRow: Array.isArray(data) && data.length > 0 ? data[0] : null,
+    })
+
+    const images = (Array.isArray(data) ? data : []).map((row) => {
       // Если есть data (JSONB), используем его, иначе используем отдельные поля
-      if (row.data) {
-        return {
-          id: row.data.id || row.id,
-          src: row.data.src || '',
-          alt: row.data.alt || '',
+      let image: GalleryImage
+      
+      if (row.data && typeof row.data === 'object') {
+        // Если data это объект, используем его
+        const dataObj = typeof row.data === 'string' ? JSON.parse(row.data) : row.data
+        image = {
+          id: dataObj.id || row.id,
+          src: dataObj.src || row.src || '',
+          alt: dataObj.alt || row.alt || '',
+        }
+      } else {
+        // Используем отдельные поля
+        image = {
+          id: row.id,
+          src: row.src || '',
+          alt: row.alt || '',
         }
       }
-      return {
-        id: row.id,
-        src: row.src || '',
-        alt: row.alt || '',
-      }
+      
+      console.log('[Gallery] Обработанное изображение:', image)
+      return image
     })
+
+    console.log('[Gallery] Итого загружено изображений:', images.length)
+    return images
   } catch (err) {
-    console.error('Supabase loadGallery error:', err)
+    console.error('[Gallery] Ошибка при загрузке из Supabase:', err)
     return []
   }
 }
@@ -62,17 +81,30 @@ async function saveGalleryToSupabase(images: GalleryImage[]): Promise<void> {
 }
 
 export async function loadGallery(): Promise<GalleryImage[]> {
-  if (isSupabaseEnabled()) {
+  const isVercel = isVercelEnvironment()
+  const supabaseEnabled = isSupabaseEnabled()
+  
+  console.log('[Gallery] Загрузка галереи:', {
+    isVercel,
+    supabaseEnabled,
+    hasSupabaseUrl: !!process.env.SUPABASE_URL,
+    hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+  })
+
+  if (supabaseEnabled) {
     return await loadGalleryFromSupabase()
   }
 
   const filePath = getGalleryPath()
   try {
+    console.log('[Gallery] Загрузка из файла:', filePath)
     const content = await readFile(filePath, 'utf-8')
     const data = JSON.parse(content)
-    return data.images || []
+    const images = data.images || []
+    console.log('[Gallery] Загружено из файла:', images.length)
+    return images
   } catch (error) {
-    console.error('Ошибка при загрузке галереи:', error)
+    console.error('[Gallery] Ошибка при загрузке из файла:', error)
     return []
   }
 }
