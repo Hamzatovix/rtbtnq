@@ -247,7 +247,7 @@ export default function GalleryPage() {
                       src={galleryImages[currentIndex].src}
                       alt={galleryImages[currentIndex].alt}
                       fill
-                      className="object-contain"
+                      className="object-cover md:object-contain"
                       priority={currentIndex === 0}
                       loading={currentIndex === 0 ? 'eager' : 'lazy'}
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 95vw, (max-width: 1280px) 90vw, 1400px"
