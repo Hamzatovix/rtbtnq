@@ -192,7 +192,7 @@ export default function GalleryPage() {
   return (
     <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground h-screen overflow-hidden flex items-center justify-center">
       <section className="w-full h-full flex items-center justify-center py-2 md:py-4 lg:py-6">
-        <div className="container mx-auto px-1 md:px-6 lg:px-8 h-full flex items-center justify-center">
+        <div className="container mx-auto px-0 md:px-6 lg:px-8 h-full flex items-center justify-center">
           <div className="relative max-w-7xl mx-auto w-full">
             {/* Стрелки навигации - прямоугольные серые кнопки */}
             <div className="absolute left-0.5 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
@@ -221,7 +221,7 @@ export default function GalleryPage() {
 
             {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="relative overflow-hidden mx-2 md:mx-14 lg:mx-16"
+              className="relative overflow-hidden mx-0 md:mx-14 lg:mx-16"
               style={{ touchAction: 'pan-x' }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
