@@ -1,10 +1,11 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { useTranslations } from '@/hooks/useTranslations'
-import { ChevronLeft, ChevronRight, X, Maximize2, Sparkles } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 
 const fade = {
   hidden: { opacity: 0, y: 8 },
@@ -23,7 +24,6 @@ export default function GalleryPage() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [isFullscreen, setIsFullscreen] = useState(false)
   
   // Состояния для свайпа
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
@@ -76,17 +76,6 @@ export default function GalleryPage() {
     loadGallery()
   }, [])
 
-  // Блокировка скролла при полноэкранном режиме
-  useEffect(() => {
-    if (isFullscreen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isFullscreen])
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index)
@@ -143,25 +132,15 @@ export default function GalleryPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isFullscreen) {
-        if (e.key === 'Escape') {
-          setIsFullscreen(false)
-        } else if (e.key === 'ArrowLeft') {
-          goToPrevious()
-        } else if (e.key === 'ArrowRight') {
-          goToNext()
-        }
-      } else {
-        if (e.key === 'ArrowLeft') {
-          goToPrevious()
-        } else if (e.key === 'ArrowRight') {
-          goToNext()
-        }
+      if (e.key === 'ArrowLeft') {
+        goToPrevious()
+      } else if (e.key === 'ArrowRight') {
+        goToNext()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isFullscreen, galleryImages.length])
+  }, [galleryImages.length])
 
   // Если галерея пуста или загружается
   if (loading) {
@@ -211,341 +190,108 @@ export default function GalleryPage() {
   }
 
   return (
-    <>
-      <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen">
-        {/* Carousel Gallery */}
-        <section className="py-12 md:py-20 lg:py-24">
-          <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={fade}
-            className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10"
-          >
-            <div className="relative max-w-6xl mx-auto">
-              {/* Стрелки навигации - десктоп */}
-              <div className="absolute -left-6 md:-left-10 lg:-left-14 xl:-left-16 top-1/2 -translate-y-1/2 z-10 hidden md:flex items-center">
-                <motion.button
-                  type="button"
-                  onClick={goToPrevious}
-                  aria-label="Предыдущий слайд"
-                  whileTap={{ scale: 0.9 }}
-                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl transition-all duration-300 flex items-center justify-center"
-                >
-                  <ChevronLeft className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground" strokeWidth={2.5} />
-                </motion.button>
-              </div>
-
-              <div className="absolute -right-6 md:-right-10 lg:-right-14 xl:-right-16 top-1/2 -translate-y-1/2 z-10 hidden md:flex items-center">
-                <motion.button
-                  type="button"
-                  onClick={goToNext}
-                  aria-label="Следующий слайд"
-                  whileTap={{ scale: 0.9 }}
-                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl transition-all duration-300 flex items-center justify-center"
-                >
-                  <ChevronRight className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground" strokeWidth={2.5} />
-                </motion.button>
-              </div>
-
-              {/* Контейнер слайдера */}
-              <motion.div 
-                className="relative overflow-visible"
-                style={{ touchAction: 'pan-x' }}
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
+    <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen">
+      <section className="py-12 md:py-16 lg:py-20">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+          <div className="relative max-w-5xl mx-auto">
+            {/* Стрелки навигации - прямоугольные серые кнопки */}
+            <div className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 flex items-center">
+              <motion.button
+                type="button"
+                onClick={goToPrevious}
+                aria-label="Предыдущий слайд"
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-12 md:w-12 md:h-14 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                <div className="relative aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-roseBeige/5 to-mistGray/5 dark:from-card dark:via-muted/5 dark:to-muted/10 shadow-2xl border-2 border-mistGray/20 dark:border-border/50">
-                  {/* Декоративная рамка */}
-                  <div className="absolute inset-0 rounded-[2rem] ring-1 ring-inset ring-white/50 dark:ring-white/5 pointer-events-none" />
-                  
-                  {/* Многослойный градиент overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent z-10 pointer-events-none" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/5 dark:to-white/5 z-10 pointer-events-none" />
-                  
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
-                      key={currentIndex}
-                      initial={{ opacity: 0, x: swipeOffset !== 0 ? swipeOffset : 50, scale: 0.98 }}
-                      animate={{ 
-                        opacity: 1, 
-                        x: swipeOffset * 0.3,
-                        scale: 1,
-                      }}
-                      exit={{ opacity: 0, x: swipeOffset !== 0 ? -swipeOffset : -50, scale: 0.98 }}
-                      transition={{ 
-                        duration: swipeOffset !== 0 ? 0 : 0.6,
-                        ease: swipeOffset !== 0 ? 'linear' : [0.22, 1, 0.36, 1]
-                      }}
-                      className="absolute inset-0 cursor-pointer"
-                      onClick={() => setIsFullscreen(true)}
-                    >
-                      <Image
-                        src={galleryImages[currentIndex].src}
-                        alt={galleryImages[currentIndex].alt}
-                        fill
-                        className="object-contain"
-                        priority={currentIndex === 0}
-                        loading={currentIndex === 0 ? 'eager' : 'lazy'}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1200px"
-                        unoptimized={galleryImages[currentIndex].src.includes('blob.vercel-storage.com')}
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.src = '/placeholder/about_main_placeholder.webp'
-                        }}
-                      />
-                    </motion.div>
-                  </AnimatePresence>
+                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
+              </motion.button>
+            </div>
 
-                  {/* Кнопка полноэкранного режима */}
-                  <motion.button
-                    type="button"
-                    onClick={() => setIsFullscreen(true)}
-                    aria-label="Открыть в полноэкранном режиме"
-                    whileTap={{ scale: 0.9 }}
-                    className="absolute top-5 right-5 md:top-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/70 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl z-20"
-                  >
-                    <Maximize2 className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2} />
-                  </motion.button>
-
-                  {/* Стрелки для мобильных */}
-                  <div className="md:hidden absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
-                    <motion.button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        goToPrevious()
-                      }}
-                      aria-label="Предыдущий слайд"
-                      whileTap={{ scale: 0.85 }}
-                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
-                    >
-                      <ChevronLeft className="w-8 h-8 text-white" strokeWidth={2.5} />
-                    </motion.button>
-                    <motion.button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        goToNext()
-                      }}
-                      aria-label="Следующий слайд"
-                      whileTap={{ scale: 0.85 }}
-                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
-                    >
-                      <ChevronRight className="w-8 h-8 text-white" strokeWidth={2.5} />
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Миниатюры (только для десктопа) */}
-              {galleryImages.length > 1 && (
-                <motion.div 
-                  className="hidden md:flex gap-4 mt-10 overflow-x-auto pb-4 scrollbar-hide px-2"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
-                  {galleryImages.map((img, index) => (
-                    <motion.button
-                      key={img.id}
-                      type="button"
-                      onClick={() => goToSlide(index)}
-                      whileTap={{ scale: 0.95 }}
-                      className={`relative flex-shrink-0 w-28 h-28 rounded-2xl overflow-hidden border-2 transition-all duration-300 shadow-lg ${
-                        currentIndex === index
-                          ? 'border-sageTint dark:border-primary shadow-xl scale-105 ring-4 ring-sageTint/20 dark:ring-primary/20'
-                          : 'border-transparent opacity-70'
-                      }`}
-                    >
-                      <Image
-                        src={img.src}
-                        alt={img.alt}
-                        fill
-                        className="object-cover transition-transform duration-500"
-                        sizes="112px"
-                        unoptimized={img.src.includes('blob.vercel-storage.com')}
-                      />
-                      {currentIndex === index && (
-                        <>
-                          <div className="absolute inset-0 bg-gradient-to-t from-sageTint/30 to-transparent dark:from-primary/30" />
-                          <div className="absolute inset-0 ring-2 ring-inset ring-white/50 dark:ring-white/20" />
-                        </>
-                      )}
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-
-              {/* Точки навигации (bullets) */}
-              <motion.ul 
-                className="flex justify-center gap-3 mt-8 md:mt-10 list-none p-0"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
+            <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 flex items-center">
+              <motion.button
+                type="button"
+                onClick={goToNext}
+                aria-label="Следующий слайд"
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-12 md:w-12 md:h-14 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                {galleryImages.map((_, index) => (
-                  <li key={index}>
-                    <motion.button
-                      type="button"
-                      onClick={() => goToSlide(index)}
-                      aria-label={`Перейти к слайду ${index + 1}`}
-                      aria-current={currentIndex === index ? 'true' : undefined}
-                      whileTap={{ scale: 0.9 }}
-                      className={`rounded-full transition-all duration-300 ${
-                        currentIndex === index
-                          ? 'bg-sageTint dark:bg-primary w-12 h-3 shadow-lg ring-2 ring-sageTint/30 dark:ring-primary/30'
-                          : 'bg-mistGray/50 dark:bg-border/70 w-3 h-3'
-                      }`}
-                    />
-                  </li>
-                ))}
-              </motion.ul>
-
-              {/* Описание */}
-              {galleryImages[currentIndex].alt && (
-                <motion.div 
-                  className="text-center mt-8"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <motion.p 
-                    className="text-sm md:text-base text-inkSoft/70 dark:text-foreground/70 max-w-2xl mx-auto font-light italic px-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    key={currentIndex}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {galleryImages[currentIndex].alt}
-                  </motion.p>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-        </section>
-      </div>
-
-      {/* Полноэкранный режим (Lightbox) */}
-      <AnimatePresence>
-        {isFullscreen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-black/98 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
-            onClick={() => setIsFullscreen(false)}
-            style={{ touchAction: 'pan-x' }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            {/* Декоративные элементы */}
-            <div className="absolute top-0 left-0 w-full h-full opacity-10">
-              <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-sageTint/20 rounded-full blur-3xl" />
-              <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-roseBeige/10 rounded-full blur-3xl" />
+                <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
+              </motion.button>
             </div>
 
-            {/* Кнопка закрытия */}
-            <motion.button
-              type="button"
-              onClick={() => setIsFullscreen(false)}
-              aria-label="Закрыть"
-              whileTap={{ scale: 0.9 }}
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl z-10"
-            >
-              <X className="w-7 h-7 text-white" />
-            </motion.button>
-
-            {/* Стрелки навигации */}
-            <motion.button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                goToPrevious()
-              }}
-              aria-label="Предыдущий слайд"
-              whileTap={{ scale: 0.9 }}
-              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl z-10"
-            >
-              <ChevronLeft className="w-7 h-7 md:w-8 md:h-8 text-white" />
-            </motion.button>
-
-            <motion.button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                goToNext()
-              }}
-              aria-label="Следующий слайд"
-              whileTap={{ scale: 0.9 }}
-              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl z-10"
-            >
-              <ChevronRight className="w-7 h-7 md:w-8 md:h-8 text-white" />
-            </motion.button>
-
-            {/* Изображение */}
-            <div 
-              className="relative w-full h-full max-w-7xl max-h-[90vh]"
-              onClick={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-              onTouchMove={(e) => e.stopPropagation()}
-              onTouchEnd={(e) => e.stopPropagation()}
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentIndex}
-                  initial={{ opacity: 0, scale: 0.95, x: swipeOffset !== 0 ? swipeOffset : 0 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: 1,
-                    x: swipeOffset * 0.3
-                  }}
-                  exit={{ opacity: 0, scale: 0.95, x: swipeOffset !== 0 ? -swipeOffset : 0 }}
-                  transition={{ 
-                    duration: swipeOffset !== 0 ? 0 : 0.4,
-                    ease: swipeOffset !== 0 ? 'linear' : [0.22, 1, 0.36, 1]
-                  }}
-                  className="relative w-full h-full"
-                >
-                  <Image
-                    src={galleryImages[currentIndex].src}
-                    alt={galleryImages[currentIndex].alt}
-                    fill
-                    className="object-contain"
-                    sizes="100vw"
-                    unoptimized={galleryImages[currentIndex].src.includes('blob.vercel-storage.com')}
-                    priority
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Информация внизу */}
+            {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 text-center z-10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              className="relative overflow-hidden mx-12 md:mx-16"
+              style={{ touchAction: 'pan-x' }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
             >
-              <div className="bg-black/60 backdrop-blur-xl rounded-2xl px-8 py-4 border border-white/10 shadow-2xl">
-                <div className="text-white text-base font-medium font-display mb-1">
-                  {currentIndex + 1} / {galleryImages.length}
-                </div>
-                {galleryImages[currentIndex].alt && (
-                  <div className="text-white/90 text-sm font-light italic max-w-md">
-                    {galleryImages[currentIndex].alt}
-                  </div>
-                )}
+              <div className="relative aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-background">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={currentIndex}
+                    initial={{ opacity: 0, x: swipeOffset !== 0 ? swipeOffset : 30 }}
+                    animate={{ 
+                      opacity: 1, 
+                      x: swipeOffset * 0.2,
+                    }}
+                    exit={{ opacity: 0, x: swipeOffset !== 0 ? -swipeOffset : -30 }}
+                    transition={{ 
+                      duration: swipeOffset !== 0 ? 0 : 0.4,
+                      ease: swipeOffset !== 0 ? 'linear' : 'easeInOut'
+                    }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={galleryImages[currentIndex].src}
+                      alt={galleryImages[currentIndex].alt}
+                      fill
+                      className="object-contain"
+                      priority={currentIndex === 0}
+                      loading={currentIndex === 0 ? 'eager' : 'lazy'}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1200px"
+                      unoptimized={galleryImages[currentIndex].src.includes('blob.vercel-storage.com')}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src = '/placeholder/about_main_placeholder.webp'
+                      }}
+                    />
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+
+            {/* Точки навигации - маленькие серые точки, одна активная черная */}
+            <div className="flex justify-center gap-2 mt-6 md:mt-8">
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => goToSlide(index)}
+                  aria-label={`Перейти к слайду ${index + 1}`}
+                  aria-current={currentIndex === index ? 'true' : undefined}
+                  className={`rounded-full transition-all duration-300 ${
+                    currentIndex === index
+                      ? 'bg-black dark:bg-white w-2.5 h-2.5'
+                      : 'bg-gray-300 dark:bg-gray-600 w-2 h-2'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Кнопка МАГАЗИН */}
+            <div className="flex justify-center mt-6 md:mt-8">
+              <Link
+                href="/catalog"
+                className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background text-inkSoft dark:text-foreground font-display text-sm md:text-base tracking-wide hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
+              >
+                МАГАЗИН
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }
