@@ -191,8 +191,8 @@ export default function GalleryPage() {
 
   return (
     <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground h-screen overflow-hidden flex items-start justify-center">
-      <section className="w-full h-full flex items-start justify-center pt-4 pb-2 md:py-4 lg:py-6">
-        <div className="container mx-auto px-0 md:px-6 lg:px-8 h-full flex items-start justify-center w-full">
+      <section className="w-full h-full flex items-start justify-center pt-2 pb-1 md:py-4 lg:py-6">
+        <div className="w-full md:container md:mx-auto px-0 md:px-6 lg:px-8 h-full flex items-start justify-center">
           <div className="relative w-full md:max-w-7xl mx-auto">
             {/* Стрелки навигации - прямоугольные серые кнопки */}
             <div className="absolute left-1 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
@@ -227,7 +227,7 @@ export default function GalleryPage() {
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
             >
-              <div className="relative aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-background w-full">
+              <div className="relative h-[70vh] md:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-background w-full">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={currentIndex}
@@ -263,7 +263,7 @@ export default function GalleryPage() {
             </motion.div>
 
             {/* Точки навигации - маленькие серые точки, одна активная черная */}
-            <div className="flex justify-center gap-2 md:gap-2.5 mt-1 md:mt-4 lg:mt-5">
+            <div className="flex justify-center gap-2 md:gap-2.5 mt-0.5 md:mt-4 lg:mt-5">
               {galleryImages.map((_, index) => (
                 <button
                   key={index}
@@ -281,7 +281,7 @@ export default function GalleryPage() {
             </div>
 
             {/* Кнопка МАГАЗИН */}
-            <div className="flex justify-center mt-2 md:mt-8 lg:mt-10">
+            <div className="flex justify-center mt-1 md:mt-8 lg:mt-10">
               <Link
                 href="/catalog"
                 className="px-8 py-2.5 md:px-10 md:py-3 lg:px-12 lg:py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background text-inkSoft dark:text-foreground font-display text-base md:text-lg lg:text-xl tracking-wide hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
