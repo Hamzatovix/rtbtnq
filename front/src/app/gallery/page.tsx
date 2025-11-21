@@ -191,37 +191,37 @@ export default function GalleryPage() {
 
   return (
     <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen">
-      <section className="py-8 md:py-12 lg:py-16">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+      <section className="py-4 md:py-12 lg:py-16">
+        <div className="container mx-auto px-2 md:px-6 lg:px-8">
           <div className="relative max-w-7xl mx-auto">
             {/* Стрелки навигации - прямоугольные серые кнопки */}
-            <div className="absolute left-2 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
+            <div className="absolute left-1 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
               <motion.button
                 type="button"
                 onClick={goToPrevious}
                 aria-label="Предыдущий слайд"
                 whileTap={{ scale: 0.95 }}
-                className="w-12 h-14 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
+                className="w-10 h-12 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                <ChevronLeft className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
+                <ChevronLeft className="w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
               </motion.button>
             </div>
 
-            <div className="absolute right-2 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
+            <div className="absolute right-1 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
               <motion.button
                 type="button"
                 onClick={goToNext}
                 aria-label="Следующий слайд"
                 whileTap={{ scale: 0.95 }}
-                className="w-12 h-14 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
+                className="w-10 h-12 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                <ChevronRight className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
+                <ChevronRight className="w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
               </motion.button>
             </div>
 
             {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="relative overflow-hidden mx-16 md:mx-20 lg:mx-24"
+              className="relative overflow-hidden mx-8 md:mx-20 lg:mx-24"
               style={{ touchAction: 'pan-x' }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
