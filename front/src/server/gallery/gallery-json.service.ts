@@ -40,26 +40,37 @@ async function loadGalleryFromSupabase(): Promise<GalleryImage[]> {
       // Если есть data (JSONB), используем его, иначе используем отдельные поля
       let image: GalleryImage
       
+      // Приоритет: data (JSONB) > отдельные поля
       if (row.data && typeof row.data === 'object') {
         // Если data это объект, используем его
         const dataObj = typeof row.data === 'string' ? JSON.parse(row.data) : row.data
         image = {
-          id: dataObj.id || row.id,
+          id: dataObj.id || row.id || '',
           src: dataObj.src || row.src || '',
           alt: dataObj.alt || row.alt || '',
         }
-      } else {
-        // Используем отдельные поля
+      } else if (row.src) {
+        // Используем отдельные поля если есть src
         image = {
-          id: row.id,
+          id: row.id || '',
           src: row.src || '',
           alt: row.alt || '',
         }
+      } else {
+        // Пропускаем записи без src
+        console.warn('[Gallery] Пропущена запись без src:', row)
+        return null
+      }
+      
+      // Проверяем, что src не пустой
+      if (!image.src) {
+        console.warn('[Gallery] Пропущена запись с пустым src:', image)
+        return null
       }
       
       console.log('[Gallery] Обработанное изображение:', image)
       return image
-    })
+    }).filter((img): img is GalleryImage => img !== null)
 
     console.log('[Gallery] Итого загружено изображений:', images.length)
     return images
@@ -178,15 +189,27 @@ export async function saveGallery(images: GalleryImage[]): Promise<boolean> {
       imagesCount: images.length,
       hasSupabaseUrl: !!process.env.SUPABASE_URL,
       hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      supabaseUrl: process.env.SUPABASE_URL ? `${process.env.SUPABASE_URL.substring(0, 30)}...` : 'не установлен',
     })
 
-    // Всегда используем Supabase если он настроен (и локально, и на production)
+    // Используем Supabase если он настроен (как в products-json.service.ts)
     // Это гарантирует синхронизацию данных между устройствами
     if (supabaseEnabled) {
       console.log('[Gallery] Используем Supabase для сохранения (синхронизация между устройствами)')
-      await saveGalleryToSupabase(images)
-      console.log('[Gallery] Данные успешно сохранены в Supabase')
-      return true
+      try {
+        await saveGalleryToSupabase(images)
+        console.log('[Gallery] ✅ Данные успешно сохранены в Supabase')
+        return true
+      } catch (saveError: any) {
+        console.error('[Gallery] ❌ Ошибка при сохранении в Supabase:', saveError)
+        console.error('[Gallery] Stack:', saveError?.stack)
+        // На production выбрасываем ошибку
+        if (isVercel) {
+          throw new Error(`Ошибка сохранения в Supabase: ${saveError.message || 'Неизвестная ошибка'}`)
+        }
+        // Локально пробуем файл как fallback
+        console.warn('[Gallery] Пробуем сохранить в локальный файл как fallback...')
+      }
     }
 
     // На Vercel без Supabase - ошибка
@@ -195,18 +218,18 @@ export async function saveGallery(images: GalleryImage[]): Promise<boolean> {
         'Supabase не настроен для production. ' +
         'Установите переменные окружения SUPABASE_URL и SUPABASE_SERVICE_ROLE_KEY в Vercel. ' +
         'См. документацию: md/GALLERY_SUPABASE_SETUP.md'
-      console.error('[Gallery] Ошибка:', errorMessage)
+      console.error('[Gallery] ❌ Ошибка:', errorMessage)
       throw new Error(errorMessage)
     }
 
     // Локальная разработка без Supabase - используем файл
-    console.warn('[Gallery] Supabase не настроен, используем локальный файл (данные не будут синхронизироваться)')
+    console.warn('[Gallery] ⚠️ Supabase не настроен, используем локальный файл (данные НЕ будут синхронизироваться между устройствами)')
     const filePath = getGalleryPath()
     await writeFile(filePath, JSON.stringify({ images }, null, 2), 'utf8')
     console.log('[Gallery] Данные сохранены в локальный файл:', filePath)
     return true
   } catch (error) {
-    console.error('[Gallery] Ошибка при сохранении галереи:', error)
+    console.error('[Gallery] ❌ Критическая ошибка при сохранении галереи:', error)
     throw error // Пробрасываем ошибку дальше для более информативного сообщения
   }
 }

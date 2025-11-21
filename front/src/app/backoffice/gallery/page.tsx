@@ -76,6 +76,11 @@ export default function BackofficeGalleryPage() {
         throw new Error(uploadData.error || 'Ошибка загрузки файла')
       }
 
+      console.log('[Gallery Admin] Отправка запроса на добавление в галерею:', {
+        src: uploadData.url,
+        alt: file.name.replace(/\.[^/.]+$/, ''),
+      })
+
       const galleryRes = await fetch('/api/gallery', {
         method: 'POST',
         headers: {
@@ -87,10 +92,20 @@ export default function BackofficeGalleryPage() {
         }),
       })
 
+      console.log('[Gallery Admin] Ответ API:', {
+        ok: galleryRes.ok,
+        status: galleryRes.status,
+        statusText: galleryRes.statusText,
+      })
+
       if (!galleryRes.ok) {
         const errorData = await galleryRes.json()
-        throw new Error(errorData.error || 'Ошибка добавления в галерею')
+        console.error('[Gallery Admin] Ошибка API:', errorData)
+        throw new Error(errorData.error || errorData.details || 'Ошибка добавления в галерею')
       }
+
+      const addedImage = await galleryRes.json()
+      console.log('[Gallery Admin] Изображение добавлено:', addedImage)
 
       await loadGallery()
     } catch (err: any) {

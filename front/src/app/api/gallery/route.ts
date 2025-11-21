@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { nanoid } from 'nanoid'
 import { loadGallery, saveGallery } from '@/server/gallery/gallery-json.service'
 
+// Отключаем кеширование для динамических данных
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // GET - получить все изображения галереи
 export async function GET() {
   try {
