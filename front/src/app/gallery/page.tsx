@@ -221,7 +221,7 @@ export default function GalleryPage() {
 
             {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="relative overflow-hidden w-full md:mx-14 lg:mx-16"
+              className="relative overflow-hidden mx-2 md:mx-14 lg:mx-16"
               style={{ touchAction: 'pan-x' }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
