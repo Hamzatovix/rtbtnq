@@ -190,8 +190,8 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen">
-      <section className="py-4 md:py-12 lg:py-16">
+    <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen flex items-center">
+      <section className="w-full py-6 md:py-8 lg:py-10">
         <div className="container mx-auto px-2 md:px-6 lg:px-8">
           <div className="relative max-w-7xl mx-auto">
             {/* Стрелки навигации - прямоугольные серые кнопки */}
@@ -221,7 +221,7 @@ export default function GalleryPage() {
 
             {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="relative overflow-hidden mx-8 md:mx-20 lg:mx-24"
+              className="relative overflow-hidden mx-6 md:mx-20 lg:mx-24"
               style={{ touchAction: 'pan-x' }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -263,7 +263,7 @@ export default function GalleryPage() {
             </motion.div>
 
             {/* Точки навигации - маленькие серые точки, одна активная черная */}
-            <div className="flex justify-center gap-2.5 md:gap-3 mt-8 md:mt-10 lg:mt-12">
+            <div className="flex justify-center gap-2.5 md:gap-3 mt-4 md:mt-6 lg:mt-8">
               {galleryImages.map((_, index) => (
                 <button
                   key={index}
@@ -281,7 +281,7 @@ export default function GalleryPage() {
             </div>
 
             {/* Кнопка МАГАЗИН */}
-            <div className="flex justify-center mt-8 md:mt-10 lg:mt-12">
+            <div className="flex justify-center mt-4 md:mt-6 lg:mt-8">
               <Link
                 href="/catalog"
                 className="px-8 py-3 md:px-10 md:py-3.5 lg:px-12 lg:py-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background text-inkSoft dark:text-foreground font-display text-base md:text-lg lg:text-xl tracking-wide hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
