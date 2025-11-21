@@ -138,7 +138,7 @@ export default function GalleryPage() {
   // Если галерея пуста или загружается
   if (loading) {
     return (
-      <div className="bg-gradient-to-b from-roseBeige/30 via-white to-white dark:from-background dark:via-background dark:to-background text-inkSoft dark:text-foreground min-h-screen flex items-center justify-center">
+      <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen flex items-center justify-center">
         <div className="text-center">
           <motion.div
             animate={{ rotate: 360 }}
@@ -153,7 +153,7 @@ export default function GalleryPage() {
 
   if (galleryImages.length === 0) {
     return (
-      <div className="bg-gradient-to-b from-roseBeige/30 via-white to-white dark:from-background dark:via-background dark:to-background text-inkSoft dark:text-foreground min-h-screen">
+      <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen">
         <section className="relative py-16 md:py-20 border-b border-mistGray/10 dark:border-border/50">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-roseBeige/5 to-transparent dark:via-transparent" />
           <motion.div
@@ -184,45 +184,9 @@ export default function GalleryPage() {
 
   return (
     <>
-      <div className="bg-gradient-to-b from-roseBeige/30 via-white to-white dark:from-background dark:via-background dark:to-background text-inkSoft dark:text-foreground min-h-screen">
-        {/* Hero section */}
-        <section className="relative py-16 md:py-20 border-b border-mistGray/10 dark:border-border/50 overflow-hidden">
-          {/* Декоративный фон */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-roseBeige/5 to-transparent dark:via-transparent" />
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-sageTint/5 rounded-full blur-3xl -z-10" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-roseBeige/20 rounded-full blur-3xl -z-10" />
-          
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="container mx-auto px-6 md:px-12 lg:px-24 text-center relative z-10"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-sageTint/10 to-roseBeige/20 dark:from-primary/10 dark:to-primary/5 border border-mistGray/20 dark:border-border/50 mb-6"
-            >
-              <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-sageTint dark:text-primary" />
-            </motion.div>
-            <h1 className="text-title-1 md:text-display-1 font-display font-light text-inkSoft dark:text-foreground leading-tight tracking-wide mb-4">
-              {t('gallery.title')}
-            </h1>
-            <p className="text-body sm:text-body-lg font-normal text-inkSoft/70 dark:text-foreground/70 max-w-2xl mx-auto">
-              {t('gallery.description')}
-            </p>
-          </motion.div>
-        </section>
-
+      <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen">
         {/* Carousel Gallery */}
-        <section className="py-12 md:py-20 lg:py-24 relative">
-          {/* Декоративные элементы фона */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-sageTint/5 rounded-full blur-3xl opacity-50" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-roseBeige/10 rounded-full blur-3xl opacity-50" />
-          </div>
-
+        <section className="py-12 md:py-20 lg:py-24">
           <motion.div
             initial="hidden"
             whileInView="show"
@@ -430,23 +394,14 @@ export default function GalleryPage() {
                 ))}
               </motion.ul>
 
-              {/* Счетчик слайдов и описание */}
-              <motion.div 
-                className="text-center mt-8 space-y-3"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/80 dark:bg-card/80 backdrop-blur-xl border-2 border-mistGray/20 dark:border-border/50 shadow-lg">
-                  <span className="text-base font-medium text-inkSoft dark:text-foreground font-display">
-                    {currentIndex + 1}
-                  </span>
-                  <span className="text-sm text-inkSoft/40 dark:text-muted-foreground/60">/</span>
-                  <span className="text-base font-medium text-inkSoft/70 dark:text-muted-foreground">
-                    {galleryImages.length}
-                  </span>
-                </div>
-                {galleryImages[currentIndex].alt && (
+              {/* Описание */}
+              {galleryImages[currentIndex].alt && (
+                <motion.div 
+                  className="text-center mt-8"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
                   <motion.p 
                     className="text-sm md:text-base text-inkSoft/70 dark:text-foreground/70 max-w-2xl mx-auto font-light italic px-4"
                     initial={{ opacity: 0 }}
@@ -456,8 +411,8 @@ export default function GalleryPage() {
                   >
                     {galleryImages[currentIndex].alt}
                   </motion.p>
-                )}
-              </motion.div>
+                </motion.div>
+              )}
             </div>
           </motion.div>
         </section>
