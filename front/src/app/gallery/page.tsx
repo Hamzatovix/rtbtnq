@@ -221,7 +221,7 @@ export default function GalleryPage() {
 
             {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="relative overflow-hidden mx-2 md:mx-14 lg:mx-16"
+              className="relative overflow-hidden mx-3 md:mx-14 lg:mx-16"
               style={{ touchAction: 'pan-x' }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -281,7 +281,7 @@ export default function GalleryPage() {
             </div>
 
             {/* Кнопка МАГАЗИН */}
-            <div className="flex justify-center mt-1 md:mt-8 lg:mt-10">
+            <div className="flex justify-center mt-3 md:mt-8 lg:mt-10">
               <Link
                 href="/catalog"
                 className="px-8 py-2.5 md:px-10 md:py-3 lg:px-12 lg:py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background text-inkSoft dark:text-foreground font-display text-base md:text-lg lg:text-xl tracking-wide hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
