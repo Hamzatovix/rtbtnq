@@ -98,30 +98,43 @@ export async function loadGallery(): Promise<GalleryImage[]> {
     hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
   })
 
+  // Всегда используем Supabase если он настроен (и локально, и на production)
   if (supabaseEnabled) {
-    console.log('[Gallery] Вызываем loadGalleryFromSupabase...')
+    console.log('[Gallery] Используем Supabase для загрузки')
     try {
       const result = await loadGalleryFromSupabase()
-      console.log('[Gallery] loadGalleryFromSupabase вернул:', result.length, 'изображений')
+      console.log('[Gallery] Загружено из Supabase:', result.length, 'изображений')
       return result
     } catch (error) {
       console.error('[Gallery] Ошибка в loadGalleryFromSupabase:', error)
-      throw error
+      // На production не используем fallback на файл
+      if (isVercel) {
+        throw error
+      }
+      // Локально можем попробовать файл как fallback
+      console.warn('[Gallery] Пробуем загрузить из файла как fallback...')
     }
   }
 
-  const filePath = getGalleryPath()
-  try {
-    console.log('[Gallery] Загрузка из файла:', filePath)
-    const content = await readFile(filePath, 'utf-8')
-    const data = JSON.parse(content)
-    const images = data.images || []
-    console.log('[Gallery] Загружено из файла:', images.length)
-    return images
-  } catch (error) {
-    console.error('[Gallery] Ошибка при загрузке из файла:', error)
-    return []
+  // Fallback на файл только для локальной разработки без Supabase
+  if (!isVercel) {
+    const filePath = getGalleryPath()
+    try {
+      console.log('[Gallery] Загрузка из файла:', filePath)
+      const content = await readFile(filePath, 'utf-8')
+      const data = JSON.parse(content)
+      const images = data.images || []
+      console.log('[Gallery] Загружено из файла:', images.length)
+      return images
+    } catch (error) {
+      console.error('[Gallery] Ошибка при загрузке из файла:', error)
+      return []
+    }
   }
+
+  // На production без Supabase - возвращаем пустой массив
+  console.warn('[Gallery] Supabase не настроен на production, возвращаем пустой массив')
+  return []
 }
 
 function isVercelEnvironment(): boolean {
@@ -141,32 +154,33 @@ export async function saveGallery(images: GalleryImage[]): Promise<boolean> {
       hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
     })
 
-    // На Vercel всегда используем Supabase
+    // Всегда используем Supabase если он настроен (и локально, и на production)
+    // Это гарантирует синхронизацию данных между устройствами
+    if (supabaseEnabled) {
+      console.log('[Gallery] Используем Supabase для сохранения (синхронизация между устройствами)')
+      await saveGalleryToSupabase(images)
+      console.log('[Gallery] Данные успешно сохранены в Supabase')
+      return true
+    }
+
+    // На Vercel без Supabase - ошибка
     if (isVercel) {
-      if (!supabaseEnabled) {
-        const errorMessage = 
-          'Supabase не настроен для production. ' +
-          'Установите переменные окружения SUPABASE_URL и SUPABASE_SERVICE_ROLE_KEY в Vercel. ' +
-          'См. документацию: md/GALLERY_SUPABASE_SETUP.md'
-        console.error('[Gallery] Ошибка:', errorMessage)
-        throw new Error(errorMessage)
-      }
-      console.log('[Gallery] Используем Supabase для сохранения')
-      await saveGalleryToSupabase(images)
-      return true
+      const errorMessage = 
+        'Supabase не настроен для production. ' +
+        'Установите переменные окружения SUPABASE_URL и SUPABASE_SERVICE_ROLE_KEY в Vercel. ' +
+        'См. документацию: md/GALLERY_SUPABASE_SETUP.md'
+      console.error('[Gallery] Ошибка:', errorMessage)
+      throw new Error(errorMessage)
     }
 
-    // Локальная разработка: используем Supabase если настроен, иначе файл
-    if (isSupabaseEnabled()) {
-      await saveGalleryToSupabase(images)
-      return true
-    }
-
+    // Локальная разработка без Supabase - используем файл
+    console.warn('[Gallery] Supabase не настроен, используем локальный файл (данные не будут синхронизироваться)')
     const filePath = getGalleryPath()
     await writeFile(filePath, JSON.stringify({ images }, null, 2), 'utf8')
+    console.log('[Gallery] Данные сохранены в локальный файл:', filePath)
     return true
   } catch (error) {
-    console.error('Ошибка при сохранении галереи:', error)
+    console.error('[Gallery] Ошибка при сохранении галереи:', error)
     throw error // Пробрасываем ошибку дальше для более информативного сообщения
   }
 }

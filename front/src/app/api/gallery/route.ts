@@ -5,15 +5,45 @@ import { loadGallery, saveGallery } from '@/server/gallery/gallery-json.service'
 // GET - получить все изображения галереи
 export async function GET() {
   try {
+    console.log('[Gallery API] GET запрос получен')
+    console.log('[Gallery API] Environment:', {
+      isVercel: !!process.env.VERCEL,
+      hasSupabaseUrl: !!process.env.SUPABASE_URL,
+      hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    })
+    
     const images = await loadGallery()
-    console.log('[Gallery API] GET запрос, возвращено изображений:', images.length)
+    console.log('[Gallery API] Загружено изображений:', images.length)
+    
     if (images.length > 0) {
-      console.log('[Gallery API] Первое изображение:', images[0])
+      console.log('[Gallery API] Первое изображение:', {
+        id: images[0].id,
+        src: images[0].src,
+        alt: images[0].alt,
+      })
+    } else {
+      console.warn('[Gallery API] Галерея пуста или не удалось загрузить данные')
     }
-    return NextResponse.json({ images })
+    
+    return NextResponse.json({ images }, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+      }
+    })
   } catch (error: any) {
     console.error('[Gallery API] Ошибка при получении галереи:', error)
-    return NextResponse.json({ images: [] }, { status: 200 })
+    console.error('[Gallery API] Stack trace:', error?.stack)
+    return NextResponse.json({ 
+      images: [],
+      error: error?.message || 'Ошибка при загрузке галереи'
+    }, { 
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
   }
 }
 

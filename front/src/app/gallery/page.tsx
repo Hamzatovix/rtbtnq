@@ -35,11 +35,39 @@ export default function GalleryPage() {
   useEffect(() => {
     const loadGallery = async () => {
       try {
-        const res = await fetch('/api/gallery', { cache: 'no-store' })
+        console.log('[Gallery Page] Начало загрузки галереи...')
+        const res = await fetch('/api/gallery', { 
+          cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        
+        if (!res.ok) {
+          console.error('[Gallery Page] Ошибка ответа API:', res.status, res.statusText)
+          const errorText = await res.text()
+          console.error('[Gallery Page] Текст ошибки:', errorText)
+          setGalleryImages([])
+          setLoading(false)
+          return
+        }
+        
         const data = await res.json()
-        setGalleryImages(data.images || [])
+        console.log('[Gallery Page] Получены данные:', {
+          hasImages: !!data.images,
+          imagesCount: data.images?.length || 0,
+          data: data
+        })
+        
+        if (data.images && Array.isArray(data.images)) {
+          setGalleryImages(data.images)
+          console.log('[Gallery Page] Установлено изображений:', data.images.length)
+        } else {
+          console.warn('[Gallery Page] Некорректный формат данных:', data)
+          setGalleryImages([])
+        }
       } catch (error) {
-        console.error('Ошибка при загрузке галереи:', error)
+        console.error('[Gallery Page] Ошибка при загрузке галереи:', error)
         setGalleryImages([])
       } finally {
         setLoading(false)
