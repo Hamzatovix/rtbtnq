@@ -241,6 +241,7 @@ export default function BackofficeGalleryPage() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  unoptimized={img.src.includes('blob.vercel-storage.com')}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
                     target.src = '/placeholder/about_main_placeholder.webp'

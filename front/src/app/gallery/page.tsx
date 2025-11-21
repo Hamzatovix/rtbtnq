@@ -252,6 +252,7 @@ export default function GalleryPage() {
                       priority={currentIndex === 0}
                       loading={currentIndex === 0 ? 'eager' : 'lazy'}
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 1200px"
+                      unoptimized={galleryImages[currentIndex].src.includes('blob.vercel-storage.com')}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
                         target.src = '/placeholder/about_main_placeholder.webp'
