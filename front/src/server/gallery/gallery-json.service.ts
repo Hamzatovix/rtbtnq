@@ -70,6 +70,12 @@ async function loadGalleryFromSupabase(): Promise<GalleryImage[]> {
 }
 
 async function saveGalleryToSupabase(images: GalleryImage[]): Promise<void> {
+  console.log('[Gallery] Сохранение в Supabase:', {
+    table: SUPABASE_GALLERY_TABLE,
+    imagesCount: images.length,
+    supabaseUrl: process.env.SUPABASE_URL,
+  })
+
   const rows = images.map((image) => ({
     id: image.id,
     src: image.src,
@@ -79,11 +85,31 @@ async function saveGalleryToSupabase(images: GalleryImage[]): Promise<void> {
     updated_at: new Date().toISOString(),
   }))
 
-  // Удаляем все существующие записи и вставляем новые
-  await supabaseDelete(SUPABASE_GALLERY_TABLE, 'id=not.is.null')
+  console.log('[Gallery] Подготовлено строк для сохранения:', rows.length)
+  if (rows.length > 0) {
+    console.log('[Gallery] Первая строка:', {
+      id: rows[0].id,
+      src: rows[0].src,
+      alt: rows[0].alt,
+    })
+  }
 
-  if (rows.length) {
-    await supabaseUpsert(SUPABASE_GALLERY_TABLE, rows)
+  try {
+    // Удаляем все существующие записи и вставляем новые
+    console.log('[Gallery] Удаление старых записей...')
+    await supabaseDelete(SUPABASE_GALLERY_TABLE, 'id=not.is.null')
+    console.log('[Gallery] Старые записи удалены')
+
+    if (rows.length) {
+      console.log('[Gallery] Вставка новых записей...')
+      await supabaseUpsert(SUPABASE_GALLERY_TABLE, rows)
+      console.log('[Gallery] Новые записи успешно вставлены')
+    } else {
+      console.log('[Gallery] Нет данных для вставки')
+    }
+  } catch (error) {
+    console.error('[Gallery] Ошибка при сохранении в Supabase:', error)
+    throw error
   }
 }
 

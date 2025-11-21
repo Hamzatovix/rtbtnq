@@ -70,19 +70,25 @@ export async function POST(req: NextRequest) {
     images.push(newImage)
     
     try {
+      console.log('[Gallery API] Сохранение галереи, изображений:', images.length)
       const saved = await saveGallery(images)
       if (!saved) {
+        console.error('[Gallery API] saveGallery вернул false')
         return NextResponse.json(
           { error: 'Ошибка при сохранении галереи' },
           { status: 500 }
         )
       }
+      console.log('[Gallery API] Галерея успешно сохранена')
     } catch (error: any) {
-      console.error('Ошибка при сохранении галереи:', error)
+      console.error('[Gallery API] Ошибка при сохранении галереи:', error)
+      console.error('[Gallery API] Stack:', error?.stack)
       return NextResponse.json(
         { 
           error: error.message || 'Ошибка при сохранении галереи',
-          details: error.message?.includes('Supabase') ? 'Настройте Supabase для production. См. md/GALLERY_SUPABASE_SETUP.md' : undefined
+          details: error.message?.includes('Supabase') 
+            ? 'Настройте Supabase для синхронизации данных между устройствами. См. md/GALLERY_SUPABASE_SETUP.md' 
+            : 'Проверьте логи сервера для деталей'
         },
         { status: 500 }
       )
