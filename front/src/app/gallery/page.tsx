@@ -201,9 +201,9 @@ export default function GalleryPage() {
                 onClick={goToPrevious}
                 aria-label="Предыдущий слайд"
                 whileTap={{ scale: 0.95 }}
-                className="w-10 h-12 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
+                className="w-8 h-10 md:w-10 md:h-12 lg:w-12 lg:h-14 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                <ChevronLeft className="w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
+                <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white" strokeWidth={2.5} />
               </motion.button>
             </div>
 
@@ -213,15 +213,15 @@ export default function GalleryPage() {
                 onClick={goToNext}
                 aria-label="Следующий слайд"
                 whileTap={{ scale: 0.95 }}
-                className="w-10 h-12 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
+                className="w-8 h-10 md:w-10 md:h-12 lg:w-12 lg:h-14 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                <ChevronRight className="w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
+                <ChevronRight className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white" strokeWidth={2.5} />
               </motion.button>
             </div>
 
             {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="relative overflow-hidden mx-3 md:mx-16 lg:mx-20"
+              className="relative overflow-hidden mx-2 md:mx-14 lg:mx-16"
               style={{ touchAction: 'pan-x' }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -263,7 +263,7 @@ export default function GalleryPage() {
             </motion.div>
 
             {/* Точки навигации - маленькие серые точки, одна активная черная */}
-            <div className="flex justify-center gap-2.5 md:gap-3 mt-2 md:mt-4 lg:mt-5">
+            <div className="flex justify-center gap-2 md:gap-2.5 mt-2 md:mt-4 lg:mt-5">
               {galleryImages.map((_, index) => (
                 <button
                   key={index}
@@ -273,15 +273,15 @@ export default function GalleryPage() {
                   aria-current={currentIndex === index ? 'true' : undefined}
                   className={`rounded-full transition-all duration-300 ${
                     currentIndex === index
-                      ? 'bg-black dark:bg-white w-3 h-3 md:w-3.5 md:h-3.5'
-                      : 'bg-gray-300 dark:bg-gray-600 w-2.5 h-2.5 md:w-3 md:h-3'
+                      ? 'bg-black dark:bg-white w-2.5 h-2.5 md:w-3 md:h-3'
+                      : 'bg-gray-300 dark:bg-gray-600 w-2 h-2 md:w-2.5 md:h-2.5'
                   }`}
                 />
               ))}
             </div>
 
             {/* Кнопка МАГАЗИН */}
-            <div className="flex justify-center mt-2 md:mt-4 lg:mt-5">
+            <div className="flex justify-center mt-6 md:mt-8 lg:mt-10">
               <Link
                 href="/catalog"
                 className="px-8 py-2.5 md:px-10 md:py-3 lg:px-12 lg:py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background text-inkSoft dark:text-foreground font-display text-base md:text-lg lg:text-xl tracking-wide hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
