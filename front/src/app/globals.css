@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Modern No. 20 Font Face */
+@font-face {
+  font-family: 'Modern No. 20';
+  src: url('/fonts/Modern-No-20.woff2') format('woff2'),
+       url('/fonts/Modern-No-20.woff') format('woff'),
+       url('/fonts/Modern-No-20.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 0 0% 98%;
@@ -401,7 +412,7 @@
   }
   
   .text-graceful {
-    font-family: var(--font-display), "Cormorant Garamond", serif;
+    font-family: "Modern No. 20", var(--font-display), "Cormorant Garamond", serif;
     letter-spacing: 0.02em;
     font-weight: 400;
   }

@@ -191,37 +191,37 @@ export default function GalleryPage() {
 
   return (
     <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground min-h-screen">
-      <section className="py-12 md:py-16 lg:py-20">
+      <section className="py-8 md:py-12 lg:py-16">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="relative max-w-5xl mx-auto">
+          <div className="relative max-w-7xl mx-auto">
             {/* Стрелки навигации - прямоугольные серые кнопки */}
-            <div className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 flex items-center">
+            <div className="absolute left-2 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
               <motion.button
                 type="button"
                 onClick={goToPrevious}
                 aria-label="Предыдущий слайд"
                 whileTap={{ scale: 0.95 }}
-                className="w-10 h-12 md:w-12 md:h-14 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
+                className="w-12 h-14 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
+                <ChevronLeft className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
               </motion.button>
             </div>
 
-            <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 flex items-center">
+            <div className="absolute right-2 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
               <motion.button
                 type="button"
                 onClick={goToNext}
                 aria-label="Следующий слайд"
                 whileTap={{ scale: 0.95 }}
-                className="w-10 h-12 md:w-12 md:h-14 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
+                className="w-12 h-14 md:w-14 md:h-16 lg:w-16 lg:h-20 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors flex items-center justify-center shadow-md"
               >
-                <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
+                <ChevronRight className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" strokeWidth={2.5} />
               </motion.button>
             </div>
 
             {/* Контейнер изображения - простой, без сложных границ */}
             <motion.div 
-              className="relative overflow-hidden mx-12 md:mx-16"
+              className="relative overflow-hidden mx-16 md:mx-20 lg:mx-24"
               style={{ touchAction: 'pan-x' }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -250,7 +250,7 @@ export default function GalleryPage() {
                       className="object-contain"
                       priority={currentIndex === 0}
                       loading={currentIndex === 0 ? 'eager' : 'lazy'}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1200px"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 95vw, (max-width: 1280px) 90vw, 1400px"
                       unoptimized={galleryImages[currentIndex].src.includes('blob.vercel-storage.com')}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
@@ -263,7 +263,7 @@ export default function GalleryPage() {
             </motion.div>
 
             {/* Точки навигации - маленькие серые точки, одна активная черная */}
-            <div className="flex justify-center gap-2 mt-6 md:mt-8">
+            <div className="flex justify-center gap-2.5 md:gap-3 mt-8 md:mt-10 lg:mt-12">
               {galleryImages.map((_, index) => (
                 <button
                   key={index}
@@ -273,18 +273,18 @@ export default function GalleryPage() {
                   aria-current={currentIndex === index ? 'true' : undefined}
                   className={`rounded-full transition-all duration-300 ${
                     currentIndex === index
-                      ? 'bg-black dark:bg-white w-2.5 h-2.5'
-                      : 'bg-gray-300 dark:bg-gray-600 w-2 h-2'
+                      ? 'bg-black dark:bg-white w-3 h-3 md:w-3.5 md:h-3.5'
+                      : 'bg-gray-300 dark:bg-gray-600 w-2.5 h-2.5 md:w-3 md:h-3'
                   }`}
                 />
               ))}
             </div>
 
             {/* Кнопка МАГАЗИН */}
-            <div className="flex justify-center mt-6 md:mt-8">
+            <div className="flex justify-center mt-8 md:mt-10 lg:mt-12">
               <Link
                 href="/catalog"
-                className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background text-inkSoft dark:text-foreground font-display text-sm md:text-base tracking-wide hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
+                className="px-8 py-3 md:px-10 md:py-3.5 lg:px-12 lg:py-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background text-inkSoft dark:text-foreground font-display text-base md:text-lg lg:text-xl tracking-wide hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
               >
                 МАГАЗИН
               </Link>
