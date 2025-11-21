@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Trash2, Image as ImageIcon, Plus, Loader2, GripVertical, Upload } from 'lucide-react'
+import { Trash2, Image as ImageIcon, Plus, Loader2, GripVertical, Upload, Sparkles } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 type GalleryImage = {
@@ -127,7 +127,6 @@ export default function BackofficeGalleryPage() {
     setDraggedIndex(null)
     setDragOverIndex(null)
 
-    // Сохраняем новый порядок
     try {
       const res = await fetch('/api/gallery', {
         method: 'PUT',
@@ -200,7 +199,14 @@ export default function BackofficeGalleryPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-sageTint dark:text-primary" />
+        <div className="text-center">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+            className="w-12 h-12 border-3 border-sageTint/30 border-t-sageTint dark:border-primary/30 dark:border-t-primary rounded-full mx-auto mb-4"
+          />
+          <p className="text-inkSoft/60 dark:text-muted-foreground">Загрузка галереи...</p>
+        </div>
       </div>
     )
   }
@@ -208,35 +214,52 @@ export default function BackofficeGalleryPage() {
   return (
     <div className="space-y-6">
       {/* Заголовок */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-mistGray/20 dark:border-border/50">
         <div>
-          <h1 className="text-2xl md:text-3xl font-light text-inkSoft dark:text-foreground">
-            Галерея
-          </h1>
-          <p className="text-sm text-inkSoft/60 dark:text-muted-foreground mt-1">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sageTint/10 to-roseBeige/20 dark:from-primary/10 dark:to-primary/5 border border-mistGray/20 dark:border-border/50 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-sageTint dark:text-primary" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-display font-light text-inkSoft dark:text-foreground">
+              Галерея
+            </h1>
+          </div>
+          <p className="text-sm text-inkSoft/60 dark:text-muted-foreground ml-13">
             Управление изображениями галереи
           </p>
         </div>
         {images.length > 0 && (
-          <div className="text-sm text-inkSoft/60 dark:text-muted-foreground">
-            Всего: {images.length} {images.length === 1 ? 'изображение' : images.length < 5 ? 'изображения' : 'изображений'}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-mistGray/10 dark:bg-muted/20 border border-mistGray/20 dark:border-border/50">
+            <span className="text-sm font-medium text-inkSoft dark:text-foreground">
+              {images.length}
+            </span>
+            <span className="text-xs text-inkSoft/50 dark:text-muted-foreground">
+              {images.length === 1 ? 'изображение' : images.length < 5 ? 'изображения' : 'изображений'}
+            </span>
           </div>
         )}
       </div>
 
       {/* Сообщение об ошибке */}
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400"
-        >
-          {error}
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Загрузка нового изображения */}
-      <div className="p-6 rounded-2xl border border-mistGray/30 dark:border-border bg-white dark:bg-card">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-6 rounded-2xl border-2 border-dashed border-mistGray/30 dark:border-border/50 bg-gradient-to-br from-white to-roseBeige/5 dark:from-card dark:to-muted/5 hover:border-sageTint/50 dark:hover:border-primary/50 transition-all duration-300"
+      >
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <input
             type="file"
@@ -246,9 +269,11 @@ export default function BackofficeGalleryPage() {
             onChange={handleFileUpload}
             disabled={uploading}
           />
-          <label
+          <motion.label
             htmlFor="gallery-upload"
-            className={`inline-flex items-center justify-center px-6 py-3 border-2 border-dashed border-mistGray/30 dark:border-border rounded-xl text-sm font-medium text-inkSoft dark:text-foreground bg-white dark:bg-card hover:bg-mistGray/5 dark:hover:bg-muted/10 cursor-pointer transition-all duration-300 hover:border-sageTint dark:hover:border-primary ${
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-medium text-inkSoft dark:text-foreground bg-white dark:bg-card border-2 border-mistGray/30 dark:border-border hover:border-sageTint dark:hover:border-primary hover:bg-sageTint/5 dark:hover:bg-primary/5 cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md ${
               uploading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -263,22 +288,24 @@ export default function BackofficeGalleryPage() {
                 Добавить изображение
               </>
             )}
-          </label>
+          </motion.label>
           <p className="text-xs text-inkSoft/50 dark:text-muted-foreground/70">
             Поддерживаются форматы: JPG, PNG, WebP. Максимум 5MB
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Список изображений */}
       {images.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="p-12 rounded-2xl border border-mistGray/30 dark:border-border bg-white dark:bg-card text-center"
+          className="p-16 rounded-2xl border-2 border-dashed border-mistGray/30 dark:border-border/50 bg-gradient-to-br from-white to-roseBeige/5 dark:from-card dark:to-muted/5 text-center"
         >
-          <ImageIcon className="h-16 w-16 mx-auto mb-4 text-inkSoft/30 dark:text-muted-foreground/30" />
-          <p className="text-inkSoft/60 dark:text-muted-foreground text-lg mb-2">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-mistGray/10 dark:bg-muted/20 mb-6">
+            <ImageIcon className="h-10 w-10 text-inkSoft/30 dark:text-muted-foreground/30" />
+          </div>
+          <p className="text-inkSoft/60 dark:text-muted-foreground text-lg mb-2 font-display">
             Галерея пуста
           </p>
           <p className="text-sm text-inkSoft/50 dark:text-muted-foreground/70">
@@ -292,36 +319,40 @@ export default function BackofficeGalleryPage() {
               <motion.div
                 key={img.id}
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 draggable
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`group relative p-4 rounded-2xl border-2 transition-all duration-300 bg-white dark:bg-card hover:shadow-xl ${
+                className={`group relative p-5 rounded-2xl border-2 transition-all duration-300 bg-white dark:bg-card hover:shadow-xl ${
                   draggedIndex === index
-                    ? 'opacity-50 scale-95 border-sageTint dark:border-primary'
+                    ? 'opacity-50 scale-95 border-sageTint dark:border-primary shadow-lg'
                     : dragOverIndex === index
-                    ? 'border-sageTint dark:border-primary scale-105 shadow-lg'
+                    ? 'border-sageTint dark:border-primary scale-105 shadow-xl ring-2 ring-sageTint/20 dark:ring-primary/20'
                     : 'border-mistGray/30 dark:border-border hover:border-mistGray/50 dark:hover:border-border'
                 }`}
               >
                 {/* Drag handle */}
-                <div className="absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity cursor-move">
-                  <div className="w-8 h-8 rounded-lg bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                <motion.div 
+                  className="absolute top-3 left-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <div className="w-9 h-9 rounded-lg bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-lg">
                     <GripVertical className="w-4 h-4 text-white" />
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Изображение */}
-                <div className="relative aspect-[4/3] mb-4 rounded-lg overflow-hidden bg-mistGray/10 dark:bg-muted/10 group-hover:ring-2 ring-sageTint/20 dark:ring-primary/20 transition-all">
+                <div className="relative aspect-[4/3] mb-4 rounded-xl overflow-hidden bg-mistGray/10 dark:bg-muted/10 group-hover:ring-2 ring-sageTint/20 dark:ring-primary/20 transition-all">
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                     unoptimized={img.src.includes('blob.vercel-storage.com')}
                     onError={(e) => {
@@ -330,12 +361,12 @@ export default function BackofficeGalleryPage() {
                     }}
                   />
                   {/* Overlay при hover */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
 
                 {/* Alt текст */}
                 <div className="space-y-2">
-                  <Label htmlFor={`alt-${img.id}`} className="text-xs text-inkSoft/60 dark:text-muted-foreground">
+                  <Label htmlFor={`alt-${img.id}`} className="text-xs text-inkSoft/60 dark:text-muted-foreground font-medium">
                     Alt текст
                   </Label>
                   <Input
@@ -349,24 +380,30 @@ export default function BackofficeGalleryPage() {
                     }}
                     onBlur={(e) => handleAltUpdate(img.id, e.target.value)}
                     placeholder="Описание изображения"
-                    className="text-sm"
+                    className="text-sm border-mistGray/30 dark:border-border focus:border-sageTint dark:focus:border-primary"
                   />
                 </div>
 
                 {/* Кнопка удаления */}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDelete(img.id)}
-                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
+                <motion.div
+                  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(img.id)}
+                    className="bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </motion.div>
 
-                {/* Индикатор порядка (только на десктопе) */}
-                <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white text-xs font-medium">
+                {/* Индикатор порядка */}
+                <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-sm text-white text-xs font-medium border border-white/20 shadow-lg">
                     #{index + 1}
                   </div>
                 </div>
@@ -378,11 +415,16 @@ export default function BackofficeGalleryPage() {
 
       {/* Подсказка о drag & drop */}
       {images.length > 1 && (
-        <div className="p-4 rounded-xl bg-mistGray/5 dark:bg-muted/10 border border-mistGray/20 dark:border-border">
-          <p className="text-xs text-inkSoft/60 dark:text-muted-foreground text-center">
-            💡 Перетащите изображения для изменения порядка отображения
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-4 rounded-xl bg-gradient-to-r from-sageTint/5 to-roseBeige/5 dark:from-primary/5 dark:to-primary/5 border border-mistGray/20 dark:border-border/50"
+        >
+          <p className="text-xs text-inkSoft/60 dark:text-muted-foreground text-center flex items-center justify-center gap-2">
+            <GripVertical className="w-4 h-4" />
+            Перетащите изображения для изменения порядка отображения
           </p>
-        </div>
+        </motion.div>
       )}
     </div>
   )
