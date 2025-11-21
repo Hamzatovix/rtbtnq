@@ -23,7 +23,14 @@ async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
     throw new Error('Supabase URL is not configured')
   }
 
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+  const url = `${SUPABASE_URL}/rest/v1/${path}`
+  console.log('[Supabase] Запрос:', {
+    method: init.method || 'GET',
+    url: url,
+    hasAuth: !!SUPABASE_SERVICE_ROLE_KEY,
+  })
+
+  const response = await fetch(url, {
     ...init,
     headers: {
       ...getAuthHeaders(),
@@ -31,8 +38,19 @@ async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
     },
   })
 
+  console.log('[Supabase] Ответ:', {
+    status: response.status,
+    statusText: response.statusText,
+    ok: response.ok,
+  })
+
   if (!response.ok) {
     const text = await response.text()
+    console.error('[Supabase] Ошибка ответа:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: text,
+    })
     throw new Error(`${response.status} ${response.statusText}: ${text}`)
   }
 

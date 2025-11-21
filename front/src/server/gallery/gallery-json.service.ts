@@ -18,14 +18,21 @@ function getGalleryPath(): string {
 async function loadGalleryFromSupabase(): Promise<GalleryImage[]> {
   try {
     console.log('[Gallery] Загрузка из Supabase, таблица:', SUPABASE_GALLERY_TABLE)
+    console.log('[Gallery] URL запроса:', `${process.env.SUPABASE_URL}/rest/v1/${SUPABASE_GALLERY_TABLE}?select=id,src,alt,data&order=created_at.asc`)
+    
+    const query = 'select=id,src,alt,data&order=created_at.asc'
+    console.log('[Gallery] Выполняем запрос с query:', query)
+    
     const data = await supabaseSelect<Array<{ id: string; src?: string; alt?: string; data?: GalleryImage }>>(
       SUPABASE_GALLERY_TABLE,
-      'select=id,src,alt,data&order=created_at.asc',
+      query,
     )
 
     console.log('[Gallery] Получены данные из Supabase:', {
       isArray: Array.isArray(data),
       count: Array.isArray(data) ? data.length : 0,
+      dataType: typeof data,
+      data: data,
       firstRow: Array.isArray(data) && data.length > 0 ? data[0] : null,
     })
 
@@ -92,7 +99,15 @@ export async function loadGallery(): Promise<GalleryImage[]> {
   })
 
   if (supabaseEnabled) {
-    return await loadGalleryFromSupabase()
+    console.log('[Gallery] Вызываем loadGalleryFromSupabase...')
+    try {
+      const result = await loadGalleryFromSupabase()
+      console.log('[Gallery] loadGalleryFromSupabase вернул:', result.length, 'изображений')
+      return result
+    } catch (error) {
+      console.error('[Gallery] Ошибка в loadGalleryFromSupabase:', error)
+      throw error
+    }
   }
 
   const filePath = getGalleryPath()
