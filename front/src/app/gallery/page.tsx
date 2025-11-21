@@ -201,13 +201,10 @@ export default function GalleryPage() {
                   type="button"
                   onClick={goToPrevious}
                   aria-label="Предыдущий слайд"
-                  whileHover={{ scale: 1.15, x: -3 }}
                   whileTap={{ scale: 0.9 }}
-                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
+                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl transition-all duration-300 flex items-center justify-center"
                 >
-                  {/* Градиентный фон при hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-sageTint/10 to-roseBeige/10 dark:from-primary/10 dark:to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <ChevronLeft className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors relative z-10" strokeWidth={2.5} />
+                  <ChevronLeft className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground" strokeWidth={2.5} />
                 </motion.button>
               </div>
 
@@ -216,32 +213,25 @@ export default function GalleryPage() {
                   type="button"
                   onClick={goToNext}
                   aria-label="Следующий слайд"
-                  whileHover={{ scale: 1.15, x: 3 }}
                   whileTap={{ scale: 0.9 }}
-                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
+                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl transition-all duration-300 flex items-center justify-center"
                 >
-                  {/* Градиентный фон при hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-sageTint/10 to-roseBeige/10 dark:from-primary/10 dark:to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <ChevronRight className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors relative z-10" strokeWidth={2.5} />
+                  <ChevronRight className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground" strokeWidth={2.5} />
                 </motion.button>
               </div>
 
               {/* Контейнер слайдера */}
               <motion.div 
-                className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-roseBeige/5 to-mistGray/5 dark:from-card dark:via-muted/5 dark:to-muted/10 shadow-2xl border-2 border-mistGray/20 dark:border-border/50 group/slider"
+                className="relative overflow-visible"
                 style={{ touchAction: 'pan-x' }}
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
-                whileHover={{ 
-                  boxShadow: '0 25px 50px -12px rgba(174, 182, 175, 0.25), 0 0 0 1px rgba(174, 182, 175, 0.1)',
-                  borderColor: 'rgba(174, 182, 175, 0.3)'
-                }}
               >
-                {/* Декоративная рамка */}
-                <div className="absolute inset-0 rounded-[2rem] ring-1 ring-inset ring-white/50 dark:ring-white/5 pointer-events-none" />
-                
-                <div className="relative aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] overflow-hidden">
+                <div className="relative aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-roseBeige/5 to-mistGray/5 dark:from-card dark:via-muted/5 dark:to-muted/10 shadow-2xl border-2 border-mistGray/20 dark:border-border/50">
+                  {/* Декоративная рамка */}
+                  <div className="absolute inset-0 rounded-[2rem] ring-1 ring-inset ring-white/50 dark:ring-white/5 pointer-events-none" />
+                  
                   {/* Многослойный градиент overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent z-10 pointer-events-none" />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/5 dark:to-white/5 z-10 pointer-events-none" />
@@ -260,14 +250,14 @@ export default function GalleryPage() {
                         duration: swipeOffset !== 0 ? 0 : 0.6,
                         ease: swipeOffset !== 0 ? 'linear' : [0.22, 1, 0.36, 1]
                       }}
-                      className="absolute inset-0 cursor-pointer group/image"
+                      className="absolute inset-0 cursor-pointer"
                       onClick={() => setIsFullscreen(true)}
                     >
                       <Image
                         src={galleryImages[currentIndex].src}
                         alt={galleryImages[currentIndex].alt}
                         fill
-                        className="object-contain transition-transform duration-700 group-hover/image:scale-[1.03]"
+                        className="object-contain"
                         priority={currentIndex === 0}
                         loading={currentIndex === 0 ? 'eager' : 'lazy'}
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1200px"
@@ -277,8 +267,6 @@ export default function GalleryPage() {
                           target.src = '/placeholder/about_main_placeholder.webp'
                         }}
                       />
-                      {/* Overlay при hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-500" />
                     </motion.div>
                   </AnimatePresence>
 
@@ -287,11 +275,10 @@ export default function GalleryPage() {
                     type="button"
                     onClick={() => setIsFullscreen(true)}
                     aria-label="Открыть в полноэкранном режиме"
-                    whileHover={{ scale: 1.15, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
-                    className="absolute top-5 right-5 md:top-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center group shadow-2xl z-20"
+                    className="absolute top-5 right-5 md:top-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/70 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl z-20"
                   >
-                    <Maximize2 className="w-6 h-6 md:w-7 md:h-7 text-white group-hover:scale-110 transition-transform" strokeWidth={2} />
+                    <Maximize2 className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2} />
                   </motion.button>
 
                   {/* Стрелки для мобильных */}
@@ -303,9 +290,8 @@ export default function GalleryPage() {
                         goToPrevious()
                       }}
                       aria-label="Предыдущий слайд"
-                      whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.85 }}
-                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 hover:bg-black/95 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
+                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
                     >
                       <ChevronLeft className="w-8 h-8 text-white" strokeWidth={2.5} />
                     </motion.button>
@@ -316,9 +302,8 @@ export default function GalleryPage() {
                         goToNext()
                       }}
                       aria-label="Следующий слайд"
-                      whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.85 }}
-                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 hover:bg-black/95 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
+                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
                     >
                       <ChevronRight className="w-8 h-8 text-white" strokeWidth={2.5} />
                     </motion.button>
@@ -340,12 +325,11 @@ export default function GalleryPage() {
                       key={img.id}
                       type="button"
                       onClick={() => goToSlide(index)}
-                      whileHover={{ scale: 1.08, y: -4 }}
                       whileTap={{ scale: 0.95 }}
                       className={`relative flex-shrink-0 w-28 h-28 rounded-2xl overflow-hidden border-2 transition-all duration-300 shadow-lg ${
                         currentIndex === index
                           ? 'border-sageTint dark:border-primary shadow-xl scale-105 ring-4 ring-sageTint/20 dark:ring-primary/20'
-                          : 'border-transparent hover:border-mistGray/50 dark:hover:border-border/70 opacity-70 hover:opacity-100'
+                          : 'border-transparent opacity-70'
                       }`}
                     >
                       <Image
@@ -382,12 +366,11 @@ export default function GalleryPage() {
                       onClick={() => goToSlide(index)}
                       aria-label={`Перейти к слайду ${index + 1}`}
                       aria-current={currentIndex === index ? 'true' : undefined}
-                      whileHover={{ scale: 1.3, y: -2 }}
                       whileTap={{ scale: 0.9 }}
                       className={`rounded-full transition-all duration-300 ${
                         currentIndex === index
                           ? 'bg-sageTint dark:bg-primary w-12 h-3 shadow-lg ring-2 ring-sageTint/30 dark:ring-primary/30'
-                          : 'bg-mistGray/50 dark:bg-border/70 hover:bg-mistGray/70 dark:hover:bg-border w-3 h-3'
+                          : 'bg-mistGray/50 dark:bg-border/70 w-3 h-3'
                       }`}
                     />
                   </li>
@@ -444,9 +427,8 @@ export default function GalleryPage() {
               type="button"
               onClick={() => setIsFullscreen(false)}
               aria-label="Закрыть"
-              whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center group shadow-xl z-10"
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl z-10"
             >
               <X className="w-7 h-7 text-white" />
             </motion.button>
@@ -459,9 +441,8 @@ export default function GalleryPage() {
                 goToPrevious()
               }}
               aria-label="Предыдущий слайд"
-              whileHover={{ scale: 1.1, x: -5 }}
               whileTap={{ scale: 0.9 }}
-              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center group shadow-xl z-10"
+              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl z-10"
             >
               <ChevronLeft className="w-7 h-7 md:w-8 md:h-8 text-white" />
             </motion.button>
@@ -473,9 +454,8 @@ export default function GalleryPage() {
                 goToNext()
               }}
               aria-label="Следующий слайд"
-              whileHover={{ scale: 1.1, x: 5 }}
               whileTap={{ scale: 0.9 }}
-              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center group shadow-xl z-10"
+              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 backdrop-blur-md border-2 border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl z-10"
             >
               <ChevronRight className="w-7 h-7 md:w-8 md:h-8 text-white" />
             </motion.button>
