@@ -28,6 +28,7 @@ export async function middleware(request: NextRequest) {
     { prefix: '/api/products', methods: ['GET'] },
     { prefix: '/api/colors', methods: ['GET'] },
     { prefix: '/api/orders', methods: ['POST'] },
+    { prefix: '/api/gallery', methods: ['GET'] }, // Публичный доступ к галерее для всех пользователей
   ]
   const isPublicApiRoute = publicApiRules.some(
     ({ prefix, methods }) => pathname.startsWith(prefix) && methods.includes(request.method),
