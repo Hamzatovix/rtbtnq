@@ -216,13 +216,19 @@ export default function GalleryPage() {
         </section>
 
         {/* Carousel Gallery */}
-        <section className="py-12 md:py-20 lg:py-24">
+        <section className="py-12 md:py-20 lg:py-24 relative">
+          {/* Декоративные элементы фона */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-sageTint/5 rounded-full blur-3xl opacity-50" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-roseBeige/10 rounded-full blur-3xl opacity-50" />
+          </div>
+
           <motion.div
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }}
             variants={fade}
-            className="container mx-auto px-6 md:px-12 lg:px-24"
+            className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10"
           >
             <div className="relative max-w-6xl mx-auto">
               {/* Стрелки навигации - десктоп */}
@@ -231,11 +237,13 @@ export default function GalleryPage() {
                   type="button"
                   onClick={goToPrevious}
                   aria-label="Предыдущий слайд"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/80 dark:bg-card/80 backdrop-blur-md border-2 border-mistGray/20 dark:border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
+                  whileHover={{ scale: 1.15, x: -3 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
                 >
-                  <ChevronLeft className="w-6 h-6 md:w-7 md:h-7 text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors" strokeWidth={2.5} />
+                  {/* Градиентный фон при hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-sageTint/10 to-roseBeige/10 dark:from-primary/10 dark:to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <ChevronLeft className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors relative z-10" strokeWidth={2.5} />
                 </motion.button>
               </div>
 
@@ -244,38 +252,48 @@ export default function GalleryPage() {
                   type="button"
                   onClick={goToNext}
                   aria-label="Следующий слайд"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/80 dark:bg-card/80 backdrop-blur-md border-2 border-mistGray/20 dark:border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
+                  whileHover={{ scale: 1.15, x: 3 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-xl border-2 border-mistGray/30 dark:border-border/60 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
                 >
-                  <ChevronRight className="w-6 h-6 md:w-7 md:h-7 text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors" strokeWidth={2.5} />
+                  {/* Градиентный фон при hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-sageTint/10 to-roseBeige/10 dark:from-primary/10 dark:to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <ChevronRight className="w-7 h-7 md:w-8 md:h-8 text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors relative z-10" strokeWidth={2.5} />
                 </motion.button>
               </div>
 
               {/* Контейнер слайдера */}
               <motion.div 
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-mistGray/5 via-white to-roseBeige/10 dark:from-muted/10 dark:via-card dark:to-muted/5 shadow-2xl border border-mistGray/20 dark:border-border/50"
+                className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-roseBeige/5 to-mistGray/5 dark:from-card dark:via-muted/5 dark:to-muted/10 shadow-2xl border-2 border-mistGray/20 dark:border-border/50 group/slider"
                 style={{ touchAction: 'pan-x' }}
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
-                whileHover={{ boxShadow: '0 20px 40px rgba(174, 182, 175, 0.15)' }}
+                whileHover={{ 
+                  boxShadow: '0 25px 50px -12px rgba(174, 182, 175, 0.25), 0 0 0 1px rgba(174, 182, 175, 0.1)',
+                  borderColor: 'rgba(174, 182, 175, 0.3)'
+                }}
               >
-                <div className="relative aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9]">
-                  {/* Градиент overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent z-10 pointer-events-none" />
+                {/* Декоративная рамка */}
+                <div className="absolute inset-0 rounded-[2rem] ring-1 ring-inset ring-white/50 dark:ring-white/5 pointer-events-none" />
+                
+                <div className="relative aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] overflow-hidden">
+                  {/* Многослойный градиент overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent z-10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/5 dark:to-white/5 z-10 pointer-events-none" />
                   
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={currentIndex}
-                      initial={{ opacity: 0, x: swipeOffset !== 0 ? swipeOffset : 50 }}
+                      initial={{ opacity: 0, x: swipeOffset !== 0 ? swipeOffset : 50, scale: 0.98 }}
                       animate={{ 
                         opacity: 1, 
                         x: swipeOffset * 0.3,
+                        scale: 1,
                       }}
-                      exit={{ opacity: 0, x: swipeOffset !== 0 ? -swipeOffset : -50 }}
+                      exit={{ opacity: 0, x: swipeOffset !== 0 ? -swipeOffset : -50, scale: 0.98 }}
                       transition={{ 
-                        duration: swipeOffset !== 0 ? 0 : 0.5,
+                        duration: swipeOffset !== 0 ? 0 : 0.6,
                         ease: swipeOffset !== 0 ? 'linear' : [0.22, 1, 0.36, 1]
                       }}
                       className="absolute inset-0 cursor-pointer group/image"
@@ -285,7 +303,7 @@ export default function GalleryPage() {
                         src={galleryImages[currentIndex].src}
                         alt={galleryImages[currentIndex].alt}
                         fill
-                        className="object-contain transition-transform duration-700 group-hover/image:scale-[1.02]"
+                        className="object-contain transition-transform duration-700 group-hover/image:scale-[1.03]"
                         priority={currentIndex === 0}
                         loading={currentIndex === 0 ? 'eager' : 'lazy'}
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1200px"
@@ -295,6 +313,8 @@ export default function GalleryPage() {
                           target.src = '/placeholder/about_main_placeholder.webp'
                         }}
                       />
+                      {/* Overlay при hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-500" />
                     </motion.div>
                   </AnimatePresence>
 
@@ -303,11 +323,11 @@ export default function GalleryPage() {
                     type="button"
                     onClick={() => setIsFullscreen(true)}
                     aria-label="Открыть в полноэкранном режиме"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="absolute top-4 right-4 md:top-6 md:right-6 w-11 h-11 md:w-12 md:h-12 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 transition-all duration-300 flex items-center justify-center group shadow-lg z-20"
+                    whileHover={{ scale: 1.15, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="absolute top-5 right-5 md:top-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center group shadow-2xl z-20"
                   >
-                    <Maximize2 className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform" />
+                    <Maximize2 className="w-6 h-6 md:w-7 md:h-7 text-white group-hover:scale-110 transition-transform" strokeWidth={2} />
                   </motion.button>
 
                   {/* Стрелки для мобильных */}
@@ -319,10 +339,11 @@ export default function GalleryPage() {
                         goToPrevious()
                       }}
                       aria-label="Предыдущий слайд"
-                      whileTap={{ scale: 0.9 }}
-                      className="pointer-events-auto w-14 h-14 rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.85 }}
+                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 hover:bg-black/95 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
                     >
-                      <ChevronLeft className="w-7 h-7 text-white" />
+                      <ChevronLeft className="w-8 h-8 text-white" strokeWidth={2.5} />
                     </motion.button>
                     <motion.button
                       type="button"
@@ -331,10 +352,11 @@ export default function GalleryPage() {
                         goToNext()
                       }}
                       aria-label="Следующий слайд"
-                      whileTap={{ scale: 0.9 }}
-                      className="pointer-events-auto w-14 h-14 rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 transition-all duration-300 flex items-center justify-center shadow-xl"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.85 }}
+                      className="pointer-events-auto w-16 h-16 rounded-full bg-black/80 hover:bg-black/95 backdrop-blur-xl border-2 border-white/30 transition-all duration-300 flex items-center justify-center shadow-2xl"
                     >
-                      <ChevronRight className="w-7 h-7 text-white" />
+                      <ChevronRight className="w-8 h-8 text-white" strokeWidth={2.5} />
                     </motion.button>
                   </div>
                 </div>
@@ -342,38 +364,53 @@ export default function GalleryPage() {
 
               {/* Миниатюры (только для десктопа) */}
               {galleryImages.length > 1 && (
-                <div className="hidden md:flex gap-3 mt-8 overflow-x-auto pb-3 scrollbar-hide px-2">
+                <motion.div 
+                  className="hidden md:flex gap-4 mt-10 overflow-x-auto pb-4 scrollbar-hide px-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                >
                   {galleryImages.map((img, index) => (
                     <motion.button
                       key={img.id}
                       type="button"
                       onClick={() => goToSlide(index)}
-                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileHover={{ scale: 1.08, y: -4 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`relative flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden border-2 transition-all duration-300 shadow-md ${
+                      className={`relative flex-shrink-0 w-28 h-28 rounded-2xl overflow-hidden border-2 transition-all duration-300 shadow-lg ${
                         currentIndex === index
-                          ? 'border-sageTint dark:border-primary shadow-lg scale-105 ring-2 ring-sageTint/20 dark:ring-primary/20'
-                          : 'border-transparent hover:border-mistGray/40 dark:hover:border-border/60 opacity-70 hover:opacity-100'
+                          ? 'border-sageTint dark:border-primary shadow-xl scale-105 ring-4 ring-sageTint/20 dark:ring-primary/20'
+                          : 'border-transparent hover:border-mistGray/50 dark:hover:border-border/70 opacity-70 hover:opacity-100'
                       }`}
                     >
                       <Image
                         src={img.src}
                         alt={img.alt}
                         fill
-                        className="object-cover"
-                        sizes="96px"
+                        className="object-cover transition-transform duration-500"
+                        sizes="112px"
                         unoptimized={img.src.includes('blob.vercel-storage.com')}
                       />
                       {currentIndex === index && (
-                        <div className="absolute inset-0 bg-gradient-to-t from-sageTint/20 to-transparent dark:from-primary/20" />
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-t from-sageTint/30 to-transparent dark:from-primary/30" />
+                          <div className="absolute inset-0 ring-2 ring-inset ring-white/50 dark:ring-white/20" />
+                        </>
                       )}
                     </motion.button>
                   ))}
-                </div>
+                </motion.div>
               )}
 
               {/* Точки навигации (bullets) */}
-              <ul className="flex justify-center gap-2.5 mt-6 md:mt-8 list-none p-0">
+              <motion.ul 
+                className="flex justify-center gap-3 mt-8 md:mt-10 list-none p-0"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
                 {galleryImages.map((_, index) => (
                   <li key={index}>
                     <motion.button
@@ -381,38 +418,44 @@ export default function GalleryPage() {
                       onClick={() => goToSlide(index)}
                       aria-label={`Перейти к слайду ${index + 1}`}
                       aria-current={currentIndex === index ? 'true' : undefined}
-                      whileHover={{ scale: 1.2 }}
+                      whileHover={{ scale: 1.3, y: -2 }}
                       whileTap={{ scale: 0.9 }}
                       className={`rounded-full transition-all duration-300 ${
                         currentIndex === index
-                          ? 'bg-sageTint dark:bg-primary w-10 h-2.5 shadow-md'
-                          : 'bg-mistGray/40 dark:bg-border/60 hover:bg-mistGray/60 dark:hover:bg-border w-2.5 h-2.5'
+                          ? 'bg-sageTint dark:bg-primary w-12 h-3 shadow-lg ring-2 ring-sageTint/30 dark:ring-primary/30'
+                          : 'bg-mistGray/50 dark:bg-border/70 hover:bg-mistGray/70 dark:hover:bg-border w-3 h-3'
                       }`}
                     />
                   </li>
                 ))}
-              </ul>
+              </motion.ul>
 
               {/* Счетчик слайдов и описание */}
               <motion.div 
-                className="text-center mt-6 space-y-2"
+                className="text-center mt-8 space-y-3"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.4 }}
               >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 dark:bg-card/60 backdrop-blur-sm border border-mistGray/20 dark:border-border/50 shadow-sm">
-                  <span className="text-sm font-medium text-inkSoft dark:text-foreground font-display">
+                <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/80 dark:bg-card/80 backdrop-blur-xl border-2 border-mistGray/20 dark:border-border/50 shadow-lg">
+                  <span className="text-base font-medium text-inkSoft dark:text-foreground font-display">
                     {currentIndex + 1}
                   </span>
-                  <span className="text-xs text-inkSoft/50 dark:text-muted-foreground">/</span>
-                  <span className="text-sm font-medium text-inkSoft/60 dark:text-muted-foreground">
+                  <span className="text-sm text-inkSoft/40 dark:text-muted-foreground/60">/</span>
+                  <span className="text-base font-medium text-inkSoft/70 dark:text-muted-foreground">
                     {galleryImages.length}
                   </span>
                 </div>
                 {galleryImages[currentIndex].alt && (
-                  <p className="text-sm text-inkSoft/70 dark:text-foreground/70 max-w-2xl mx-auto font-light italic">
+                  <motion.p 
+                    className="text-sm md:text-base text-inkSoft/70 dark:text-foreground/70 max-w-2xl mx-auto font-light italic px-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    key={currentIndex}
+                    transition={{ duration: 0.3 }}
+                  >
                     {galleryImages[currentIndex].alt}
-                  </p>
+                  </motion.p>
                 )}
               </motion.div>
             </div>
