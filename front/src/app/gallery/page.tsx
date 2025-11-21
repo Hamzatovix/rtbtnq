@@ -192,10 +192,10 @@ export default function GalleryPage() {
   return (
     <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground h-screen overflow-hidden flex items-center justify-center">
       <section className="w-full h-full flex items-center justify-center py-2 md:py-4 lg:py-6">
-        <div className="container mx-auto px-0 md:px-6 lg:px-8 h-full flex items-center justify-center">
-          <div className="relative max-w-7xl mx-auto w-full">
+        <div className="container mx-auto px-0 md:px-6 lg:px-8 h-full flex items-center justify-center w-full">
+          <div className="relative w-full md:max-w-7xl mx-auto">
             {/* Стрелки навигации - прямоугольные серые кнопки */}
-            <div className="absolute left-0.5 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
+            <div className="absolute left-1 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
               <motion.button
                 type="button"
                 onClick={goToPrevious}
@@ -207,7 +207,7 @@ export default function GalleryPage() {
               </motion.button>
             </div>
 
-            <div className="absolute right-0.5 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
+            <div className="absolute right-1 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-10 flex items-center">
               <motion.button
                 type="button"
                 onClick={goToNext}
