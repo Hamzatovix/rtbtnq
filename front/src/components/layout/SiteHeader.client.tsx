@@ -36,7 +36,7 @@ export default function SiteHeader() {
           {/* Logo - технический стиль */}
           <Link href="/" className="flex items-center space-x-2 group" aria-label="на главную">
             <span
-              className="font-logo text-sm md:text-base font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em]"
+              className="font-logo text-sm md:text-base lg:text-lg font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em]"
             >
               ROSEBOTANIQUE <span className="text-[0.7em] tracking-[0.15em]">STORE</span>
             </span>

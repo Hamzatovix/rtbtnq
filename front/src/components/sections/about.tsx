@@ -238,9 +238,9 @@ export function About() {
           </div>
 
           {/* Desktop layout: асимметричная композиция в стиле Nike/North Face/Urban */}
-          <div className="hidden md:grid lg:grid-cols-[2.5fr_1.5fr] gap-6 md:gap-8 lg:gap-10 items-start">
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-[2.5fr_1.5fr] gap-6 md:gap-8 lg:gap-10 items-start">
             {/* Left part — ротация c1, c2, c3, c4 (более вытянутое для длинных изображений) */}
-            <figure className="relative aspect-[3/5] lg:aspect-[2/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            <figure className="relative aspect-[2/3] md:aspect-[3/4] lg:aspect-[2/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentRotatingIndex}

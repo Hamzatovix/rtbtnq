@@ -14,7 +14,7 @@ export function Hero() {
   
   return (
     <section 
-      className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-[95vh] flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas pb-20 md:pb-24 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
+      className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-[85vh] lg:min-h-[95vh] flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas pb-20 md:pb-24 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
       aria-labelledby="hero-heading"
     >
       {/* Fintage декоративные линии - тонкие */}
@@ -33,7 +33,7 @@ export function Hero() {
 
           <h1 
             id="hero-heading"
-            className="text-[2rem] sm:text-[2.5rem] md:text-display-1 font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] mb-8 md:mb-12 tracking-[0.2em]"
+            className="text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-display-1 font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] mb-8 md:mb-12 tracking-[0.2em]"
           >
             ROSEBOTANIQUE
           </h1>
