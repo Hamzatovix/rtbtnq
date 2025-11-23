@@ -224,11 +224,11 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
             aria-modal="true"
             aria-label={title || 'Mobile menu'}
             id={drawerId}
-            className="fixed left-0 right-0 z-[49] w-full bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 border-b border-mistGray/30 dark:border-border shadow-breathing dark:shadow-breathing will-change-[transform,opacity]"
+            className="fixed left-0 right-0 z-[49] w-full bg-fintage-offwhite dark:bg-fintage-charcoal border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-md will-change-[transform,opacity]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Swipe indicator - улучшенный, более заметный */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
+            {/* Swipe indicator - технический стиль */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-16 h-px rounded-sm bg-fintage-graphite/30 dark:bg-fintage-graphite/60 shadow-fintage-sm" aria-hidden="true" />
 
             {/* Container с контентом */}
             <div className="container mx-auto px-4 md:px-6 lg:px-8">

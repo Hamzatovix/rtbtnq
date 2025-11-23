@@ -30,21 +30,21 @@ export default function SiteHeader() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-mistGray/30 dark:border-border bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 shadow-breathing dark:shadow-breathing">
-      <div className="container mx-auto px-6 md:px-12 lg:px-24">
-        <div className="flex h-24 items-center justify-between">
-          {/* Logo */}
+    <header className="sticky top-0 z-50 w-full border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/95 dark:bg-fintage-charcoal/95 backdrop-blur-sm supports-[backdrop-filter]:bg-fintage-offwhite/90 dark:supports-[backdrop-filter]:bg-fintage-charcoal/90 shadow-fintage-sm">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12">
+        <div className="flex h-16 md:h-20 items-center justify-between">
+          {/* Logo - технический стиль */}
           <Link href="/" className="flex items-center space-x-2 group" aria-label="на главную">
             <span
-              className="text-graceful text-xl font-light text-inkSoft dark:text-foreground group-hover:text-primary dark:group-hover:text-primary transition-colors duration-500 ease-out"
+              className="font-display-vintage text-lg md:text-xl font-black text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-tighter"
             >
-              rosebotanique store
+              ROSEBOTANIQUE
             </span>
           </Link>
 
-          {/* Navigation */}
+          {/* Navigation - технический стиль */}
           <nav 
-            className="hidden md:flex items-center space-x-12"
+            className="hidden md:flex items-center space-x-10 lg:space-x-12"
             aria-label="Основная навигация"
           >
             {(() => {
@@ -58,54 +58,54 @@ export default function SiteHeader() {
                 <>
                   <Link
                     href="/catalog"
-                    className="text-inkSoft/75 dark:text-muted-foreground hover:text-primary dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
+                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase relative group"
                     suppressHydrationWarning
                     aria-current={isCatalogActive ? 'page' : undefined}
                   >
                     {t('header.collection')}
                     <span 
-                      className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-primary dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" 
+                      className="absolute -bottom-1 left-0 w-0 h-px bg-accent group-hover:w-full transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" 
                       aria-hidden="true"
                     />
                     {isCatalogActive && (
                       <span 
-                        className="absolute -bottom-2 left-0 w-full h-px bg-primary dark:bg-primary" 
+                        className="absolute -bottom-1 left-0 w-full h-px bg-accent" 
                         aria-hidden="true"
                       />
                     )}
                   </Link>
                   <Link
                     href="/brand"
-                    className="text-inkSoft/75 dark:text-muted-foreground hover:text-primary dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
+                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase relative group"
                     suppressHydrationWarning
                     aria-current={isBrandActive ? 'page' : undefined}
                   >
                     {t('header.about')}
                     <span 
-                      className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-primary dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" 
+                      className="absolute -bottom-1 left-0 w-0 h-px bg-accent group-hover:w-full transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" 
                       aria-hidden="true"
                     />
                     {isBrandActive && (
                       <span 
-                        className="absolute -bottom-2 left-0 w-full h-px bg-primary dark:bg-primary" 
+                        className="absolute -bottom-1 left-0 w-full h-px bg-accent" 
                         aria-hidden="true"
                       />
                     )}
                   </Link>
                   <Link
                     href="/gallery"
-                    className="text-inkSoft/75 dark:text-muted-foreground hover:text-primary dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
+                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase relative group"
                     suppressHydrationWarning
                     aria-current={isGalleryActive ? 'page' : undefined}
                   >
                     {t('header.gallery')}
                     <span 
-                      className="absolute -bottom-2 left-0 w-0 h-px bg-gradient-to-r from-primary dark:from-primary to-transparent group-hover:w-full transition-all duration-500 ease-out" 
+                      className="absolute -bottom-1 left-0 w-0 h-px bg-accent group-hover:w-full transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" 
                       aria-hidden="true"
                     />
                     {isGalleryActive && (
                       <span 
-                        className="absolute -bottom-2 left-0 w-full h-px bg-primary dark:bg-primary" 
+                        className="absolute -bottom-1 left-0 w-full h-px bg-accent" 
                         aria-hidden="true"
                       />
                     )}
@@ -124,14 +124,14 @@ export default function SiteHeader() {
             variant="ghost" 
               size="icon" 
             onClick={toggleFavorites}
-              className="relative hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-xl md:rounded-2xl h-10 w-10 md:h-11 md:w-11"
+              className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 md:h-10 md:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
                 aria-label={`Favorites ${favCount} items`}
           >
                 <Heart className="h-4 w-4 md:h-5 md:w-5" />
                 {!mounted ? (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-mistGray/30 dark:bg-muted/30 animate-pulse" aria-hidden="true" />
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                 ) : favCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-primary dark:bg-primary text-[10px] md:text-xs text-primary-foreground dark:text-primary-foreground flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-steel text-[9px] md:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
                     {favCount}
                   </span>
                 )}
@@ -145,14 +145,14 @@ export default function SiteHeader() {
             variant="ghost" 
               size="icon" 
             onClick={toggleCart}
-              className="relative hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-xl md:rounded-2xl h-10 w-10 md:h-11 md:w-11"
+              className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 md:h-10 md:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
                 aria-label={`Shopping cart ${cartCount} items`}
           >
                 <ShoppingBag className="h-4 w-4 md:h-5 md:w-5" />
                 {!mounted ? (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-mistGray/30 dark:bg-muted/30 animate-pulse" aria-hidden="true" />
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                 ) : cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-full bg-primary dark:bg-primary text-[10px] md:text-xs text-primary-foreground dark:text-primary-foreground flex items-center justify-center font-medium shadow-breathing" aria-hidden="true">
+                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-steel text-[9px] md:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
                     {cartCount}
                   </span>
                 )}
@@ -170,44 +170,44 @@ export default function SiteHeader() {
             aria-expanded={drawerOpen}
             aria-controls="mobile-drawer"
             onClick={() => setDrawerOpen(!drawerOpen)}
-            className="md:hidden hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-full inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-mistGray/30 dark:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-98 relative"
+            className="md:hidden hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-fintage-graphite/30 dark:border-accent/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-95 relative"
           >
             <span className="sr-only">{drawerOpen ? "Close menu" : "Open menu"}</span>
             <div className="relative w-5 h-5 flex items-center justify-center">
               {/* Верхняя полоска */}
               <motion.span
-                className="absolute block h-0.5 w-5 bg-inkSoft dark:bg-foreground origin-center"
+                className="absolute block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
                 animate={{
                   rotate: drawerOpen ? 45 : 0,
                   y: drawerOpen ? 0 : -6,
                 }}
                 transition={{
-                  duration: 0.3,
-                  ease: [0.22, 1, 0.36, 1],
+                  duration: 0.28,
+                  ease: [0.4, 0, 0.2, 1],
                 }}
               />
               {/* Средняя полоска */}
               <motion.span
-                className="absolute block h-0.5 w-5 bg-inkSoft dark:bg-foreground origin-center"
+                className="absolute block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
                 animate={{
                   opacity: drawerOpen ? 0 : 1,
                   scale: drawerOpen ? 0 : 1,
                 }}
                 transition={{
                   duration: 0.2,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.4, 0, 0.2, 1],
                 }}
               />
               {/* Нижняя полоска */}
               <motion.span
-                className="absolute block h-0.5 w-5 bg-inkSoft dark:bg-foreground origin-center"
+                className="absolute block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
                 animate={{
                   rotate: drawerOpen ? -45 : 0,
                   y: drawerOpen ? 0 : 6,
                 }}
                 transition={{
-                  duration: 0.3,
-                  ease: [0.22, 1, 0.36, 1],
+                  duration: 0.28,
+                  ease: [0.4, 0, 0.2, 1],
                 }}
               />
             </div>
@@ -298,8 +298,14 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       initial="hidden"
       animate="visible"
     >
-      {/* Navigation - улучшенная структура */}
+      {/* Navigation - технический стиль */}
       <nav className="px-2 pt-2 pb-3 space-y-2">
+        {/* Техническая подпись секции */}
+        <div className="px-3 mb-2">
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+            {t('header.navigation') || 'NAVIGATION'}
+          </span>
+        </div>
         {navigationLinks.map((link, index) => {
           // Нормализуем pathname для сравнения (убираем локализацию)
           const normalizedPathname = pathname.replace(/^\/[a-z]{2}(\/|$)/, '/') || '/'
@@ -316,10 +322,10 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'group relative flex items-center justify-between rounded-xl px-5 py-4 text-base font-light transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]',
+                  'group relative flex items-center justify-between rounded-sm px-5 py-4 text-xs font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.98] uppercase tracking-[0.2em]',
                   isActive
-                    ? 'bg-primary/10 dark:bg-primary/10 text-primary dark:text-primary border border-primary/20 dark:border-primary/20 shadow-sm dark:shadow-md'
-                    : 'text-inkSoft dark:text-foreground hover:bg-white/60 dark:hover:bg-card/60 hover:text-primary dark:hover:text-primary border border-transparent hover:border-mistGray/20 dark:hover:border-border/40'
+                    ? 'bg-fintage-steel text-fintage-offwhite dark:text-fintage-charcoal border border-fintage-steel shadow-fintage-sm'
+                    : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent border border-transparent hover:border-hover-border dark:hover:border-hover-border'
                 )}
               >
                 <span suppressHydrationWarning className="relative z-10 flex-1">
@@ -328,7 +334,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="w-1.5 h-1.5 rounded-full bg-primary dark:bg-primary"
+                    className="w-1.5 h-1.5 rounded-sm bg-fintage-steel"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
@@ -338,14 +344,20 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
         })}
       </nav>
 
-      {/* Divider - улучшенный с лучшим визуальным разделением */}
+      {/* Divider - технический */}
       <motion.div 
         variants={itemVariants}
-        className="border-t border-mistGray/20 dark:border-border/50 mx-2 my-4" 
+        className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 mx-2 my-4" 
       />
 
-      {/* Action Buttons - улучшенные */}
+      {/* Action Buttons - технический стиль */}
       <div className="px-2 pb-3 space-y-2.5">
+        {/* Техническая подпись секции */}
+        <div className="px-3 mb-2">
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+            {t('header.actions') || 'ACTIONS'}
+          </span>
+        </div>
         <motion.div variants={itemVariants}>
           <ActionButton
             icon={<ShoppingBag className="h-5 w-5" />}
@@ -373,12 +385,18 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
         </motion.div>
       </div>
 
-      {/* Settings Section - компактная с улучшенным разделением */}
+      {/* Settings Section - технический стиль */}
       <motion.div 
         variants={itemVariants}
-        className="mt-auto pt-4 border-t border-mistGray/20 dark:border-border/50"
+        className="mt-auto pt-4 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30"
       >
         <div className="px-2 pb-2">
+          {/* Техническая подпись секции */}
+          <div className="px-3 mb-2">
+            <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+              {t('common.settings') || 'SETTINGS'}
+            </span>
+          </div>
           <div className="flex gap-2">
             <motion.div variants={itemVariants} className="flex-1">
               <SettingsCard 
@@ -418,16 +436,16 @@ const ActionButton = memo(function ActionButton({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="group relative flex w-full items-center justify-between gap-3 rounded-xl px-5 py-4 bg-white/50 dark:bg-card/50 border border-mistGray/20 dark:border-border hover:bg-white dark:hover:bg-card hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98] overflow-hidden"
+      className="group relative flex w-full items-center justify-between gap-3 rounded-sm px-5 py-4 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-hover-border transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.98] overflow-hidden"
     >
       {/* Hover effect background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent dark:from-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-r from-fintage-steel/5 to-transparent opacity-0 group-hover:opacity-100 transition-fintage" />
       
       <div className="relative flex items-center gap-3 flex-1">
-        <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/20 dark:group-hover:bg-primary/20">
+        <div className="p-2 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal transition-fintage group-hover:scale-110 group-hover:bg-active-bg border border-fintage-graphite/20 dark:border-fintage-graphite/30 group-hover:border-hover-border dark:group-hover:border-hover-border">
           {icon}
         </div>
-        <span className="text-base font-light text-inkSoft dark:text-foreground group-hover:text-primary dark:group-hover:text-primary transition-colors duration-300">
+        <span className="text-xs font-mono text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
           {label}
         </span>
       </div>
@@ -435,7 +453,7 @@ const ActionButton = memo(function ActionButton({
         <motion.span
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="relative inline-flex h-6 min-w-[24px] items-center justify-center rounded-full bg-primary dark:bg-primary px-2.5 text-xs font-medium text-primary-foreground dark:text-primary-foreground shadow-md dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+          className="relative inline-flex h-6 min-w-[24px] items-center justify-center rounded-sm bg-fintage-steel px-2.5 text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal shadow-fintage-sm tracking-tight"
         >
           {count}
         </motion.span>
@@ -444,7 +462,7 @@ const ActionButton = memo(function ActionButton({
   )
 })
 
-// Компонент карточки настроек - минималистичный без фона по умолчанию
+// Компонент карточки настроек - технический стиль
 const SettingsCard = memo(function SettingsCard({
   label,
   icon,
@@ -453,11 +471,11 @@ const SettingsCard = memo(function SettingsCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="group flex flex-col items-center gap-1.5 p-2.5 rounded-lg border border-transparent hover:border-mistGray/20 dark:hover:border-border/50 transition-all duration-300 ease-brand cursor-pointer">
+    <div className="group flex flex-col items-center gap-1.5 p-2.5 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-hover-border transition-fintage cursor-pointer">
       <div className="flex items-center justify-center scale-90">
         {icon}
       </div>
-      <span className="text-xs font-light text-inkSoft/60 dark:text-muted-foreground/80 group-hover:text-primary dark:group-hover:text-primary transition-colors duration-300 leading-tight">
+      <span className="text-[9px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">
         {label}
       </span>
     </div>

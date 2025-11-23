@@ -114,43 +114,52 @@ export function SettingsPanel() {
           aria-hidden="true"
         />
 
-        {/* Panel - стиль как у мобильного меню */}
+        {/* Panel - технический стиль */}
         <motion.div
           ref={panelRef}
           initial={reducedMotion ? {} : { opacity: 0, y: -10, scale: 0.95 }}
           animate={reducedMotion ? {} : { opacity: 1, y: 0, scale: 1 }}
           exit={reducedMotion ? {} : { opacity: 0, y: -10, scale: 0.95 }}
           transition={motionConfig}
-          className="fixed right-4 top-24 z-[60] w-auto rounded-xl border border-mistGray/30 dark:border-border bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 shadow-breathing dark:shadow-breathing p-3"
+          className="fixed right-4 top-24 z-[60] w-auto rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite dark:bg-fintage-charcoal shadow-fintage-md p-3"
           role="dialog"
           aria-modal="true"
           aria-label="Настройки"
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-end mb-2.5">
+          {/* Header - технический стиль */}
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            <span className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
+              {t('common.settings') || 'SETTINGS'}
+            </span>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setOpen(false)}
-              className="h-6 w-6 rounded-full hover:bg-mistGray/10 dark:hover:bg-muted/30"
+              className="h-6 w-6 rounded-sm hover:bg-hover-bg dark:hover:bg-hover-bg border border-transparent hover:border-hover-border dark:hover:border-hover-border transition-fintage"
               aria-label="Закрыть настройки"
             >
-              <X className="h-3 w-3" />
+              <X className="h-3 w-3 text-fintage-charcoal dark:text-fintage-offwhite" />
             </Button>
           </div>
 
-          {/* Settings Content */}
+          {/* Settings Content - технический стиль */}
           <div className="flex flex-col gap-2">
             {/* Theme Toggle */}
-            <div className="flex items-center justify-center rounded-lg border border-mistGray/20 dark:border-border bg-mistGray/5 dark:bg-muted/10 p-2">
+            <div className="flex flex-col items-center gap-1.5 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/20 p-2.5">
               <ThemeToggle />
+              <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
+                {t('common.theme') || 'THEME'}
+              </span>
             </div>
 
             {/* Language Switcher */}
-            <div className="flex items-center justify-center rounded-lg border border-mistGray/20 dark:border-border bg-mistGray/5 dark:bg-muted/10 p-2">
+            <div className="flex flex-col items-center gap-1.5 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/20 p-2.5">
               <LocaleSwitcher />
+              <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
+                {t('common.language') || 'LANGUAGE'}
+              </span>
             </div>
           </div>
         </motion.div>
@@ -160,16 +169,16 @@ export function SettingsPanel() {
 
   return (
     <>
-      {/* Trigger Button - всегда рендерится одинаково */}
+      {/* Trigger Button - технический стиль */}
       <Button
         variant="ghost"
         size="icon"
         onClick={mounted ? () => setOpen(true) : undefined}
-        className="rounded-full hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out"
+        className="rounded-sm hover:bg-hover-bg dark:hover:bg-hover-bg border border-transparent hover:border-hover-border dark:hover:border-hover-border transition-fintage"
         aria-label="Настройки"
         suppressHydrationWarning
       >
-        <Settings className="h-5 w-5" />
+        <Settings className="h-5 w-5 text-fintage-charcoal dark:text-fintage-offwhite" />
       </Button>
 
       {/* Settings Panel - рендерится в портале только после монтирования */}

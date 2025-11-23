@@ -102,7 +102,7 @@ export function DropdownMenuContent({
 
   return (
     <div
-      className={`absolute ${positionClass} ${verticalClass} bg-linenWhite dark:bg-card border border-mistGray/20 dark:border-border rounded-2xl shadow-misty dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] py-2 z-[55] ${className}`}
+      className={`absolute ${positionClass} ${verticalClass} bg-fintage-offwhite dark:bg-fintage-charcoal border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm shadow-fintage-md py-2 z-[55] ${className}`}
       style={offsetStyle}
       onClick={(e) => e.stopPropagation()}
     >
@@ -122,7 +122,7 @@ export function DropdownMenuItem({ asChild, children, className = '', onClick }:
   if (asChild && React.isValidElement(children)) {
     const child = children as React.ReactElement<any>
     return React.cloneElement(child, {
-      className: `block w-full text-left px-4 py-2 text-inkSoft dark:text-foreground hover:bg-roseBeige/40 dark:hover:bg-muted/30 transition-colors ${className}`,
+      className: `block w-full text-left px-4 py-2 text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage ${className}`,
       onClick: (e: React.MouseEvent) => {
         handleClick()
         if (child.props && typeof (child.props as any).onClick === 'function') {
@@ -134,7 +134,7 @@ export function DropdownMenuItem({ asChild, children, className = '', onClick }:
 
   return (
     <div
-      className={`block w-full text-left px-4 py-2 text-inkSoft dark:text-foreground hover:bg-roseBeige/40 dark:hover:bg-muted/30 transition-colors cursor-pointer ${className}`}
+      className={`block w-full text-left px-4 py-2 text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage cursor-pointer ${className}`}
       onClick={handleClick}
     >
       {children}

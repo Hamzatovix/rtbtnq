@@ -29,14 +29,14 @@ export function LocaleSwitcher() {
       variant="ghost"
       size="icon"
       onClick={mounted ? toggleLocale : undefined}
-      className="rounded-lg border border-mistGray/30 dark:border-border bg-white/80 dark:bg-card/80 hover:bg-white dark:hover:bg-card transition-all duration-500 ease-out shadow-sm relative group"
+      className="rounded-sm border-2 border-fintage-graphite/40 dark:border-fintage-graphite/70 bg-fintage-offwhite dark:bg-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-accent transition-fintage shadow-fintage-md relative group"
       aria-label={mounted ? `Переключить язык на ${nextConfig.label}` : 'Переключить язык'}
       title={mounted ? `Текущий язык: ${currentConfig.label}. Нажмите для переключения на ${nextConfig.label}` : undefined}
       suppressHydrationWarning
     >
       {/* Текущий флаг - всегда рендерится с suppressHydrationWarning */}
       <span 
-        className="text-lg transition-opacity duration-300 group-hover:opacity-0" 
+        className="text-xl transition-opacity duration-300 group-hover:opacity-0 drop-shadow-sm" 
         role="img" 
         aria-hidden="true"
         suppressHydrationWarning
@@ -45,7 +45,7 @@ export function LocaleSwitcher() {
       </span>
       {/* Следующий флаг при hover - всегда рендерится */}
       <span 
-        className="absolute text-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100" 
+        className="absolute text-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 drop-shadow-sm" 
         role="img" 
         aria-hidden="true"
         suppressHydrationWarning

@@ -57,21 +57,21 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
 
   // Compact mode styles
   const isCompact = density === 'compact'
-  const cardRadius = isCompact ? 'rounded-lg' : 'rounded-2xl'
+  const cardRadius = isCompact ? 'rounded-sm' : 'rounded-sm'
   const imageRatio = isCompact ? 'aspect-[4/5] sm:aspect-square' : 'aspect-[4/5]'
   // Уменьшено масштабирование для более тонкого эффекта
   const imageScale = pointerMode ? '' : 'group-hover:scale-[1.01]'
-  const bodyPadding = isCompact ? 'p-2 sm:p-2.5 space-y-1' : 'p-4 sm:p-5 space-y-3'
+  const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
   const titleClass = isCompact ? 'text-xs sm:text-sm' : 'text-base sm:text-lg'
-  const descClass = isCompact ? 'text-[10px] sm:text-xs line-clamp-1' : 'text-xs sm:text-sm line-clamp-2'
-  const priceClass = isCompact ? 'text-xs sm:text-sm font-light' : 'text-base sm:text-lg font-light'
-  const colorsGap = isCompact ? 'space-x-0.5 sm:space-x-1' : 'space-x-1 sm:space-x-2'
+  const descClass = isCompact ? 'text-[9px] sm:text-[10px] line-clamp-1' : 'text-[10px] sm:text-xs line-clamp-2'
+  const priceClass = isCompact ? 'text-xs sm:text-sm font-bold' : 'text-base sm:text-lg font-bold'
+  const colorsGap = isCompact ? 'space-x-1 sm:space-x-1.5' : 'space-x-1.5 sm:space-x-2'
   const swatchSize = isCompact ? 'w-3 h-3 sm:w-3.5 sm:h-3.5' : 'w-5 h-5 sm:w-6 sm:h-6'
-  const badgeTR = isCompact ? 'top-2 right-2' : 'top-6 right-6'
-  const badgeTL = isCompact ? 'top-2 left-2' : 'top-6 left-6'
+  const badgeTR = isCompact ? 'top-2 right-2' : 'top-4 right-4'
+  const badgeTL = isCompact ? 'top-2 left-2' : 'top-4 left-4'
   const overlayPad = isCompact ? 'px-2 py-0.5 text-[10px]' : 'px-4 py-2 text-sm'
-  const priceSectionPadding = isCompact ? 'pt-0.5 sm:pt-1' : 'pt-2 sm:pt-2.5'
-  const swatchSectionPadding = isCompact ? 'pt-1.5 sm:pt-2' : 'pt-4 sm:pt-5'
+  const priceSectionPadding = isCompact ? 'pt-1 sm:pt-1.5' : 'pt-2 sm:pt-2.5'
+  const swatchSectionPadding = isCompact ? 'pt-2 sm:pt-2.5' : 'pt-3 sm:pt-4'
   const numericId = useMemo(() => Number(product.id), [product.id])
 
   // Sync with store on client side
@@ -303,12 +303,12 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
         className="top-4 left-4 translate-y-12"
       />
 
-      <Card className={`overflow-hidden border border-mistGray/20 dark:border-border shadow-misty/50 dark:shadow-misty hover:shadow-misty dark:hover:shadow-misty transition-breathing backdrop-misty dark:backdrop-misty ${cardRadius}`}>
+      <Card className={`overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm hover:shadow-fintage-md hover:border-fintage-graphite/30 dark:hover:border-fintage-graphite/40 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] bg-fintage-offwhite dark:bg-fintage-charcoal ${cardRadius}`}>
         <CardContent className="p-0">
-          {/* Image */}
+          {/* Image - крупное фото fashion-стиль */}
           <div 
             ref={imageContainerRef}
-            className={`relative overflow-hidden rounded-t-[inherit] ${imageRatio} ${pointerMode && allImages.length > 1 ? 'touch-none' : ''}`}
+            className={`relative overflow-hidden rounded-t-sm ${imageRatio} ${pointerMode && allImages.length > 1 ? 'touch-none' : ''}`}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
@@ -332,13 +332,13 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                     : product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className={`object-cover transition-transform duration-250 ease-brand ${imageScale}`}
+                className={`object-cover transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${imageScale} group-hover:brightness-[0.98]`}
                 priority={false}
               />
             </Link>
             
-            {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-sageTint/10 dark:from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-250 hidden sm:block group-hover:opacity-100" aria-hidden="true" />
+            {/* Винтажный overlay - тонкий fade при hover (Nike style) */}
+            <div className="absolute inset-0 bg-gradient-to-t from-fintage-graphite/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hidden sm:block group-hover:opacity-100" aria-hidden="true" />
             
             {/* Image indicators (dots) for mobile swipe */}
             {pointerMode && allImages.length > 1 && (
@@ -352,10 +352,10 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                       setCurrentImageIndex(index)
                       triggerMobileHaptics()
                     }}
-                    className={`transition-all duration-300 ease-brand rounded-full ${
+                    className={`transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-full ${
                       index === currentImageIndex
                         ? 'w-2 h-2 bg-primary dark:bg-primary shadow-sm'
-                        : 'w-1.5 h-1.5 bg-white/60 dark:bg-white/40'
+                        : 'w-1.5 h-1.5 bg-white/60 dark:bg-white/40 hover:bg-white/80 dark:hover:bg-white/60'
                     }`}
                     aria-label={locale === 'ru' ? `Изображение ${index + 1} из ${allImages.length}` : `Image ${index + 1} of ${allImages.length}`}
                   />
@@ -371,9 +371,9 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               isCompact={isCompact}
             />
 
-            {/* View details overlay */}
+            {/* Винтажный hover overlay - тонкий эффект (Nike style) */}
             {!pointerMode && (
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-250 flex items-center justify-center bg-sageTint/20 dark:bg-primary/20 z-0">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center bg-fintage-graphite/5 dark:bg-fintage-graphite/10 z-0 border border-fintage-graphite/10 dark:border-fintage-graphite/20 pointer-events-none">
               </div>
             )}
           </div>
@@ -382,10 +382,10 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
           <div className={bodyPadding}>
             <Link href={`/product/${product.slug}`} aria-label={`просмотреть ${product.name}`}>
               <div className="space-y-1.5">
-                <h3 className={`text-graceful font-light transition-colors duration-250 leading-tight text-inkSoft dark:text-foreground ${titleClass}`}>
+                <h3 className={`font-display-vintage font-black transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] leading-[0.95] text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-fintage-charcoal/90 dark:group-hover:text-fintage-offwhite/90 ${titleClass} uppercase tracking-tighter`}>
                   {product.name}
                 </h3>
-                <p className={`leading-relaxed font-light tracking-wide text-whisper dark:text-muted-foreground ${descClass}`}>
+                <p className={`leading-relaxed font-mono tracking-[0.15em] text-fintage-graphite dark:text-fintage-graphite/60 ${descClass} uppercase`}>
                   {product.category.name}
                 </p>
               </div>
@@ -393,7 +393,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
             
             <div className={`flex items-center justify-between ${priceSectionPadding}`}>
               <div className="flex items-center space-x-2">
-                <span className={`text-inkSoft/80 dark:text-foreground ${priceClass}`}>
+                <span className={`text-fintage-charcoal dark:text-fintage-offwhite font-bold ${priceClass} tracking-tight`}>
                   {typeof product.price === 'number'
                     ? formatPriceWithLocale(product.price, locale)
                     : (locale === 'ru' ? 'цена по запросу' : 'Price on request')
@@ -402,7 +402,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               </div>
             </div>
 
-            <div className={`${swatchSectionPadding} grid grid-cols-[1fr_auto] items-center gap-3`}>
+            <div className={`${swatchSectionPadding} grid grid-cols-[1fr_auto] items-center gap-3 border-t border-fintage-graphite/10 dark:border-fintage-graphite/20 ${isCompact ? 'pt-2 sm:pt-2.5' : 'pt-3 sm:pt-4'}`}>
               <ProductCardSwatches
                 colors={product.colors}
                 locale={locale}
@@ -423,10 +423,10 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     </>
   )
 
-  // Унифицированы easing (ease-brand) и duration (200ms для hover)
+  // Fintage hover эффект - micro-zoom 1.01 с улучшенной плавностью
   const interactiveWrapperClass = pointerMode
     ? wrapperClass
-    : `${wrapperClass} transition-transform duration-200 ease-brand hover:-translate-y-1`
+    : `${wrapperClass} hover-scale-fintage`
 
   return <div className={interactiveWrapperClass}>{cardContent}</div>
 }

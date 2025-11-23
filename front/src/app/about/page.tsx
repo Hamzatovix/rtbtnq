@@ -16,14 +16,14 @@ export default function AboutPage() {
   const t = useTranslations()
 
   return (
-    <div className="bg-white dark:bg-background text-inkSoft dark:text-foreground">
+    <div className="bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
       {/* One-shot hero with NordicSunDisc */}
       <section
         aria-label={t('home.about.title')}
         className="relative h-[58vh] min-h-[320px] w-full overflow-hidden"
       >
         <Image
-          src="/images/about-m.jpg.png"
+          src="/images/about-m.png"
           alt={t('aboutPage.heroAlt') || 'atelier'}
           fill
           priority={false}
@@ -47,7 +47,7 @@ export default function AboutPage() {
             <NordicSunDisc size={80} idSuffix="about-page" interactive />
           </div>
 
-          <h1 className="font-serif text-4xl md:text-5xl font-light tracking-wide text-white">
+          <h1 className="font-display-vintage text-4xl md:text-5xl font-black leading-[0.95] tracking-tighter uppercase text-white">
             {t('home.about.title')}
           </h1>
           <p className="mt-3 text-base md:text-lg text-white/80">
@@ -70,28 +70,28 @@ export default function AboutPage() {
           {/* Заголовок */}
           <h2
             id="about-title"
-            className="text-title-1 md:text-display-2 font-light text-inkSoft dark:text-foreground leading-tight tracking-wide mb-10 md:mb-14"
+            className="text-title-1 md:text-[2rem] lg:text-[2.5rem] font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] tracking-tighter uppercase mb-10 md:mb-14"
           >
             {t('aboutPage.storyTitle')}
           </h2>
 
           {/* Основной текст */}
-          <div className="space-y-6 md:space-y-7 text-base md:text-lg lg:text-xl font-light leading-relaxed md:leading-loose text-inkSoft dark:text-foreground">
-            <p className="text-inkSoft/90 dark:text-foreground/90">
+          <div className="space-y-6 md:space-y-7 text-base md:text-lg lg:text-xl font-light leading-relaxed md:leading-loose text-fintage-charcoal/80 dark:text-fintage-offwhite/80">
+            <p>
               {t('aboutPage.paragraph1')}
             </p>
-            <p className="text-inkSoft/90 dark:text-foreground/90">
+            <p>
               {t('aboutPage.paragraph2')}
             </p>
           </div>
 
           {/* Теги ценностей */}
-          <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-mistGray/20 dark:border-border/50">
+          <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
             <div className="flex flex-wrap gap-3 md:gap-4">
               {[t('aboutPage.tagQuality'), t('aboutPage.tagTraditions'), t('aboutPage.tagSimplicity')].map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center rounded-full border border-mistGray/30 dark:border-border/60 bg-mistGray/5 dark:bg-muted/10 px-4 md:px-5 py-2 md:py-2.5 text-sm md:text-base font-light text-inkSoft dark:text-foreground tracking-wide uppercase"
+                  className="inline-flex items-center rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 px-4 md:px-5 py-2 md:py-2.5 text-sm md:text-base font-mono text-fintage-charcoal dark:text-fintage-offwhite tracking-[0.15em] uppercase"
                 >
                   {tag}
                 </span>
@@ -100,8 +100,8 @@ export default function AboutPage() {
           </div>
 
           {/* Подпись */}
-          <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-mistGray/15 dark:border-border/30">
-            <p className="text-xs md:text-sm font-light tracking-[0.15em] uppercase text-inkSoft/60 dark:text-muted-foreground">
+          <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            <p className="text-xs md:text-sm font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-graphite/50">
               made in daymohk
             </p>
           </div>

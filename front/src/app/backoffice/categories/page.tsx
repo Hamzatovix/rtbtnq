@@ -104,22 +104,22 @@ export default function BackofficeCategoriesPage(){
     }
   }
 
-  if (loading) return <div className="py-10">Загрузка…</div>
+  if (loading) return <div className="py-10 text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.15em]">Загрузка…</div>
 
   return (
     <div className="space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-inkSoft/60">
-        <Link href="/backoffice" className="hover:text-sageTint transition-colors">Панель</Link>
+      <div className="flex items-center gap-2 text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+        <Link href="/backoffice" className="hover:text-accent dark:hover:text-accent transition-fintage">Панель</Link>
         <span>/</span>
-        <span className="text-inkSoft">Категории</span>
+        <span className="text-fintage-charcoal dark:text-fintage-offwhite">Категории</span>
       </div>
 
-      <h1 className="text-title-1 font-light">Категории</h1>
+      <h1 className="text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Категории</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="p-6 border rounded-2xl bg-roseBeige/30">
-          <h2 className="mb-4 font-medium">Создать категорию</h2>
+        <div className="p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
+          <h2 className="mb-4 text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Создать категорию</h2>
           <form onSubmit={onCreate} className="space-y-4">
             <div>
               <Label>Slug</Label>
@@ -133,28 +133,28 @@ export default function BackofficeCategoriesPage(){
               <Label>Позиция</Label>
               <Input type="number" value={position} onChange={e=>setPosition(Number(e.target.value||0))} />
             </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm font-mono text-fintage-punch dark:text-fintage-punch uppercase tracking-[0.1em]">{error}</p>}
             <Button type="submit">Сохранить</Button>
           </form>
         </div>
 
-        <div className="p-6 border rounded-2xl">
-          <h2 className="mb-4 font-medium">Список</h2>
-          {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
+        <div className="p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm shadow-fintage-sm">
+          <h2 className="mb-4 text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Список</h2>
+          {error && <p className="text-sm font-mono text-fintage-punch dark:text-fintage-punch mb-4 uppercase tracking-[0.1em]">{error}</p>}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2 px-2">Позиция</th>
-                  <th className="text-left py-2 px-2">Slug</th>
-                  <th className="text-left py-2 px-2">Название</th>
-                  <th className="text-left py-2 px-2">Публикация</th>
-                  <th className="text-right py-2 px-2">Действия</th>
+                <tr className="border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+                  <th className="text-left py-2 px-2 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Позиция</th>
+                  <th className="text-left py-2 px-2 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Slug</th>
+                  <th className="text-left py-2 px-2 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Название</th>
+                  <th className="text-left py-2 px-2 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Публикация</th>
+                  <th className="text-right py-2 px-2 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Действия</th>
                 </tr>
               </thead>
               <tbody>
                 {cats.map(c=> (
-                  <tr key={c.id} className="border-b hover:bg-roseBeige/10 transition-colors">
+                  <tr key={c.id} className="border-b border-fintage-graphite/10 dark:border-fintage-graphite/20 hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage">
                     {editingId === c.id ? (
                       <>
                         <td className="py-2 px-2">
@@ -180,7 +180,7 @@ export default function BackofficeCategoriesPage(){
                           />
                         </td>
                         <td className="py-2 px-2">
-                          <button onClick={()=>togglePublish(c)} className={`px-3 py-1 rounded-full border text-xs ${c.is_active ? 'bg-sageTint/15 border-sageTint/30 text-inkSoft' : 'bg-mistGray/20 border-mistGray/30 text-inkSoft/60'}`}>
+                          <button onClick={()=>togglePublish(c)} className={`px-3 py-1 rounded-sm border text-xs font-mono uppercase tracking-[0.1em] transition-fintage ${c.is_active ? 'bg-accent/15 dark:bg-accent/20 border-accent/30 dark:border-accent/30 text-fintage-charcoal dark:text-fintage-offwhite' : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/20 border-fintage-graphite/30 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'}`}>
                             {c.is_active ? 'Опубликована' : 'Черновик'}
                           </button>
                         </td>
@@ -188,14 +188,14 @@ export default function BackofficeCategoriesPage(){
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={saveEdit}
-                              className="p-1.5 hover:bg-green-50 rounded transition-colors text-green-600"
+                              className="p-1.5 hover:bg-accent/10 dark:hover:bg-accent/10 rounded-sm transition-fintage text-accent dark:text-accent"
                               title="Сохранить"
                             >
                               <Check className="h-4 w-4" />
                             </button>
                             <button
                               onClick={cancelEdit}
-                              className="p-1.5 hover:bg-red-50 rounded transition-colors text-red-600"
+                              className="p-1.5 hover:bg-fintage-punch/10 dark:hover:bg-fintage-punch/10 rounded-sm transition-fintage text-fintage-punch dark:text-fintage-punch"
                               title="Отменить"
                             >
                               <X className="h-4 w-4" />
@@ -205,11 +205,11 @@ export default function BackofficeCategoriesPage(){
                       </>
                     ) : (
                       <>
-                        <td className="py-2 px-2">{c.position}</td>
-                        <td className="py-2 px-2">{c.slug}</td>
-                        <td className="py-2 px-2">{c.name}</td>
+                        <td className="py-2 px-2 text-fintage-charcoal dark:text-fintage-offwhite">{c.position}</td>
+                        <td className="py-2 px-2 text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs">{c.slug}</td>
+                        <td className="py-2 px-2 text-fintage-charcoal dark:text-fintage-offwhite">{c.name}</td>
                         <td className="py-2 px-2">
-                          <button onClick={()=>togglePublish(c)} className={`px-3 py-1 rounded-full border text-xs ${c.is_active !== false ? 'bg-sageTint/15 border-sageTint/30 text-inkSoft' : 'bg-mistGray/20 border-mistGray/30 text-inkSoft/60'}`}>
+                          <button onClick={()=>togglePublish(c)} className={`px-3 py-1 rounded-sm border text-xs font-mono uppercase tracking-[0.1em] transition-fintage ${c.is_active !== false ? 'bg-accent/15 dark:bg-accent/20 border-accent/30 dark:border-accent/30 text-fintage-charcoal dark:text-fintage-offwhite' : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/20 border-fintage-graphite/30 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'}`}>
                             {c.is_active !== false ? 'Опубликована' : 'Черновик'}
                           </button>
                         </td>
@@ -217,7 +217,7 @@ export default function BackofficeCategoriesPage(){
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => startEdit(c)}
-                              className="p-1.5 hover:bg-sageTint/20 rounded transition-colors text-sageTint"
+                              className="p-1.5 hover:bg-accent/10 dark:hover:bg-accent/10 rounded-sm transition-fintage text-accent dark:text-accent"
                               title="Редактировать"
                             >
                               <Edit2 className="h-4 w-4" />
@@ -225,7 +225,7 @@ export default function BackofficeCategoriesPage(){
                             <button
                               onClick={() => handleDelete(c)}
                               disabled={deletingId === c.id}
-                              className="p-1.5 hover:bg-red-50 rounded transition-colors text-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="p-1.5 hover:bg-fintage-punch/10 dark:hover:bg-fintage-punch/10 rounded-sm transition-fintage text-fintage-punch dark:text-fintage-punch disabled:opacity-50 disabled:cursor-not-allowed"
                               title="Удалить"
                             >
                               <Trash2 className="h-4 w-4" />

@@ -120,10 +120,10 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sageTint dark:border-primary mx-auto mb-4"></div>
-          <p className="text-inkSoft/60 dark:text-muted-foreground">Загрузка...</p>
+          <div className="animate-spin rounded-sm h-12 w-12 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent mx-auto mb-4"></div>
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">Загрузка...</p>
         </div>
       </div>
     )
@@ -131,11 +131,11 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal">
         <div className="text-center">
-          <h1 className="text-2xl font-light text-inkSoft dark:text-foreground mb-4">Товар не найден</h1>
+          <h1 className="text-2xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-4 uppercase tracking-tighter">Товар не найден</h1>
           <Link href="/catalog">
-            <Button>Вернуться в каталог</Button>
+            <Button variant="primary" className="font-mono tracking-[0.15em] text-xs uppercase">Вернуться в каталог</Button>
           </Link>
         </div>
       </div>
@@ -198,34 +198,34 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-background">
+    <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas">
       {product && <ProductStructuredData product={product} variant={selectedVariant} />}
-      <div className="container mx-auto px-6 md:px-10 lg:px-16 py-8">
-        {/* Back Button */}
+      <div className="container mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-16 lg:py-20">
+        {/* Back Button - технический стиль */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-6"
+          className="mb-8 md:mb-12"
         >
           <Link href="/catalog">
-            <Button variant="ghost" className="flex items-center space-x-2 h-9 px-3 text-sm">
+            <Button variant="ghost" className="flex items-center space-x-2 h-9 px-3 text-sm font-mono tracking-[0.15em] uppercase text-fintage-graphite dark:text-fintage-graphite/70 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite">
               <ArrowLeft className="h-4 w-4" />
               <span>{t('product.backToCatalog')}</span>
             </Button>
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Images */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 mb-16 md:mb-20">
+          {/* Images - технический стиль */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="space-y-4"
+            className="space-y-4 md:space-y-6"
           >
-            <div className="w-full max-w-[420px] md:max-w-[520px] mx-auto space-y-4">
-              <div className="relative aspect-square w-full rounded-2xl overflow-hidden">
+            <div className="w-full max-w-[420px] md:max-w-[520px] mx-auto space-y-4 md:space-y-6">
+              <div className="relative aspect-square w-full rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
                   key={`${product.id}-${selectedColorId}-${selectedImageIndex}`}
                   src={currentImage.startsWith('http') || currentImage.startsWith('/') 
@@ -241,17 +241,17 @@ export default function ProductPage() {
                   }}
                 />
               </div>
-              {/* Миниатюры изображений, если их несколько */}
+              {/* Миниатюры изображений - технический стиль */}
               {currentImages.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-2">
+                <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2">
                   {currentImages.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImageIndex(idx)}
-                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden border-2 transition-fintage ${
                         selectedImageIndex === idx 
-                          ? 'border-sageTint dark:border-primary ring-2 ring-sageTint/30 dark:ring-primary/30' 
-                          : 'border-mistGray/30 dark:border-border hover:border-mistGray/50 dark:hover:border-border/60'
+                          ? 'border-accent dark:border-accent ring-2 ring-accent/30 dark:ring-accent/30 shadow-fintage-sm' 
+                          : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
                       }`}
                     >
                       <img
@@ -270,40 +270,45 @@ export default function ProductPage() {
             </div>
           </motion.div>
 
-          {/* Product Info */}
+          {/* Product Info - технический стиль */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-5"
+            className="space-y-6 md:space-y-8"
           >
             <div>
-              <h1 className="font-serif text-2xl font-light text-inkSoft dark:text-foreground mb-3.5">
+              <h1 className="text-title-1 md:text-[2rem] lg:text-[2.5rem] font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] tracking-tighter uppercase mb-4">
                 {product.name}
               </h1>
-              <p className="text-xl font-light text-inkSoft dark:text-foreground mb-4">
+              <p className="text-xl md:text-2xl font-bold text-fintage-charcoal dark:text-fintage-offwhite mb-6">
                 {formatPriceWithLocale(price, locale)}
               </p>
-              <p className="text-inkSoft/70 dark:text-muted-foreground leading-relaxed text-sm break-words max-w-[65ch]">
+              {/* Разделительная линия */}
+              <div className="h-px bg-gradient-to-r from-transparent via-fintage-graphite/20 to-transparent dark:via-fintage-graphite/30 mb-6" aria-hidden="true" />
+              <p className="text-fintage-charcoal/80 dark:text-fintage-offwhite/80 leading-relaxed text-sm md:text-base break-words max-w-[65ch] font-light">
                 {product.description}
               </p>
             </div>
 
-            {/* Colors */}
+            {/* Colors - технический стиль */}
             {availableColors.length > 0 && (
               <div>
-                <h3 className="font-light text-inkSoft/80 dark:text-muted-foreground mb-2.5 text-sm">{t('product.colors') || 'Цвет'}</h3>
-                <div className="flex flex-wrap gap-2.5">
+                <div className="mb-3">
+                  <h3 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-2">{t('product.colors') || 'ЦВЕТ'}</h3>
+                  <div className="h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30 w-16" aria-hidden="true" />
+                </div>
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {availableColors.map((colorData) => {
                     const isSelected = String(colorData.id) === String(selectedColorId)
                     return (
                       <button
                         key={colorData.id}
                         onClick={() => handleColorChange(String(colorData.id))}
-                        className={`w-8 h-8 rounded-full border-2 transition-all relative ${
+                        className={`w-10 h-10 md:w-12 md:h-12 rounded-sm border-2 transition-fintage relative ${
                           isSelected 
-                            ? 'border-inkSoft dark:border-foreground scale-105 ring-2 ring-sageTint dark:ring-primary' 
-                            : 'border-mistGray/40 dark:border-border hover:border-mistGray/60 dark:hover:border-border/60'
+                            ? 'border-accent dark:border-accent scale-105 ring-2 ring-accent/30 dark:ring-accent/30 shadow-fintage-md' 
+                            : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
                         }`}
                         style={{ backgroundColor: colorData.hex || colorData.hex_code || '#cccccc' }}
                         title={`${colorData.name}${isSelected ? ' (выбран)' : ''}`}
@@ -311,7 +316,7 @@ export default function ProductPage() {
                       >
                         {isSelected && (
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                            <svg className="w-4 h-4 md:w-5 md:h-5 text-white drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
@@ -321,15 +326,16 @@ export default function ProductPage() {
                   })}
                 </div>
                 {selectedColor && (
-                  <p className="text-xs text-inkSoft/60 dark:text-muted-foreground mt-2">{selectedColor.name}</p>
+                  <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] mt-3">{selectedColor.name}</p>
                 )}
               </div>
             )}
 
-            {/* Actions */}
-            <div className="flex space-x-3">
+            {/* Actions - технический стиль */}
+            <div className="flex space-x-3 md:space-x-4 pt-4 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
               <Button 
-                className="flex-1 flex items-center justify-center space-x-2 h-10 text-sm"
+                variant="primary"
+                className="flex-1 flex items-center justify-center space-x-2 h-12 text-sm font-mono tracking-[0.15em] uppercase"
                 onClick={handleAddToCart}
               >
                 <ShoppingBag className="h-4 w-4" />
@@ -338,27 +344,37 @@ export default function ProductPage() {
               <Button
                 variant="outline"
                 onClick={handleToggleFavorite}
-                className={`px-3 h-10 text-sm ${favorite ? 'text-red-500 dark:text-red-400' : 'text-inkSoft/70 dark:text-muted-foreground'}`}
+                className={`px-4 h-12 text-sm rounded-sm border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:bg-hover-bg dark:hover:bg-hover-bg ${
+                  favorite 
+                    ? 'text-fintage-punch dark:text-fintage-punch border-fintage-punch/30 dark:border-fintage-punch/30' 
+                    : 'text-fintage-charcoal dark:text-fintage-offwhite'
+                }`}
               >
                 <Heart className="h-4 w-4" fill={favorite ? 'currentColor' : 'none'} />
               </Button>
             </div>
 
-            {/* Product Details */}
+            {/* Product Details - технический стиль */}
             {(product.materials || product.care) && (
-              <div className="border-t border-mistGray/30 dark:border-border pt-4 space-y-3.5">
+              <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 pt-6 md:pt-8 space-y-6 md:space-y-8">
                 {product.materials && (
                   <div>
-                    <h4 className="font-light text-inkSoft/80 dark:text-muted-foreground mb-1.5 text-sm">{t('product.materials') || 'Материалы'}</h4>
-                    <p className="text-sm text-inkSoft/70 dark:text-muted-foreground whitespace-pre-line">
+                    <div className="mb-3">
+                      <h4 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-2">{t('product.materials') || 'МАТЕРИАЛЫ'}</h4>
+                      <div className="h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30 w-16" aria-hidden="true" />
+                    </div>
+                    <p className="text-sm md:text-base text-fintage-charcoal/80 dark:text-fintage-offwhite/80 leading-relaxed whitespace-pre-line font-light">
                       {product.materials}
                     </p>
                   </div>
                 )}
                 {product.care && (
                   <div>
-                    <h4 className="font-light text-inkSoft/80 dark:text-muted-foreground mb-1.5 text-sm">{t('product.care') || 'Уход'}</h4>
-                    <p className="text-sm text-inkSoft/70 dark:text-muted-foreground whitespace-pre-line">
+                    <div className="mb-3">
+                      <h4 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-2">{t('product.care') || 'УХОД'}</h4>
+                      <div className="h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30 w-16" aria-hidden="true" />
+                    </div>
+                    <p className="text-sm md:text-base text-fintage-charcoal/80 dark:text-fintage-offwhite/80 leading-relaxed whitespace-pre-line font-light">
                       {product.care}
                     </p>
                   </div>
@@ -368,16 +384,21 @@ export default function ProductPage() {
           </motion.div>
         </div>
 
-        {/* Related Products */}
+        {/* Related Products - технический стиль */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
+          className="pt-12 md:pt-16 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30"
         >
-          <h2 className="font-serif text-xl font-light text-inkSoft dark:text-foreground mb-6 text-center">
-            {t('product.youMightLike')}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mb-8 md:mb-12 text-center">
+            <h2 className="text-title-1 md:text-[1.75rem] font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] tracking-tighter uppercase mb-4">
+              {t('product.youMightLike')}
+            </h2>
+            {/* Разделительная линия */}
+            <div className="h-px bg-gradient-to-r from-transparent via-fintage-graphite/20 to-transparent dark:via-fintage-graphite/30 w-32 mx-auto" aria-hidden="true" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {relatedProducts.map((relatedProduct) => {
               const firstVariant = (relatedProduct.variants || [])[0]
               const relatedPrice = firstVariant ? firstVariant.priceCents / 100 : 0

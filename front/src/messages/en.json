@@ -19,7 +19,9 @@
     "favorites": "Favorites",
     "menu": "Menu",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "navigation": "NAVIGATION",
+    "actions": "ACTIONS"
   },
   "footer": {
     "description": "Discover our collection of handcrafted bags inspired by nature.",
@@ -67,7 +69,7 @@
     },
     "about": {
       "title": "Brand",
-      "description": "made quietly.",
+      "description": "made locally",
       "readMore": "About the brand",
       "alt": {
         "process": "Handcrafted process",
@@ -77,7 +79,7 @@
     },
     "brand": {
       "title": "Brand",
-      "description": "made quietly.",
+      "description": "made locally",
       "readMore": "About the brand",
       "alt": {
         "process": "Handcrafted process",

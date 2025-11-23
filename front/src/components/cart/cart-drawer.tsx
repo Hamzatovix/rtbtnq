@@ -217,7 +217,7 @@ export function CartDrawer() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             style={isDesktop ? {} : { top: `${headerHeight}px` }}
-            className={`fixed inset-0 z-[48] bg-black/20 dark:bg-black/30 backdrop-blur-sm ${isDesktop ? '' : 'md:hidden'}`}
+            className={`fixed inset-0 z-[48] bg-black/60 dark:bg-black/80 backdrop-blur-sm dark:backdrop-blur-md ${isDesktop ? '' : 'md:hidden'}`}
             onClick={toggleCart}
             aria-hidden="true"
           />
@@ -266,7 +266,7 @@ export function CartDrawer() {
                 : { y: '-100%', opacity: 0 }
             }
             transition={isDragging ? { duration: 0 } : motionConfig}
-            className={`fixed z-[49] bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 border-mistGray/30 dark:border-border shadow-breathing dark:shadow-breathing will-change-[transform,opacity] flex flex-col ${
+            className={`fixed z-[49] bg-fintage-offwhite dark:bg-fintage-charcoal border border-fintage-graphite/20 dark:border-fintage-steel/30 shadow-fintage-md will-change-[transform,opacity] flex flex-col ${
               isDesktop
                 ? 'right-0 w-full max-w-md border-l'
                 : 'left-0 right-0 w-full max-h-[calc(100vh-96px)] border-b'
@@ -276,22 +276,22 @@ export function CartDrawer() {
             aria-label={t('cart.title')}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Swipe indicator - только на мобильных */}
+            {/* Swipe indicator - только на мобильных, технический стиль */}
             {!isDesktop && (
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-px bg-fintage-graphite/30 dark:bg-fintage-graphite/40" aria-hidden="true" />
             )}
 
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b border-mistGray/20 dark:border-border/50">
-              <h2 className="text-xl font-light text-inkSoft dark:text-foreground">
-                {t('cart.title')} ({totalItems})
+            {/* Header - технический стиль */}
+            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+              <h2 className="text-lg md:text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">
+                {t('cart.title')} <span className="font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50">({totalItems})</span>
               </h2>
               <button
                 onClick={toggleCart}
-                className="p-2 hover:bg-mistGray/10 dark:hover:bg-muted/30 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="p-2 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border"
                 aria-label={t('common.close')}
               >
-                <X className="w-5 h-5 text-inkSoft dark:text-foreground" />
+                <X className="w-5 h-5 text-fintage-charcoal dark:text-fintage-offwhite" />
               </button>
             </div>
 
@@ -299,9 +299,9 @@ export function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-4 md:px-6 lg:px-8">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                  <ShoppingBag className="w-16 h-16 text-mistGray dark:text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-light text-inkSoft dark:text-foreground mb-2">{t('cart.empty')}</h3>
-                  <p className="text-sm text-muted-foreground mb-6">{t('favorites.empty') || ''}</p>
+                  <ShoppingBag className="w-16 h-16 text-fintage-graphite dark:text-fintage-graphite/60 mb-4" />
+                  <h3 className="text-lg font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2 uppercase tracking-tighter">{t('cart.empty')}</h3>
+                  <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 mb-6 uppercase tracking-[0.2em]">{t('favorites.empty') || ''}</p>
                   <Button onClick={toggleCart} asChild>
                     <Link href="/catalog">{t('favorites.continueShopping')}</Link>
                   </Button>
@@ -329,11 +329,11 @@ export function CartDrawer() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="flex items-center space-x-4 p-4 bg-mistGray/5 dark:bg-muted/10 rounded-xl border border-mistGray/20 dark:border-border"
+                        className="flex items-center space-x-4 p-4 bg-fintage-graphite/10 dark:bg-fintage-graphite/20 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30"
                       >
                       {/* Product Image */}
                       {asset ? (
-                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-mistGray/20 dark:border-border relative">
+                        <div className="w-16 h-16 rounded-sm overflow-hidden flex-shrink-0 border border-fintage-graphite/20 dark:border-fintage-graphite/30 relative">
                           <OptimizedImage
                             src={asset.src}
                             fallbackSrc={asset.fallback}
@@ -346,18 +346,18 @@ export function CartDrawer() {
                           />
                         </div>
                       ) : (
-                        <div className="w-16 h-16 bg-mistGray/20 dark:bg-muted/20 rounded-lg flex-shrink-0 flex items-center justify-center">
-                          <ShoppingBag className="w-6 h-6 text-muted-foreground" />
+                        <div className="w-16 h-16 bg-fintage-graphite/20 dark:bg-fintage-graphite/30 rounded-sm flex-shrink-0 flex items-center justify-center border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+                          <ShoppingBag className="w-6 h-6 text-fintage-graphite dark:text-fintage-graphite/60" />
                         </div>
                       )}
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-light text-inkSoft dark:text-foreground truncate">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite truncate text-sm uppercase tracking-tighter">{item.title}</h3>
+                        <p className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mt-1">
                           {item.selectedColor || (locale === 'ru' ? 'цвет не выбран' : 'Color not selected')}
                         </p>
-                        <p className="text-sm font-light text-inkSoft dark:text-foreground">
+                        <p className="text-sm font-bold text-fintage-charcoal dark:text-fintage-offwhite mt-1">
                           {formatPriceWithLocale(item.price, locale)}
                         </p>
                       </div>
@@ -366,25 +366,25 @@ export function CartDrawer() {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleQuantityChange(item.id, item.selectedColor, item.quantity - 1)}
-                          className="p-1 hover:bg-mistGray/20 dark:hover:bg-muted/30 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-ring focus-visible:ring-offset-2"
+                          className="p-1 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border"
                           aria-label={locale === 'ru' ? 'уменьшить количество' : 'Decrease quantity'}
                         >
-                          <Minus className="w-4 h-4 text-inkSoft dark:text-foreground" />
+                          <Minus className="w-4 h-4 text-fintage-charcoal dark:text-fintage-offwhite" />
                         </button>
-                        <span className="w-8 text-center font-light text-inkSoft dark:text-foreground">{item.quantity}</span>
+                        <span className="w-8 text-center font-mono font-bold text-fintage-charcoal dark:text-fintage-offwhite tracking-tight">{item.quantity}</span>
                         <button
                           onClick={() => handleQuantityChange(item.id, item.selectedColor, item.quantity + 1)}
-                          className="p-1 hover:bg-mistGray/20 dark:hover:bg-muted/30 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-ring focus-visible:ring-offset-2"
+                          className="p-1 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border"
                           aria-label={locale === 'ru' ? 'увеличить количество' : 'Increase quantity'}
                         >
-                          <Plus className="w-4 h-4 text-inkSoft dark:text-foreground" />
+                          <Plus className="w-4 h-4 text-fintage-charcoal dark:text-fintage-offwhite" />
                         </button>
                       </div>
 
                       {/* Remove Button */}
                       <button
                         onClick={() => removeItem(item.id, item.selectedColor)}
-                        className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition-colors text-red-500 dark:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                        className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-sm transition-colors duration-200 ease-vintage text-red-500 dark:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 border-2 border-transparent hover:border-red-500"
                         aria-label={locale === 'ru' ? 'удалить товар' : 'Remove item'}
                       >
                         <X className="w-4 h-4" />
@@ -396,12 +396,12 @@ export function CartDrawer() {
               )}
             </div>
 
-            {/* Footer */}
+            {/* Footer - технический стиль */}
             {items.length > 0 && (
-              <div className="border-t border-mistGray/20 dark:border-border/50 px-4 md:px-6 lg:px-8 py-6 space-y-4">
+              <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 px-4 md:px-6 lg:px-8 py-6 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-light text-inkSoft dark:text-foreground">{t('cart.total')}</span>
-                  <span className="text-xl font-light text-inkSoft dark:text-foreground">
+                  <span className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.2em]">{t('cart.total')}</span>
+                  <span className="text-lg font-bold text-fintage-charcoal dark:text-fintage-offwhite">
                     {formatPriceWithLocale(totalPrice, locale)}
                   </span>
                 </div>

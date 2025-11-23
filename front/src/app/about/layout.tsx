@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: `${baseUrl}/about`,
     images: [
       {
-        url: '/images/about-m.jpg.png',
+        url: '/images/about-m.png',
         width: 1200,
         height: 630,
         alt: 'О нас - Rosebotanique',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'О нас - Rosebotanique',
     description: 'Узнайте историю создания Rosebotanique',
-    images: ['/images/about-m.jpg.png'],
+    images: ['/images/about-m.png'],
   },
   alternates: {
     canonical: `${baseUrl}/about`,

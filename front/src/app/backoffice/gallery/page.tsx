@@ -220,7 +220,7 @@ export default function BackofficeGalleryPage() {
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             className="w-12 h-12 border-3 border-sageTint/30 border-t-sageTint dark:border-primary/30 dark:border-t-primary rounded-full mx-auto mb-4"
           />
-          <p className="text-inkSoft/60 dark:text-muted-foreground">Загрузка галереи...</p>
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.15em]">Загрузка галереи...</p>
         </div>
       </div>
     )
@@ -229,26 +229,26 @@ export default function BackofficeGalleryPage() {
   return (
     <div className="space-y-6">
       {/* Заголовок */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-mistGray/20 dark:border-border/50">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sageTint/10 to-roseBeige/20 dark:from-primary/10 dark:to-primary/5 border border-mistGray/20 dark:border-border/50 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-sageTint dark:text-primary" />
+            <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-accent/10 to-accent/5 dark:from-accent/10 dark:to-accent/5 border border-fintage-graphite/20 dark:border-fintage-graphite/30 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-accent dark:text-accent" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-display font-light text-inkSoft dark:text-foreground">
+            <h1 className="text-2xl md:text-3xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">
               Галерея
             </h1>
           </div>
-          <p className="text-sm text-inkSoft/60 dark:text-muted-foreground ml-13">
+          <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] ml-13">
             Управление изображениями галереи
           </p>
         </div>
         {images.length > 0 && (
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-mistGray/10 dark:bg-muted/20 border border-mistGray/20 dark:border-border/50">
-            <span className="text-sm font-medium text-inkSoft dark:text-foreground">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            <span className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.1em]">
               {images.length}
             </span>
-            <span className="text-xs text-inkSoft/50 dark:text-muted-foreground">
+            <span className="text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
               {images.length === 1 ? 'изображение' : images.length < 5 ? 'изображения' : 'изображений'}
             </span>
           </div>
@@ -262,7 +262,7 @@ export default function BackofficeGalleryPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400"
+            className="p-4 rounded-sm bg-fintage-punch/10 dark:bg-fintage-punch/20 border border-fintage-punch/30 dark:border-fintage-punch/40 text-fintage-punch dark:text-fintage-punch font-mono text-xs uppercase tracking-[0.1em]"
           >
             {error}
           </motion.div>
@@ -273,7 +273,7 @@ export default function BackofficeGalleryPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-6 rounded-2xl border-2 border-dashed border-mistGray/30 dark:border-border/50 bg-gradient-to-br from-white to-roseBeige/5 dark:from-card dark:to-muted/5 hover:border-sageTint/50 dark:hover:border-primary/50 transition-all duration-300"
+        className="p-6 rounded-sm border-2 border-dashed border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:border-accent/50 dark:hover:border-accent/50 transition-fintage"
       >
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <input
@@ -288,7 +288,7 @@ export default function BackofficeGalleryPage() {
             htmlFor="gallery-upload"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className={`inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-medium text-inkSoft dark:text-foreground bg-white dark:bg-card border-2 border-mistGray/30 dark:border-border hover:border-sageTint dark:hover:border-primary hover:bg-sageTint/5 dark:hover:bg-primary/5 cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md ${
+            className={`inline-flex items-center justify-center px-6 py-3 rounded-sm text-sm font-mono uppercase tracking-[0.15em] text-fintage-charcoal dark:text-fintage-offwhite bg-fintage-offwhite dark:bg-fintage-charcoal border-2 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-accent dark:hover:border-accent hover:bg-hover-bg dark:hover:bg-hover-bg cursor-pointer transition-fintage shadow-fintage-sm hover:shadow-fintage-md ${
               uploading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -304,7 +304,7 @@ export default function BackofficeGalleryPage() {
               </>
             )}
           </motion.label>
-          <p className="text-xs text-inkSoft/50 dark:text-muted-foreground/70">
+          <p className="text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
             Поддерживаются форматы: JPG, PNG, WebP. Максимум 5MB
           </p>
         </div>
@@ -315,15 +315,15 @@ export default function BackofficeGalleryPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="p-16 rounded-2xl border-2 border-dashed border-mistGray/30 dark:border-border/50 bg-gradient-to-br from-white to-roseBeige/5 dark:from-card dark:to-muted/5 text-center"
+          className="p-16 rounded-sm border-2 border-dashed border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 text-center"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-mistGray/10 dark:bg-muted/20 mb-6">
-            <ImageIcon className="h-10 w-10 text-inkSoft/30 dark:text-muted-foreground/30" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 mb-6">
+            <ImageIcon className="h-10 w-10 text-fintage-graphite/30 dark:text-fintage-graphite/30" />
           </div>
-          <p className="text-inkSoft/60 dark:text-muted-foreground text-lg mb-2 font-display">
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 text-lg mb-2 font-display-vintage font-black uppercase tracking-tighter">
             Галерея пуста
           </p>
-          <p className="text-sm text-inkSoft/50 dark:text-muted-foreground/70">
+          <p className="text-sm font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
             Добавьте первое изображение, чтобы начать
           </p>
         </motion.div>
@@ -342,12 +342,12 @@ export default function BackofficeGalleryPage() {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`group relative p-5 rounded-2xl border-2 transition-all duration-300 bg-white dark:bg-card hover:shadow-xl ${
+                className={`group relative p-5 rounded-sm border-2 transition-fintage bg-fintage-offwhite dark:bg-fintage-charcoal hover:shadow-fintage-md ${
                   draggedIndex === index
-                    ? 'opacity-50 scale-95 border-sageTint dark:border-primary shadow-lg'
+                    ? 'opacity-50 scale-95 border-accent dark:border-accent shadow-fintage-md'
                     : dragOverIndex === index
-                    ? 'border-sageTint dark:border-primary scale-105 shadow-xl ring-2 ring-sageTint/20 dark:ring-primary/20'
-                    : 'border-mistGray/30 dark:border-border hover:border-mistGray/50 dark:hover:border-border'
+                    ? 'border-accent dark:border-accent scale-105 shadow-fintage-md ring-2 ring-accent/20 dark:ring-accent/20'
+                    : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/50'
                 }`}
               >
                 {/* Drag handle */}
@@ -362,7 +362,7 @@ export default function BackofficeGalleryPage() {
                 </motion.div>
 
                 {/* Изображение */}
-                <div className="relative aspect-[4/3] mb-4 rounded-xl overflow-hidden bg-mistGray/10 dark:bg-muted/10 group-hover:ring-2 ring-sageTint/20 dark:ring-primary/20 transition-all">
+                <div className="relative aspect-[4/3] mb-4 rounded-sm overflow-hidden bg-fintage-graphite/10 dark:bg-fintage-graphite/10 group-hover:ring-2 ring-accent/20 dark:ring-accent/20 transition-fintage">
                   <Image
                     src={img.src}
                     alt={img.alt}
@@ -381,7 +381,7 @@ export default function BackofficeGalleryPage() {
 
                 {/* Alt текст */}
                 <div className="space-y-2">
-                  <Label htmlFor={`alt-${img.id}`} className="text-xs text-inkSoft/60 dark:text-muted-foreground font-medium">
+                  <Label htmlFor={`alt-${img.id}`} className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
                     Alt текст
                   </Label>
                   <Input
@@ -395,7 +395,7 @@ export default function BackofficeGalleryPage() {
                     }}
                     onBlur={(e) => handleAltUpdate(img.id, e.target.value)}
                     placeholder="Описание изображения"
-                    className="text-sm border-mistGray/30 dark:border-border focus:border-sageTint dark:focus:border-primary"
+                    className="text-sm border-fintage-graphite/30 dark:border-fintage-graphite/40 focus:border-accent dark:focus:border-accent"
                   />
                 </div>
 
@@ -410,7 +410,7 @@ export default function BackofficeGalleryPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDelete(img.id)}
-                    className="bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800"
+                    className="bg-fintage-punch/10 dark:bg-fintage-punch/20 hover:bg-fintage-punch/15 dark:hover:bg-fintage-punch/25 text-fintage-punch dark:text-fintage-punch rounded-sm border border-fintage-punch/30 dark:border-fintage-punch/40"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -418,7 +418,7 @@ export default function BackofficeGalleryPage() {
 
                 {/* Индикатор порядка */}
                 <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-sm text-white text-xs font-medium border border-white/20 shadow-lg">
+                  <div className="px-2.5 py-1 rounded-sm bg-fintage-charcoal/70 dark:bg-fintage-charcoal/70 backdrop-blur-sm text-fintage-offwhite dark:text-fintage-offwhite text-xs font-mono uppercase tracking-[0.15em] border border-fintage-offwhite/20 dark:border-fintage-offwhite/20 shadow-fintage-sm">
                     #{index + 1}
                   </div>
                 </div>
@@ -433,9 +433,9 @@ export default function BackofficeGalleryPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="p-4 rounded-xl bg-gradient-to-r from-sageTint/5 to-roseBeige/5 dark:from-primary/5 dark:to-primary/5 border border-mistGray/20 dark:border-border/50"
+          className="p-4 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border border-fintage-graphite/20 dark:border-fintage-graphite/30"
         >
-          <p className="text-xs text-inkSoft/60 dark:text-muted-foreground text-center flex items-center justify-center gap-2">
+          <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 text-center flex items-center justify-center gap-2 uppercase tracking-[0.15em]">
             <GripVertical className="w-4 h-4" />
             Перетащите изображения для изменения порядка отображения
           </p>
