@@ -15,9 +15,9 @@ const fade = {
 
 // Галерея изображений
 const galleryImages = [
-  { src: '/images/about-one.png', alt: 'Процесс создания' },
-  { src: '/images/about-two.png', alt: 'Текстура материалов' },
-  { src: '/images/about-three.png', alt: 'Ручная отстрочка' },
+  { src: '/images/about_c1.jpg', alt: 'Процесс создания' },
+  { src: '/images/about_c2.jpg', alt: 'Детали' },
+  { src: '/images/about_c3.jpg', alt: 'Ручная работа' },
   { src: '/images/about-m.png', alt: 'Мастерская' },
 ]
 
@@ -304,7 +304,7 @@ export default function BrandPage() {
                       className="object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
-                        target.src = '/placeholder/about_main_placeholder.webp'
+                        target.src = '/placeholder/about_main_placeholder.jpg'
                       }}
                     />
                     {/* Технический номер изображения */}
@@ -381,7 +381,7 @@ export default function BrandPage() {
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.webp'
+                      target.src = '/placeholder/about_main_placeholder.jpg'
                     }}
                   />
                   {/* Технический номер изображения */}

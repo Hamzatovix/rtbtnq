@@ -14,10 +14,16 @@ export function About() {
   const t = useTranslations()
   const locale = useClientLocale()
   
-  // Массив изображений для ротации (c1, c3)
+  // Массив изображений для ротации (c1, c2, c3, c4, c5)
+  // ВАЖНО: Файлы должны быть конвертированы из HEIC в JPG/PNG/WebP
+  // Добавляем версию для обхода кеша браузера
+  const imageVersion = 'v2'
   const rotatingImages = [
-    '/images/about_c1.jpg',
-    '/images/about_c3.jpg',
+    `/images/about_c1.jpg?v=${imageVersion}`,
+    `/images/about_c2.jpg?v=${imageVersion}`,
+    `/images/about_c3.jpg?v=${imageVersion}`,
+    `/images/about_c4.jpg?v=${imageVersion}`,
+    `/images/about_c5.jpg?v=${imageVersion}`,
   ]
   
   // Состояние для текущего индекса ротирующегося изображения
@@ -34,7 +40,7 @@ export function About() {
   
   return (
     <section
-      className="relative py-16 md:py-20 lg:py-24 bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
+      className="relative py-12 md:py-16 lg:py-20 bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
       aria-labelledby="about-heading"
     >
       {/* Промежуточные звезды для плавного перехода - только в темной теме */}
@@ -114,7 +120,7 @@ export function About() {
           </div>
 
           {/* Mobile layout: hero + horizontal swipeable strip */}
-          <div className="md:hidden space-y-4">
+          <div className="md:hidden space-y-6">
             {/* Hero image — ротация c1, c2, c3, c4 (более вытянутое для длинных изображений) */}
             <figure className="relative w-full aspect-[3/5] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
               <AnimatePresence mode="wait">
@@ -136,7 +142,7 @@ export function About() {
                     className="object-cover object-center motion-safe:transition-fintage group-hover:scale-[1.01]"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.webp'
+                      target.src = '/placeholder/about_main_placeholder.jpg'
                     }}
                   />
                 </motion.div>
@@ -178,11 +184,11 @@ export function About() {
             </figure>
 
             {/* Horizontal scroll strip — статичные изображения sc и scw */}
-            <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6 md:-mx-8 md:px-8">
+            <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6 md:-mx-8 md:px-8">
               {/* Статичное изображение sc */}
-              <figure className="relative min-w-[75%] aspect-[3/4] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
+              <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src="/images/about_sc.jpg"
+                  src={`/images/about_sc.jpg?v=${imageVersion}`}
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
@@ -205,9 +211,9 @@ export function About() {
               </figure>
 
               {/* Статичное изображение scw */}
-              <figure className="relative min-w-[75%] aspect-[3/4] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
+              <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src="/images/about_scw.png"
+                  src={`/images/about_scw.jpg?v=${imageVersion}`}
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"
@@ -254,7 +260,7 @@ export function About() {
                     className="object-cover object-center motion-safe:transition-fintage group-hover:scale-[1.01]"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.webp'
+                      target.src = '/placeholder/about_main_placeholder.jpg'
                     }}
                   />
                 </motion.div>
@@ -303,10 +309,10 @@ export function About() {
 
             {/* Right part — вертикальная колонка со статичными изображениями sc и scw (Urban style) */}
             <div className="flex flex-col gap-4 md:gap-6 lg:gap-8">
-              {/* Top vertical image — статичное sc (компактнее) */}
-              <figure className="relative aspect-[4/5] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+              {/* Top horizontal image — статичное sc (широкое) */}
+              <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src="/images/about_sc.jpg"
+                  src={`/images/about_sc.jpg?v=${imageVersion}`}
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
@@ -328,10 +334,10 @@ export function About() {
                 </figcaption>
               </figure>
 
-              {/* Bottom vertical image — статичное scw (более вытянутое) */}
-              <figure className="relative aspect-[3/4] lg:aspect-[2/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+              {/* Bottom horizontal image — статичное scw (широкое) */}
+              <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src="/images/about_scw.png"
+                  src={`/images/about_scw.jpg?v=${imageVersion}`}
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"

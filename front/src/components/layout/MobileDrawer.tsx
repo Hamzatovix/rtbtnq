@@ -231,9 +231,9 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-16 h-px rounded-sm bg-fintage-graphite/30 dark:bg-fintage-graphite/60 shadow-fintage-sm" aria-hidden="true" />
 
             {/* Container с контентом */}
-            <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="container mx-auto px-3 md:px-6 lg:px-8">
               {/* Content */}
-              <div className="relative flex flex-col pb-6 pt-4">
+              <div className="relative flex flex-col pb-8 pt-6">
                 {children}
               </div>
             </div>

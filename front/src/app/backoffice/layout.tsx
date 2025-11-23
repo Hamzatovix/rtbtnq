@@ -335,7 +335,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
           <div className="flex h-16 sm:h-20 md:h-24 items-center justify-between gap-3 sm:gap-4">
             <Link href="/backoffice" className="flex items-center space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
-              <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent dark:group-hover:text-accent transition-fintage tracking-tighter uppercase whitespace-nowrap">
+              <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent dark:group-hover:text-accent transition-fintage tracking-[0.2em] uppercase whitespace-nowrap">
                 rosebotanique — backoffice
               </span>
             </Link>

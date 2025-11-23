@@ -14,7 +14,7 @@ export function Hero() {
   
   return (
     <section 
-      className="relative min-h-[90vh] md:min-h-[95vh] flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas pb-20 md:pb-24 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
+      className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-[95vh] flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas pb-20 md:pb-24 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
       aria-labelledby="hero-heading"
     >
       {/* Fintage декоративные линии - тонкие */}
@@ -25,7 +25,7 @@ export function Hero() {
       <div className="relative z-10 container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
         <div className="relative mx-auto max-w-6xl text-center">
           {/* Год - технический стиль */}
-          <div className="flex justify-center mb-12 md:mb-16">
+          <div className="flex justify-center mb-8 md:mb-12">
             <span className="text-[10px] md:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 tracking-[0.3em] uppercase">
               2024
             </span>
@@ -33,7 +33,7 @@ export function Hero() {
 
           <h1 
             id="hero-heading"
-            className="text-display-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] mb-12 md:mb-16 tracking-tighter"
+            className="text-[2rem] sm:text-[2.5rem] md:text-display-1 font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] mb-8 md:mb-12 tracking-[0.2em]"
           >
             ROSEBOTANIQUE
           </h1>

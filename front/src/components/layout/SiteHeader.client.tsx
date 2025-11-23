@@ -36,9 +36,9 @@ export default function SiteHeader() {
           {/* Logo - технический стиль */}
           <Link href="/" className="flex items-center space-x-2 group" aria-label="на главную">
             <span
-              className="font-display-vintage text-lg md:text-xl font-black text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-tighter"
+              className="font-logo text-sm md:text-base font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em]"
             >
-              ROSEBOTANIQUE
+              ROSEBOTANIQUE <span className="text-[0.7em] tracking-[0.15em]">STORE</span>
             </span>
           </Link>
 
@@ -116,7 +116,7 @@ export default function SiteHeader() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center space-x-2 md:space-x-4">
+          <div className="flex items-center space-x-3 md:space-x-4">
             {(() => {
               const favCount = mounted ? favorites.length : 0
               return (

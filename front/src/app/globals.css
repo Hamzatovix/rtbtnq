@@ -5,9 +5,8 @@
 /* Modern No. 20 Font Face */
 @font-face {
   font-family: 'Modern No. 20';
-  src: url('/fonts/Modern-No-20.woff2') format('woff2'),
-       url('/fonts/Modern-No-20.woff') format('woff'),
-       url('/fonts/Modern-No-20.ttf') format('truetype');
+  src: url('/fonts/Modern No. 20.ttf') format('truetype'),
+       url('/fonts/Modern%20No.%2020.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -61,6 +60,7 @@
     /* Примечание: --font-body и --font-cormorant устанавливаются в layout.tsx через next/font */
     --font-display: var(--font-cormorant);
     --font-vintage: var(--font-cormorant);
+    --font-logo: 'Modern No. 20'; /* Шрифт для логотипа */
     
     /* Fintage цвета бренда */
     --fintage-charcoal: 0 0% 6%;     /* #0F0F0F - Charcoal Black */
@@ -1566,5 +1566,10 @@ input:-webkit-autofill {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Chrome, Safari и Opera */
+}
+
+/* Утилитный класс для шрифта логотипа - прямая проверка */
+.font-logo {
+  font-family: 'Modern No. 20', var(--font-logo), serif !important;
 }
 

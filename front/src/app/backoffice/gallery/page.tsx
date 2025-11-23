@@ -372,7 +372,7 @@ export default function BackofficeGalleryPage() {
                     unoptimized={img.src.includes('blob.vercel-storage.com')}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.webp'
+                      target.src = '/placeholder/about_main_placeholder.jpg'
                     }}
                   />
                   {/* Overlay при hover */}

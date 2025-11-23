@@ -102,7 +102,7 @@ export default function ProductPage() {
   // Получаем текущий выбранный вариант
   const selectedVariant = product?.variants?.find(v => String(v.colorId) === String(selectedColorId))
   const currentImages = selectedVariant?.images || []
-  const currentImage = currentImages[selectedImageIndex]?.url || currentImages[0]?.url || '/placeholder/about_main_placeholder.webp'
+  const currentImage = currentImages[selectedImageIndex]?.url || currentImages[0]?.url || '/placeholder/about_main_placeholder.jpg'
   
   // Получаем информацию о выбранном цвете
   const selectedColor = colors.find(c => String(c.id) === String(selectedColorId))
@@ -237,7 +237,7 @@ export default function ProductPage() {
                   className="object-cover transition-opacity duration-300"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_main_placeholder.webp'
+                    target.src = '/placeholder/about_main_placeholder.jpg'
                   }}
                 />
               </div>
@@ -260,7 +260,7 @@ export default function ProductPage() {
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
-                          target.src = '/placeholder/about_main_placeholder.webp'
+                          target.src = '/placeholder/about_main_placeholder.jpg'
                         }}
                       />
                     </button>

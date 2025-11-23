@@ -146,7 +146,7 @@ function LoginForm() {
         >
           <div className="bg-fintage-offwhite dark:bg-fintage-charcoal rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-md p-8 md:p-10">
             <div className="text-center mb-8">
-              <h1 className="text-2xl sm:text-3xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2 tracking-tighter uppercase">
+              <h1 className="text-2xl sm:text-3xl font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite mb-2 tracking-[0.2em] uppercase">
                 rosebotanique
               </h1>
               <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] mt-2">Панель управления</p>

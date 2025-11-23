@@ -93,7 +93,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
 
   // Get image for selected color
   const getImageForColor = (color: ProductColor | null) => {
-    let path = product.thumbnail || '/placeholder/about_main_placeholder.webp'
+    let path = product.thumbnail || '/placeholder/about_main_placeholder.jpg'
 
     if (color && product.colorImages) {
       if (color.id && product.colorImages[color.id]) {
@@ -134,7 +134,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     
     // If no images, add placeholder
     if (images.length === 0) {
-      images.push({ path: '/placeholder/about_main_placeholder.webp', color: null })
+      images.push({ path: '/placeholder/about_main_placeholder.jpg', color: null })
     }
     
     return images
@@ -265,7 +265,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       description: '',
       price: typeof product.price === 'number' ? product.price : Number(product.price ?? 0),
       category: product.category?.name ?? '',
-      image: product.thumbnail ?? '/placeholder/about_main_placeholder.webp',
+      image: product.thumbnail ?? '/placeholder/about_main_placeholder.jpg',
       colors: (product.colors ?? []).map(c => c.name),
     }
 

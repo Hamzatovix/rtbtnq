@@ -87,6 +87,7 @@ const config = {
       fontFamily: {
         display: ['var(--font-display)', 'Cormorant Garamond', 'serif'],
         vintage: ['var(--font-vintage)', 'Cormorant Garamond', 'serif'],
+        logo: ['var(--font-logo)', 'serif'], // Шрифт для логотипа
         body: [
           'var(--font-body)',
           'Inter',

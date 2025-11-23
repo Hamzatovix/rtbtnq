@@ -32,7 +32,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
   return (
     <section 
-      className="py-16 md:py-20 lg:py-24 bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas relative overflow-hidden border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
+      className="py-12 md:py-16 lg:py-20 bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas relative overflow-hidden border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
       aria-labelledby="featured-heading"
     >
       {/* Менее яркие звезды - только в темной теме */}
@@ -87,13 +87,10 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
         </div>
 
         {/* Сетка товаров - асимметричная на больших экранах (Stone Island style) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 mb-12 md:mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-16">
           {hasProducts ? (
-            products.slice(0, 6).map((product, index) => (
-              <div 
-                key={product.id}
-                className={index >= 3 ? 'lg:hidden' : ''}
-              >
+            products.slice(0, 6).map((product) => (
+              <div key={product.id}>
                 <ProductCard product={product} density="compact" />
               </div>
             ))

@@ -145,7 +145,7 @@ export default function OrderDetailPage() {
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
-                          target.src = '/placeholder/about_main_placeholder.webp'
+                          target.src = '/placeholder/about_main_placeholder.jpg'
                         }}
                       />
                     </div>
