@@ -179,7 +179,7 @@ export default function BrandPage() {
       {/* Background image */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <Image
-          src="/images/about_m.png"
+          src="/images/about_m.png?v=v3"
           alt=""
           fill
           priority

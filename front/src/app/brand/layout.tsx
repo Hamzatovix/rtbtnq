@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Бренд - Rosebotanique',
     description: 'Узнайте историю создания Rosebotanique',
-    images: ['/images/about-m.png'],
+    images: ['/images/about_m.png'],
   },
   alternates: {
     canonical: `${baseUrl}/brand`,
