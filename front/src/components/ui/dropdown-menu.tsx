@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { ChevronDown } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface DropdownMenuContextValue {
   open: boolean
@@ -92,8 +93,6 @@ export function DropdownMenuContent({
 }: DropdownMenuContentProps) {
   const { open } = React.useContext(DropdownMenuContext)
 
-  if (!open) return null
-
   const positionClass =
     align === 'end' ? 'right-0' : align === 'center' ? 'left-1/2 -translate-x-1/2' : 'left-0'
   const verticalClass = side === 'top' ? 'bottom-full' : 'top-full'
@@ -101,13 +100,21 @@ export function DropdownMenuContent({
     side === 'top' ? { marginBottom: sideOffset } : { marginTop: sideOffset }
 
   return (
-    <div
-      className={`absolute ${positionClass} ${verticalClass} bg-fintage-offwhite dark:bg-fintage-charcoal border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm shadow-fintage-md py-2 z-[55] ${className}`}
-      style={offsetStyle}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {children}
-    </div>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className={`absolute ${positionClass} ${verticalClass} bg-fintage-offwhite dark:bg-fintage-charcoal border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 z-[55] ${className}`}
+          style={offsetStyle}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 

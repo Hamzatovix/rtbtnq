@@ -8,7 +8,18 @@
     "delete": "Удалить",
     "edit": "Редактировать",
     "close": "Закрыть",
-    "tryAgain": "Попробовать снова"
+    "tryAgain": "Попробовать снова",
+    "settings": "НАСТРОЙКИ",
+    "theme": "ТЕМА",
+    "language": "ЯЗЫК",
+    "goToHome": "на главную",
+    "mainNavigation": "Основная навигация",
+    "openMenu": "открыть меню",
+    "closeMenu": "закрыть меню",
+    "menu": "меню",
+    "closeSettings": "Закрыть настройки",
+    "previousImage": "Предыдущее изображение",
+    "nextImage": "Следующее изображение"
   },
   "header": {
     "home": "Главная",
@@ -45,7 +56,10 @@
     "tagQuality": "качество",
     "tagTraditions": "традиции",
     "tagSimplicity": "простота",
-    "galleryTitle": "галерея"
+    "galleryTitle": "галерея",
+    "valuesLabel": "ЦЕННОСТИ",
+    "galleryLabel": "ГАЛЕРЕЯ",
+    "madeIn": "сделано в daymohk"
   },
   "aboutPage": {
     "heroAlt": "атэлье — тихая ручная работа и натуральные материалы",
@@ -65,7 +79,8 @@
       "description": "каждое изделие сделано вручную с вниманием к деталям",
       "cta": "коллекция",
       "tagline": "мы делаем вещи",
-      "badges": "натуральные ткани · ручная отстрочка · малые партии"
+      "badges": "натуральные ткани · ручная отстрочка · малые партии",
+      "collectionLabel": "КОЛЛЕКЦИЯ"
     },
     "about": {
       "title": "бренд",
@@ -81,6 +96,8 @@
       "title": "бренд",
       "description": "сделано здесь",
       "readMore": "о бренде",
+      "learnMore": "ПОДРОБНЕЕ",
+      "subtitleLabel": "О БРЕНДЕ",
       "alt": {
         "process": "ручная работа",
         "texture": "текстура льна",
@@ -89,7 +106,11 @@
     },
     "featuredProducts": {
       "title": "коллекция",
-      "lead": ""
+      "lead": "",
+      "mainCollection": "ОСНОВНАЯ КОЛЛЕКЦИЯ",
+      "collectionLabel": "КОЛЛЕКЦИЯ",
+      "piecesCount": "{count} ИЗДЕЛИЙ",
+      "empty": "Скоро добавим новые изделия."
     }
   },
   "catalog": {

@@ -23,7 +23,7 @@ export default function AboutPage() {
         className="relative h-[58vh] min-h-[320px] w-full overflow-hidden"
       >
         <Image
-          src="/images/about-m.png"
+          src="/images/about_c1.jpg"
           alt={t('aboutPage.heroAlt') || 'atelier'}
           fill
           priority={false}

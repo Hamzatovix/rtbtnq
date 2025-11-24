@@ -6,7 +6,11 @@ export const dynamic = 'force-dynamic'
 const JWT_SECRET = (() => {
   const secret = process.env.JWT_SECRET
   if (!secret) {
-    if (process.env.NODE_ENV === 'production') {
+    // При билде Next.js устанавливает NODE_ENV=production, но это не значит, что мы в production
+    // Проверяем только при реальном запуске в production (через VERCEL_ENV или явную проверку)
+    const isRealProduction = process.env.VERCEL_ENV === 'production' || 
+                             (process.env.NODE_ENV === 'production' && process.env.VERCEL === '1')
+    if (isRealProduction) {
       throw new Error('JWT_SECRET environment variable must be set in production')
     }
     return 'dev-secret-key'

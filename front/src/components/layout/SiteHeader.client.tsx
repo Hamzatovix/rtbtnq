@@ -30,22 +30,25 @@ export default function SiteHeader() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/95 dark:bg-fintage-charcoal/95 backdrop-blur-sm supports-[backdrop-filter]:bg-fintage-offwhite/90 dark:supports-[backdrop-filter]:bg-fintage-charcoal/90 shadow-fintage-sm">
-      <div className="container mx-auto px-6 md:px-8 lg:px-12">
+    <header className="sticky top-0 z-50 w-full border-b-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/95 dark:bg-fintage-charcoal/95 backdrop-blur-sm supports-[backdrop-filter]:bg-fintage-offwhite/90 dark:supports-[backdrop-filter]:bg-fintage-charcoal/90 shadow-fintage-sm">
+      <div className="container mx-auto px-6 md:px-12 lg:px-12">
         <div className="flex h-16 md:h-20 items-center justify-between">
-          {/* Logo - технический стиль */}
-          <Link href="/" className="flex items-center space-x-2 group" aria-label="на главную">
-            <span
-              className="font-logo text-sm md:text-base lg:text-lg font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em]"
-            >
-              ROSEBOTANIQUE <span className="text-[0.7em] tracking-[0.15em]">STORE</span>
-            </span>
-          </Link>
+          {/* Левая группа: Logo */}
+          <div className="flex items-center">
+            {/* Logo - технический стиль */}
+            <Link href="/" className="flex items-center space-x-2 group" aria-label={t('common.goToHome')}>
+              <span
+                className="font-logo text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] whitespace-nowrap"
+              >
+                ROSEBOTANIQUE <span className="hidden lg:inline text-[0.7em] tracking-[0.2em]">STORE</span>
+              </span>
+            </Link>
+          </div>
 
-          {/* Navigation - технический стиль */}
+          {/* Центр: Navigation - технический стиль */}
           <nav 
-            className="hidden md:flex items-center space-x-10 lg:space-x-12"
-            aria-label="Основная навигация"
+            className="hidden md:flex items-center justify-center flex-1 space-x-8 lg:space-x-12"
+            aria-label={t('common.mainNavigation')}
           >
             {(() => {
               // Нормализуем pathname для сравнения (убираем локализацию)
@@ -58,7 +61,7 @@ export default function SiteHeader() {
                 <>
                   <Link
                     href="/catalog"
-                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase relative group"
+                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs lg:text-sm tracking-[0.2em] uppercase relative group"
                     suppressHydrationWarning
                     aria-current={isCatalogActive ? 'page' : undefined}
                   >
@@ -76,7 +79,7 @@ export default function SiteHeader() {
                   </Link>
                   <Link
                     href="/brand"
-                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase relative group"
+                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs lg:text-sm tracking-[0.2em] uppercase relative group"
                     suppressHydrationWarning
                     aria-current={isBrandActive ? 'page' : undefined}
                   >
@@ -94,7 +97,7 @@ export default function SiteHeader() {
                   </Link>
                   <Link
                     href="/gallery"
-                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase relative group"
+                    className="text-fintage-charcoal dark:text-fintage-offwhite hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] font-mono text-[10px] md:text-xs lg:text-sm tracking-[0.2em] uppercase relative group"
                     suppressHydrationWarning
                     aria-current={isGalleryActive ? 'page' : undefined}
                   >
@@ -115,58 +118,112 @@ export default function SiteHeader() {
             })()}
           </nav>
 
-          {/* Actions */}
-          <div className="flex items-center space-x-3 md:space-x-4">
-            {(() => {
-              const favCount = mounted ? favorites.length : 0
-              return (
-          <Button
-            variant="ghost" 
-              size="icon" 
-            onClick={toggleFavorites}
-              className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 md:h-10 md:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
-                aria-label={`Favorites ${favCount} items`}
-          >
-                <Heart className="h-4 w-4 md:h-5 md:w-5" />
-                {!mounted ? (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
-                ) : favCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-steel text-[9px] md:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
-                    {favCount}
-                  </span>
-                )}
-          </Button>
-              )
-            })()}
-            {(() => {
-              const cartCount = mounted ? getTotalItems() : 0
-              return (
-              <Button
-            variant="ghost" 
-              size="icon" 
-            onClick={toggleCart}
-              className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 md:h-10 md:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
-                aria-label={`Shopping cart ${cartCount} items`}
-          >
-                <ShoppingBag className="h-4 w-4 md:h-5 md:w-5" />
-                {!mounted ? (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
-                ) : cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 md:h-5 md:w-5 rounded-sm bg-fintage-steel text-[9px] md:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
-                    {cartCount}
-                  </span>
-                )}
-          </Button>
-              )
-            })()}
-            {/* Settings Panel: desktop only */}
-            <div className="hidden md:block">
-              <SettingsPanel />
+          {/* Правая группа: Actions */}
+          <div className="flex items-center">
+            {/* Mobile: отдельные кнопки */}
+            <div className="flex items-center space-x-3 md:hidden">
+              {(() => {
+                const favCount = mounted ? favorites.length : 0
+                return (
+                  <Button
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleFavorites}
+                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-10 w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    aria-label={`Favorites ${favCount} items`}
+                  >
+                    <Heart className="h-4 w-4" />
+                    {!mounted ? (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                    ) : favCount > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-steel text-[9px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                        {favCount}
+                      </span>
+                    )}
+                  </Button>
+                )
+              })()}
+              {(() => {
+                const cartCount = mounted ? getTotalItems() : 0
+                return (
+                  <Button
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleCart}
+                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-10 w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    aria-label={`Shopping cart ${cartCount} items`}
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    {!mounted ? (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                    ) : cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-steel text-[9px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Button>
+                )
+              })()}
             </div>
+
+            {/* Tablet и Desktop: отдельные кнопки + Settings Panel */}
+            {/* Визуальный делимитер (только на планшетах) - Stone Island стиль */}
+            <div className="hidden md:block lg:hidden h-6 w-px bg-fintage-graphite/30 dark:bg-fintage-graphite/40 mr-3 lg:mr-4" aria-hidden="true" />
+            <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+              {(() => {
+                const favCount = mounted ? favorites.length : 0
+                return (
+                  <Button
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleFavorites}
+                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 lg:h-10 lg:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    aria-label={`Favorites ${favCount} items`}
+                  >
+                    <Heart className="h-4 w-4 lg:h-5 lg:w-5" />
+                    {!mounted ? (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                    ) : favCount > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-steel text-[9px] lg:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                        {favCount}
+                      </span>
+                    )}
+                  </Button>
+                )
+              })()}
+              {(() => {
+                const cartCount = mounted ? getTotalItems() : 0
+                return (
+                  <Button
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleCart}
+                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 lg:h-10 lg:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    aria-label={`Shopping cart ${cartCount} items`}
+                  >
+                    <ShoppingBag className="h-4 w-4 lg:h-5 lg:w-5" />
+                    {!mounted ? (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                    ) : cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-steel text-[9px] lg:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Button>
+                )
+              })()}
+              {/* Settings Panel: tablet и desktop */}
+              <div className="hidden md:block">
+                <SettingsPanel />
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile menu button */}
           <button
             ref={menuButtonRef}
             type="button"
-            aria-label={drawerOpen ? "закрыть меню" : "открыть меню"}
+            aria-label={drawerOpen ? t('common.closeMenu') : t('common.openMenu')}
             aria-expanded={drawerOpen}
             aria-controls="mobile-drawer"
             onClick={() => setDrawerOpen(!drawerOpen)}
@@ -212,7 +269,6 @@ export default function SiteHeader() {
               />
             </div>
           </button>
-          </div>
         </div>
       </div>
 
@@ -220,7 +276,7 @@ export default function SiteHeader() {
       <MobileDrawer 
         open={drawerOpen} 
         onClose={() => setDrawerOpen(false)} 
-        title="меню" 
+        title={t('common.menu')} 
         id="mobile-drawer"
         triggerRef={menuButtonRef}
       >
@@ -298,11 +354,11 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       initial="hidden"
       animate="visible"
     >
-      {/* Navigation - технический стиль */}
-      <nav className="px-2 pt-2 pb-3 space-y-2">
+      {/* Navigation - технический стиль Vintage Nike */}
+      <nav className="px-4 pt-4 pb-5 space-y-3">
         {/* Техническая подпись секции */}
-        <div className="px-3 mb-2">
-          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+        <div className="px-2 mb-3">
+          <span className="text-[11px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
             {t('header.navigation') || 'NAVIGATION'}
           </span>
         </div>
@@ -322,10 +378,10 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'group relative flex items-center justify-between rounded-sm px-5 py-4 text-xs font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.98] uppercase tracking-[0.2em]',
+                  'group relative flex items-center justify-between rounded-sm px-5 py-4 text-sm font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 uppercase tracking-[0.2em]',
                   isActive
-                    ? 'bg-fintage-steel text-fintage-offwhite dark:text-fintage-charcoal border border-fintage-steel shadow-fintage-sm'
-                    : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent border border-transparent hover:border-hover-border dark:hover:border-hover-border'
+                    ? 'bg-fintage-steel text-fintage-offwhite dark:text-fintage-charcoal border-2 border-fintage-steel shadow-fintage-sm font-semibold'
+                    : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent border border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:border-hover-border dark:hover:border-hover-border'
                 )}
               >
                 <span suppressHydrationWarning className="relative z-10 flex-1">
@@ -334,7 +390,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="w-1.5 h-1.5 rounded-sm bg-fintage-steel"
+                    className="w-2.5 h-2.5 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal shadow-fintage-sm"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
@@ -344,17 +400,26 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
         })}
       </nav>
 
-      {/* Divider - технический */}
+      {/* Divider - технический стиль Stone Island */}
       <motion.div 
         variants={itemVariants}
-        className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 mx-2 my-4" 
-      />
+        className="relative mx-3 my-6"
+      >
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-fintage-graphite/30 dark:border-fintage-graphite/40"></div>
+        </div>
+        <div className="relative flex justify-center">
+          <span className="px-2 bg-fintage-offwhite dark:bg-fintage-charcoal text-[8px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.3em]">
+            ─
+          </span>
+        </div>
+      </motion.div>
 
-      {/* Action Buttons - технический стиль */}
-      <div className="px-2 pb-3 space-y-2.5">
+      {/* Action Buttons - технический стиль North Face */}
+      <div className="px-4 pb-5 space-y-3.5">
         {/* Техническая подпись секции */}
-        <div className="px-3 mb-2">
-          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+        <div className="px-2 mb-3">
+          <span className="text-[11px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
             {t('header.actions') || 'ACTIONS'}
           </span>
         </div>
@@ -385,19 +450,19 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
         </motion.div>
       </div>
 
-      {/* Settings Section - технический стиль */}
+      {/* Settings Section - технический стиль Stone Island */}
       <motion.div 
         variants={itemVariants}
-        className="mt-auto pt-4 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30"
+        className="mt-auto pt-6 border-t-2 border-fintage-graphite/30 dark:border-fintage-graphite/40"
       >
-        <div className="px-2 pb-2">
+        <div className="px-4 pb-4">
           {/* Техническая подпись секции */}
-          <div className="px-3 mb-2">
-            <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+          <div className="px-2 mb-3">
+            <span className="text-[11px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
               {t('common.settings') || 'SETTINGS'}
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2.5">
             <motion.div variants={itemVariants} className="flex-1">
               <SettingsCard 
                 label="Тема"
@@ -436,7 +501,7 @@ const ActionButton = memo(function ActionButton({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="group relative flex w-full items-center justify-between gap-3 rounded-sm px-5 py-4 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-hover-border transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.98] overflow-hidden"
+                className="group relative flex w-full items-center justify-between gap-3 rounded-sm px-5 py-4 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-accent dark:hover:border-accent hover:border-2 transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 overflow-hidden"
     >
       {/* Hover effect background */}
       <div className="absolute inset-0 bg-gradient-to-r from-fintage-steel/5 to-transparent opacity-0 group-hover:opacity-100 transition-fintage" />
@@ -445,7 +510,7 @@ const ActionButton = memo(function ActionButton({
         <div className="p-2 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal transition-fintage group-hover:scale-110 group-hover:bg-active-bg border border-fintage-graphite/20 dark:border-fintage-graphite/30 group-hover:border-hover-border dark:group-hover:border-hover-border">
           {icon}
         </div>
-        <span className="text-xs font-mono text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
+        <span className="text-sm font-mono font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
           {label}
         </span>
       </div>
@@ -471,11 +536,11 @@ const SettingsCard = memo(function SettingsCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="group flex flex-col items-center gap-1.5 p-2.5 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-hover-border transition-fintage cursor-pointer">
+    <div className="group flex flex-col items-center gap-1.5 p-3 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-2 hover:border-accent dark:hover:border-accent transition-fintage cursor-pointer">
       <div className="flex items-center justify-center scale-90">
         {icon}
       </div>
-      <span className="text-[9px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">
+      <span className="text-[10px] font-mono text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">
         {label}
       </span>
     </div>

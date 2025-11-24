@@ -14,16 +14,13 @@ export function About() {
   const t = useTranslations()
   const locale = useClientLocale()
   
-  // Массив изображений для ротации (c1, c2, c3, c4, c5)
+  // Массив изображений для ротации (c1, c3)
   // ВАЖНО: Файлы должны быть конвертированы из HEIC в JPG/PNG/WebP
   // Добавляем версию для обхода кеша браузера
   const imageVersion = 'v2'
   const rotatingImages = [
     `/images/about_c1.jpg?v=${imageVersion}`,
-    `/images/about_c2.jpg?v=${imageVersion}`,
     `/images/about_c3.jpg?v=${imageVersion}`,
-    `/images/about_c4.jpg?v=${imageVersion}`,
-    `/images/about_c5.jpg?v=${imageVersion}`,
   ]
   
   // Состояние для текущего индекса ротирующегося изображения
@@ -74,7 +71,7 @@ export function About() {
                   </h2>
                   {/* Техническая подпись в стиле Stone Island */}
                   <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
-                    {locale === 'ru' ? 'О БРЕНДЕ' : 'ABOUT BRAND'}
+                    {t('home.brand.subtitleLabel')}
                   </p>
                 </div>
               </div>
@@ -113,7 +110,7 @@ export function About() {
 
                 {/* Техническая подпись под кнопкой */}
                 <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
-                  {locale === 'ru' ? 'ПОДРОБНЕЕ' : 'LEARN MORE'}
+                  {t('home.brand.learnMore')}
                 </p>
               </div>
             </div>
@@ -138,7 +135,7 @@ export function About() {
                     fill
                     priority={currentRotatingIndex === 0}
                     loading={currentRotatingIndex === 0 ? 'eager' : 'lazy'}
-                    sizes="100vw"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover object-center motion-safe:transition-fintage group-hover:scale-[1.01]"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
@@ -153,10 +150,10 @@ export function About() {
                 {rotatingImages.map((_, index) => (
                   <div
                     key={index}
-                    className={`h-1 rounded-sm transition-fintage ${
+                    className={`h-1.5 rounded-sm transition-fintage ${
                       index === currentRotatingIndex
-                        ? 'w-4 bg-fintage-charcoal dark:bg-fintage-offwhite'
-                        : 'w-1 bg-fintage-graphite/40 dark:bg-fintage-graphite/50'
+                        ? 'w-5 bg-fintage-charcoal dark:bg-fintage-offwhite'
+                        : 'w-1.5 bg-fintage-graphite/40 dark:bg-fintage-graphite/50'
                     }`}
                   />
                 ))}
@@ -271,10 +268,10 @@ export function About() {
                 {rotatingImages.map((_, index) => (
                   <div
                     key={index}
-                    className={`h-1 md:h-1.5 rounded-sm transition-fintage ${
+                    className={`h-1.5 md:h-2 rounded-sm transition-fintage ${
                       index === currentRotatingIndex
-                        ? 'w-4 md:w-5 bg-fintage-charcoal dark:bg-fintage-offwhite'
-                        : 'w-1 md:w-1.5 bg-fintage-graphite/40 dark:bg-fintage-graphite/50'
+                        ? 'w-5 md:w-6 bg-fintage-charcoal dark:bg-fintage-offwhite'
+                        : 'w-1.5 md:w-2 bg-fintage-graphite/40 dark:bg-fintage-graphite/50'
                     }`}
                   />
                 ))}

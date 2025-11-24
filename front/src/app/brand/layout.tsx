@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: `${baseUrl}/brand`,
     images: [
       {
-        url: '/images/about-m.png',
+        url: '/images/about_c1.jpg',
         width: 1200,
         height: 630,
         alt: 'Бренд - Rosebotanique',

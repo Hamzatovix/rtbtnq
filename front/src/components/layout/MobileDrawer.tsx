@@ -227,8 +227,13 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
             className="fixed left-0 right-0 z-[49] w-full bg-fintage-offwhite dark:bg-fintage-charcoal border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-md will-change-[transform,opacity]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Swipe indicator - технический стиль */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-16 h-px rounded-sm bg-fintage-graphite/30 dark:bg-fintage-graphite/60 shadow-fintage-sm" aria-hidden="true" />
+            {/* Swipe indicator - технический стиль Stone Island */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5" aria-hidden="true">
+              <div className="w-12 h-0.5 rounded-sm bg-fintage-graphite/40 dark:bg-fintage-graphite/60 shadow-fintage-sm" />
+              <span className="text-[8px] font-mono text-fintage-graphite/30 dark:text-fintage-graphite/50 uppercase tracking-[0.3em]">
+                SWIPE
+              </span>
+            </div>
 
             {/* Container с контентом */}
             <div className="container mx-auto px-3 md:px-6 lg:px-8">

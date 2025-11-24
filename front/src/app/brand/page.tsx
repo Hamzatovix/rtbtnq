@@ -16,9 +16,7 @@ const fade = {
 // Галерея изображений
 const galleryImages = [
   { src: '/images/about_c1.jpg', alt: 'Процесс создания' },
-  { src: '/images/about_c2.jpg', alt: 'Детали' },
   { src: '/images/about_c3.jpg', alt: 'Ручная работа' },
-  { src: '/images/about-m.png', alt: 'Мастерская' },
 ]
 
 export default function BrandPage() {
@@ -116,7 +114,7 @@ export default function BrandPage() {
         className="relative h-[58vh] min-h-[320px] w-full overflow-hidden"
       >
         <Image
-          src="/images/about-m.png"
+          src="/images/about_c1.jpg"
           alt={t('brandPage.heroAlt') || 'atelier'}
           fill
           priority={false}
@@ -200,7 +198,7 @@ export default function BrandPage() {
           <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
             <div className="mb-4">
               <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
-                {locale === 'ru' ? 'ЦЕННОСТИ' : 'VALUES'}
+                {t('brandPage.valuesLabel')}
               </span>
             </div>
             <div className="flex flex-wrap gap-2 md:gap-3">
@@ -218,7 +216,7 @@ export default function BrandPage() {
           {/* Подпись - технический стиль */}
           <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
             <p className="text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-graphite/50">
-              made in daymohk
+              {t('brandPage.madeIn')}
             </p>
           </div>
         </motion.div>
@@ -241,7 +239,7 @@ export default function BrandPage() {
               </h2>
               {/* Техническая подпись в стиле Stone Island */}
               <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
-                {locale === 'ru' ? 'ГАЛЕРЕЯ' : 'GALLERY'}
+                {t('brandPage.galleryLabel')}
               </p>
             </div>
 
@@ -256,7 +254,7 @@ export default function BrandPage() {
               <button
                 type="button"
                 onClick={goToMobilePrevious}
-                aria-label="Предыдущее изображение"
+                aria-label={t('common.previousImage')}
                 className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-sm bg-fintage-graphite/80 dark:bg-fintage-graphite/70 hover:bg-fintage-graphite dark:hover:bg-fintage-graphite/90 transition-fintage flex items-center justify-center shadow-fintage-md border border-fintage-graphite/30 dark:border-fintage-graphite/40"
               >
                 <ChevronLeft className="w-4 h-4 text-fintage-offwhite dark:text-fintage-offwhite" strokeWidth={2.5} />
@@ -265,7 +263,7 @@ export default function BrandPage() {
               <button
                 type="button"
                 onClick={goToMobileNext}
-                aria-label="Следующее изображение"
+                aria-label={t('common.nextImage')}
                 className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-sm bg-fintage-graphite/80 dark:bg-fintage-graphite/70 hover:bg-fintage-graphite dark:hover:bg-fintage-graphite/90 transition-fintage flex items-center justify-center shadow-fintage-md border border-fintage-graphite/30 dark:border-fintage-graphite/40"
               >
                 <ChevronRight className="w-4 h-4 text-fintage-offwhite dark:text-fintage-offwhite" strokeWidth={2.5} />

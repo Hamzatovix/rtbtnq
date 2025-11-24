@@ -65,7 +65,7 @@ export function Hero() {
 
             {/* Техническая подпись под кнопкой */}
             <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
-              {locale === 'ru' ? 'КОЛЛЕКЦИЯ' : 'COLLECTION'}
+              {t('home.hero.collectionLabel')}
             </p>
           </div>
         </div>

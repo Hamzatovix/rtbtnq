@@ -18,12 +18,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
   const locale = useClientLocale()
 
   const hasProducts = products.length > 0
-  const emptyMessageRaw = t('home.featuredProducts.empty')
-  const emptyMessage = emptyMessageRaw && emptyMessageRaw !== 'home.featuredProducts.empty'
-    ? emptyMessageRaw
-    : (locale === 'ru'
-      ? 'Скоро добавим новые изделия.'
-      : 'New pieces are coming soon.')
+  const emptyMessage = t('home.featuredProducts.empty')
 
   // Уникальные категории для утилитарных меток
   const uniqueCategories = Array.from(
@@ -61,7 +56,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 </h2>
                 {/* Техническая подпись в стиле Stone Island */}
                 <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
-                  {locale === 'ru' ? 'ОСНОВНАЯ КОЛЛЕКЦИЯ' : 'MAIN COLLECTION'}
+                  {t('home.featuredProducts.mainCollection')}
                 </p>
               </div>
             </div>
@@ -122,7 +117,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
           {/* Техническая подпись под кнопкой */}
           <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
-            {locale === 'ru' ? `${products.length > 0 ? products.length : 0} ИЗДЕЛИЙ` : `${products.length > 0 ? products.length : 0} PIECES`}
+            {t('home.featuredProducts.piecesCount').replace('{count}', `${products.length > 0 ? products.length : 0}`)}
           </p>
         </div>
       </div>

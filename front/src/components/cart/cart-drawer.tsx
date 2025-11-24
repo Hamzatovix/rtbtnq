@@ -49,6 +49,9 @@ export function CartDrawer() {
 
   // Закрываем избранное при открытии корзины
   useEffect(() => {
+    // Только после монтирования, чтобы избежать setState во время рендера
+    if (!mounted) return
+    
     // Если корзина только что открылась (была закрыта, стала открыта)
     if (isOpen && !prevIsOpenRef.current && favoritesIsOpen) {
       // Небольшая задержка для плавного закрытия
@@ -59,7 +62,7 @@ export function CartDrawer() {
       return () => clearTimeout(timeoutId)
     }
     prevIsOpenRef.current = isOpen
-  }, [isOpen, favoritesIsOpen, toggleFavorites])
+  }, [isOpen, favoritesIsOpen, toggleFavorites, mounted])
 
   // Mount check for SSR and detect desktop
   useEffect(() => {
@@ -217,7 +220,7 @@ export function CartDrawer() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             style={isDesktop ? {} : { top: `${headerHeight}px` }}
-            className={`fixed inset-0 z-[48] bg-black/60 dark:bg-black/80 backdrop-blur-sm dark:backdrop-blur-md ${isDesktop ? '' : 'md:hidden'}`}
+            className={`fixed inset-0 z-[48] bg-black/20 dark:bg-black/30 backdrop-blur-sm ${isDesktop ? '' : 'md:hidden'}`}
             onClick={toggleCart}
             aria-hidden="true"
           />
@@ -268,21 +271,26 @@ export function CartDrawer() {
             transition={isDragging ? { duration: 0 } : motionConfig}
             className={`fixed z-[49] bg-fintage-offwhite dark:bg-fintage-charcoal border border-fintage-graphite/20 dark:border-fintage-steel/30 shadow-fintage-md will-change-[transform,opacity] flex flex-col ${
               isDesktop
-                ? 'right-0 w-full max-w-md border-l'
-                : 'left-0 right-0 w-full max-h-[calc(100vh-96px)] border-b'
+                ? 'right-0 w-full max-w-md border-l-2'
+                : 'left-0 right-0 w-full max-h-[calc(100vh-96px)] border-b-2'
             }`}
             role="dialog"
             aria-modal="true"
             aria-label={t('cart.title')}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Swipe indicator - только на мобильных, технический стиль */}
+            {/* Swipe indicator - только на мобильных, технический стиль Stone Island */}
             {!isDesktop && (
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-px bg-fintage-graphite/30 dark:bg-fintage-graphite/40" aria-hidden="true" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5" aria-hidden="true">
+                <div className="w-12 h-0.5 rounded-sm bg-fintage-graphite/40 dark:bg-fintage-graphite/60 shadow-fintage-sm" />
+                <span className="text-[8px] font-mono text-fintage-graphite/30 dark:text-fintage-graphite/50 uppercase tracking-[0.3em]">
+                  SWIPE
+                </span>
+              </div>
             )}
 
-            {/* Header - технический стиль */}
-            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            {/* Header - технический стиль Stone Island */}
+            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b-2 border-fintage-graphite/30 dark:border-fintage-graphite/40">
               <h2 className="text-lg md:text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">
                 {t('cart.title')} <span className="font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50">({totalItems})</span>
               </h2>
@@ -298,10 +306,10 @@ export function CartDrawer() {
             {/* Content */}
             <div className="flex-1 overflow-y-auto px-4 md:px-6 lg:px-8">
               {items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                  <ShoppingBag className="w-16 h-16 text-fintage-graphite dark:text-fintage-graphite/60 mb-4" />
-                  <h3 className="text-lg font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2 uppercase tracking-tighter">{t('cart.empty')}</h3>
-                  <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 mb-6 uppercase tracking-[0.2em]">{t('favorites.empty') || ''}</p>
+                <div className="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
+                  <ShoppingBag className="w-16 h-16 text-fintage-graphite dark:text-fintage-graphite/60" />
+                  <h3 className="text-lg font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">{t('cart.empty')}</h3>
+                  <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">{t('favorites.empty') || ''}</p>
                   <Button onClick={toggleCart} asChild>
                     <Link href="/catalog">{t('favorites.continueShopping')}</Link>
                   </Button>
@@ -329,7 +337,7 @@ export function CartDrawer() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="flex items-center space-x-4 p-4 bg-fintage-graphite/10 dark:bg-fintage-graphite/20 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30"
+                        className="flex items-center space-x-4 p-4 bg-fintage-graphite/10 dark:bg-fintage-graphite/20 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30"
                       >
                       {/* Product Image */}
                       {asset ? (
@@ -354,7 +362,7 @@ export function CartDrawer() {
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite truncate text-sm uppercase tracking-tighter">{item.title}</h3>
-                        <p className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mt-1">
+                        <p className="text-[10px] font-mono text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em] mt-1">
                           {item.selectedColor || (locale === 'ru' ? 'цвет не выбран' : 'Color not selected')}
                         </p>
                         <p className="text-sm font-bold text-fintage-charcoal dark:text-fintage-offwhite mt-1">
@@ -366,7 +374,7 @@ export function CartDrawer() {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleQuantityChange(item.id, item.selectedColor, item.quantity - 1)}
-                          className="p-1 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border"
+                          className="p-2 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-[0.97] active:opacity-90"
                           aria-label={locale === 'ru' ? 'уменьшить количество' : 'Decrease quantity'}
                         >
                           <Minus className="w-4 h-4 text-fintage-charcoal dark:text-fintage-offwhite" />
@@ -374,7 +382,7 @@ export function CartDrawer() {
                         <span className="w-8 text-center font-mono font-bold text-fintage-charcoal dark:text-fintage-offwhite tracking-tight">{item.quantity}</span>
                         <button
                           onClick={() => handleQuantityChange(item.id, item.selectedColor, item.quantity + 1)}
-                          className="p-1 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border"
+                          className="p-2 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-[0.97] active:opacity-90"
                           aria-label={locale === 'ru' ? 'увеличить количество' : 'Increase quantity'}
                         >
                           <Plus className="w-4 h-4 text-fintage-charcoal dark:text-fintage-offwhite" />
@@ -384,7 +392,7 @@ export function CartDrawer() {
                       {/* Remove Button */}
                       <button
                         onClick={() => removeItem(item.id, item.selectedColor)}
-                        className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-sm transition-colors duration-200 ease-vintage text-red-500 dark:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 border-2 border-transparent hover:border-red-500"
+                        className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-sm transition-fintage text-red-500 dark:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 border-2 border-transparent hover:border-red-500 dark:hover:border-red-500 active:scale-[0.97] active:opacity-90"
                         aria-label={locale === 'ru' ? 'удалить товар' : 'Remove item'}
                       >
                         <X className="w-4 h-4" />
@@ -396,16 +404,16 @@ export function CartDrawer() {
               )}
             </div>
 
-            {/* Footer - технический стиль */}
+            {/* Footer - технический стиль Stone Island */}
             {items.length > 0 && (
-              <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 px-4 md:px-6 lg:px-8 py-6 space-y-4">
+              <div className="border-t-2 border-fintage-graphite/30 dark:border-fintage-graphite/40 px-4 md:px-6 lg:px-8 py-6 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.2em]">{t('cart.total')}</span>
                   <span className="text-lg font-bold text-fintage-charcoal dark:text-fintage-offwhite">
                     {formatPriceWithLocale(totalPrice, locale)}
                   </span>
                 </div>
-                <Button onClick={toggleCart} className="w-full" asChild>
+                <Button variant="primary" className="w-full rounded-sm" onClick={toggleCart} asChild>
                   <Link href="/checkout">{t('cart.checkout')}</Link>
                 </Button>
               </div>

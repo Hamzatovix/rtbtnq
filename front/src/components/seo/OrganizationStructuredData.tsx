@@ -1,11 +1,8 @@
-'use client'
-
 export function OrganizationStructuredData() {
-  const baseUrl = typeof window !== 'undefined' 
-    ? window.location.origin 
-    : process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'https://rosebotanique.com'
+  // Используем одинаковый URL на сервере и клиенте для избежания hydration mismatch
+  // На сервере всегда используем production URL или из env
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.com')
   
   const structuredData = {
     '@context': 'https://schema.org',
@@ -37,6 +34,7 @@ export function OrganizationStructuredData() {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      suppressHydrationWarning
     />
   )
 }

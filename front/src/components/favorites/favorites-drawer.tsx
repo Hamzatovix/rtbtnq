@@ -47,6 +47,9 @@ export function FavoritesDrawer() {
 
   // Закрываем корзину при открытии избранного
   useEffect(() => {
+    // Только после монтирования, чтобы избежать setState во время рендера
+    if (!mounted) return
+    
     // Если избранное только что открылось (было закрыто, стало открыто)
     if (isOpen && !prevIsOpenRef.current && cartIsOpen) {
       // Небольшая задержка для плавного закрытия
@@ -57,7 +60,7 @@ export function FavoritesDrawer() {
       return () => clearTimeout(timeoutId)
     }
     prevIsOpenRef.current = isOpen
-  }, [isOpen, cartIsOpen, toggleCart])
+  }, [isOpen, cartIsOpen, toggleCart, mounted])
 
   // Mount check for SSR and detect desktop
   useEffect(() => {
@@ -259,7 +262,7 @@ export function FavoritesDrawer() {
                 : { y: '-100%', opacity: 0 }
             }
             transition={isDragging ? { duration: 0 } : motionConfig}
-            className={`fixed z-[49] bg-fintage-offwhite/95 dark:bg-fintage-charcoal/95 backdrop-blur-sm supports-[backdrop-filter]:bg-fintage-offwhite/90 dark:supports-[backdrop-filter]:bg-fintage-charcoal/90 border border-fintage-graphite/20 dark:border-fintage-steel/30 shadow-fintage-md will-change-[transform,opacity] flex flex-col ${
+            className={`fixed z-[49] bg-fintage-offwhite dark:bg-fintage-charcoal border border-fintage-graphite/20 dark:border-fintage-steel/30 shadow-fintage-md will-change-[transform,opacity] flex flex-col ${
               isDesktop
                 ? 'right-0 w-full max-w-md border-l-2'
                 : 'left-0 right-0 w-full max-h-[calc(100vh-96px)] border-b-2'
@@ -269,13 +272,18 @@ export function FavoritesDrawer() {
             aria-label={t('favorites.title')}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Swipe indicator - только на мобильных, технический стиль */}
+            {/* Swipe indicator - только на мобильных, технический стиль Stone Island */}
             {!isDesktop && (
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-px bg-fintage-graphite/30 dark:bg-fintage-graphite/40" aria-hidden="true" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5" aria-hidden="true">
+                <div className="w-12 h-0.5 rounded-sm bg-fintage-graphite/40 dark:bg-fintage-graphite/60 shadow-fintage-sm" />
+                <span className="text-[8px] font-mono text-fintage-graphite/30 dark:text-fintage-graphite/50 uppercase tracking-[0.3em]">
+                  SWIPE
+                </span>
+              </div>
             )}
 
-            {/* Header - технический стиль */}
-            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            {/* Header - технический стиль Stone Island */}
+            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b-2 border-fintage-graphite/30 dark:border-fintage-graphite/40">
               <h2 className="text-lg md:text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">
                 {t('favorites.title')} <span className="font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50">({favorites.length})</span>
               </h2>
@@ -304,7 +312,7 @@ export function FavoritesDrawer() {
                   {favorites.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center space-x-4 p-4 bg-fintage-graphite/10 dark:bg-fintage-graphite/20 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30"
+                      className="flex items-center space-x-4 p-4 bg-fintage-graphite/10 dark:bg-fintage-graphite/20 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30"
                     >
                       <div className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                         {(() => {
@@ -358,7 +366,7 @@ export function FavoritesDrawer() {
                             <button
                               type="button"
                               onClick={() => removeFromFavorites(item.id)}
-                              className="h-8 w-8 rounded-full border border-mistGray/20 dark:border-border hover:bg-mistGray/10 dark:hover:bg-muted/30 transition-colors flex items-center justify-center text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:focus-visible:ring-red-400 focus-visible:ring-offset-2"
+                              className="h-10 w-10 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-red-100 dark:hover:bg-red-900/30 transition-fintage flex items-center justify-center text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500 dark:hover:border-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:focus-visible:ring-red-400 focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90"
                               aria-label={locale === 'ru' ? 'удалить из избранного' : 'remove from favorites'}
                             >
                               <X className="h-4 w-4" />
@@ -374,8 +382,8 @@ export function FavoritesDrawer() {
 
             {/* Footer */}
             {favorites.length > 0 && (
-              <div className="border-t border-mistGray/20 dark:border-border/50 px-4 md:px-6 lg:px-8 py-6">
-                <Button variant="outline" className="w-full rounded-full" onClick={toggleFavorites}>
+              <div className="border-t-2 border-fintage-graphite/30 dark:border-fintage-graphite/40 px-4 md:px-6 lg:px-8 py-6">
+                <Button variant="primary" className="w-full rounded-sm" onClick={toggleFavorites}>
                   {t('favorites.continueShopping')}
                 </Button>
               </div>
