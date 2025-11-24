@@ -29,14 +29,14 @@ export function LocaleSwitcher() {
       variant="ghost"
       size="icon"
       onClick={mounted ? toggleLocale : undefined}
-      className="rounded-sm border-2 border-fintage-graphite/40 dark:border-fintage-graphite/70 bg-fintage-offwhite dark:bg-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-accent transition-fintage shadow-fintage-md relative group"
+      className="h-9 w-9 rounded-sm border-2 border-fintage-graphite/40 dark:border-fintage-graphite/70 bg-fintage-offwhite dark:bg-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-accent transition-fintage relative group active:scale-95"
       aria-label={mounted ? `Переключить язык на ${nextConfig.label}` : 'Переключить язык'}
       title={mounted ? `Текущий язык: ${currentConfig.label}. Нажмите для переключения на ${nextConfig.label}` : undefined}
       suppressHydrationWarning
     >
       {/* Текущий флаг - всегда рендерится с suppressHydrationWarning */}
       <span 
-        className="text-xl transition-opacity duration-300 group-hover:opacity-0 drop-shadow-sm" 
+        className="text-lg transition-opacity duration-300 group-hover:opacity-0 drop-shadow-sm" 
         role="img" 
         aria-hidden="true"
         suppressHydrationWarning
@@ -45,7 +45,7 @@ export function LocaleSwitcher() {
       </span>
       {/* Следующий флаг при hover - всегда рендерится */}
       <span 
-        className="absolute text-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 drop-shadow-sm" 
+        className="absolute text-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100 drop-shadow-sm" 
         role="img" 
         aria-hidden="true"
         suppressHydrationWarning

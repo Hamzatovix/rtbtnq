@@ -40,7 +40,7 @@ export default function SiteHeader() {
               <span
                 className="font-logo text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] whitespace-nowrap"
               >
-                ROSEBOTANIQUE <span className="hidden lg:inline text-[0.7em] tracking-[0.2em]">STORE</span>
+                ROSEBOTANIQUE <span className="text-[0.7em] tracking-[0.2em]">STORE</span>
               </span>
             </Link>
           </div>
@@ -355,10 +355,10 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       animate="visible"
     >
       {/* Navigation - технический стиль Vintage Nike */}
-      <nav className="px-4 pt-4 pb-5 space-y-3">
+      <nav className="px-3 pt-2 pb-3 space-y-2">
         {/* Техническая подпись секции */}
-        <div className="px-2 mb-3">
-          <span className="text-[11px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+        <div className="px-2 mb-2">
+          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
             {t('header.navigation') || 'NAVIGATION'}
           </span>
         </div>
@@ -378,7 +378,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'group relative flex items-center justify-between rounded-sm px-5 py-4 text-sm font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 uppercase tracking-[0.2em]',
+                  'group relative flex items-center justify-between rounded-sm px-4 py-3 text-xs font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 uppercase tracking-[0.2em]',
                   isActive
                     ? 'bg-fintage-steel text-fintage-offwhite dark:text-fintage-charcoal border-2 border-fintage-steel shadow-fintage-sm font-semibold'
                     : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent border border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:border-hover-border dark:hover:border-hover-border'
@@ -390,7 +390,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="w-2.5 h-2.5 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal shadow-fintage-sm"
+                    className="w-2 h-2 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal shadow-fintage-sm"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
@@ -403,7 +403,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       {/* Divider - технический стиль Stone Island */}
       <motion.div 
         variants={itemVariants}
-        className="relative mx-3 my-6"
+        className="relative mx-3 my-4"
       >
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-fintage-graphite/30 dark:border-fintage-graphite/40"></div>
@@ -416,16 +416,16 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       </motion.div>
 
       {/* Action Buttons - технический стиль North Face */}
-      <div className="px-4 pb-5 space-y-3.5">
+      <div className="px-3 pb-3 space-y-2.5">
         {/* Техническая подпись секции */}
-        <div className="px-2 mb-3">
-          <span className="text-[11px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+        <div className="px-2 mb-2">
+          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
             {t('header.actions') || 'ACTIONS'}
           </span>
         </div>
         <motion.div variants={itemVariants}>
           <ActionButton
-            icon={<ShoppingBag className="h-5 w-5" />}
+            icon={<ShoppingBag className="h-4 w-4" />}
             label={t('header.cart')}
             count={mounted ? getTotalItems() : 0}
             onClick={() => {
@@ -438,7 +438,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
 
         <motion.div variants={itemVariants}>
           <ActionButton
-            icon={<Heart className="h-5 w-5" />}
+            icon={<Heart className="h-4 w-4" />}
             label={t('header.favorites')}
             count={mounted ? favoritesLength : 0}
             onClick={() => {
@@ -453,25 +453,25 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       {/* Settings Section - технический стиль Stone Island */}
       <motion.div 
         variants={itemVariants}
-        className="mt-auto pt-6 border-t-2 border-fintage-graphite/30 dark:border-fintage-graphite/40"
+        className="mt-auto pt-4 border-t-2 border-fintage-graphite/30 dark:border-fintage-graphite/40"
       >
-        <div className="px-4 pb-4">
+        <div className="px-3 pb-3">
           {/* Техническая подпись секции */}
-          <div className="px-2 mb-3">
-            <span className="text-[11px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+          <div className="px-2 mb-2">
+            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
               {t('common.settings') || 'SETTINGS'}
             </span>
           </div>
-          <div className="flex gap-2.5">
+          <div className="flex gap-2">
             <motion.div variants={itemVariants} className="flex-1">
               <SettingsCard 
-                label="Тема"
+                label={t('common.theme')}
                 icon={<ThemeToggle />}
               />
             </motion.div>
             <motion.div variants={itemVariants} className="flex-1">
               <SettingsCard 
-                label="Язык"
+                label={t('common.language')}
                 icon={<LocaleSwitcher />}
               />
             </motion.div>
@@ -501,16 +501,16 @@ const ActionButton = memo(function ActionButton({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-                className="group relative flex w-full items-center justify-between gap-3 rounded-sm px-5 py-4 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-accent dark:hover:border-accent hover:border-2 transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 overflow-hidden"
+      className="group relative flex w-full items-center justify-between gap-2.5 rounded-sm px-4 py-3 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-accent dark:hover:border-accent transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 overflow-hidden"
     >
-      {/* Hover effect background */}
+      {/* Hover effect background - технический стиль Stone Island */}
       <div className="absolute inset-0 bg-gradient-to-r from-fintage-steel/5 to-transparent opacity-0 group-hover:opacity-100 transition-fintage" />
       
-      <div className="relative flex items-center gap-3 flex-1">
-        <div className="p-2 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal transition-fintage group-hover:scale-110 group-hover:bg-active-bg border border-fintage-graphite/20 dark:border-fintage-graphite/30 group-hover:border-hover-border dark:group-hover:border-hover-border">
+      <div className="relative flex items-center gap-2.5 flex-1">
+        <div className="p-1.5 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal transition-fintage group-hover:scale-110 group-hover:bg-active-bg border border-fintage-graphite/20 dark:border-fintage-graphite/30 group-hover:border-hover-border dark:group-hover:border-hover-border">
           {icon}
         </div>
-        <span className="text-sm font-mono font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
+        <span className="text-xs font-mono font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
           {label}
         </span>
       </div>
@@ -518,7 +518,7 @@ const ActionButton = memo(function ActionButton({
         <motion.span
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="relative inline-flex h-6 min-w-[24px] items-center justify-center rounded-sm bg-fintage-steel px-2.5 text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal shadow-fintage-sm tracking-tight"
+          className="relative inline-flex h-5 min-w-[20px] items-center justify-center rounded-sm bg-fintage-steel px-2 text-[9px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal tracking-tight"
         >
           {count}
         </motion.span>
@@ -527,7 +527,7 @@ const ActionButton = memo(function ActionButton({
   )
 })
 
-// Компонент карточки настроек - технический стиль
+// Компонент карточки настроек - технический стиль Stone Island
 const SettingsCard = memo(function SettingsCard({
   label,
   icon,
@@ -536,11 +536,11 @@ const SettingsCard = memo(function SettingsCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="group flex flex-col items-center gap-1.5 p-3 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-2 hover:border-accent dark:hover:border-accent transition-fintage cursor-pointer">
-      <div className="flex items-center justify-center scale-90">
+    <div className="group flex flex-col items-center gap-1 p-2 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-accent dark:hover:border-accent transition-fintage cursor-pointer active:scale-[0.97] active:opacity-90">
+      <div className="flex items-center justify-center">
         {icon}
       </div>
-      <span className="text-[10px] font-mono text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">
+      <span className="text-[9px] font-mono text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">
         {label}
       </span>
     </div>
