@@ -19,7 +19,7 @@ export function About() {
   // Добавляем версию для обхода кеша браузера
   const imageVersion = 'v2'
   const rotatingImages = [
-    `/images/about_c1.jpg?v=${imageVersion}`,
+    `/images/about_c.jpg?v=${imageVersion}`,
     `/images/about_c3.jpg?v=${imageVersion}`,
   ]
   

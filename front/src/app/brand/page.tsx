@@ -198,7 +198,7 @@ export default function BrandPage() {
         className="relative h-[58vh] min-h-[320px] w-full overflow-hidden"
       >
         <Image
-          src="/images/about_c1.jpg"
+          src="/images/about_c.jpg"
           alt={t('brandPage.heroAlt') || 'atelier'}
           fill
           priority={false}

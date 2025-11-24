@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique. Каждое изделие создано с любовью и вниманием к деталям. Мастерская в Грозном, Чеченская Республика.',
     images: [
       {
-        url: '/images/about_c1.jpg',
+        url: '/images/about_c.jpg',
         width: 1200,
         height: 630,
         alt: 'Rosebotanique - Сумки ручной работы',
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Rosebotanique - Сумки ручной работы',
     description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique',
-    images: ['/images/about_c1.jpg'],
+    images: ['/images/about_c.jpg'],
   },
   alternates: {
     canonical: baseUrl,

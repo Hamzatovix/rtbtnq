@@ -24,7 +24,7 @@
           "isDefault": true,
           "images": [
             {
-              "url": "/images/about_c1.jpg",
+              "url": "/images/about_c.jpg",
               "position": 0
             },
             {
@@ -77,7 +77,7 @@
               "position": 0
             },
             {
-              "url": "/images/about_c1.jpg",
+              "url": "/images/about_c.jpg",
               "position": 1
             }
           ]
@@ -156,7 +156,7 @@
           "isDefault": true,
           "images": [
             {
-              "url": "/images/about_c1.jpg",
+              "url": "/images/about_c.jpg",
               "position": 0
             }
           ]
