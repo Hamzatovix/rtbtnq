@@ -183,14 +183,15 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     const deltaY = Math.abs(currentY - touchStartY)
     
     // Определяем направление свайпа: горизонтальный или вертикальный
-    if (deltaX > deltaY && deltaX > 10) {
-      // Горизонтальный свайп - блокируем скролл страницы только для горизонтальных свайпов
+    // Используем больший порог (20px) и более строгое условие для точного определения
+    if (deltaX > deltaY && deltaX > 20 && deltaX > deltaY * 1.5) {
+      // Горизонтальный свайп - блокируем скролл страницы только после уверенного определения
       if (!isHorizontalSwipe) {
         setIsHorizontalSwipe(true)
       }
       e.preventDefault()
       setTouchEndX(currentX)
-    } else if (deltaY > deltaX && deltaY > 10) {
+    } else if (deltaY > deltaX && deltaY > 20) {
       // Вертикальный свайп - разрешаем скролл страницы
       setTouchStartX(null)
       setTouchStartY(null)
@@ -337,7 +338,6 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
           <div 
             ref={imageContainerRef}
             className={`relative overflow-hidden rounded-t-sm ${imageRatio}`}
-            style={pointerMode && allImages.length > 1 ? { touchAction: 'pan-x' } : undefined}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}

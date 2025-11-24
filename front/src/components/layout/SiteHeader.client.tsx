@@ -34,13 +34,15 @@ export default function SiteHeader() {
       <div className="container mx-auto px-6 md:px-12 lg:px-12">
         <div className="flex h-16 md:h-20 items-center justify-between">
           {/* Левая группа: Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-shrink-0 min-w-0">
             {/* Logo - технический стиль */}
-            <Link href="/" className="flex items-center space-x-2 group" aria-label={t('common.goToHome')}>
+            <Link href="/" className="flex items-center space-x-2 group flex-shrink-0 min-w-0" aria-label={t('common.goToHome')}>
               <span
-                className="font-logo text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] whitespace-nowrap"
+                className="font-logo text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] whitespace-nowrap flex-shrink-0"
+                style={{ wordBreak: 'keep-all', overflowWrap: 'normal', whiteSpace: 'nowrap' }}
               >
-                ROSEBOTANIQUE <span className="text-[0.7em] tracking-[0.2em]">STORE</span>
+                <span className="inline md:hidden lg:inline">ROSEBOTANIQUE&nbsp;STORE</span>
+                <span className="hidden md:inline lg:hidden">ROSEBOTANIQUE</span>
               </span>
             </Link>
           </div>

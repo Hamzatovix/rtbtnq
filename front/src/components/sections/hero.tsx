@@ -73,7 +73,7 @@ export function Hero() {
 
       {/* Минималистичные бейджи внизу - технический стиль */}
       <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 text-center px-6">
-        <div className="text-[9px] sm:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 leading-relaxed tracking-[0.2em] uppercase" suppressHydrationWarning>
+        <div className="text-[8px] sm:text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 leading-relaxed tracking-[0.15em] sm:tracking-[0.2em] uppercase break-words max-w-full" suppressHydrationWarning>
           {t('home.hero.badges')}
         </div>
       </div>

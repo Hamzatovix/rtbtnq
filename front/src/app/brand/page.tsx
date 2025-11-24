@@ -56,8 +56,9 @@ export default function BrandPage() {
     const deltaY = Math.abs(currentY - touchStartY)
     
     // Определяем направление свайпа: горизонтальный или вертикальный
-    if (deltaX > deltaY && deltaX > 10) {
-      // Горизонтальный свайп - блокируем скролл страницы
+    // Используем больший порог (20px) и более строгое условие для точного определения
+    if (deltaX > deltaY && deltaX > 20 && deltaX > deltaY * 1.5) {
+      // Горизонтальный свайп - блокируем скролл страницы только после уверенного определения
       if (!isHorizontalSwipe) {
         setIsHorizontalSwipe(true)
       }
@@ -65,7 +66,7 @@ export default function BrandPage() {
       setTouchEndX(currentX)
       const offset = currentX - touchStartX
       setSwipeOffset(offset)
-    } else if (deltaY > deltaX && deltaY > 10) {
+    } else if (deltaY > deltaX && deltaY > 20) {
       // Вертикальный свайп - разрешаем скролл страницы
       setTouchStartX(null)
       setTouchStartY(null)
@@ -380,7 +381,6 @@ export default function BrandPage() {
                 {/* Карусель с swipe */}
                 <div
                   className="relative aspect-[4/5] rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30"
-                  style={{ touchAction: 'pan-x' }}
                   onTouchStart={onTouchStart}
                   onTouchMove={onTouchMove}
                   onTouchEnd={onTouchEnd}
