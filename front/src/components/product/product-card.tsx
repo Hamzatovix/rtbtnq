@@ -37,6 +37,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const [selectedColorIndex, setSelectedColorIndex] = useState(0)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchStartY, setTouchStartY] = useState<number | null>(null)
+  const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
   const [touchEndX, setTouchEndX] = useState<number | null>(null)
   const [hasSwiped, setHasSwiped] = useState(false)
   const cartTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -168,17 +170,41 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     if (!pointerMode) return
     setTouchEndX(null)
     setTouchStartX(e.targetTouches[0].clientX)
+    setTouchStartY(e.targetTouches[0].clientY)
+    setIsHorizontalSwipe(false)
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
-    if (!pointerMode) return
-    setTouchEndX(e.targetTouches[0].clientX)
+    if (!pointerMode || touchStartX === null || touchStartY === null) return
+    
+    const currentX = e.targetTouches[0].clientX
+    const currentY = e.targetTouches[0].clientY
+    const deltaX = Math.abs(currentX - touchStartX)
+    const deltaY = Math.abs(currentY - touchStartY)
+    
+    // Определяем направление свайпа: горизонтальный или вертикальный
+    if (deltaX > deltaY && deltaX > 10) {
+      // Горизонтальный свайп - блокируем скролл страницы только для горизонтальных свайпов
+      if (!isHorizontalSwipe) {
+        setIsHorizontalSwipe(true)
+      }
+      e.preventDefault()
+      setTouchEndX(currentX)
+    } else if (deltaY > deltaX && deltaY > 10) {
+      // Вертикальный свайп - разрешаем скролл страницы
+      setTouchStartX(null)
+      setTouchStartY(null)
+      setTouchEndX(null)
+      setIsHorizontalSwipe(false)
+    }
   }
 
   const onTouchEnd = () => {
-    if (!pointerMode || touchStartX === null || touchEndX === null) {
+    if (!pointerMode || touchStartX === null || touchEndX === null || !isHorizontalSwipe) {
       setTouchStartX(null)
+      setTouchStartY(null)
       setTouchEndX(null)
+      setIsHorizontalSwipe(false)
       return
     }
     
@@ -202,7 +228,9 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     }
     
     setTouchStartX(null)
+    setTouchStartY(null)
     setTouchEndX(null)
+    setIsHorizontalSwipe(false)
   }
 
   const handleLinkClick = (e: React.MouseEvent) => {
@@ -308,7 +336,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
           {/* Image - крупное фото fashion-стиль */}
           <div 
             ref={imageContainerRef}
-            className={`relative overflow-hidden rounded-t-sm ${imageRatio} ${pointerMode && allImages.length > 1 ? 'touch-none' : ''}`}
+            className={`relative overflow-hidden rounded-t-sm ${imageRatio}`}
+            style={pointerMode && allImages.length > 1 ? { touchAction: 'pan-x' } : undefined}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}

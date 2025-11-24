@@ -13,11 +13,11 @@ const fade = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 } as const
 
-// Галерея изображений
-const galleryImages = [
-  { src: '/images/about_c1.jpg', alt: 'Процесс создания' },
-  { src: '/images/about_c3.jpg', alt: 'Ручная работа' },
-]
+type GalleryImage = {
+  id: string
+  src: string
+  alt: string
+}
 
 export default function BrandPage() {
   const prefersReducedMotion = useReducedMotion()
@@ -25,33 +25,63 @@ export default function BrandPage() {
   const locale = useClientLocale()
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   
+  // Состояния для галереи
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
+  const [galleryLoading, setGalleryLoading] = useState(true)
+  
   // Состояния для мобильной карусели
   const [mobileCurrentIndex, setMobileCurrentIndex] = useState(0)
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchStartY, setTouchStartY] = useState<number | null>(null)
   const [touchEndX, setTouchEndX] = useState<number | null>(null)
   const [swipeOffset, setSwipeOffset] = useState(0)
+  const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
   const minSwipeDistance = 50
 
   // Обработчики swipe для мобильных
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEndX(null)
     setTouchStartX(e.targetTouches[0].clientX)
+    setTouchStartY(e.targetTouches[0].clientY)
     setSwipeOffset(0)
+    setIsHorizontalSwipe(false)
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX === null) return
+    if (touchStartX === null || touchStartY === null) return
+    
     const currentX = e.targetTouches[0].clientX
-    setTouchEndX(currentX)
-    const offset = currentX - touchStartX
-    setSwipeOffset(offset)
+    const currentY = e.targetTouches[0].clientY
+    const deltaX = Math.abs(currentX - touchStartX)
+    const deltaY = Math.abs(currentY - touchStartY)
+    
+    // Определяем направление свайпа: горизонтальный или вертикальный
+    if (deltaX > deltaY && deltaX > 10) {
+      // Горизонтальный свайп - блокируем скролл страницы
+      if (!isHorizontalSwipe) {
+        setIsHorizontalSwipe(true)
+      }
+      e.preventDefault()
+      setTouchEndX(currentX)
+      const offset = currentX - touchStartX
+      setSwipeOffset(offset)
+    } else if (deltaY > deltaX && deltaY > 10) {
+      // Вертикальный свайп - разрешаем скролл страницы
+      setTouchStartX(null)
+      setTouchStartY(null)
+      setTouchEndX(null)
+      setSwipeOffset(0)
+      setIsHorizontalSwipe(false)
+    }
   }
 
   const onTouchEnd = () => {
-    if (!touchStartX || touchEndX === null) {
+    if (!touchStartX || touchEndX === null || !isHorizontalSwipe) {
       setTouchStartX(null)
+      setTouchStartY(null)
       setTouchEndX(null)
       setSwipeOffset(0)
+      setIsHorizontalSwipe(false)
       return
     }
     
@@ -68,8 +98,10 @@ export default function BrandPage() {
     }
     
     setTouchStartX(null)
+    setTouchStartY(null)
     setTouchEndX(null)
     setSwipeOffset(0)
+    setIsHorizontalSwipe(false)
   }
 
   const goToMobileSlide = (index: number) => {
@@ -83,6 +115,42 @@ export default function BrandPage() {
   const goToMobileNext = () => {
     setMobileCurrentIndex((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1))
   }
+
+  // Загрузка изображений галереи из API
+  useEffect(() => {
+    const loadGallery = async () => {
+      try {
+        const res = await fetch('/api/gallery', { 
+          cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        
+        if (!res.ok) {
+          console.error('[Brand Page] Ошибка ответа API:', res.status, res.statusText)
+          setGalleryImages([])
+          setGalleryLoading(false)
+          return
+        }
+        
+        const data = await res.json()
+        
+        if (data.images && Array.isArray(data.images)) {
+          setGalleryImages(data.images)
+        } else {
+          console.warn('[Brand Page] Некорректный формат данных:', data)
+          setGalleryImages([])
+        }
+      } catch (error) {
+        console.error('[Brand Page] Ошибка при загрузке галереи:', error)
+        setGalleryImages([])
+      } finally {
+        setGalleryLoading(false)
+      }
+    }
+    loadGallery()
+  }, [])
 
   // Обработка клавиатуры для модального окна
   useEffect(() => {
@@ -107,7 +175,23 @@ export default function BrandPage() {
   }, [selectedImage, galleryImages])
 
   return (
-    <div className="bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
+    <div className="relative bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
+      {/* Background image */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <Image
+          src="/images/about_m.png"
+          alt=""
+          fill
+          priority
+          quality={75}
+          sizes="100vw"
+          className="object-cover"
+          aria-hidden="true"
+        />
+        {/* Overlay для читаемости контента */}
+        <div className="absolute inset-0 bg-fintage-offwhite/85 dark:bg-fintage-charcoal/85 backdrop-blur-[0.5px]" aria-hidden="true" />
+      </div>
+
       {/* Hero section */}
       <section
         aria-label={t('home.brand.title')}
@@ -248,98 +332,150 @@ export default function BrandPage() {
           </div>
           
           {/* Мобильная версия - карусель с swipe */}
-          <div className="md:hidden">
-            <div className="relative">
-              {/* Навигационные стрелки для мобильных */}
-              <button
-                type="button"
-                onClick={goToMobilePrevious}
-                aria-label={t('common.previousImage')}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-sm bg-fintage-graphite/80 dark:bg-fintage-graphite/70 hover:bg-fintage-graphite dark:hover:bg-fintage-graphite/90 transition-fintage flex items-center justify-center shadow-fintage-md border border-fintage-graphite/30 dark:border-fintage-graphite/40"
-              >
-                <ChevronLeft className="w-4 h-4 text-fintage-offwhite dark:text-fintage-offwhite" strokeWidth={2.5} />
-              </button>
-              
-              <button
-                type="button"
-                onClick={goToMobileNext}
-                aria-label={t('common.nextImage')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-sm bg-fintage-graphite/80 dark:bg-fintage-graphite/70 hover:bg-fintage-graphite dark:hover:bg-fintage-graphite/90 transition-fintage flex items-center justify-center shadow-fintage-md border border-fintage-graphite/30 dark:border-fintage-graphite/40"
-              >
-                <ChevronRight className="w-4 h-4 text-fintage-offwhite dark:text-fintage-offwhite" strokeWidth={2.5} />
-              </button>
-
-              {/* Карусель с swipe */}
-              <div
-                className="relative aspect-[4/5] rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30"
-                style={{ touchAction: 'pan-x' }}
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={mobileCurrentIndex}
-                    initial={{ opacity: 0, x: swipeOffset !== 0 ? swipeOffset : 30 }}
-                    animate={{ 
-                      opacity: 1, 
-                      x: swipeOffset * 0.2,
-                    }}
-                    exit={{ opacity: 0, x: swipeOffset !== 0 ? -swipeOffset : -30 }}
-                    transition={{ 
-                      duration: swipeOffset !== 0 ? 0 : 0.4,
-                      ease: swipeOffset !== 0 ? 'linear' : 'easeInOut'
-                    }}
-                    className="absolute inset-0 cursor-pointer"
-                    onClick={() => setSelectedImage(galleryImages[mobileCurrentIndex].src)}
-                  >
-                    <Image
-                      src={galleryImages[mobileCurrentIndex].src}
-                      alt={galleryImages[mobileCurrentIndex].alt}
-                      fill
-                      loading={mobileCurrentIndex === 0 ? 'eager' : 'lazy'}
-                      sizes="100vw"
-                      className="object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        target.src = '/placeholder/about_main_placeholder.jpg'
-                      }}
-                    />
-                    {/* Технический номер изображения */}
-                    <div className="absolute top-3 left-3 z-20">
-                      <span className="inline-block px-2 py-1 bg-fintage-graphite/80 dark:bg-fintage-graphite/70 backdrop-blur-sm text-fintage-offwhite dark:text-fintage-offwhite text-[9px] font-mono uppercase tracking-[0.2em] rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 shadow-fintage-sm">
-                        {String(mobileCurrentIndex + 1).padStart(2, '0')}/{String(galleryImages.length).padStart(2, '0')}
-                      </span>
-                    </div>
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Индикаторы для мобильных */}
-              <div className="flex justify-center gap-2 mt-4">
-                {galleryImages.map((_, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => goToMobileSlide(index)}
-                    aria-label={`Перейти к изображению ${index + 1}`}
-                    aria-current={mobileCurrentIndex === index ? 'true' : undefined}
-                    className={`rounded-full transition-fintage ${
-                      mobileCurrentIndex === index
-                        ? 'bg-fintage-charcoal dark:bg-fintage-offwhite w-2.5 h-2.5 shadow-fintage-sm'
-                        : 'bg-fintage-graphite/40 dark:bg-fintage-graphite/50 w-2 h-2 hover:bg-fintage-graphite/60 dark:hover:bg-fintage-graphite/60'
-                    }`}
-                  />
-                ))}
+          {galleryLoading ? (
+            <div className="md:hidden flex items-center justify-center aspect-[4/5] rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
+              <div className="text-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                  className="w-8 h-8 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent rounded-sm mx-auto mb-3"
+                />
+                <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-[9px] uppercase tracking-[0.2em]">
+                  {locale === 'ru' ? 'Загрузка...' : 'Loading...'}
+                </p>
               </div>
             </div>
-          </div>
+          ) : galleryImages.length === 0 ? (
+            <div className="md:hidden flex items-center justify-center aspect-[4/5] rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
+              <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-[9px] uppercase tracking-[0.2em] text-center px-4">
+                {locale === 'ru' ? 'Галерея пуста' : 'Gallery is empty'}
+              </p>
+            </div>
+          ) : (
+            <div className="md:hidden">
+              <div className="relative">
+                {/* Навигационные стрелки для мобильных */}
+                {galleryImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={goToMobilePrevious}
+                      aria-label={t('common.previousImage')}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-sm bg-fintage-graphite/80 dark:bg-fintage-graphite/70 hover:bg-fintage-graphite dark:hover:bg-fintage-graphite/90 transition-fintage flex items-center justify-center shadow-fintage-md border border-fintage-graphite/30 dark:border-fintage-graphite/40"
+                    >
+                      <ChevronLeft className="w-4 h-4 text-fintage-offwhite dark:text-fintage-offwhite" strokeWidth={2.5} />
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={goToMobileNext}
+                      aria-label={t('common.nextImage')}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-sm bg-fintage-graphite/80 dark:bg-fintage-graphite/70 hover:bg-fintage-graphite dark:hover:bg-fintage-graphite/90 transition-fintage flex items-center justify-center shadow-fintage-md border border-fintage-graphite/30 dark:border-fintage-graphite/40"
+                    >
+                      <ChevronRight className="w-4 h-4 text-fintage-offwhite dark:text-fintage-offwhite" strokeWidth={2.5} />
+                    </button>
+                  </>
+                )}
+
+                {/* Карусель с swipe */}
+                <div
+                  className="relative aspect-[4/5] rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30"
+                  style={{ touchAction: 'pan-x' }}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {galleryImages[mobileCurrentIndex] && (
+                      <motion.div
+                        key={mobileCurrentIndex}
+                        initial={{ opacity: 0, x: swipeOffset !== 0 ? swipeOffset : 30 }}
+                        animate={{ 
+                          opacity: 1, 
+                          x: swipeOffset * 0.2,
+                        }}
+                        exit={{ opacity: 0, x: swipeOffset !== 0 ? -swipeOffset : -30 }}
+                        transition={{ 
+                          duration: swipeOffset !== 0 ? 0 : 0.4,
+                          ease: swipeOffset !== 0 ? 'linear' : 'easeInOut'
+                        }}
+                        className="absolute inset-0 cursor-pointer"
+                        onClick={() => setSelectedImage(galleryImages[mobileCurrentIndex].src)}
+                      >
+                        <Image
+                          src={galleryImages[mobileCurrentIndex].src}
+                          alt={galleryImages[mobileCurrentIndex].alt}
+                          fill
+                          loading={mobileCurrentIndex === 0 ? 'eager' : 'lazy'}
+                          sizes="100vw"
+                          className="object-cover"
+                          unoptimized={galleryImages[mobileCurrentIndex].src.includes('blob.vercel-storage.com')}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src = '/placeholder/about_main_placeholder.jpg'
+                          }}
+                        />
+                        {/* Технический номер изображения */}
+                        {galleryImages.length > 1 && (
+                          <div className="absolute top-3 left-3 z-20">
+                            <span className="inline-block px-2 py-1 bg-fintage-graphite/80 dark:bg-fintage-graphite/70 backdrop-blur-sm text-fintage-offwhite dark:text-fintage-offwhite text-[9px] font-mono uppercase tracking-[0.2em] rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 shadow-fintage-sm">
+                              {String(mobileCurrentIndex + 1).padStart(2, '0')}/{String(galleryImages.length).padStart(2, '0')}
+                            </span>
+                          </div>
+                        )}
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Индикаторы для мобильных */}
+                {galleryImages.length > 1 && (
+                  <div className="flex justify-center gap-2 mt-4">
+                    {galleryImages.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => goToMobileSlide(index)}
+                        aria-label={`Перейти к изображению ${index + 1}`}
+                        aria-current={mobileCurrentIndex === index ? 'true' : undefined}
+                        className={`rounded-full transition-fintage ${
+                          mobileCurrentIndex === index
+                            ? 'bg-fintage-charcoal dark:bg-fintage-offwhite w-2.5 h-2.5 shadow-fintage-sm'
+                            : 'bg-fintage-graphite/40 dark:bg-fintage-graphite/50 w-2 h-2 hover:bg-fintage-graphite/60 dark:hover:bg-fintage-graphite/60'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Десктопная версия - асимметричная сетка (vintage Nike style) */}
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {galleryImages.map((image, index) => {
+          {galleryLoading ? (
+            <div className="hidden md:flex items-center justify-center min-h-[400px] rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
+              <div className="text-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                  className="w-12 h-12 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent rounded-sm mx-auto mb-4"
+                />
+                <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">
+                  {locale === 'ru' ? 'Загрузка...' : 'Loading...'}
+                </p>
+              </div>
+            </div>
+          ) : galleryImages.length === 0 ? (
+            <div className="hidden md:flex items-center justify-center min-h-[400px] rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
+              <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">
+                {locale === 'ru' ? 'Галерея пуста' : 'Gallery is empty'}
+              </p>
+            </div>
+          ) : (
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              {galleryImages.map((image, index) => {
               // Асимметричная композиция: разные размеры для разных позиций
               const aspectClasses = 
                 index === 0 ? 'aspect-[4/5] lg:aspect-square' : // Первое - вертикальное/квадратное
@@ -377,6 +513,7 @@ export default function BrandPage() {
                     loading={index < 2 ? 'eager' : 'lazy'}
                     sizes="(max-width: 1024px) 50vw, 25vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                    unoptimized={image.src.includes('blob.vercel-storage.com')}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
                       target.src = '/placeholder/about_main_placeholder.jpg'
@@ -395,7 +532,8 @@ export default function BrandPage() {
                 </motion.div>
               )
             })}
-          </div>
+            </div>
+          )}
         </motion.div>
       </section>
 
@@ -471,24 +609,31 @@ export default function BrandPage() {
               
               {/* Изображение */}
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={selectedImage}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative max-w-7xl max-h-[95vh] md:max-h-[90vh] w-full h-full"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Image
-                    src={selectedImage}
-                    alt={galleryImages[currentModalIndex]?.alt || (locale === 'ru' ? 'Увеличенное изображение' : 'Enlarged image')}
-                    fill
-                    className="object-contain"
-                    priority
-                    sizes="100vw"
-                  />
-                </motion.div>
+                {galleryImages[currentModalIndex] && (
+                  <motion.div
+                    key={currentModalIndex}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative max-w-7xl max-h-[95vh] md:max-h-[90vh] w-full h-full"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Image
+                      src={selectedImage}
+                      alt={galleryImages[currentModalIndex].alt || (locale === 'ru' ? 'Увеличенное изображение' : 'Enlarged image')}
+                      fill
+                      className="object-contain"
+                      priority
+                      sizes="100vw"
+                      unoptimized={selectedImage.includes('blob.vercel-storage.com')}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src = '/placeholder/about_main_placeholder.jpg'
+                      }}
+                    />
+                  </motion.div>
+                )}
               </AnimatePresence>
               
               {/* Счетчик изображений */}

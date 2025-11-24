@@ -29,8 +29,10 @@ export default function GalleryPage() {
   
   // Состояния для свайпа
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchStartY, setTouchStartY] = useState<number | null>(null)
   const [touchEndX, setTouchEndX] = useState<number | null>(null)
   const [swipeOffset, setSwipeOffset] = useState(0)
+  const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
   const minSwipeDistance = 50
 
   // Загрузка изображений галереи
@@ -95,23 +97,48 @@ export default function GalleryPage() {
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEndX(null)
     setTouchStartX(e.targetTouches[0].clientX)
+    setTouchStartY(e.targetTouches[0].clientY)
     setSwipeOffset(0)
+    setIsHorizontalSwipe(false)
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX === null) return
-    e.preventDefault()
+    if (touchStartX === null || touchStartY === null) return
+    
     const currentX = e.targetTouches[0].clientX
-    setTouchEndX(currentX)
-    const offset = currentX - touchStartX
-    setSwipeOffset(offset)
+    const currentY = e.targetTouches[0].clientY
+    const deltaX = Math.abs(currentX - touchStartX)
+    const deltaY = Math.abs(currentY - touchStartY)
+    
+    // Определяем направление свайпа: горизонтальный или вертикальный
+    // Если горизонтальное движение больше вертикального - это горизонтальный свайп
+    if (deltaX > deltaY && deltaX > 10) {
+      // Горизонтальный свайп - блокируем скролл страницы
+      if (!isHorizontalSwipe) {
+        setIsHorizontalSwipe(true)
+      }
+      e.preventDefault()
+      setTouchEndX(currentX)
+      const offset = currentX - touchStartX
+      setSwipeOffset(offset)
+    } else if (deltaY > deltaX && deltaY > 10) {
+      // Вертикальный свайп - разрешаем скролл страницы
+      // Не вызываем preventDefault, чтобы страница могла скроллиться
+      setTouchStartX(null)
+      setTouchStartY(null)
+      setTouchEndX(null)
+      setSwipeOffset(0)
+      setIsHorizontalSwipe(false)
+    }
   }
 
   const onTouchEnd = () => {
-    if (!touchStartX || touchEndX === null) {
+    if (!touchStartX || touchEndX === null || !isHorizontalSwipe) {
       setTouchStartX(null)
+      setTouchStartY(null)
       setTouchEndX(null)
       setSwipeOffset(0)
+      setIsHorizontalSwipe(false)
       return
     }
     
@@ -126,8 +153,10 @@ export default function GalleryPage() {
     }
     
     setTouchStartX(null)
+    setTouchStartY(null)
     setTouchEndX(null)
     setSwipeOffset(0)
+    setIsHorizontalSwipe(false)
   }
 
   // Обработка клавиатуры
