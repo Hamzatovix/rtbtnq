@@ -18,6 +18,7 @@ export default function BackofficeGalleryPage() {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
+  const [uploadingFiles, setUploadingFiles] = useState<{ name: string; progress: number; error?: string }[]>([])
   const [error, setError] = useState<string | null>(null)
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
@@ -42,75 +43,124 @@ export default function BackofficeGalleryPage() {
     }
   }
 
-  // Загрузка нового изображения
+  // Загрузка нового изображения (одного или нескольких)
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
 
-    if (!file.type.startsWith('image/')) {
-      setError('Файл должен быть изображением')
-      return
-    }
+    // Валидация всех файлов
+    const invalidFiles = files.filter(file => {
+      if (!file.type.startsWith('image/')) return true
+      if (file.size > 5 * 1024 * 1024) return true
+      return false
+    })
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Файл слишком большой. Максимум 5MB')
+    if (invalidFiles.length > 0) {
+      setError('Некоторые файлы не прошли валидацию. Убедитесь, что все файлы - изображения размером до 5MB')
       return
     }
 
     try {
       setUploading(true)
       setError(null)
+      setUploadingFiles(files.map(f => ({ name: f.name, progress: 0 })))
 
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('folder', 'gallery')
+      const uploadPromises = files.map(async (file, index) => {
+        try {
+          // Обновляем прогресс
+          setUploadingFiles(prev => prev.map((f, i) => 
+            i === index ? { ...f, progress: 25 } : f
+          ))
 
-      const uploadRes = await fetch('/api/upload/image', {
-        method: 'POST',
-        body: formData,
+          const formData = new FormData()
+          formData.append('file', file)
+          formData.append('folder', 'gallery')
+
+          setUploadingFiles(prev => prev.map((f, i) => 
+            i === index ? { ...f, progress: 50 } : f
+          ))
+
+          const uploadRes = await fetch('/api/upload/image', {
+            method: 'POST',
+            body: formData,
+          })
+
+          const uploadData = await uploadRes.json()
+
+          if (!uploadData.url) {
+            throw new Error(uploadData.error || 'Ошибка загрузки файла')
+          }
+
+          setUploadingFiles(prev => prev.map((f, i) => 
+            i === index ? { ...f, progress: 75 } : f
+          ))
+
+          console.log('[Gallery Admin] Отправка запроса на добавление в галерею:', {
+            src: uploadData.url,
+            alt: file.name.replace(/\.[^/.]+$/, ''),
+          })
+
+          const galleryRes = await fetch('/api/gallery', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              src: uploadData.url,
+              alt: file.name.replace(/\.[^/.]+$/, ''),
+            }),
+          })
+
+          console.log('[Gallery Admin] Ответ API:', {
+            ok: galleryRes.ok,
+            status: galleryRes.status,
+            statusText: galleryRes.statusText,
+          })
+
+          if (!galleryRes.ok) {
+            const errorData = await galleryRes.json()
+            console.error('[Gallery Admin] Ошибка API:', errorData)
+            throw new Error(errorData.error || errorData.details || 'Ошибка добавления в галерею')
+          }
+
+          setUploadingFiles(prev => prev.map((f, i) => 
+            i === index ? { ...f, progress: 100 } : f
+          ))
+
+          const addedImage = await galleryRes.json()
+          console.log('[Gallery Admin] Изображение добавлено:', addedImage)
+          return { success: true, file: file.name }
+        } catch (err: any) {
+          console.error(`Ошибка при загрузке изображения ${file.name}:`, err)
+          // Помечаем файл как ошибку, но продолжаем загрузку остальных
+          setUploadingFiles(prev => prev.map((f, i) => 
+            i === index ? { ...f, progress: 0, error: err.message || 'Ошибка загрузки' } : f
+          ))
+          return { success: false, file: file.name, error: err.message || 'Ошибка загрузки' }
+        }
       })
 
-      const uploadData = await uploadRes.json()
-
-      if (!uploadData.url) {
-        throw new Error(uploadData.error || 'Ошибка загрузки файла')
+      // Ждем завершения всех загрузок (успешных и неуспешных)
+      const results = await Promise.allSettled(uploadPromises)
+      
+      // Подсчитываем успешные и неуспешные загрузки
+      const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length
+      const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length
+      
+      if (failed > 0) {
+        setError(`Загружено: ${successful}, ошибок: ${failed}. Проверьте файлы с ошибками.`)
       }
-
-      console.log('[Gallery Admin] Отправка запроса на добавление в галерею:', {
-        src: uploadData.url,
-        alt: file.name.replace(/\.[^/.]+$/, ''),
-      })
-
-      const galleryRes = await fetch('/api/gallery', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          src: uploadData.url,
-          alt: file.name.replace(/\.[^/.]+$/, ''),
-        }),
-      })
-
-      console.log('[Gallery Admin] Ответ API:', {
-        ok: galleryRes.ok,
-        status: galleryRes.status,
-        statusText: galleryRes.statusText,
-      })
-
-      if (!galleryRes.ok) {
-        const errorData = await galleryRes.json()
-        console.error('[Gallery Admin] Ошибка API:', errorData)
-        throw new Error(errorData.error || errorData.details || 'Ошибка добавления в галерею')
+      
+      // Обновляем галерею только если были успешные загрузки
+      if (successful > 0) {
+        await loadGallery()
       }
-
-      const addedImage = await galleryRes.json()
-      console.log('[Gallery Admin] Изображение добавлено:', addedImage)
-
-      await loadGallery()
+      
+      setUploadingFiles([])
     } catch (err: any) {
-      console.error('Ошибка при загрузке изображения:', err)
-      setError(err.message || 'Ошибка при загрузке изображения')
+      console.error('Ошибка при загрузке изображений:', err)
+      setError(err.message || 'Ошибка при загрузке изображений')
+      setUploadingFiles([])
     } finally {
       setUploading(false)
       e.target.value = ''
@@ -227,28 +277,28 @@ export default function BackofficeGalleryPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Заголовок */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-accent/10 to-accent/5 dark:from-accent/10 dark:to-accent/5 border border-fintage-graphite/20 dark:border-fintage-graphite/30 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-accent dark:text-accent" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-gradient-to-br from-accent/10 to-accent/5 dark:from-accent/10 dark:to-accent/5 border border-fintage-graphite/20 dark:border-fintage-graphite/30 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-accent dark:text-accent" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">
               Галерея
             </h1>
           </div>
-          <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] ml-13">
+          <p className="text-[9px] sm:text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] ml-10 sm:ml-13">
             Управление изображениями галереи
           </p>
         </div>
         {images.length > 0 && (
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 border border-fintage-graphite/20 dark:border-fintage-graphite/30">
-            <span className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.1em]">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            <span className="text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.1em]">
               {images.length}
             </span>
-            <span className="text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+            <span className="text-[10px] sm:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
               {images.length === 1 ? 'изображение' : images.length < 5 ? 'изображения' : 'изображений'}
             </span>
           </div>
@@ -273,12 +323,13 @@ export default function BackofficeGalleryPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-6 rounded-sm border-2 border-dashed border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:border-accent/50 dark:hover:border-accent/50 transition-fintage"
+        className="p-4 sm:p-6 rounded-sm border-2 border-dashed border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:border-accent/50 dark:hover:border-accent/50 transition-fintage"
       >
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
           <input
             type="file"
             accept="image/*"
+            multiple
             className="hidden"
             id="gallery-upload"
             onChange={handleFileUpload}
@@ -288,7 +339,7 @@ export default function BackofficeGalleryPage() {
             htmlFor="gallery-upload"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className={`inline-flex items-center justify-center px-6 py-3 rounded-sm text-sm font-mono uppercase tracking-[0.15em] text-fintage-charcoal dark:text-fintage-offwhite bg-fintage-offwhite dark:bg-fintage-charcoal border-2 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-accent dark:hover:border-accent hover:bg-hover-bg dark:hover:bg-hover-bg cursor-pointer transition-fintage shadow-fintage-sm hover:shadow-fintage-md ${
+            className={`inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 rounded-sm text-xs sm:text-sm font-mono uppercase tracking-[0.15em] text-fintage-charcoal dark:text-fintage-offwhite bg-fintage-offwhite dark:bg-fintage-charcoal border-2 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-accent dark:hover:border-accent hover:bg-hover-bg dark:hover:bg-hover-bg cursor-pointer transition-fintage shadow-fintage-sm hover:shadow-fintage-md ${
               uploading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -300,14 +351,46 @@ export default function BackofficeGalleryPage() {
             ) : (
               <>
                 <Upload className="h-4 w-4 mr-2" />
-                Добавить изображение
+                Добавить изображения
               </>
             )}
           </motion.label>
-          <p className="text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
-            Поддерживаются форматы: JPG, PNG, WebP. Максимум 5MB
+          <p className="text-[10px] sm:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+            Поддерживаются форматы: JPG, PNG, WebP. Максимум 5MB на файл. Можно выбрать несколько файлов
           </p>
         </div>
+        
+        {/* Прогресс загрузки нескольких файлов */}
+        {uploadingFiles.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {uploadingFiles.map((file, index) => (
+              <div key={index} className="space-y-1">
+                <div className="flex items-center justify-between text-xs font-mono uppercase tracking-[0.1em]">
+                  <span className={`truncate flex-1 mr-2 ${file.error ? 'text-fintage-punch dark:text-fintage-punch' : 'text-fintage-graphite/60 dark:text-fintage-graphite/50'}`}>
+                    {file.name}
+                  </span>
+                  <span className={file.error ? 'text-fintage-punch dark:text-fintage-punch' : 'text-fintage-graphite/60 dark:text-fintage-graphite/50'}>
+                    {file.error ? 'Ошибка' : `${file.progress}%`}
+                  </span>
+                </div>
+                {file.error ? (
+                  <p className="text-[10px] font-mono text-fintage-punch dark:text-fintage-punch uppercase tracking-[0.1em]">
+                    {file.error}
+                  </p>
+                ) : (
+                  <div className="w-full h-1.5 bg-fintage-graphite/20 dark:bg-fintage-graphite/30 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${file.progress}%` }}
+                      transition={{ duration: 0.3 }}
+                      className="h-full bg-accent dark:bg-accent"
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </motion.div>
 
       {/* Список изображений */}
@@ -328,7 +411,7 @@ export default function BackofficeGalleryPage() {
           </p>
         </motion.div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           <AnimatePresence mode="popLayout">
             {images.map((img, index) => (
               <motion.div
@@ -342,7 +425,7 @@ export default function BackofficeGalleryPage() {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`group relative p-5 rounded-sm border-2 transition-fintage bg-fintage-offwhite dark:bg-fintage-charcoal hover:shadow-fintage-md ${
+                className={`group relative p-3 sm:p-4 md:p-5 rounded-sm border-2 transition-fintage bg-fintage-offwhite dark:bg-fintage-charcoal hover:shadow-fintage-md ${
                   draggedIndex === index
                     ? 'opacity-50 scale-95 border-accent dark:border-accent shadow-fintage-md'
                     : dragOverIndex === index
@@ -362,7 +445,7 @@ export default function BackofficeGalleryPage() {
                 </motion.div>
 
                 {/* Изображение */}
-                <div className="relative aspect-[4/3] mb-4 rounded-sm overflow-hidden bg-fintage-graphite/10 dark:bg-fintage-graphite/10 group-hover:ring-2 ring-accent/20 dark:ring-accent/20 transition-fintage">
+                <div className="relative aspect-[4/3] mb-3 sm:mb-4 rounded-sm overflow-hidden bg-fintage-graphite/10 dark:bg-fintage-graphite/10 group-hover:ring-2 ring-accent/20 dark:ring-accent/20 transition-fintage">
                   <Image
                     src={img.src}
                     alt={img.alt}

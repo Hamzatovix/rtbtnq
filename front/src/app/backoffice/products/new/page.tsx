@@ -143,9 +143,9 @@ export default function BackofficeNewProductPage(){
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+      <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
         <Link href="/backoffice" className="hover:text-accent dark:hover:text-accent transition-fintage">Панель</Link>
         <span>/</span>
         <Link href="/backoffice/products" className="hover:text-accent dark:hover:text-accent transition-fintage">Товары</Link>
@@ -153,25 +153,25 @@ export default function BackofficeNewProductPage(){
         <span className="text-fintage-charcoal dark:text-fintage-offwhite">Создать</span>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-title-1 font-display-vintage font-black mb-2 text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Создать товар</h1>
-          <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Заполните информацию о новом товаре</p>
+          <h1 className="text-xl sm:text-2xl md:text-title-1 font-display-vintage font-black mb-2 text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Создать товар</h1>
+          <p className="text-[9px] sm:text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Заполните информацию о новом товаре</p>
         </div>
-        <Link href="/backoffice/products" className="text-xs font-mono text-accent dark:text-accent hover:underline inline-flex items-center gap-2 transition-fintage uppercase tracking-[0.15em] self-start sm:self-auto">
-          <ArrowLeft className="h-4 w-4" />
+        <Link href="/backoffice/products" className="text-[10px] sm:text-xs font-mono text-accent dark:text-accent hover:underline inline-flex items-center gap-2 transition-fintage uppercase tracking-[0.15em] self-start sm:self-auto">
+          <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           назад к товарам
         </Link>
       </div>
-      <form onSubmit={onSubmit} className="space-y-8">
+      <form onSubmit={onSubmit} className="space-y-6 sm:space-y-8">
         {/* Основная информация */}
-        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6 md:p-8 space-y-6">
-          <div className="flex items-center gap-2 pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
-            <h2 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Основная информация</h2>
-            <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 bg-accent/15 dark:bg-accent/20 px-2 py-1 rounded-sm uppercase tracking-[0.15em]">Обязательно</span>
+        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+          <div className="flex items-center gap-2 pb-3 sm:pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            <h2 className="text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Основная информация</h2>
+            <span className="text-[8px] sm:text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 bg-accent/15 dark:bg-accent/20 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-sm uppercase tracking-[0.15em]">Обязательно</span>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <Label className="mb-2">Название товара *</Label>
               <Input 
@@ -250,19 +250,19 @@ export default function BackofficeNewProductPage(){
         </div>
 
         {/* Варианты товара */}
-        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6 md:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
             <div>
-              <h2 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Варианты товара</h2>
-              <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 mt-1 uppercase tracking-[0.15em]">Цвета, размеры и другие характеристики</p>
+              <h2 className="text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Варианты товара</h2>
+              <p className="text-[10px] sm:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 mt-1 uppercase tracking-[0.15em]">Цвета, размеры и другие характеристики</p>
             </div>
             <Button 
               type="button" 
               variant="outline" 
               onClick={addVariant}
-              className="inline-flex items-center gap-2 self-start sm:self-auto"
+              className="inline-flex items-center gap-2 self-start sm:self-auto text-xs sm:text-sm"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Добавить вариант
             </Button>
           </div>
@@ -281,14 +281,14 @@ export default function BackofficeNewProductPage(){
             const isComplete = hasColor && hasPrice && hasImages
             
             return (
-            <div key={idx} className={`p-6 border-2 rounded-sm space-y-4 transition-fintage ${
+            <div key={idx} className={`p-4 sm:p-6 border-2 rounded-sm space-y-3 sm:space-y-4 transition-fintage ${
               isComplete 
                 ? 'border-accent/30 dark:border-accent/40 bg-accent/5 dark:bg-accent/10' 
                 : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-graphite/5 dark:bg-fintage-graphite/10'
             }`}>
-              <div className="flex items-center justify-between pb-3 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
-                <div className="flex items-center gap-3">
-                  <h3 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Вариант {idx + 1}</h3>
+              <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <h3 className="text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Вариант {idx + 1}</h3>
                   {isComplete && (
                     <span className="inline-flex items-center gap-1 text-xs font-mono text-accent dark:text-accent bg-accent/15 dark:bg-accent/20 px-2 py-1 rounded-sm uppercase tracking-[0.1em] border border-accent/30 dark:border-accent/30">
                       <CheckCircle2 className="h-3 w-3" />
@@ -314,7 +314,7 @@ export default function BackofficeNewProductPage(){
                   </Button>
                 )}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div className="md:col-span-2">
                   <Label className="mb-2 block">Цвет *</Label>
                   <div className="flex flex-wrap gap-2 mb-2">
@@ -527,7 +527,7 @@ export default function BackofficeNewProductPage(){
         </div>
 
         {/* Кнопки действий */}
-        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6">
+        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-6">
           {error && (
             <div className="flex items-start gap-3 p-4 bg-fintage-punch/10 dark:bg-fintage-punch/20 border border-fintage-punch/30 dark:border-fintage-punch/40 rounded-sm text-sm font-mono text-fintage-punch dark:text-fintage-punch mb-4 uppercase tracking-[0.1em]">
               <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />

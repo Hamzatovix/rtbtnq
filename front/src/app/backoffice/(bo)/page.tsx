@@ -51,19 +51,19 @@ export default function BackofficeDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-display-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-4 tracking-tighter uppercase">
+        <h1 className="text-2xl sm:text-3xl md:text-display-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-3 sm:mb-4 tracking-tighter uppercase">
           Панель управления
         </h1>
-        <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] mb-2">
+        <p className="text-[9px] sm:text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] mb-2">
           Системы управления RSBTNQ
         </p>
-        <div className="mt-4">
+        <div className="mt-3 sm:mt-4">
           <Link href="/backoffice/products/new">
-            <Button className="inline-flex items-center gap-2 whitespace-nowrap">
-              <Plus className="h-4 w-4" />
+            <Button className="inline-flex items-center gap-2 whitespace-nowrap text-xs sm:text-sm">
+              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span>Добавить товар</span>
             </Button>
           </Link>
@@ -71,7 +71,7 @@ export default function BackofficeDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
         <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Товары</h3>
@@ -106,87 +106,97 @@ export default function BackofficeDashboard() {
       </div>
 
       {/* Recent Products */}
-      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6">
-        <h2 className="text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-6 tracking-tighter uppercase">Последние товары</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
-                <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Название</th>
-                <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Категория</th>
-                <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Статус</th>
-                <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Варианты</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.slice(0, 5).map((product) => (
-                <tr key={product.id} className="border-b border-fintage-graphite/10 dark:border-fintage-graphite/20 hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage">
-                  <td className="py-3 px-4 text-fintage-charcoal dark:text-fintage-offwhite">
-                    <Link href={`/backoffice/products/${product.slug}`} className="hover:text-accent dark:hover:text-accent transition-fintage">
-                      {product.name}
-                    </Link>
-                  </td>
-                  <td className="py-3 px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50">
-                    {categories.find(c => c.id === product.category)?.name || '-'}
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className={`px-3 py-1 rounded-sm text-xs font-mono uppercase tracking-[0.1em] backdrop-blur-md shadow-fintage-sm ${
-                      product.is_published 
-                        ? 'bg-accent/15 dark:bg-accent/20 text-fintage-charcoal dark:text-fintage-offwhite border border-accent/30 dark:border-accent/30' 
-                        : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/20 text-fintage-graphite/60 dark:text-fintage-graphite/50 border border-fintage-graphite/30 dark:border-fintage-graphite/30'
-                    }`}>
-                      {product.is_published ? 'Опубликован' : 'Черновик'}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50">
-                    {product.variants.length}
-                  </td>
+      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl md:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-4 sm:mb-6 tracking-tighter uppercase">Последние товары</h2>
+        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <div className="min-w-[600px] sm:min-w-0">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+                  <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Название</th>
+                  <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] hidden sm:table-cell">Категория</th>
+                  <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Статус</th>
+                  <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] hidden sm:table-cell">Варианты</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {products.slice(0, 5).map((product) => (
+                  <tr key={product.id} className="border-b border-fintage-graphite/10 dark:border-fintage-graphite/20 hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage">
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-fintage-charcoal dark:text-fintage-offwhite">
+                      <Link href={`/backoffice/products/${product.slug}`} className="hover:text-accent dark:hover:text-accent transition-fintage text-xs sm:text-sm">
+                        {product.name}
+                      </Link>
+                      <div className="sm:hidden text-[10px] text-fintage-graphite/60 dark:text-fintage-graphite/50 mt-1">
+                        {categories.find(c => c.id === product.category)?.name || '-'}
+                      </div>
+                    </td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50 hidden sm:table-cell text-xs sm:text-sm">
+                      {categories.find(c => c.id === product.category)?.name || '-'}
+                    </td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4">
+                      <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-sm text-[9px] sm:text-xs font-mono uppercase tracking-[0.1em] backdrop-blur-md shadow-fintage-sm ${
+                        product.is_published 
+                          ? 'bg-accent/15 dark:bg-accent/20 text-fintage-charcoal dark:text-fintage-offwhite border border-accent/30 dark:border-accent/30' 
+                          : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/20 text-fintage-graphite/60 dark:text-fintage-graphite/50 border border-fintage-graphite/30 dark:border-fintage-graphite/30'
+                      }`}>
+                        {product.is_published ? 'Опубликован' : 'Черновик'}
+                      </span>
+                    </td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50 hidden sm:table-cell text-xs sm:text-sm">
+                      {product.variants.length}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="mt-6">
-          <Link href="/backoffice/products" className="text-xs font-mono text-accent dark:text-accent hover:underline uppercase tracking-[0.15em]">
+        <div className="mt-4 sm:mt-6">
+          <Link href="/backoffice/products" className="text-[10px] sm:text-xs font-mono text-accent dark:text-accent hover:underline uppercase tracking-[0.15em]">
             Все товары →
           </Link>
         </div>
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Последние заказы</h2>
-          <Link href="/backoffice/orders" className="text-xs font-mono text-accent dark:text-accent hover:underline uppercase tracking-[0.15em]">Все заказы →</Link>
+      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl md:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Последние заказы</h2>
+          <Link href="/backoffice/orders" className="text-[10px] sm:text-xs font-mono text-accent dark:text-accent hover:underline uppercase tracking-[0.15em]">Все заказы →</Link>
         </div>
         {!orders ? (
-          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.15em]">Нет данных</p>
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em]">Нет данных</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
-                  <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">№</th>
-                  <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Клиент</th>
-                  <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Сумма</th>
-                  <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Статусы</th>
-                  <th className="text-left py-3 px-4 text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Создан</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.results.slice(0,5).map((o) => (
-                  <tr key={o.id} className="border-b border-fintage-graphite/10 dark:border-fintage-graphite/20 hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage">
-                    <td className="py-3 px-4 text-fintage-charcoal dark:text-fintage-offwhite">
-                      <Link href={`/backoffice/orders/${o.id}`} className="hover:text-accent dark:hover:text-accent transition-fintage">{o.number}</Link>
-                    </td>
-                    <td className="py-3 px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50">{o.customerName || o.customerEmail || '-'}</td>
-                    <td className="py-3 px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50">{o.total}</td>
-                    <td className="py-3 px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50">{o.paymentStatus} / {o.fulfillmentStatus} / {o.orderStatus}</td>
-                    <td className="py-3 px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50">{new Date(o.createdAt).toLocaleString()}</td>
+          <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+            <div className="min-w-[700px] sm:min-w-0">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+                    <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">№</th>
+                    <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] hidden sm:table-cell">Клиент</th>
+                    <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Сумма</th>
+                    <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] hidden sm:table-cell">Статусы</th>
+                    <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] hidden md:table-cell">Создан</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {orders.results.slice(0,5).map((o) => (
+                    <tr key={o.id} className="border-b border-fintage-graphite/10 dark:border-fintage-graphite/20 hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage">
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-fintage-charcoal dark:text-fintage-offwhite">
+                        <Link href={`/backoffice/orders/${o.id}`} className="hover:text-accent dark:hover:text-accent transition-fintage text-xs sm:text-sm">{o.number}</Link>
+                        <div className="sm:hidden text-[9px] text-fintage-graphite/60 dark:text-fintage-graphite/50 mt-1">
+                          {o.customerName || o.customerEmail || '-'}
+                        </div>
+                      </td>
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50 hidden sm:table-cell text-xs sm:text-sm">{o.customerName || o.customerEmail || '-'}</td>
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50 text-xs sm:text-sm">{o.total}</td>
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-[9px] sm:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.1em] hidden sm:table-cell">{o.paymentStatus} / {o.fulfillmentStatus} / {o.orderStatus}</td>
+                      <td className="py-2 sm:py-3 px-2 sm:px-4 text-fintage-graphite/60 dark:text-fintage-graphite/50 hidden md:table-cell text-[9px] sm:text-xs">{new Date(o.createdAt).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

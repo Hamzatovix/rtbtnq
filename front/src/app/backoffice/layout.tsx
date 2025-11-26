@@ -98,7 +98,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       animate="visible"
     >
       {/* Navigation */}
-      <nav className="px-4 pt-6 pb-4 space-y-2">
+      <nav className="px-3 sm:px-4 pt-4 sm:pt-6 pb-3 sm:pb-4 space-y-2 sm:space-y-2.5">
         {navigationLinks.map((link) => {
           const isActive = pathname?.startsWith(link.href)
           return (
@@ -133,7 +133,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 mx-4" />
 
       {/* Link to storefront */}
-      <div className="px-4 py-4">
+      <div className="px-3 sm:px-4 py-3 sm:py-4">
         <motion.div variants={itemVariants}>
           <Link
             href="/"
@@ -153,8 +153,8 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       </div>
 
       {/* Settings Section - внизу */}
-      <div className="mt-auto border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 px-4 py-4">
-        <div className="flex gap-2">
+      <div className="mt-auto border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 px-3 sm:px-4 py-3 sm:py-4">
+        <div className="flex gap-2 sm:gap-2.5">
           <motion.div variants={itemVariants} className="flex-1">
             <SettingsCard>
               <ThemeToggle />
@@ -178,7 +178,7 @@ const SettingsCard = memo(function SettingsCard({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center gap-2 p-3 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/60 dark:bg-fintage-charcoal/60 backdrop-blur-sm shadow-fintage-sm hover:shadow-fintage-md transition-fintage">
+    <div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/60 dark:bg-fintage-charcoal/60 backdrop-blur-sm shadow-fintage-sm hover:shadow-fintage-md transition-fintage">
       {children}
     </div>
   )
@@ -196,7 +196,7 @@ function MobileNav() {
         aria-expanded={drawerOpen}
         aria-controls="backoffice-mobile-drawer"
         onClick={() => setDrawerOpen(true)}
-        className="lg:hidden hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage rounded-sm inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-fintage-graphite/30 dark:border-fintage-graphite/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-95"
+        className="lg:hidden hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage rounded-sm inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-fintage-graphite/30 dark:border-fintage-graphite/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-95 touch-manipulation"
       >
         <span className="sr-only">Open menu</span>
         <div className="space-y-1.5">
@@ -332,10 +332,10 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
     <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
       {/* HEADER */}
       <header className="sticky top-0 z-50 bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 backdrop-blur-md border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
-          <div className="flex h-16 sm:h-20 md:h-24 items-center justify-between gap-3 sm:gap-4">
-            <Link href="/backoffice" className="flex items-center space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
-              <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent dark:group-hover:text-accent transition-fintage tracking-[0.2em] uppercase whitespace-nowrap">
+        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24">
+          <div className="flex h-14 sm:h-16 md:h-20 items-center justify-between gap-2 sm:gap-3 md:gap-4">
+            <Link href="/backoffice" className="flex items-center space-x-1.5 sm:space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
+              <span className="text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent dark:group-hover:text-accent transition-fintage tracking-[0.15em] sm:tracking-[0.2em] uppercase whitespace-nowrap">
                 rosebotanique — backoffice
               </span>
             </Link>
@@ -349,13 +349,13 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       </header>
 
       {/* MAIN */}
-      <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-6 sm:py-8 md:py-10">
+      <main className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24 py-4 sm:py-6 md:py-8 lg:py-10">
         {children}
       </main>
 
       {/* FOOTER (optional minimal) */}
-      <footer className="mt-12 sm:mt-16 md:mt-20 py-6 sm:py-8 md:py-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="mt-8 sm:mt-12 md:mt-16 py-4 sm:py-6 md:py-8 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
+        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <p className="text-[10px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 tracking-[0.2em] uppercase">© RSBTNQ Backoffice</p>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             <Link className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/">view storefront</Link>

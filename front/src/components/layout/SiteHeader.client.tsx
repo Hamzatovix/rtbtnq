@@ -41,7 +41,7 @@ export default function SiteHeader() {
                 className="font-logo text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] whitespace-nowrap flex-shrink-0"
                 style={{ wordBreak: 'keep-all', overflowWrap: 'normal', whiteSpace: 'nowrap' }}
               >
-                <span className="inline md:hidden lg:inline">ROSEBOTANIQUE&nbsp;STORE</span>
+                <span className="inline md:hidden lg:inline">ROSEBOTANIQUE&nbsp;<span className="text-[0.65em]">STORE</span></span>
                 <span className="hidden md:inline lg:hidden">ROSEBOTANIQUE</span>
               </span>
             </Link>
