@@ -11,10 +11,10 @@ import { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react'
 import { getOptimizedAsset } from '@/lib/optimized-assets'
 import { useIsCoarsePointer } from '@/hooks/useIsCoarsePointer'
 import { useClientLocale } from '@/hooks/useClientLocale'
+import { useTranslations } from '@/hooks/useTranslations'
 import { formatPriceWithLocale, getColorDisplayName } from '@/lib/utils'
 import { triggerHapticFeedback } from '@/lib/haptics'
 import ProductCardSwatches from './product-card-swatches'
-import ProductCardNotification from './product-card-notification'
 import ProductCardQuickActions from './product-card-quick-actions'
 import ProductCardCartButton from './product-card-cart-button'
 
@@ -28,11 +28,10 @@ type ProductColor = NonNullable<CatalogProduct['colors']>[number]
 
 function ProductCardComponent({ product, density = 'compact', className }: ProductCardProps) {
   const locale = useClientLocale()
+  const t = useTranslations()
   const { addToCart } = useCart()
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesStore()
   const [favorite, setFavorite] = useState(false)
-  const [showCartNotification, setShowCartNotification] = useState(false)
-  const [showFavoriteNotification, setShowFavoriteNotification] = useState(false)
   const [selectedColor, setSelectedColor] = useState<ProductColor | null>(product.colors?.[0] ?? null)
   const [selectedColorIndex, setSelectedColorIndex] = useState(0)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -41,8 +40,6 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
   const [touchEndX, setTouchEndX] = useState<number | null>(null)
   const [hasSwiped, setHasSwiped] = useState(false)
-  const cartTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const favoriteTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     setIsHydrated(true)
@@ -61,8 +58,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const isCompact = density === 'compact'
   const cardRadius = isCompact ? 'rounded-sm' : 'rounded-sm'
   const imageRatio = isCompact ? 'aspect-[4/5] sm:aspect-square' : 'aspect-[4/5]'
-  // Уменьшено масштабирование для более тонкого эффекта
-  const imageScale = pointerMode ? '' : 'group-hover:scale-[1.01]'
+  // Simplified: no image scale on hover for calmer, editorial feel
+  const imageScale = ''
   const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
   const titleClass = isCompact ? 'text-xs sm:text-sm' : 'text-base sm:text-lg'
   const descClass = isCompact ? 'text-[9px] sm:text-[10px] line-clamp-1' : 'text-[10px] sm:text-xs line-clamp-2'
@@ -70,8 +67,6 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const colorsGap = isCompact ? 'space-x-1 sm:space-x-1.5' : 'space-x-1.5 sm:space-x-2'
   const swatchSize = isCompact ? 'w-3 h-3 sm:w-3.5 sm:h-3.5' : 'w-5 h-5 sm:w-6 sm:h-6'
   const badgeTR = isCompact ? 'top-2 right-2' : 'top-4 right-4'
-  const badgeTL = isCompact ? 'top-2 left-2' : 'top-4 left-4'
-  const overlayPad = isCompact ? 'px-2 py-0.5 text-[10px]' : 'px-4 py-2 text-sm'
   const priceSectionPadding = isCompact ? 'pt-1 sm:pt-1.5' : 'pt-2 sm:pt-2.5'
   const swatchSectionPadding = isCompact ? 'pt-2 sm:pt-2.5' : 'pt-3 sm:pt-4'
   const numericId = useMemo(() => Number(product.id), [product.id])
@@ -81,17 +76,6 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     setFavorite(isFavorite(numericId))
   }, [numericId, isFavorite])
 
-  // Cleanup timeouts on unmount
-  useEffect(() => {
-    return () => {
-      if (cartTimeoutRef.current) {
-        clearTimeout(cartTimeoutRef.current)
-      }
-      if (favoriteTimeoutRef.current) {
-        clearTimeout(favoriteTimeoutRef.current)
-      }
-    }
-  }, [])
 
   // Get image for selected color
   const getImageForColor = (color: ProductColor | null) => {
@@ -148,7 +132,12 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     return getOptimizedAsset(imageData.path)
   }, [allImages, currentImageIndex])
 
-  // Sync currentImageIndex with selectedColor when color changes
+  // Strategy B: Keep color swatch and image gallery in sync bidirectionally
+  // When user selects a color, show images for that color
+  // When user swipes/clicks to an image, update selected color to match that image's color
+  
+  // Sync currentImageIndex with selectedColor when color changes (color -> image)
+  // When user selects a color, find and show the first image for that color
   useEffect(() => {
     if (selectedColor && allImages.length > 0) {
       const index = allImages.findIndex(img => 
@@ -160,8 +149,42 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       if (index !== -1) {
         setCurrentImageIndex(index)
       }
+      // Note: if no image found for selected color (index === -1), keep current image
+      // This handles edge cases where a color might not have a specific image
     }
   }, [selectedColor, allImages])
+
+  // Sync selectedColor with currentImageIndex when image changes (image -> color)
+  // This ensures swatch stays in sync when user swipes or clicks image indicators
+  useEffect(() => {
+    if (allImages.length > 0 && currentImageIndex >= 0 && currentImageIndex < allImages.length) {
+      const currentImage = allImages[currentImageIndex]
+      
+      // If current image belongs to a specific color, update selectedColor to match
+      if (currentImage.color && product.colors) {
+        const matchingColorIndex = product.colors.findIndex(c => 
+          (c.id && currentImage.color!.id && c.id === currentImage.color!.id) ||
+          (c.name && currentImage.color!.name && c.name === currentImage.color!.name)
+        )
+        
+        if (matchingColorIndex !== -1) {
+          const matchingColor = product.colors[matchingColorIndex]
+          // Only update if it's different from current selection to avoid loops
+          // Colors are considered the same if both ID and name match (or if one matches when the other is missing)
+          const isSameColor = selectedColor && (
+            (matchingColor.id && selectedColor.id && matchingColor.id === selectedColor.id) ||
+            (matchingColor.name && selectedColor.name && matchingColor.name === selectedColor.name)
+          )
+          
+          if (!isSameColor) {
+            setSelectedColor(matchingColor)
+            setSelectedColorIndex(matchingColorIndex)
+          }
+        }
+      }
+      // If image has no color (thumbnail), keep current selectedColor unchanged
+    }
+  }, [currentImageIndex, allImages, product.colors]) // Note: intentionally not including selectedColor to avoid loops
 
   // Handle swipe gestures
   const minSwipeDistance = 50
@@ -250,38 +273,53 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     e.preventDefault()
     e.stopPropagation()
     
-    if (!selectedColor || !product.colors?.length) return
+    // Determine if product has color variants
+    const hasColorVariants = product.colors && product.colors.length > 0
     
-    // Find variant for selected color
-    const variant = product.colors.find(color => color.id === selectedColor.id)
-    if (!variant) return
-    
-    // Create a mock variant object for the cart
-    const mockVariant = {
-      id: variant.id,
-      product: {
-        name: product.name,
-        slug: product.slug,
-      },
-      color: variant,
-      price: (product.price ?? 0).toString(),
-      stock_qty: 10, // Default stock
-      image: getImageForColor(selectedColor).src,
-      description: '',
-      category: product.category?.name || ''
+    // If product has colors, we need a selected color
+    // Note: button should be disabled if !selectedColor, so this path assumes selectedColor exists
+    if (hasColorVariants) {
+      // Find variant for selected color - use selectedColor directly as fallback if not found by id
+      const variant = product.colors.find(color => color.id === selectedColor?.id) || selectedColor
+      
+      // Create a mock variant object for the cart with selected color
+      const mockVariant = {
+        id: variant?.id || selectedColor?.id || product.id,
+        product: {
+          name: product.name,
+          slug: product.slug,
+        },
+        color: variant || selectedColor,
+        price: (product.price ?? 0).toString(),
+        stock_qty: 10, // Default stock
+        image: getImageForColor(selectedColor).src,
+        description: '',
+        category: product.category?.name || ''
+      }
+      
+      addToCart(mockVariant, 1)
+    } else {
+      // Product has no color variants - create variant directly from product data
+      // This path always works as there are no color requirements
+      const mockVariant = {
+        id: product.id,
+        product: {
+          name: product.name,
+          slug: product.slug,
+        },
+        color: null,
+        price: (product.price ?? 0).toString(),
+        stock_qty: 10, // Default stock
+        image: product.thumbnail || '/placeholder/about_main_placeholder.jpg',
+        description: '',
+        category: product.category?.name || ''
+      }
+      
+      addToCart(mockVariant, 1)
     }
     
-    addToCart(mockVariant, 1)
-    setShowCartNotification(true)
+    // Silent add to cart - no toast notification for calmer UX
     triggerMobileHaptics() // Вибрация при добавлении в корзину
-    
-    // Clear existing timeout
-    if (cartTimeoutRef.current) {
-      clearTimeout(cartTimeoutRef.current)
-    }
-    
-    // Set new timeout
-    cartTimeoutRef.current = setTimeout(() => setShowCartNotification(false), 2000)
   }
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
@@ -304,12 +342,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     } else {
       addToFavorites(favProduct)
       setFavorite(true)
-      setShowFavoriteNotification(true)
+      // Silent favorite toggle - no toast notification for calmer UX
       triggerMobileHaptics() // Вибрация при добавлении в избранное
-      if (favoriteTimeoutRef.current) {
-        clearTimeout(favoriteTimeoutRef.current)
-      }
-      favoriteTimeoutRef.current = setTimeout(() => setShowFavoriteNotification(false), 2000)
     }
   }
 
@@ -321,18 +355,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
 
   const cardContent = (
     <>
-      <ProductCardNotification
-        message={locale === 'ru' ? 'Добавлено в корзину!' : 'Added to cart!'}
-        visible={showCartNotification}
-        className="top-4 left-4"
-      />
-      <ProductCardNotification
-        message={locale === 'ru' ? 'Добавлено в избранное!' : 'Added to favorites!'}
-        visible={showFavoriteNotification}
-        className="top-4 left-4 translate-y-12"
-      />
-
-      <Card className={`overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm hover:shadow-fintage-md hover:border-fintage-graphite/30 dark:hover:border-fintage-graphite/40 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] bg-fintage-offwhite dark:bg-fintage-charcoal ${cardRadius}`}>
+      <Card className={`overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm hover:shadow-fintage-md hover:border-fintage-graphite/30 dark:hover:border-fintage-graphite/40 transition-fintage bg-fintage-offwhite dark:bg-fintage-charcoal ${cardRadius}`}>
         <CardContent className="p-0">
           {/* Image - крупное фото fashion-стиль */}
           <div 
@@ -345,7 +368,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
             <Link 
               href={`/product/${product.slug}`} 
               className="absolute inset-0 z-10" 
-              aria-label={`посмотреть детали ${product.name}`}
+              aria-label={t('product.card.viewDetails').replace('{name}', product.name)}
               onClick={handleLinkClick}
             >
               <OptimizedImage
@@ -361,13 +384,10 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                     : product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className={`object-cover transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${imageScale} group-hover:brightness-[0.98]`}
+                className={`object-cover transition-fintage ${imageScale}`}
                 priority={false}
               />
             </Link>
-            
-            {/* Винтажный overlay - тонкий fade при hover (Nike style) */}
-            <div className="absolute inset-0 bg-gradient-to-t from-fintage-graphite/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hidden sm:block group-hover:opacity-100" aria-hidden="true" />
             
             {/* Image indicators (dots) for mobile swipe */}
             {pointerMode && allImages.length > 1 && (
@@ -386,7 +406,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                         ? 'w-2 h-2 bg-primary dark:bg-primary shadow-sm'
                         : 'w-1.5 h-1.5 bg-white/60 dark:bg-white/40 hover:bg-white/80 dark:hover:bg-white/60'
                     }`}
-                    aria-label={locale === 'ru' ? `Изображение ${index + 1} из ${allImages.length}` : `Image ${index + 1} of ${allImages.length}`}
+                    aria-label={t('product.card.imageIndicator').replace('{current}', String(index + 1)).replace('{total}', String(allImages.length))}
                   />
                 ))}
               </div>
@@ -399,19 +419,13 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               positionClass={badgeTR}
               isCompact={isCompact}
             />
-
-            {/* Винтажный hover overlay - тонкий эффект (Nike style) */}
-            {!pointerMode && (
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center bg-fintage-graphite/5 dark:bg-fintage-graphite/10 z-0 border border-fintage-graphite/10 dark:border-fintage-graphite/20 pointer-events-none">
-              </div>
-            )}
           </div>
 
           {/* Content */}
           <div className={bodyPadding}>
-            <Link href={`/product/${product.slug}`} aria-label={`просмотреть ${product.name}`}>
+            <Link href={`/product/${product.slug}`} aria-label={t('product.card.viewProduct').replace('{name}', product.name)}>
               <div className="space-y-1.5">
-                <h3 className={`font-display-vintage font-black transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] leading-[0.95] text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-fintage-charcoal/90 dark:group-hover:text-fintage-offwhite/90 ${titleClass} uppercase tracking-tighter`}>
+                <h3 className={`font-display-vintage font-black leading-[0.95] text-fintage-charcoal dark:text-fintage-offwhite ${titleClass} uppercase tracking-tighter`}>
                   {product.name}
                 </h3>
                 <p className={`leading-relaxed font-mono tracking-[0.15em] text-fintage-graphite dark:text-fintage-graphite/60 ${descClass} uppercase`}>
@@ -425,7 +439,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                 <span className={`text-fintage-charcoal dark:text-fintage-offwhite font-bold ${priceClass} tracking-tight`}>
                   {typeof product.price === 'number'
                     ? formatPriceWithLocale(product.price, locale)
-                    : (locale === 'ru' ? 'цена по запросу' : 'Price on request')
+                    : t('product.priceOnRequest')
                   }
                 </span>
               </div>
@@ -440,11 +454,29 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                 gapClass={colorsGap}
                 onSelect={handleColorSelect}
               />
-              <ProductCardCartButton
-                onClick={handleAddToCart}
-                ariaLabel={locale === 'ru' ? 'в корзину' : 'add to cart'}
-                isCompact={isCompact}
-              />
+              {/* Add to cart button - subtle, only visible on hover on desktop for calmer editorial feel */}
+              {/* On mobile: always visible. On desktop: only on hover */}
+              {(() => {
+                const hasColorVariants = product.colors && product.colors.length > 0
+                const isDisabled = hasColorVariants && !selectedColor
+                const helperText = isDisabled 
+                  ? t('product.card.chooseColor')
+                  : undefined
+                
+                return (
+                  <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity transition-fintage">
+                    <ProductCardCartButton
+                      onClick={handleAddToCart}
+                      ariaLabel={t('product.addToCart')}
+                      isCompact={isCompact}
+                      disabled={isDisabled}
+                      showHelperText={isDisabled}
+                      helperText={helperText}
+                      locale={locale}
+                    />
+                  </div>
+                )
+              })()}
             </div>
           </div>
         </CardContent>
@@ -452,12 +484,9 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     </>
   )
 
-  // Fintage hover эффект - micro-zoom 1.01 с улучшенной плавностью
-  const interactiveWrapperClass = pointerMode
-    ? wrapperClass
-    : `${wrapperClass} hover-scale-fintage`
-
-  return <div className={interactiveWrapperClass}>{cardContent}</div>
+  // Simplified: single hover effect (shadow + border) for calmer editorial feel
+  // Removed card scale animation to avoid competing effects
+  return <div className={wrapperClass}>{cardContent}</div>
 }
 
 // Мемоизация компонента для предотвращения лишних ре-рендеров

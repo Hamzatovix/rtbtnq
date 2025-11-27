@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ElvenFlower from '@/components/visuals/ElvenFlower'
-import { StarField } from '@/components/visuals/StarField'
+import { StarFieldMedium } from '@/components/visuals/StarFieldMedium'
 import { useTranslations } from '@/hooks/useTranslations'
 import { useClientLocale } from '@/hooks/useClientLocale'
 
@@ -17,6 +17,9 @@ export function Hero() {
       className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-[85vh] lg:min-h-[95vh] flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas pb-20 md:pb-24 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
       aria-labelledby="hero-heading"
     >
+      {/* Звездное небо - только в темной теме (такое же как в разделе "О бренде") */}
+      <StarFieldMedium />
+      
       {/* Fintage декоративные линии - тонкие */}
       <div className="absolute top-0 left-0 right-0 h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
