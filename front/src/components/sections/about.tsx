@@ -16,11 +16,10 @@ export function About() {
   
   // Массив изображений для ротации (c1, c3)
   // ВАЖНО: Файлы должны быть конвертированы из HEIC в JPG/PNG/WebP
-  // Добавляем версию для обхода кеша браузера
-  const imageVersion = 'v2'
+  // Убираем query параметры - Next.js Image Optimization не поддерживает их корректно
   const rotatingImages = [
-    `/images/about_c.jpg?v=${imageVersion}`,
-    `/images/about_c3.jpg?v=${imageVersion}`,
+    `/images/about_c.jpg`,
+    `/images/about_c3.jpg`,
   ]
   
   // Состояние для текущего индекса ротирующегося изображения
@@ -137,6 +136,7 @@ export function About() {
                     loading={currentRotatingIndex === 0 ? 'eager' : 'lazy'}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover object-center motion-safe:transition-fintage group-hover:scale-[1.01]"
+                    unoptimized
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
                       target.src = '/placeholder/about_main_placeholder.jpg'
@@ -185,15 +185,16 @@ export function About() {
               {/* Статичное изображение sc */}
               <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src={`/images/about_sc.jpg?v=${imageVersion}`}
+                  src="/images/about_sc.jpg"
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
                   sizes="75vw"
                   className="object-cover motion-safe:transition-fintage group-hover:scale-[1.01]"
+                  unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_square_macro_placeholder.webp'
+                    target.src = '/placeholder/about_main_placeholder.jpg'
                   }}
                 />
                 {/* Subtle overlay */}
@@ -210,15 +211,16 @@ export function About() {
               {/* Статичное изображение scw */}
               <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src={`/images/about_scw.jpg?v=${imageVersion}`}
+                  src="/images/about_scw.jpg"
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"
                   sizes="75vw"
                   className="object-cover motion-safe:transition-fintage group-hover:scale-[1.01]"
+                  unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_square_tools_placeholder.webp'
+                    target.src = '/placeholder/about_main_placeholder.jpg'
                   }}
                 />
                 {/* Subtle overlay */}
@@ -255,6 +257,7 @@ export function About() {
                     loading={currentRotatingIndex === 0 ? 'eager' : 'lazy'}
                     sizes="(max-width: 1024px) 100vw, 60vw"
                     className="object-cover object-center motion-safe:transition-fintage group-hover:scale-[1.01]"
+                    unoptimized
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
                       target.src = '/placeholder/about_main_placeholder.jpg'
@@ -309,15 +312,16 @@ export function About() {
               {/* Top horizontal image — статичное sc (широкое) */}
               <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src={`/images/about_sc.jpg?v=${imageVersion}`}
+                  src="/images/about_sc.jpg"
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover motion-safe:transition-fintage group-hover:scale-[1.01]"
+                  unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_square_macro_placeholder.webp'
+                    target.src = '/placeholder/about_main_placeholder.jpg'
                   }}
                 />
                 {/* Subtle overlay */}
@@ -334,15 +338,16 @@ export function About() {
               {/* Bottom horizontal image — статичное scw (широкое) */}
               <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src={`/images/about_scw.jpg?v=${imageVersion}`}
+                  src="/images/about_scw.jpg"
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover motion-safe:transition-fintage group-hover:scale-[1.01]"
+                  unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_square_tools_placeholder.webp'
+                    target.src = '/placeholder/about_main_placeholder.jpg'
                   }}
                 />
                 {/* Subtle overlay */}

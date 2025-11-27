@@ -30,6 +30,7 @@ export default function AboutPage() {
           loading="lazy"
           sizes="100vw"
           className="object-cover"
+          unoptimized
         />
 
         {/* универсальный overlay для читаемости */}

@@ -180,7 +180,7 @@ export default function BrandPage() {
       {/* Background image */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <Image
-          src="/images/about_m.png?v=v3"
+          src="/images/about_m.png"
           alt=""
           fill
           priority
@@ -188,6 +188,7 @@ export default function BrandPage() {
           sizes="100vw"
           className="object-cover"
           aria-hidden="true"
+          unoptimized
         />
         {/* Overlay для читаемости контента */}
         <div className="absolute inset-0 bg-fintage-offwhite/85 dark:bg-fintage-charcoal/85 backdrop-blur-[0.5px]" aria-hidden="true" />
@@ -206,6 +207,7 @@ export default function BrandPage() {
           loading="lazy"
           sizes="100vw"
           className="object-cover"
+          unoptimized
         />
 
         {/* универсальный overlay для читаемости */}

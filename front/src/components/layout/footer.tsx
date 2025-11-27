@@ -49,7 +49,7 @@ export function Footer() {
             >
               <div className="h-px w-8 bg-fintage-graphite/30 dark:bg-fintage-graphite/40 group-hover:bg-accent transition-fintage" />
               <p className="text-fintage-graphite/60 dark:text-fintage-graphite/40 text-[9px] font-mono tracking-[0.25em] uppercase group-hover:text-accent transition-fintage">
-                made by H
+                made by M
               </p>
               <div className="h-px w-8 bg-fintage-graphite/30 dark:bg-fintage-graphite/40 group-hover:bg-accent transition-fintage" />
             </motion.div>
