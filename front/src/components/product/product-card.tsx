@@ -139,8 +139,18 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   
   // Sync currentImageIndex with selectedColor when color changes (color -> image)
   // When user selects a color, find and show the first image for that color
+  // Используем ref для отслеживания, был ли это программный свайп (чтобы избежать конфликтов)
+  const isSwipeUpdateRef = useRef(false)
+  
   useEffect(() => {
     if (selectedColor && allImages.length > 0) {
+      // Если это обновление из-за свайпа, пропускаем синхронизацию
+      // (цвет уже обновлен из-за смены изображения)
+      if (isSwipeUpdateRef.current) {
+        isSwipeUpdateRef.current = false
+        return
+      }
+      
       // Проверяем, соответствует ли текущее изображение выбранному цвету
       const currentImage = allImages[currentImageIndex]
       const currentImageMatchesColor = currentImage?.color && (
@@ -149,11 +159,11 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       )
       
       // Если текущее изображение уже соответствует цвету, не меняем индекс
-      // Это предотвращает конфликт при свайпе (когда цвет обновляется из-за смены изображения)
       if (currentImageMatchesColor) {
         return
       }
       
+      // Находим первое изображение для выбранного цвета
       const index = allImages.findIndex(img => 
         img.color && (
           (img.color.id === selectedColor.id) || 
@@ -194,6 +204,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
             )
             
             if (!isSameColor) {
+              // Помечаем, что это обновление из-за свайпа/смены изображения
+              isSwipeUpdateRef.current = true
               return matchingColor
             }
             return prevSelectedColor
@@ -284,56 +296,44 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     }
     
     // Получаем финальную позицию X из события или из сохраненного touchEndX
+    // Важно: используем changedTouches для получения финальной позиции
     const finalX = e?.changedTouches?.[0]?.clientX ?? touchEndX ?? touchStartX
     
-    // Если это был горизонтальный свайп, обрабатываем его
-    if (isHorizontalSwipe) {
-      const distance = touchStartX - finalX
+    // Вычисляем расстояние и направление
+    const distance = touchStartX - finalX
+    const absDistance = Math.abs(distance)
+    const absDeltaY = touchStartY !== null && e?.changedTouches?.[0]?.clientY !== undefined
+      ? Math.abs(e.changedTouches[0].clientY - touchStartY)
+      : 0
+    
+    // Проверяем, является ли это горизонтальным свайпом
+    const isHorizontal = isHorizontalSwipe || (absDistance > minSwipeDistance && (absDeltaY === 0 || absDistance > absDeltaY * 1.5))
+    
+    if (isHorizontal && absDistance > minSwipeDistance) {
+      setHasSwiped(true)
       
-      if (Math.abs(distance) > minSwipeDistance) {
-        setHasSwiped(true)
-        if (distance > 0) {
-          // Swipe left (touchStartX > finalX) - next image
-          setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
-          triggerMobileHaptics()
-        } else if (distance < 0) {
-          // Swipe right (touchStartX < finalX) - previous image
-          setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
-          triggerMobileHaptics()
-        }
-        // Если distance === 0, не делаем ничего (слишком маленькое движение)
-        // Reset swipe flag after a short delay
-        setTimeout(() => setHasSwiped(false), 300)
-      } else {
-        setHasSwiped(false)
+      // Обновляем индекс изображения - useEffect на строке 183 автоматически обновит цвет
+      // и установит isSwipeUpdateRef.current = true для предотвращения обратной синхронизации
+      if (distance > 0) {
+        // Swipe left (touchStartX > finalX) - палец двинулся влево - следующее изображение
+        setCurrentImageIndex((prev) => {
+          const nextIndex = (prev + 1) % allImages.length
+          return nextIndex
+        })
+        triggerMobileHaptics()
+      } else if (distance < 0) {
+        // Swipe right (touchStartX < finalX) - палец двинулся вправо - предыдущее изображение
+        setCurrentImageIndex((prev) => {
+          const prevIndex = (prev - 1 + allImages.length) % allImages.length
+          return prevIndex
+        })
+        triggerMobileHaptics()
       }
+      
+      // Reset swipe flag after a short delay
+      setTimeout(() => setHasSwiped(false), 300)
     } else {
-      // Если это не был горизонтальный свайп, проверяем расстояние напрямую
-      // (на случай, если onTouchMove не успел определить направление)
-      const distance = touchStartX - finalX
-      const absDistance = Math.abs(distance)
-      const absDeltaY = touchStartY !== null && e?.changedTouches?.[0]?.clientY !== undefined
-        ? Math.abs(e.changedTouches[0].clientY - touchStartY)
-        : 0
-      
-      // Если горизонтальное движение больше вертикального и достаточно большое
-      // Используем более мягкие условия для определения горизонтального свайпа
-      if (absDistance > minSwipeDistance && (absDeltaY === 0 || absDistance > absDeltaY * 1.5)) {
-        setHasSwiped(true)
-        if (distance > 0) {
-          // Swipe left (touchStartX > finalX) - next image
-          setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
-          triggerMobileHaptics()
-        } else if (distance < 0) {
-          // Swipe right (touchStartX < finalX) - previous image
-          setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
-          triggerMobileHaptics()
-        }
-        // Если distance === 0, не делаем ничего (слишком маленькое движение)
-        setTimeout(() => setHasSwiped(false), 300)
-      } else {
-        setHasSwiped(false)
-      }
+      setHasSwiped(false)
     }
     
     // Сбрасываем состояние касания
@@ -351,8 +351,22 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   }
 
   const handleColorSelect = (color: ProductColor, index: number) => {
+    // При клике на цвет сбрасываем флаг свайпа, чтобы изображение точно обновилось
+    isSwipeUpdateRef.current = false
     setSelectedColorIndex(index)
     setSelectedColor(color)
+    // Находим первое изображение для выбранного цвета и сразу обновляем индекс
+    if (allImages.length > 0) {
+      const imageIndex = allImages.findIndex(img => 
+        img.color && (
+          (img.color.id === color.id) || 
+          (img.color.name === color.name)
+        )
+      )
+      if (imageIndex !== -1) {
+        setCurrentImageIndex(imageIndex)
+      }
+    }
   }
 
   const handleAddToCart = (e: React.MouseEvent) => {
