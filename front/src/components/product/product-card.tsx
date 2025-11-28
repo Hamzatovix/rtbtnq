@@ -47,12 +47,18 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
 
   const isCoarsePointer = useIsCoarsePointer()
   const [isHydrated, setIsHydrated] = useState(false)
+  // pointerMode активируется только после гидратации и на устройствах с touch-вводом
   const pointerMode = isHydrated ? isCoarsePointer : false
+  
+  // Для мобильных устройств: убеждаемся, что свайпы работают даже если isHydrated еще false
+  // Используем проверку на наличие touch-событий
+  const isMobileDevice = typeof window !== 'undefined' && 
+    ('ontouchstart' in window || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0))
 
   const triggerMobileHaptics = useCallback(() => {
-    if (!pointerMode) return
+    if (!pointerMode && !isMobileDevice) return
     triggerHapticFeedback('success')
-  }, [pointerMode])
+  }, [pointerMode, isMobileDevice])
 
   // Compact mode styles
   const isCompact = density === 'compact'
@@ -233,7 +239,9 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const minSwipeDistance = 40 // Уменьшено для лучшей чувствительности на мобильных
 
   const onTouchStart = (e: React.TouchEvent) => {
-    if (!pointerMode) return
+    // Разрешаем обработку touch-событий на мобильных устройствах
+    // даже если pointerMode еще не активирован (до гидратации)
+    if (!pointerMode && !isMobileDevice) return
     setTouchEndX(null)
     setTouchStartX(e.targetTouches[0].clientX)
     setTouchStartY(e.targetTouches[0].clientY)
@@ -241,7 +249,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
-    if (!pointerMode || touchStartX === null || touchStartY === null) return
+    // Разрешаем обработку touch-событий на мобильных устройствах
+    if ((!pointerMode && !isMobileDevice) || touchStartX === null || touchStartY === null) return
     
     const currentX = e.targetTouches[0].clientX
     const currentY = e.targetTouches[0].clientY
@@ -287,7 +296,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   }
 
   const onTouchEnd = (e?: React.TouchEvent) => {
-    if (!pointerMode || touchStartX === null) {
+    // Разрешаем обработку touch-событий на мобильных устройствах
+    if ((!pointerMode && !isMobileDevice) || touchStartX === null) {
       setTouchStartX(null)
       setTouchStartY(null)
       setTouchEndX(null)
@@ -314,6 +324,12 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       
       // Обновляем индекс изображения - useEffect на строке 183 автоматически обновит цвет
       // и установит isSwipeUpdateRef.current = true для предотвращения обратной синхронизации
+      // Проверяем, что есть изображения для свайпа
+      if (allImages.length === 0) {
+        setHasSwiped(false)
+        return
+      }
+      
       if (distance > 0) {
         // Swipe left (touchStartX > finalX) - палец двинулся влево - следующее изображение
         setCurrentImageIndex((prev) => {
@@ -461,7 +477,11 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
           <div 
             ref={imageContainerRef}
             className={`relative overflow-hidden rounded-t-sm ${imageRatio}`}
-            style={{ touchAction: 'pan-y pinch-zoom' }}
+            style={{ 
+              touchAction: 'pan-y pinch-zoom',
+              WebkitOverflowScrolling: 'touch',
+              overscrollBehaviorX: 'contain'
+            }}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={(e) => onTouchEnd(e)}

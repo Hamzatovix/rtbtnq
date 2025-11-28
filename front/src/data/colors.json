@@ -7,7 +7,13 @@
   {"id": 6, "name": "Stone Gray", "slug": "stone-gray", "hex_code": "#708090", "hex": "#708090"},
   {"id": 7, "name": "Red", "slug": "red", "hex_code": "#DC143C", "hex": "#DC143C"},
   {"id": 8, "name": "Storm Gray", "slug": "storm-gray", "hex_code": "#6B6B6B", "hex": "#6B6B6B"},
-  {"id": 9, "name": "Pistachio", "slug": "pistachio", "hex_code": "#93C572", "hex": "#93C572"}
+  {"id": 9, "name": "Pistachio", "slug": "pistachio", "hex_code": "#93C572", "hex": "#93C572"},
+  {"id": 10, "name": "Чёрный", "slug": "chernyj", "hex_code": "#010101", "hex": "#010101"},
+  {"id": 11, "name": "Нежно-розовый", "slug": "nezno-rozovyj", "hex_code": "#F4CEDB", "hex": "#F4CEDB"},
+  {"id": 12, "name": "Тёмно-коричневый", "slug": "tyomno-korichnevyj", "hex_code": "#47362F", "hex": "#47362F"},
+  {"id": 13, "name": "Оливковый", "slug": "olivkovyj", "hex_code": "#535838", "hex": "#535838"},
+  {"id": 14, "name": "Тёплый офф-вайт", "slug": "tyoplyj-off-vajt", "hex_code": "#F6F5F1", "hex": "#F6F5F1"},
+  {"id": 15, "name": "Глухой синий", "slug": "gluhoj-sinij", "hex_code": "#324A78", "hex": "#324A78"}
 ]
 
 
