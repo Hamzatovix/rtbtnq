@@ -54,10 +54,10 @@ export default function BackofficeDashboard() {
     <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl md:text-display-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-3 sm:mb-4 tracking-tighter uppercase">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-display-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-3 sm:mb-4 md:mb-5 tracking-tighter uppercase">
           Панель управления
         </h1>
-        <p className="text-[9px] sm:text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] mb-2">
+        <p className="text-[9px] sm:text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] mb-2 md:mb-3">
           Системы управления RSBTNQ
         </p>
         <div className="mt-3 sm:mt-4">
@@ -71,10 +71,10 @@ export default function BackofficeDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Товары</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
+        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-5 md:p-6">
+          <div className="flex items-center justify-between mb-2 md:mb-3">
+            <h3 className="text-xs sm:text-sm md:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Товары</h3>
             <Link href="/backoffice/products/new">
               <Button variant="outline" size="sm" className="h-8 px-3 text-xs">
                 <Plus className="h-3 w-3 mr-1" />
@@ -82,32 +82,32 @@ export default function BackofficeDashboard() {
               </Button>
             </Link>
           </div>
-          <p className="text-3xl font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2">{products.length}</p>
-          <Link href="/backoffice/products" className="text-xs font-mono text-accent dark:text-accent hover:underline inline-block uppercase tracking-[0.15em]">
+          <p className="text-2xl sm:text-3xl md:text-3xl font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2 md:mb-3">{products.length}</p>
+          <Link href="/backoffice/products" className="text-[10px] sm:text-xs md:text-xs font-mono text-accent dark:text-accent hover:underline inline-block uppercase tracking-[0.15em]">
             Управление →
           </Link>
         </div>
 
-        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6">
-          <h3 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-2 uppercase tracking-[0.15em]">Категории</h3>
-          <p className="text-3xl font-black text-fintage-charcoal dark:text-fintage-offwhite">{categories.length}</p>
-          <Link href="/backoffice/categories" className="text-xs font-mono text-accent dark:text-accent hover:underline mt-2 inline-block uppercase tracking-[0.15em]">
+        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-5 md:p-6">
+          <h3 className="text-xs sm:text-sm md:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-2 md:mb-3 uppercase tracking-[0.15em]">Категории</h3>
+          <p className="text-2xl sm:text-3xl md:text-3xl font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2 md:mb-3">{categories.length}</p>
+          <Link href="/backoffice/categories" className="text-[10px] sm:text-xs md:text-xs font-mono text-accent dark:text-accent hover:underline mt-2 inline-block uppercase tracking-[0.15em]">
             Управление →
           </Link>
         </div>
 
-        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-6">
-          <h3 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-2 uppercase tracking-[0.15em]">Новые заказы</h3>
-          <p className="text-3xl font-black text-fintage-charcoal dark:text-fintage-offwhite">{newOrdersCount > 0 ? `+${newOrdersCount}` : '0'}</p>
-          <Link href="/backoffice/orders" className="text-xs font-mono text-accent dark:text-accent hover:underline mt-2 inline-block uppercase tracking-[0.15em]">
+        <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-5 md:p-6">
+          <h3 className="text-xs sm:text-sm md:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-2 md:mb-3 uppercase tracking-[0.15em]">Новые заказы</h3>
+          <p className="text-2xl sm:text-3xl md:text-3xl font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2 md:mb-3">{newOrdersCount > 0 ? `+${newOrdersCount}` : '0'}</p>
+          <Link href="/backoffice/orders" className="text-[10px] sm:text-xs md:text-xs font-mono text-accent dark:text-accent hover:underline mt-2 inline-block uppercase tracking-[0.15em]">
             Управление →
           </Link>
         </div>
       </div>
 
       {/* Recent Products */}
-      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl md:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-4 sm:mb-6 tracking-tighter uppercase">Последние товары</h2>
+      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-5 md:p-6">
+        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-4 sm:mb-5 md:mb-6 tracking-tighter uppercase">Последние товары</h2>
         <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
           <div className="min-w-[600px] sm:min-w-0">
             <table className="w-full">
@@ -159,9 +159,9 @@ export default function BackofficeDashboard() {
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-6">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl md:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Последние заказы</h2>
+      <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm p-4 sm:p-5 md:p-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Последние заказы</h2>
           <Link href="/backoffice/orders" className="text-[10px] sm:text-xs font-mono text-accent dark:text-accent hover:underline uppercase tracking-[0.15em]">Все заказы →</Link>
         </div>
         {!orders ? (

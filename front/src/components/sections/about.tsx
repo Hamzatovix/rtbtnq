@@ -14,12 +14,11 @@ export function About() {
   const t = useTranslations()
   const locale = useClientLocale()
   
-  // Массив изображений для ротации (c1, c3)
+  // Массив изображений для ротации (вертикальные изображения)
   // ВАЖНО: Файлы должны быть конвертированы из HEIC в JPG/PNG/WebP
-  // Убираем query параметры - Next.js Image Optimization не поддерживает их корректно
   const rotatingImages = [
-    `/images/about_c.jpg`,
-    `/images/about_c3.jpg`,
+    `/images/about_v1.jpg.jpg`,
+    `/images/about_v2.jpg.jpg`,
   ]
   
   // Состояние для текущего индекса ротирующегося изображения
@@ -182,10 +181,10 @@ export function About() {
 
             {/* Horizontal scroll strip — статичные изображения sc и scw */}
             <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6 md:-mx-8 md:px-8">
-              {/* Статичное изображение sc */}
+              {/* Горизонтальное изображение 1 */}
               <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src="/images/about_sc.jpg"
+                  src="/images/about_h1.jpg.jpg"
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
@@ -208,10 +207,10 @@ export function About() {
                 </figcaption>
               </figure>
 
-              {/* Статичное изображение scw */}
+              {/* Горизонтальное изображение 2 */}
               <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src="/images/about_scw.jpg"
+                  src="/images/about_h2.jpg.jpg"
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"
@@ -309,10 +308,10 @@ export function About() {
 
             {/* Right part — вертикальная колонка со статичными изображениями sc и scw (Urban style) */}
             <div className="flex flex-col gap-4 md:gap-6 lg:gap-8">
-              {/* Top horizontal image — статичное sc (широкое) */}
+              {/* Top horizontal image — горизонтальное изображение 1 */}
               <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src="/images/about_sc.jpg"
+                  src="/images/about_h1.jpg.jpg"
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
@@ -335,10 +334,10 @@ export function About() {
                 </figcaption>
               </figure>
 
-              {/* Bottom horizontal image — статичное scw (широкое) */}
+              {/* Bottom horizontal image — горизонтальное изображение 2 */}
               <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src="/images/about_scw.jpg"
+                  src="/images/about_h2.jpg.jpg"
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"

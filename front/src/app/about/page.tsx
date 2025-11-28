@@ -33,10 +33,16 @@ export default function AboutPage() {
           unoptimized
         />
 
-        {/* универсальный overlay для читаемости */}
+        {/* универсальный overlay для читаемости с фоновым изображением */}
         <div
           aria-hidden
           className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent"
+          style={{
+            backgroundImage: 'url(/images/about_m.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
         />
 
         <motion.div

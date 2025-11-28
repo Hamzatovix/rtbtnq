@@ -115,9 +115,9 @@ export default function BackofficeCategoriesPage(){
         <span className="text-fintage-charcoal dark:text-fintage-offwhite">Категории</span>
       </div>
 
-      <h1 className="text-xl sm:text-2xl md:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Категории</h1>
+      <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Категории</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
         <div className="p-4 sm:p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
           <h2 className="mb-3 sm:mb-4 text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Создать категорию</h2>
           <form onSubmit={onCreate} className="space-y-3 sm:space-y-4">

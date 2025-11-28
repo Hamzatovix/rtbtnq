@@ -57,7 +57,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   // Compact mode styles
   const isCompact = density === 'compact'
   const cardRadius = isCompact ? 'rounded-sm' : 'rounded-sm'
-  const imageRatio = isCompact ? 'aspect-[4/5] sm:aspect-square' : 'aspect-[4/5]'
+  // Соотношение сторон 3:4 соответствует размерам 3024x4032
+  const imageRatio = isCompact ? 'aspect-[3/4] sm:aspect-[3/4]' : 'aspect-[3/4]'
   // Simplified: no image scale on hover for calmer, editorial feel
   const imageScale = ''
   const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
@@ -140,6 +141,19 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   // When user selects a color, find and show the first image for that color
   useEffect(() => {
     if (selectedColor && allImages.length > 0) {
+      // Проверяем, соответствует ли текущее изображение выбранному цвету
+      const currentImage = allImages[currentImageIndex]
+      const currentImageMatchesColor = currentImage?.color && (
+        (currentImage.color.id === selectedColor.id) ||
+        (currentImage.color.name === selectedColor.name)
+      )
+      
+      // Если текущее изображение уже соответствует цвету, не меняем индекс
+      // Это предотвращает конфликт при свайпе (когда цвет обновляется из-за смены изображения)
+      if (currentImageMatchesColor) {
+        return
+      }
+      
       const index = allImages.findIndex(img => 
         img.color && (
           (img.color.id === selectedColor.id) || 
@@ -152,7 +166,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       // Note: if no image found for selected color (index === -1), keep current image
       // This handles edge cases where a color might not have a specific image
     }
-  }, [selectedColor, allImages])
+  }, [selectedColor, allImages, currentImageIndex])
 
   // Sync selectedColor with currentImageIndex when image changes (image -> color)
   // This ensures swatch stays in sync when user swipes or clicks image indicators
@@ -169,17 +183,34 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
         
         if (matchingColorIndex !== -1) {
           const matchingColor = product.colors[matchingColorIndex]
-          // Only update if it's different from current selection to avoid loops
-          // Colors are considered the same if both ID and name match (or if one matches when the other is missing)
-          const isSameColor = selectedColor && (
-            (matchingColor.id && selectedColor.id && matchingColor.id === selectedColor.id) ||
-            (matchingColor.name && selectedColor.name && matchingColor.name === selectedColor.name)
-          )
           
-          if (!isSameColor) {
-            setSelectedColor(matchingColor)
-            setSelectedColorIndex(matchingColorIndex)
-          }
+          // Используем функциональное обновление для получения актуального значения selectedColor
+          setSelectedColor((prevSelectedColor) => {
+            // Only update if it's different from current selection to avoid loops
+            // Colors are considered the same if both ID and name match (or if one matches when the other is missing)
+            const isSameColor = prevSelectedColor && (
+              (matchingColor.id && prevSelectedColor.id && matchingColor.id === prevSelectedColor.id) ||
+              (matchingColor.name && prevSelectedColor.name && matchingColor.name === prevSelectedColor.name)
+            )
+            
+            if (!isSameColor) {
+              return matchingColor
+            }
+            return prevSelectedColor
+          })
+          
+          // Обновляем selectedColorIndex отдельно после обновления selectedColor
+          // Используем функциональное обновление для получения актуального значения
+          setSelectedColorIndex((prevIndex) => {
+            // Проверяем, нужно ли обновлять индекс
+            const currentColor = product.colors[prevIndex]
+            const needsUpdate = !currentColor || (
+              (matchingColor.id && currentColor.id && matchingColor.id !== currentColor.id) ||
+              (matchingColor.name && currentColor.name && matchingColor.name !== currentColor.name)
+            )
+            
+            return needsUpdate ? matchingColorIndex : prevIndex
+          })
         }
       }
       // If image has no color (thumbnail), keep current selectedColor unchanged
@@ -206,16 +237,20 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     const deltaY = Math.abs(currentY - touchStartY)
     
     // Определяем направление свайпа: горизонтальный или вертикальный
-    // Используем больший порог (20px) и более строгое условие для точного определения
-    if (deltaX > deltaY && deltaX > 20 && deltaX > deltaY * 1.5) {
+    // Для iOS используем более строгие условия для точного определения направления
+    // Порог увеличен до 30px для лучшей чувствительности на iPhone
+    if (deltaX > deltaY && deltaX > 30 && deltaX > deltaY * 2) {
       // Горизонтальный свайп - блокируем скролл страницы только после уверенного определения
       if (!isHorizontalSwipe) {
         setIsHorizontalSwipe(true)
       }
+      // Блокируем скролл только для горизонтального свайпа
       e.preventDefault()
+      e.stopPropagation()
       setTouchEndX(currentX)
-    } else if (deltaY > deltaX && deltaY > 20) {
+    } else if (deltaY > deltaX && deltaY > 30) {
       // Вертикальный свайп - разрешаем скролл страницы
+      // Не вызываем preventDefault, чтобы страница могла скроллиться
       setTouchStartX(null)
       setTouchStartY(null)
       setTouchEndX(null)
@@ -361,6 +396,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
           <div 
             ref={imageContainerRef}
             className={`relative overflow-hidden rounded-t-sm ${imageRatio}`}
+            style={{ touchAction: 'pan-y pinch-zoom' }}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}

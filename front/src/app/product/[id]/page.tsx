@@ -56,6 +56,10 @@ export default function ProductPage() {
   const [selectedColorId, setSelectedColorId] = useState<string>('')
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [relatedProducts, setRelatedProducts] = useState<any[]>([])
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchStartY, setTouchStartY] = useState<number | null>(null)
+  const [touchEndX, setTouchEndX] = useState<number | null>(null)
+  const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
 
   const { addItem } = useCartStore()
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesStore()
@@ -197,6 +201,71 @@ export default function ProductPage() {
     setSelectedImageIndex(0) // Сбрасываем индекс изображения при смене цвета
   }
 
+  // Touch handlers для свайпа изображений на мобильных устройствах
+  const minSwipeDistance = 50
+
+  const onImageTouchStart = (e: React.TouchEvent) => {
+    setTouchEndX(null)
+    setTouchStartX(e.targetTouches[0].clientX)
+    setTouchStartY(e.targetTouches[0].clientY)
+    setIsHorizontalSwipe(false)
+  }
+
+  const onImageTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX === null || touchStartY === null || currentImages.length <= 1) return
+    
+    const currentX = e.targetTouches[0].clientX
+    const currentY = e.targetTouches[0].clientY
+    const deltaX = Math.abs(currentX - touchStartX)
+    const deltaY = Math.abs(currentY - touchStartY)
+    
+    // Определяем направление свайпа: горизонтальный или вертикальный
+    // Для iOS используем более строгие условия
+    if (deltaX > deltaY && deltaX > 30 && deltaX > deltaY * 2) {
+      // Горизонтальный свайп - блокируем скролл страницы
+      if (!isHorizontalSwipe) {
+        setIsHorizontalSwipe(true)
+      }
+      e.preventDefault()
+      e.stopPropagation()
+      setTouchEndX(currentX)
+    } else if (deltaY > deltaX && deltaY > 30) {
+      // Вертикальный свайп - разрешаем скролл страницы
+      setTouchStartX(null)
+      setTouchStartY(null)
+      setTouchEndX(null)
+      setIsHorizontalSwipe(false)
+    }
+  }
+
+  const onImageTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null || !isHorizontalSwipe || currentImages.length <= 1) {
+      setTouchStartX(null)
+      setTouchStartY(null)
+      setTouchEndX(null)
+      setIsHorizontalSwipe(false)
+      return
+    }
+    
+    const distance = touchStartX - touchEndX
+    
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        // Swipe left - next image
+        setSelectedImageIndex((prev) => (prev + 1) % currentImages.length)
+      } else {
+        // Swipe right - previous image
+        setSelectedImageIndex((prev) => (prev - 1 + currentImages.length) % currentImages.length)
+      }
+      triggerHapticFeedback('success')
+    }
+    
+    setTouchStartX(null)
+    setTouchStartY(null)
+    setTouchEndX(null)
+    setIsHorizontalSwipe(false)
+  }
+
   return (
     <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas">
       {product && <ProductStructuredData product={product} variant={selectedVariant} />}
@@ -225,7 +294,13 @@ export default function ProductPage() {
             className="space-y-4 md:space-y-6"
           >
             <div className="w-full max-w-[420px] md:max-w-[520px] mx-auto space-y-4 md:space-y-6">
-              <div className="relative aspect-square w-full rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+              <div 
+                className="relative aspect-square w-full rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30"
+                style={{ touchAction: 'pan-y pinch-zoom' }}
+                onTouchStart={onImageTouchStart}
+                onTouchMove={onImageTouchMove}
+                onTouchEnd={onImageTouchEnd}
+              >
                 <Image
                   key={`${product.id}-${selectedColorId}-${selectedImageIndex}`}
                   src={currentImage.startsWith('http') || currentImage.startsWith('/') 
@@ -243,7 +318,14 @@ export default function ProductPage() {
               </div>
               {/* Миниатюры изображений - технический стиль */}
               {currentImages.length > 1 && (
-                <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2">
+                <div 
+                  className="flex gap-2 md:gap-3 overflow-x-auto pb-2"
+                  style={{ 
+                    WebkitOverflowScrolling: 'touch',
+                    touchAction: 'pan-x',
+                    overscrollBehaviorX: 'contain'
+                  }}
+                >
                   {currentImages.map((img, idx) => (
                     <button
                       key={idx}
@@ -325,9 +407,6 @@ export default function ProductPage() {
                     )
                   })}
                 </div>
-                {selectedColor && (
-                  <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] mt-3">{selectedColor.name}</p>
-                )}
               </div>
             )}
 

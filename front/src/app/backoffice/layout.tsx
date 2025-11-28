@@ -42,7 +42,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 
 function DesktopNav() {
   return (
-    <nav className="hidden lg:flex items-center space-x-8 xl:space-x-12">
+    <nav className="hidden md:flex items-center space-x-6 md:space-x-8 xl:space-x-12">
       <NavLink href="/backoffice/products">товары</NavLink>
       <NavLink href="/backoffice/categories">категории</NavLink>
       <NavLink href="/backoffice/orders">заказы</NavLink>
@@ -196,7 +196,7 @@ function MobileNav() {
         aria-expanded={drawerOpen}
         aria-controls="backoffice-mobile-drawer"
         onClick={() => setDrawerOpen(true)}
-        className="lg:hidden hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage rounded-sm inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-fintage-graphite/30 dark:border-fintage-graphite/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-95 touch-manipulation"
+        className="md:hidden hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage rounded-sm inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-fintage-graphite/30 dark:border-fintage-graphite/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-95 touch-manipulation"
       >
         <span className="sr-only">Open menu</span>
         <div className="space-y-1.5">
@@ -249,11 +249,11 @@ function QuickActions() {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="inline-flex h-9 sm:h-10 md:h-11 px-3 sm:px-4 md:px-6 min-w-0 sm:min-w-[148px] items-center justify-center rounded-sm hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage gap-1 sm:gap-2"
+            className="inline-flex h-9 sm:h-10 md:h-10 lg:h-11 px-3 sm:px-4 md:px-5 lg:px-6 min-w-0 sm:min-w-[148px] items-center justify-center rounded-sm hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage gap-1 sm:gap-2"
             aria-label="Меню аккаунта"
           >
             <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/30 border border-fintage-graphite/30 dark:border-fintage-graphite/40 flex-shrink-0" />
-            <span className="hidden sm:inline text-xs sm:text-sm font-mono uppercase tracking-[0.1em] text-fintage-charcoal dark:text-fintage-offwhite">аккаунт</span>
+            <span className="hidden sm:inline text-xs sm:text-sm md:text-sm font-mono uppercase tracking-[0.1em] text-fintage-charcoal dark:text-fintage-offwhite">аккаунт</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-48">
@@ -332,8 +332,8 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
     <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
       {/* HEADER */}
       <header className="sticky top-0 z-50 bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 backdrop-blur-md border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm">
-        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24">
-          <div className="flex h-14 sm:h-16 md:h-20 items-center justify-between gap-2 sm:gap-3 md:gap-4">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
+          <div className="flex h-14 sm:h-16 md:h-16 lg:h-20 items-center justify-between gap-2 sm:gap-3 md:gap-4">
             <Link href="/backoffice" className="flex items-center space-x-1.5 sm:space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
               <span className="text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent dark:group-hover:text-accent transition-fintage tracking-[0.15em] sm:tracking-[0.2em] uppercase whitespace-nowrap">
                 rosebotanique — backoffice
@@ -349,13 +349,13 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       </header>
 
       {/* MAIN */}
-      <main className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24 py-4 sm:py-6 md:py-8 lg:py-10">
+      <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-4 sm:py-6 md:py-8 lg:py-10">
         {children}
       </main>
 
       {/* FOOTER (optional minimal) */}
       <footer className="mt-8 sm:mt-12 md:mt-16 py-4 sm:py-6 md:py-8 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
-        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <p className="text-[10px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 tracking-[0.2em] uppercase">© RSBTNQ Backoffice</p>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             <Link className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/">view storefront</Link>

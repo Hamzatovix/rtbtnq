@@ -58,66 +58,75 @@ const FiltersPanel = ({
   
   return (
     <div className={className}>
-      {/* Категории - технический стиль */}
-      <div className="flex flex-col gap-3 md:gap-4">
-        <div className="mb-1">
-          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+      {/* Категории - минималистичный редакторский стиль */}
+      <div className="flex flex-col gap-4 md:gap-5">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em] flex-shrink-0">
             {texts.categoryLabel || (locale === 'ru' ? 'КАТЕГОРИИ' : 'CATEGORIES')}
           </span>
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
         </div>
-        <div className="flex flex-wrap gap-2 md:gap-3 items-center" role="group" aria-label={texts.categoryLabel}>
-          <Button
-            variant={selectedCategory === '' ? 'primary' : 'outline'}
-            size="sm"
+        <div className="flex flex-wrap gap-2 md:gap-2.5 items-center" role="group" aria-label={texts.categoryLabel}>
+          <button
             onClick={() => onSelectCategory('')}
-            className="font-mono tracking-[0.15em] text-xs uppercase"
+            className={`px-3 py-1.5 rounded-sm font-mono text-[10px] md:text-xs uppercase tracking-[0.15em] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] border ${
+              selectedCategory === ''
+                ? 'bg-fintage-charcoal dark:bg-fintage-offwhite text-fintage-offwhite dark:text-fintage-charcoal border-fintage-charcoal dark:border-fintage-offwhite shadow-fintage-sm'
+                : 'bg-transparent text-fintage-graphite/70 dark:text-fintage-graphite/60 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
+            }`}
           >
             {texts.allCategories}
-          </Button>
+          </button>
           {categories.map((category) => (
-            <Button
+            <button
               key={category.id}
-              variant={selectedCategory === category.slug ? 'primary' : 'outline'}
-              size="sm"
               onClick={() => onSelectCategory(category.slug)}
-              className="font-mono tracking-[0.15em] text-xs uppercase"
+              className={`px-3 py-1.5 rounded-sm font-mono text-[10px] md:text-xs uppercase tracking-[0.15em] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] border ${
+                selectedCategory === category.slug
+                  ? 'bg-fintage-charcoal dark:bg-fintage-offwhite text-fintage-offwhite dark:text-fintage-charcoal border-fintage-charcoal dark:border-fintage-offwhite shadow-fintage-sm'
+                  : 'bg-transparent text-fintage-graphite/70 dark:text-fintage-graphite/60 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
+              }`}
             >
               {category.name}
-            </Button>
+            </button>
           ))}
         </div>
       </div>
 
-      {/* Цвета - технический стиль */}
-      <div className="flex flex-col gap-3 md:gap-4">
-        <div className="mb-1">
-          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+      {/* Цвета - минималистичный редакторский стиль */}
+      <div className="flex flex-col gap-4 md:gap-5">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em] flex-shrink-0">
             {texts.colorLabel || (locale === 'ru' ? 'ЦВЕТА' : 'COLORS')}
           </span>
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
         </div>
-        <div className="flex flex-wrap gap-2 md:gap-3 items-center" role="group" aria-label={texts.colorLabel}>
-          <Button
-            variant={selectedColor === undefined ? 'primary' : 'outline'}
-            size="sm"
+        <div className="flex flex-wrap gap-2.5 md:gap-3 items-center" role="group" aria-label={texts.colorLabel}>
+          <button
             onClick={() => onSelectColor(undefined)}
-            className="font-mono tracking-[0.15em] text-xs uppercase"
+            className={`px-3 py-1.5 rounded-sm font-mono text-[10px] md:text-xs uppercase tracking-[0.15em] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] border ${
+              selectedColor === undefined
+                ? 'bg-fintage-charcoal dark:bg-fintage-offwhite text-fintage-offwhite dark:text-fintage-charcoal border-fintage-charcoal dark:border-fintage-offwhite shadow-fintage-sm'
+                : 'bg-transparent text-fintage-graphite/70 dark:text-fintage-graphite/60 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
+            }`}
           >
             {texts.allColors}
-          </Button>
+          </button>
           {colors.map((color) => (
-            <Button
+            <button
               key={color.id}
-              variant={selectedColor === color.id ? 'primary' : 'outline'}
-              size="sm"
               onClick={() => onSelectColor(color.id)}
-              className="flex items-center gap-2 font-mono tracking-[0.15em] text-xs uppercase"
-            >
-              <span
-                className="w-3 h-3 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50"
-                style={{ backgroundColor: color.hex_code }}
-              />
-              {color.name}
-            </Button>
+              className={`w-8 h-8 md:w-9 md:h-9 rounded-sm border-2 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] focus:outline-none focus:ring-2 focus:ring-focus-ring dark:focus:ring-focus-ring ${
+                selectedColor === color.id
+                  ? 'ring-2 ring-accent dark:ring-accent scale-110 shadow-fintage-md border-accent dark:border-accent'
+                  : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60 hover:scale-110 hover:shadow-fintage-md active:scale-105'
+              }`}
+              style={{ backgroundColor: color.hex_code }}
+              title={color.name}
+              aria-label={locale === 'ru' ? `цвет: ${color.name}` : `color: ${color.name}`}
+            />
           ))}
         </div>
       </div>
