@@ -489,7 +489,14 @@
   .dark select {
     accent-color: hsl(var(--color-accent));
     caret-color: hsl(var(--fintage-offwhite));
-    color: hsl(var(--foreground));
+    background-color: hsl(var(--fintage-charcoal)) !important;
+    color: hsl(var(--fintage-offwhite)) !important;
+  }
+  
+  /* Стили для option элементов в темной теме */
+  .dark select option {
+    background-color: hsl(var(--fintage-charcoal)) !important;
+    color: hsl(var(--fintage-offwhite)) !important;
   }
   input:focus,
   input:focus-visible,

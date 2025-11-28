@@ -203,7 +203,7 @@ export default function BackofficeNewProductPage(){
               <textarea
                 value={description}
                 onChange={e=>setDescription(e.target.value)}
-                className="w-full min-h-32 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 py-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:border-accent dark:focus:border-accent resize-none"
+                className="w-full min-h-32 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 py-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/60 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] resize-none transition-fintage"
                 placeholder="Подробное описание товара..."
               />
             </div>
@@ -212,7 +212,7 @@ export default function BackofficeNewProductPage(){
               <textarea
                 value={materials}
                 onChange={e=>setMaterials(e.target.value)}
-                className="w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 py-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:border-accent dark:focus:border-accent resize-none"
+                className="w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 py-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/60 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] resize-none transition-fintage"
                 placeholder="Например: 100% хлопок; подклад — полиэстер"
               />
             </div>
@@ -221,19 +221,19 @@ export default function BackofficeNewProductPage(){
               <textarea
                 value={care}
                 onChange={e=>setCare(e.target.value)}
-                className="w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 py-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:border-accent dark:focus:border-accent resize-none"
+                className="w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 py-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/60 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] resize-none transition-fintage"
                 placeholder="Например: деликатная стирка при 30°; не отбеливать"
               />
             </div>
             <div>
               <Label className="mb-2">Категория</Label>
               <select 
-                className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:border-accent dark:focus:border-accent" 
+                className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-4 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] transition-fintage appearance-none cursor-pointer" 
                 value={categoryId} 
                 onChange={e=>setCategoryId(e.target.value)}
               >
-                <option value="">— Выберите категорию —</option>
-                {categories.map(c=> <option key={c.id} value={c.id}>{c.name}</option>)}
+                <option value="" className="bg-fintage-offwhite dark:bg-fintage-charcoal text-fintage-charcoal dark:text-fintage-offwhite">— Выберите категорию —</option>
+                {categories.map(c=> <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-charcoal text-fintage-charcoal dark:text-fintage-offwhite">{c.name}</option>)}
               </select>
             </div>
             <div className="flex items-center gap-3 pt-6">

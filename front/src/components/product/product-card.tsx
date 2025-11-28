@@ -218,7 +218,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   }, [currentImageIndex, allImages, product.colors]) // Note: intentionally not including selectedColor to avoid loops
 
   // Handle swipe gestures
-  const minSwipeDistance = 50
+  const minSwipeDistance = 40 // Уменьшено для лучшей чувствительности на мобильных
 
   const onTouchStart = (e: React.TouchEvent) => {
     if (!pointerMode) return
@@ -233,13 +233,15 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     
     const currentX = e.targetTouches[0].clientX
     const currentY = e.targetTouches[0].clientY
-    const deltaX = Math.abs(currentX - touchStartX)
-    const deltaY = Math.abs(currentY - touchStartY)
+    const deltaX = currentX - touchStartX // Сохраняем знак для определения направления
+    const deltaY = currentY - touchStartY
+    const absDeltaX = Math.abs(deltaX)
+    const absDeltaY = Math.abs(deltaY)
     
     // Определяем направление свайпа: горизонтальный или вертикальный
     // Для iOS используем более строгие условия для точного определения направления
     // Порог увеличен до 30px для лучшей чувствительности на iPhone
-    if (deltaX > deltaY && deltaX > 30 && deltaX > deltaY * 2) {
+    if (absDeltaX > absDeltaY && absDeltaX > 30 && absDeltaX > absDeltaY * 2) {
       // Горизонтальный свайп - блокируем скролл страницы только после уверенного определения
       if (!isHorizontalSwipe) {
         setIsHorizontalSwipe(true)
@@ -247,19 +249,33 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       // Блокируем скролл только для горизонтального свайпа
       e.preventDefault()
       e.stopPropagation()
+      // Сохраняем текущую позицию X для вычисления расстояния в onTouchEnd
+      // Обновляем touchEndX для обоих направлений (влево и вправо)
       setTouchEndX(currentX)
-    } else if (deltaY > deltaX && deltaY > 30) {
+    } else if (absDeltaY > absDeltaX && absDeltaY > 30) {
       // Вертикальный свайп - разрешаем скролл страницы
       // Не вызываем preventDefault, чтобы страница могла скроллиться
       setTouchStartX(null)
       setTouchStartY(null)
       setTouchEndX(null)
       setIsHorizontalSwipe(false)
+    } else {
+      // Промежуточное состояние - продолжаем отслеживать позицию для горизонтального свайпа
+      // Это важно для быстрых свайпов, когда направление еще не определено
+      // Обновляем touchEndX для обоих направлений (влево и вправо)
+      if (absDeltaX > 10) {
+        setTouchEndX(currentX)
+        // Если горизонтальное движение достаточно большое, но еще не достигло порога,
+        // все равно помечаем как потенциальный горизонтальный свайп
+        if (absDeltaX > 20 && absDeltaX > absDeltaY) {
+          setIsHorizontalSwipe(true)
+        }
+      }
     }
   }
 
-  const onTouchEnd = () => {
-    if (!pointerMode || touchStartX === null || touchEndX === null || !isHorizontalSwipe) {
+  const onTouchEnd = (e?: React.TouchEvent) => {
+    if (!pointerMode || touchStartX === null) {
       setTouchStartX(null)
       setTouchStartY(null)
       setTouchEndX(null)
@@ -267,25 +283,60 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       return
     }
     
-    const distance = touchStartX - touchEndX
+    // Получаем финальную позицию X из события или из сохраненного touchEndX
+    const finalX = e?.changedTouches?.[0]?.clientX ?? touchEndX ?? touchStartX
     
-    if (Math.abs(distance) > minSwipeDistance) {
-      setHasSwiped(true)
-      if (distance > 0) {
-        // Swipe left - next image
-        setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
-        triggerMobileHaptics()
+    // Если это был горизонтальный свайп, обрабатываем его
+    if (isHorizontalSwipe) {
+      const distance = touchStartX - finalX
+      
+      if (Math.abs(distance) > minSwipeDistance) {
+        setHasSwiped(true)
+        if (distance > 0) {
+          // Swipe left (touchStartX > finalX) - next image
+          setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
+          triggerMobileHaptics()
+        } else if (distance < 0) {
+          // Swipe right (touchStartX < finalX) - previous image
+          setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+          triggerMobileHaptics()
+        }
+        // Если distance === 0, не делаем ничего (слишком маленькое движение)
+        // Reset swipe flag after a short delay
+        setTimeout(() => setHasSwiped(false), 300)
       } else {
-        // Swipe right - previous image
-        setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
-        triggerMobileHaptics()
+        setHasSwiped(false)
       }
-      // Reset swipe flag after a short delay
-      setTimeout(() => setHasSwiped(false), 300)
     } else {
-      setHasSwiped(false)
+      // Если это не был горизонтальный свайп, проверяем расстояние напрямую
+      // (на случай, если onTouchMove не успел определить направление)
+      const distance = touchStartX - finalX
+      const absDistance = Math.abs(distance)
+      const absDeltaY = touchStartY !== null && e?.changedTouches?.[0]?.clientY !== undefined
+        ? Math.abs(e.changedTouches[0].clientY - touchStartY)
+        : 0
+      
+      // Если горизонтальное движение больше вертикального и достаточно большое
+      // Используем более мягкие условия для определения горизонтального свайпа
+      if (absDistance > minSwipeDistance && (absDeltaY === 0 || absDistance > absDeltaY * 1.5)) {
+        setHasSwiped(true)
+        if (distance > 0) {
+          // Swipe left (touchStartX > finalX) - next image
+          setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
+          triggerMobileHaptics()
+        } else if (distance < 0) {
+          // Swipe right (touchStartX < finalX) - previous image
+          setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+          triggerMobileHaptics()
+        }
+        // Если distance === 0, не делаем ничего (слишком маленькое движение)
+        setTimeout(() => setHasSwiped(false), 300)
+      } else {
+        setHasSwiped(false)
+      }
     }
     
+    // Сбрасываем состояние касания
     setTouchStartX(null)
     setTouchStartY(null)
     setTouchEndX(null)
@@ -399,7 +450,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
             style={{ touchAction: 'pan-y pinch-zoom' }}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
+            onTouchEnd={(e) => onTouchEnd(e)}
           >
             <Link 
               href={`/product/${product.slug}`} 
