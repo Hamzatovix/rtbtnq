@@ -242,10 +242,13 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     // Разрешаем обработку touch-событий на мобильных устройствах
     // даже если pointerMode еще не активирован (до гидратации)
     if (!pointerMode && !isMobileDevice) return
+    
+    // Полностью сбрасываем состояние предыдущего свайпа перед началом нового
     setTouchEndX(null)
     setTouchStartX(e.targetTouches[0].clientX)
     setTouchStartY(e.targetTouches[0].clientY)
     setIsHorizontalSwipe(false)
+    // Не сбрасываем hasSwiped здесь, так как он сбрасывается через setTimeout в onTouchEnd
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
@@ -276,10 +279,11 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     } else if (absDeltaY > absDeltaX && absDeltaY > 30) {
       // Вертикальный свайп - разрешаем скролл страницы
       // Не вызываем preventDefault, чтобы страница могла скроллиться
-      setTouchStartX(null)
-      setTouchStartY(null)
-      setTouchEndX(null)
+      // НЕ сбрасываем touchStartX/touchStartY здесь, чтобы не нарушить последующие свайпы
+      // Вместо этого просто сбрасываем флаг горизонтального свайпа
       setIsHorizontalSwipe(false)
+      // Также сбрасываем touchEndX, чтобы не использовать старое значение
+      setTouchEndX(null)
     } else {
       // Промежуточное состояние - продолжаем отслеживать позицию для горизонтального свайпа
       // Это важно для быстрых свайпов, когда направление еще не определено
@@ -296,40 +300,51 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   }
 
   const onTouchEnd = (e?: React.TouchEvent) => {
+    // Сохраняем значения перед сбросом состояния
+    const savedTouchStartX = touchStartX
+    const savedTouchStartY = touchStartY
+    const savedTouchEndX = touchEndX
+    const savedIsHorizontalSwipe = isHorizontalSwipe
+    
+    // Сбрасываем состояние касания сразу, чтобы не блокировать последующие свайпы
+    // Это критически важно для работы последовательных свайпов
+    setTouchStartX(null)
+    setTouchStartY(null)
+    setTouchEndX(null)
+    setIsHorizontalSwipe(false)
+    
     // Разрешаем обработку touch-событий на мобильных устройствах
-    if ((!pointerMode && !isMobileDevice) || touchStartX === null) {
-      setTouchStartX(null)
-      setTouchStartY(null)
-      setTouchEndX(null)
-      setIsHorizontalSwipe(false)
+    // Используем сохраненные значения, так как состояние уже сброшено
+    if ((!pointerMode && !isMobileDevice) || savedTouchStartX === null) {
+      setHasSwiped(false)
       return
     }
     
     // Получаем финальную позицию X из события или из сохраненного touchEndX
     // Важно: используем changedTouches для получения финальной позиции
-    const finalX = e?.changedTouches?.[0]?.clientX ?? touchEndX ?? touchStartX
+    const finalX = e?.changedTouches?.[0]?.clientX ?? savedTouchEndX ?? savedTouchStartX
     
     // Вычисляем расстояние и направление
-    const distance = touchStartX - finalX
+    const distance = savedTouchStartX - finalX
     const absDistance = Math.abs(distance)
-    const absDeltaY = touchStartY !== null && e?.changedTouches?.[0]?.clientY !== undefined
-      ? Math.abs(e.changedTouches[0].clientY - touchStartY)
+    const absDeltaY = savedTouchStartY !== null && e?.changedTouches?.[0]?.clientY !== undefined
+      ? Math.abs(e.changedTouches[0].clientY - savedTouchStartY)
       : 0
     
     // Проверяем, является ли это горизонтальным свайпом
-    const isHorizontal = isHorizontalSwipe || (absDistance > minSwipeDistance && (absDeltaY === 0 || absDistance > absDeltaY * 1.5))
+    const isHorizontal = savedIsHorizontalSwipe || (absDistance > minSwipeDistance && (absDeltaY === 0 || absDistance > absDeltaY * 1.5))
     
     if (isHorizontal && absDistance > minSwipeDistance) {
-      setHasSwiped(true)
-      
-      // Обновляем индекс изображения - useEffect на строке 183 автоматически обновит цвет
-      // и установит isSwipeUpdateRef.current = true для предотвращения обратной синхронизации
       // Проверяем, что есть изображения для свайпа
       if (allImages.length === 0) {
         setHasSwiped(false)
         return
       }
       
+      setHasSwiped(true)
+      
+      // Обновляем индекс изображения - useEffect на строке 183 автоматически обновит цвет
+      // и установит isSwipeUpdateRef.current = true для предотвращения обратной синхронизации
       if (distance > 0) {
         // Swipe left (touchStartX > finalX) - палец двинулся влево - следующее изображение
         setCurrentImageIndex((prev) => {
@@ -347,16 +362,11 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       }
       
       // Reset swipe flag after a short delay
-      setTimeout(() => setHasSwiped(false), 300)
+      // Используем более короткую задержку для быстрой реакции на последующие свайпы
+      setTimeout(() => setHasSwiped(false), 200)
     } else {
       setHasSwiped(false)
     }
-    
-    // Сбрасываем состояние касания
-    setTouchStartX(null)
-    setTouchStartY(null)
-    setTouchEndX(null)
-    setIsHorizontalSwipe(false)
   }
 
   const handleLinkClick = (e: React.MouseEvent) => {

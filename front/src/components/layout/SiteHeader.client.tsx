@@ -38,7 +38,7 @@ export default function SiteHeader() {
             {/* Logo - технический стиль */}
             <Link href="/" className="flex items-center space-x-2 group flex-shrink-0 min-w-0" aria-label={t('common.goToHome')}>
               <span
-                className="font-logo text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] whitespace-nowrap flex-shrink-0"
+                className="font-mono text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] uppercase whitespace-nowrap flex-shrink-0"
                 style={{ wordBreak: 'keep-all', overflowWrap: 'normal', whiteSpace: 'nowrap' }}
               >
                 <span className="inline md:hidden lg:inline">ROSEBOTANIQUE&nbsp;<span className="text-[0.65em]">STORE</span></span>
