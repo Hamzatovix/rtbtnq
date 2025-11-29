@@ -693,74 +693,9 @@ export async function sendOrderNotification(
     isValidUrl
   })
   
-  // Отправляем фото товаров, если они есть
-  // Важно: для localhost изображения не отправляем, так как Telegram не может получить к ним доступ
-  const itemsWithImages = data.items.filter(item => item.image)
-  const canSendImages = !baseUrl.includes('localhost') && !baseUrl.includes('127.0.0.1')
-  
-  let captionFallback: string | undefined
-
-  if (itemsWithImages.length > 0 && canSendImages) {
-    console.log('[Telegram] Найдено товаров с изображениями:', itemsWithImages.length)
-    
-    // Формируем полные URL для изображений
-    const mediaItems = itemsWithImages.slice(0, 10).map((item, index) => {
-      let imageUrl = item.image!
-      // Если путь относительный, добавляем базовый URL
-      if (imageUrl.startsWith('/')) {
-        imageUrl = `${baseUrl}${imageUrl}`
-      }
-      
-      // Формируем подпись для каждого товара
-      const colorText = item.color ? ` - ${item.color}` : ''
-      const priceText = formatPrice(item.total, data.currency)
-      const caption = `${item.name}${colorText} (x${item.qty}) - ${priceText}`
-      
-      return {
-        type: 'photo' as const,
-        media: imageUrl,
-        caption: caption.length > 1024 ? caption.substring(0, 1021) + '...' : caption, // Telegram limit
-      }
-    })
-    
-    // Добавляем текст заказа в подпись к первой карточке (с ограничением 1024 символа)
-    captionFallback = message.length > 1024 ? `${message.substring(0, 1021)}...` : message
-    if (mediaItems.length > 0) {
-      const firstCaption = mediaItems[0].caption ? `${mediaItems[0].caption}\n\n` : ''
-      mediaItems[0].caption = `${firstCaption}${captionFallback}`
-    }
-    
-    // Отправляем медиа-группу (если несколько товаров) или одно фото
-    let photoSent = false
-    if (mediaItems.length === 1) {
-      console.log('[Telegram] Попытка отправить одно фото:', {
-        photoUrl: mediaItems[0].media.substring(0, 100) + '...',
-        captionLength: (mediaItems[0].caption ?? captionFallback).length
-      })
-      photoSent = await sendTelegramPhoto(token, chat, mediaItems[0].media, mediaItems[0].caption ?? captionFallback)
-      console.log('[Telegram] Результат отправки фото:', photoSent ? 'успешно' : 'ошибка')
-      
-      // Если фото не отправилось, добавляем информацию о товаре в текстовое сообщение
-      if (!photoSent) {
-        console.log('[Telegram] Фото не отправилось, информация о товаре будет в текстовом сообщении')
-      }
-    } else if (mediaItems.length > 1) {
-      console.log('[Telegram] Попытка отправить медиа-группу:', {
-        count: mediaItems.length
-      })
-      photoSent = await sendTelegramMediaGroup(token, chat, mediaItems)
-      console.log('[Telegram] Результат отправки медиа-группы:', photoSent ? 'успешно' : 'ошибка')
-      
-      // Если фото не отправилось, добавляем информацию о товарах в текстовое сообщение
-      if (!photoSent) {
-        console.log('[Telegram] Медиа-группа не отправилась, информация о товарах будет в текстовом сообщении')
-      }
-    }
-  } else if (itemsWithImages.length > 0 && !canSendImages) {
-    console.log('[Telegram] Изображения товаров пропущены (localhost недоступен для Telegram)')
-  }
-  
-  // Текстовое сообщение отправляется ВСЕГДА, независимо от результата отправки фото
+  // Изображения товаров отключены - отправляем только текстовое сообщение
+  // Это ускоряет отправку и избегает проблем с таймаутами и недоступными изображениями
+  console.log('[Telegram] Отправка изображений отключена, отправляется только текстовое сообщение')
 
   // Формируем сообщение с кнопкой или без (если localhost)
   const messageOptions: TelegramMessageOptions = {
