@@ -2,7 +2,9 @@
  * Утилиты для отправки уведомлений в Telegram
  */
 
-const TELEGRAM_TIMEOUT_MS = 10000 // 10 секунд таймаут для всех Telegram запросов
+const TELEGRAM_TIMEOUT_MS = 15000 // 15 секунд таймаут для всех Telegram запросов
+const TELEGRAM_READ_TIMEOUT_MS = 5000 // 5 секунд таймаут на чтение ответа
+const TELEGRAM_MAX_RETRIES = 3 // Максимум 3 попытки при сетевых ошибках
 
 interface TelegramMessageOptions {
   text: string
@@ -108,11 +110,42 @@ async function sendTelegramPhotoByUrl(
         throw socketError
       }
       
+      if (fetchError?.code === 'ECONNRESET') {
+        console.error('[Telegram] TLS соединение сброшено:', {
+          elapsed: `${elapsed}ms`,
+          timestamp: new Date().toISOString(),
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const resetError = new Error(`Telegram TLS connection reset: ${fetchError.message}`)
+        // @ts-ignore
+        resetError.status = 503
+        throw resetError
+      }
+      
+      // Обработка ETIMEDOUT - таймаут записи в сокет
+      if (fetchError?.code === 'ETIMEDOUT' || fetchError?.cause?.code === 'ETIMEDOUT' || fetchError?.cause?.errno === -110) {
+        console.error('[Telegram] Таймаут записи в сокет:', {
+          elapsed: `${elapsed}ms`,
+          timestamp: new Date().toISOString(),
+          error: fetchError.message,
+          code: fetchError?.code,
+          cause: fetchError.cause,
+        })
+        const writeTimeoutError = new Error(`Telegram write timeout: ${fetchError.message}`)
+        // @ts-ignore
+        writeTimeoutError.status = 504
+        // @ts-ignore
+        writeTimeoutError.code = 'ETIMEDOUT'
+        throw writeTimeoutError
+      }
+      
       console.error('[Telegram] Fetch запрос завершился с ошибкой:', {
         elapsed: `${elapsed}ms`,
         timestamp: new Date().toISOString(),
         error: fetchError?.message || fetchError,
         code: fetchError?.code,
+        cause: fetchError?.cause,
       })
       throw fetchError
     }
@@ -234,10 +267,39 @@ async function sendTelegramPhotoByFile(
         throw socketError
       }
       
+      if (fetchError?.code === 'ECONNRESET') {
+        console.error('[Telegram] TLS соединение сброшено при отправке фото как файла:', {
+          elapsed: `${elapsed}ms`,
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const resetError = new Error(`Telegram TLS connection reset: ${fetchError.message}`)
+        // @ts-ignore
+        resetError.status = 503
+        throw resetError
+      }
+      
+      // Обработка ETIMEDOUT - таймаут записи в сокет
+      if (fetchError?.code === 'ETIMEDOUT' || fetchError?.cause?.code === 'ETIMEDOUT' || fetchError?.cause?.errno === -110) {
+        console.error('[Telegram] Таймаут записи в сокет при отправке фото как файла:', {
+          elapsed: `${elapsed}ms`,
+          error: fetchError.message,
+          code: fetchError?.code,
+          cause: fetchError.cause,
+        })
+        const writeTimeoutError = new Error(`Telegram write timeout: ${fetchError.message}`)
+        // @ts-ignore
+        writeTimeoutError.status = 504
+        // @ts-ignore
+        writeTimeoutError.code = 'ETIMEDOUT'
+        throw writeTimeoutError
+      }
+      
       console.error('[Telegram] Fetch запрос завершился с ошибкой:', {
         elapsed: `${elapsed}ms`,
         error: fetchError?.message || fetchError,
         code: fetchError?.code,
+        cause: fetchError?.cause,
       })
       throw fetchError
     }
@@ -346,9 +408,36 @@ export async function sendTelegramMediaGroup(
         throw socketError
       }
       
+      if (fetchError?.code === 'ECONNRESET') {
+        console.error('[Telegram] TLS соединение сброшено при отправке медиа-группы:', {
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const resetError = new Error(`Telegram TLS connection reset: ${fetchError.message}`)
+        // @ts-ignore
+        resetError.status = 503
+        throw resetError
+      }
+      
+      // Обработка ETIMEDOUT - таймаут записи в сокет
+      if (fetchError?.code === 'ETIMEDOUT' || fetchError?.cause?.code === 'ETIMEDOUT' || fetchError?.cause?.errno === -110) {
+        console.error('[Telegram] Таймаут записи в сокет при отправке медиа-группы:', {
+          error: fetchError.message,
+          code: fetchError?.code,
+          cause: fetchError.cause,
+        })
+        const writeTimeoutError = new Error(`Telegram write timeout: ${fetchError.message}`)
+        // @ts-ignore
+        writeTimeoutError.status = 504
+        // @ts-ignore
+        writeTimeoutError.code = 'ETIMEDOUT'
+        throw writeTimeoutError
+      }
+      
       console.error('[Telegram] Ошибка fetch при отправке медиа-группы:', {
         error: fetchError?.message || fetchError,
         code: fetchError?.code,
+        cause: fetchError?.cause,
       })
       throw fetchError
     }
@@ -395,12 +484,13 @@ export async function sendTelegramMediaGroup(
 }
 
 /**
- * Отправляет сообщение в Telegram через Bot API
+ * Отправляет сообщение в Telegram через Bot API с retry логикой
  */
 export async function sendTelegramMessage(
   botToken: string,
   chatId: string,
-  options: TelegramMessageOptions
+  options: TelegramMessageOptions,
+  retryCount = 0
 ): Promise<boolean> {
   try {
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`
@@ -460,16 +550,65 @@ export async function sendTelegramMessage(
         throw socketError
       }
       
+      if (fetchError?.code === 'ECONNRESET') {
+        console.error('[Telegram] TLS соединение сброшено при отправке сообщения:', {
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const resetError = new Error(`Telegram TLS connection reset: ${fetchError.message}`)
+        // @ts-ignore
+        resetError.status = 503
+        throw resetError
+      }
+      
+      // Обработка ETIMEDOUT - таймаут записи в сокет
+      if (fetchError?.code === 'ETIMEDOUT' || fetchError?.cause?.code === 'ETIMEDOUT' || fetchError?.cause?.errno === -110) {
+        console.error('[Telegram] Таймаут записи в сокет при отправке сообщения:', {
+          error: fetchError.message,
+          code: fetchError?.code,
+          cause: fetchError.cause,
+        })
+        const writeTimeoutError = new Error(`Telegram write timeout: ${fetchError.message}`)
+        // @ts-ignore
+        writeTimeoutError.status = 504
+        // @ts-ignore
+        writeTimeoutError.code = 'ETIMEDOUT'
+        throw writeTimeoutError
+      }
+      
       console.error('[Telegram] Ошибка fetch при отправке сообщения:', {
         error: fetchError?.message || fetchError,
         code: fetchError?.code,
+        cause: fetchError?.cause,
       })
       throw fetchError
     }
 
     console.log('[Telegram] Чтение ответа от Telegram API...')
-    const responseText = await response.text()
-    console.log('[Telegram] Ответ получен, длина:', responseText.length)
+    // Читаем ответ с таймаутом
+    const readStartTime = Date.now()
+    let responseText: string
+    try {
+      // Используем Promise.race для таймаута на чтение
+      responseText = await Promise.race([
+        response.text(),
+        new Promise<string>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error(`Read timeout after ${TELEGRAM_READ_TIMEOUT_MS}ms`))
+          }, TELEGRAM_READ_TIMEOUT_MS)
+        })
+      ])
+      const readElapsed = Date.now() - readStartTime
+      console.log('[Telegram] Ответ получен, длина:', responseText.length, { elapsed: `${readElapsed}ms` })
+    } catch (readError) {
+      const readElapsed = Date.now() - readStartTime
+      console.error('[Telegram] Ошибка чтения ответа:', {
+        error: readError instanceof Error ? readError.message : readError,
+        elapsed: `${readElapsed}ms`
+      })
+      throw new Error(`Failed to read response: ${readError instanceof Error ? readError.message : 'unknown error'}`)
+    }
+    
     let responseData: any
     try {
       responseData = JSON.parse(responseText)
@@ -493,6 +632,31 @@ export async function sendTelegramMessage(
     })
     return true
   } catch (error) {
+    // Retry логика для сетевых ошибок
+    const isRetryableError = error instanceof Error && (
+      error.name === 'AbortError' ||
+      (error as any).code === 'UND_ERR_SOCKET' ||
+      (error as any).code === 'ECONNRESET' ||
+      (error as any).code === 'ETIMEDOUT' ||
+      error.message.includes('timeout') ||
+      error.message.includes('ETIMEDOUT') ||
+      error.message.includes('connection') ||
+      error.message.includes('Failed to read response') ||
+      error.message.includes('write timeout')
+    )
+    
+    if (isRetryableError && retryCount < TELEGRAM_MAX_RETRIES) {
+      const delay = Math.pow(2, retryCount) * 1000 // Экспоненциальная задержка: 1s, 2s, 4s
+      console.log(`[Telegram] Повторная попытка отправки сообщения (${retryCount + 1}/${TELEGRAM_MAX_RETRIES}) через ${delay}ms...`, {
+        error: error instanceof Error ? error.message : 'unknown',
+        retryCount
+      })
+      
+      await new Promise(resolve => setTimeout(resolve, delay))
+      
+      return sendTelegramMessage(botToken, chatId, options, retryCount + 1)
+    }
+    
     console.error('[Telegram] Failed to send Telegram message:', error)
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
@@ -501,7 +665,9 @@ export async function sendTelegramMessage(
       console.error('[Telegram] Error details:', {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
+        retryCount,
+        maxRetries: TELEGRAM_MAX_RETRIES
       })
     }
     return false

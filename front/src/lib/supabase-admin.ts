@@ -110,6 +110,23 @@ async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
       throw resetError
     }
     
+    // Обработка ETIMEDOUT - таймаут записи в сокет
+    if (fetchError?.code === 'ETIMEDOUT' || fetchError?.cause?.code === 'ETIMEDOUT' || fetchError?.cause?.errno === -110) {
+      console.error('[Supabase] Таймаут записи в сокет:', {
+        elapsed: `${elapsed}ms`,
+        path,
+        error: fetchError.message,
+        code: fetchError?.code,
+        cause: fetchError.cause,
+      })
+      const writeTimeoutError = new Error(`Supabase write timeout: ${fetchError.message}`)
+      // @ts-ignore
+      writeTimeoutError.status = 504
+      // @ts-ignore
+      writeTimeoutError.code = 'ETIMEDOUT'
+      throw writeTimeoutError
+    }
+    
     console.error('[Supabase] Ошибка fetch:', {
       elapsed: `${elapsed}ms`,
       path,
