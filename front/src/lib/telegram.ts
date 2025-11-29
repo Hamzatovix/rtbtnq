@@ -646,7 +646,9 @@ export async function sendTelegramMessage(
     )
     
     if (isRetryableError && retryCount < TELEGRAM_MAX_RETRIES) {
-      const delay = Math.pow(2, retryCount) * 1000 // Экспоненциальная задержка: 1s, 2s, 4s
+      // Уменьшенные задержки для быстрого retry: 500ms, 1000ms, 2000ms
+      // Это позволяет завершить все попытки быстрее на Vercel
+      const delay = retryCount === 0 ? 500 : retryCount === 1 ? 1000 : 2000
       console.log(`[Telegram] Повторная попытка отправки сообщения (${retryCount + 1}/${TELEGRAM_MAX_RETRIES}) через ${delay}ms...`, {
         error: error instanceof Error ? error.message : 'unknown',
         retryCount
