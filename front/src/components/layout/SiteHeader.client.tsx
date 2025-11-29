@@ -365,7 +365,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 href={link.href}
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
-                  className={cn(
+                className={cn(
                   'group relative flex items-center rounded-sm px-2 py-2 text-sm md:text-base font-medium font-body transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 tracking-[0.1em] normal-case',
                   isActive
                     ? 'text-accent'

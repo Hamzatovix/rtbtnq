@@ -2,6 +2,8 @@
  * Утилиты для отправки уведомлений в Telegram
  */
 
+const TELEGRAM_TIMEOUT_MS = 10000 // 10 секунд таймаут для всех Telegram запросов
+
 interface TelegramMessageOptions {
   text: string
   parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2'
@@ -62,9 +64,9 @@ async function sendTelegramPhotoByUrl(
     
     const controller = new AbortController()
     const timeoutId = setTimeout(() => {
-      console.error('[Telegram] Таймаут запроса отправки фото (30s)')
+      console.error(`[Telegram] Таймаут запроса отправки фото (${TELEGRAM_TIMEOUT_MS}ms)`)
       controller.abort()
-    }, 30000) // 30 секунд таймаут
+    }, TELEGRAM_TIMEOUT_MS)
     
     const startTime = Date.now()
     console.log('[Telegram] Начало fetch запроса отправки фото...', { timestamp: new Date().toISOString() })
@@ -87,7 +89,7 @@ async function sendTelegramPhotoByUrl(
       
       if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
         console.error('[Telegram] Запрос прерван (таймаут):', { elapsed: `${elapsed}ms`, timestamp: new Date().toISOString() })
-        const timeoutError = new Error('Telegram request timeout after 30s')
+        const timeoutError = new Error(`Telegram request timeout after ${TELEGRAM_TIMEOUT_MS}ms`)
         // @ts-ignore
         timeoutError.status = 504
         throw timeoutError
@@ -144,7 +146,7 @@ async function sendTelegramPhotoByUrl(
     console.error('[Telegram] Failed to send Telegram photo:', error)
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        console.error('[Telegram] Request timeout (30s) при отправке фото')
+        console.error(`[Telegram] Request timeout (${TELEGRAM_TIMEOUT_MS}ms) при отправке фото`)
       }
       console.error('[Telegram] Error details:', {
         name: error.name,
@@ -193,9 +195,9 @@ async function sendTelegramPhotoByFile(
     
     const controller = new AbortController()
     const timeoutId = setTimeout(() => {
-      console.error('[Telegram] Таймаут запроса отправки фото как файла (30s)')
+      console.error(`[Telegram] Таймаут запроса отправки фото как файла (${TELEGRAM_TIMEOUT_MS}ms)`)
       controller.abort()
-    }, 30000)
+    }, TELEGRAM_TIMEOUT_MS)
     
     const startTime = Date.now()
     let response: Response
@@ -214,7 +216,7 @@ async function sendTelegramPhotoByFile(
       
       if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
         console.error('[Telegram] Запрос прерван (таймаут при отправке фото как файла):', { elapsed: `${elapsed}ms` })
-        const timeoutError = new Error('Telegram request timeout after 30s')
+        const timeoutError = new Error(`Telegram request timeout after ${TELEGRAM_TIMEOUT_MS}ms`)
         // @ts-ignore
         timeoutError.status = 504
         throw timeoutError
@@ -269,7 +271,7 @@ async function sendTelegramPhotoByFile(
     console.error('[Telegram] Failed to send Telegram photo as file:', error)
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        console.error('[Telegram] Request timeout (30s) при отправке фото как файла')
+        console.error(`[Telegram] Request timeout (${TELEGRAM_TIMEOUT_MS}ms) при отправке фото как файла`)
       }
       console.error('[Telegram] Error details:', {
         name: error.name,
@@ -305,9 +307,9 @@ export async function sendTelegramMediaGroup(
     
     const controller = new AbortController()
     const timeoutId = setTimeout(() => {
-      console.error('[Telegram] Таймаут запроса отправки медиа-группы (30s)')
+      console.error(`[Telegram] Таймаут запроса отправки медиа-группы (${TELEGRAM_TIMEOUT_MS}ms)`)
       controller.abort()
-    }, 30000) // 30 секунд таймаут
+    }, TELEGRAM_TIMEOUT_MS)
     
     console.log('[Telegram] Начало fetch запроса отправки медиа-группы...')
     let response: Response
@@ -327,7 +329,7 @@ export async function sendTelegramMediaGroup(
       
       if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
         console.error('[Telegram] Запрос прерван (таймаут при отправке медиа-группы)')
-        const timeoutError = new Error('Telegram request timeout after 30s')
+        const timeoutError = new Error(`Telegram request timeout after ${TELEGRAM_TIMEOUT_MS}ms`)
         // @ts-ignore
         timeoutError.status = 504
         throw timeoutError
@@ -380,7 +382,7 @@ export async function sendTelegramMediaGroup(
     console.error('[Telegram] Failed to send Telegram media group:', error)
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        console.error('[Telegram] Request timeout (30s) при отправке медиа-группы')
+        console.error(`[Telegram] Request timeout (${TELEGRAM_TIMEOUT_MS}ms) при отправке медиа-группы`)
       }
       console.error('[Telegram] Error details:', {
         name: error.name,
@@ -419,9 +421,9 @@ export async function sendTelegramMessage(
     
     const controller = new AbortController()
     const timeoutId = setTimeout(() => {
-      console.error('[Telegram] Таймаут запроса отправки сообщения (30s)')
+      console.error(`[Telegram] Таймаут запроса отправки сообщения (${TELEGRAM_TIMEOUT_MS}ms)`)
       controller.abort()
-    }, 30000) // 30 секунд таймаут
+    }, TELEGRAM_TIMEOUT_MS)
     
     console.log('[Telegram] Начало fetch запроса отправки сообщения...')
     let response: Response
@@ -441,7 +443,7 @@ export async function sendTelegramMessage(
       
       if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
         console.error('[Telegram] Запрос прерван (таймаут при отправке сообщения)')
-        const timeoutError = new Error('Telegram request timeout after 30s')
+        const timeoutError = new Error(`Telegram request timeout after ${TELEGRAM_TIMEOUT_MS}ms`)
         // @ts-ignore
         timeoutError.status = 504
         throw timeoutError
@@ -494,7 +496,7 @@ export async function sendTelegramMessage(
     console.error('[Telegram] Failed to send Telegram message:', error)
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        console.error('[Telegram] Request timeout (30s) при отправке сообщения')
+        console.error(`[Telegram] Request timeout (${TELEGRAM_TIMEOUT_MS}ms) при отправке сообщения`)
       }
       console.error('[Telegram] Error details:', {
         name: error.name,
