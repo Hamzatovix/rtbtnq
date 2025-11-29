@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { nanoid } from 'nanoid'
 import { sendOrderNotification } from '@/lib/telegram'
-import { isSupabaseEnabled, supabaseDelete, supabaseSelect, supabaseUpsert } from '@/lib/supabase-admin'
+import { isSupabaseEnabled, supabaseDelete, supabaseSelect, supabaseUpsert, supabaseCount } from '@/lib/supabase-admin'
 
 const SUPABASE_ORDERS_TABLE = process.env.SUPABASE_ORDERS_TABLE || 'orders'
 
@@ -79,6 +79,71 @@ async function loadOrdersFromSupabase(): Promise<Order[]> {
   } catch (error) {
     console.error('Supabase loadOrders error:', error)
     return []
+  }
+}
+
+/**
+ * Оптимизированная загрузка заказов с фильтрацией и пагинацией на уровне БД
+ */
+async function loadOrdersFromSupabaseWithFilters(options?: {
+  status?: string
+  limit?: number
+  offset?: number
+}): Promise<{ orders: Order[]; total: number }> {
+  try {
+    // Строим запрос с фильтрацией и пагинацией
+    let query = `${SUPABASE_ORDERS_TABLE}?select=id,number,order_status,data,created_at,updated_at&order=created_at.desc`
+    
+    // Добавляем фильтр по статусу, если указан
+    if (options?.status) {
+      query += `&order_status=eq.${encodeURIComponent(options.status)}`
+    }
+    
+    // Добавляем пагинацию
+    const limit = options?.limit || 100
+    const offset = options?.offset || 0
+    query += `&limit=${limit}&offset=${offset}`
+    
+    // Загружаем данные
+    const data = await supabaseSelect<Array<{ id: string; number?: string; order_status?: string; data?: Order; created_at?: string; updated_at?: string }>>(query)
+    
+    const orders = (Array.isArray(data) ? data : []).map((row) => {
+      const payload = row.data ?? ({} as Order)
+      return {
+        ...payload,
+        id: payload.id ?? row.id,
+        number: payload.number ?? row.number ?? '',
+        orderStatus: payload.orderStatus ?? row.order_status ?? 'new',
+        createdAt: payload.createdAt ?? row.created_at ?? new Date().toISOString(),
+        updatedAt: payload.updatedAt ?? row.updated_at ?? new Date().toISOString(),
+      }
+    })
+    
+    // Получаем общее количество для метаданных
+    let total = orders.length
+    
+    // Оптимизация: если получили меньше записей чем limit, это последняя страница
+    // total точно равен количеству загруженных записей + offset
+    if (orders.length < limit) {
+      total = offset + orders.length
+    } else {
+      // Если получили полную страницу, нужен точный подсчет (возможно есть еще записи)
+      // Также всегда делаем подсчет если есть фильтр (для корректной пагинации)
+      try {
+        const filter = options?.status ? `order_status=eq.${encodeURIComponent(options.status)}` : ''
+        total = await supabaseCount(SUPABASE_ORDERS_TABLE, filter)
+      } catch (error) {
+        console.error('[Supabase] Ошибка при подсчете заказов:', error)
+        // Если не удалось получить точный count, используем приблизительный
+        // Если получили полную страницу, предполагаем что есть еще записи
+        total = offset + limit + 1 // Приблизительно
+      }
+    }
+    
+    return { orders, total }
+  } catch (error) {
+    console.error('Supabase loadOrdersWithFilters error:', error)
+    return { orders: [], total: 0 }
   }
 }
 
@@ -316,6 +381,24 @@ export async function listOrders(options?: {
   limit?: number
   offset?: number
 }): Promise<{ results: Order[]; meta: { total: number; limit: number; offset: number } }> {
+  const limit = options?.limit || 100
+  const offset = options?.offset || 0
+  
+  // Если используется Supabase, используем оптимизированную загрузку с фильтрацией на уровне БД
+  if (isSupabaseEnabled()) {
+    const { orders, total } = await loadOrdersFromSupabaseWithFilters({
+      status: options?.status,
+      limit,
+      offset,
+    })
+    
+    return {
+      results: orders,
+      meta: { total, limit, offset },
+    }
+  }
+  
+  // Для файловой системы используем старую логику (загружаем все и фильтруем в памяти)
   let orders = await loadOrders()
   
   if (options?.status) {
@@ -323,9 +406,6 @@ export async function listOrders(options?: {
   }
   
   const total = orders.length
-  const limit = options?.limit || 100
-  const offset = options?.offset || 0
-  
   const results = orders.slice(offset, offset + limit)
   
   return {

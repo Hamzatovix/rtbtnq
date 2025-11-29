@@ -164,9 +164,90 @@ async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
   }
 }
 
-export async function supabaseSelect<T>(table: string, query = ''): Promise<T> {
+export async function supabaseSelect<T>(table: string, query = '', options?: { count?: boolean }): Promise<T> {
   const path = query ? `${table}?${query}` : table
-  return supabaseRequest<T>(path, { method: 'GET' })
+  const headers: Record<string, string> = {}
+  
+  // Если нужен подсчет, добавляем заголовок для получения count
+  if (options?.count) {
+    headers['Prefer'] = 'count=exact'
+  }
+  
+  return supabaseRequest<T>(path, { 
+    method: 'GET',
+    headers: Object.keys(headers).length > 0 ? headers : undefined,
+  })
+}
+
+/**
+ * Получает количество записей в таблице с опциональной фильтрацией
+ * Использует заголовок Content-Range от Supabase для эффективного подсчета
+ */
+export async function supabaseCount(table: string, filter = ''): Promise<number> {
+  try {
+    if (!SUPABASE_URL) {
+      throw new Error('Supabase URL is not configured')
+    }
+    
+    // Используем GET с limit=0 и Prefer: count=exact для получения count из заголовка
+    const query = filter ? `${table}?${filter}&select=id&limit=0` : `${table}?select=id&limit=0`
+    const url = `${SUPABASE_URL}/rest/v1/${query}`
+    
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => {
+      controller.abort()
+    }, SUPABASE_TIMEOUT_MS)
+    
+    const startTime = Date.now()
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        ...getAuthHeaders(),
+        'Prefer': 'count=exact',
+      },
+      signal: controller.signal,
+    })
+    
+    clearTimeout(timeoutId)
+    const elapsed = Date.now() - startTime
+    
+    // Supabase возвращает count в заголовке Content-Range
+    // Формат: "0-9/100" где 100 - это total
+    const contentRange = response.headers.get('content-range')
+    if (contentRange) {
+      const match = contentRange.match(/\/(\d+)$/)
+      if (match) {
+        const count = parseInt(match[1], 10)
+        console.log('[Supabase] Получен count из заголовка:', { 
+          table, 
+          filter, 
+          count,
+          elapsed: `${elapsed}ms`
+        })
+        return count
+      }
+    }
+    
+    // Если не удалось получить из заголовка, делаем fallback - загружаем все ID
+    // Это медленнее, но работает как запасной вариант
+    console.log('[Supabase] Content-Range не найден, делаем запрос для подсчета через данные')
+    const data = await supabaseSelect<Array<{ id: string }>>(query)
+    const count = Array.isArray(data) ? data.length : 0
+    console.log('[Supabase] Получен count из данных:', { 
+      table, 
+      filter, 
+      count,
+      elapsed: `${elapsed}ms`
+    })
+    return count
+  } catch (error) {
+    console.error('[Supabase] Ошибка при подсчете записей:', {
+      table,
+      filter,
+      error: error instanceof Error ? error.message : error,
+    })
+    return 0
+  }
 }
 
 export async function supabaseUpsert<T>(table: string, payload: unknown): Promise<T> {
