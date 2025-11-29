@@ -15,7 +15,7 @@ interface LogoProps {
 
 const sizeMap = {
   compact: 'h-9 md:h-11',
-  default: 'h-14 max-[390px]:h-10 md:h-16 lg:h-18',
+  default: 'h-14 max-[390px]:h-12 md:h-16 lg:h-18',
   large: 'h-16 md:h-18 lg:h-20',
 }
 
@@ -45,7 +45,7 @@ export function Logo({
       />
       {/* Текстовое название (показывается если showText=true) */}
       {showText && (
-        <span className="font-mono text-sm max-[390px]:text-[10px] md:text-base lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 tracking-[0.15em] uppercase">
+        <span className="font-mono text-sm max-[390px]:text-xs md:text-base lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 tracking-[0.15em] uppercase">
           ROSEBOTANIQUE&nbsp;<span className="text-[0.65em] tracking-[0.1em]">STORE</span>
         </span>
       )}
@@ -53,7 +53,7 @@ export function Logo({
   )
 
   const baseClasses = cn(
-    'flex items-center gap-2 max-[390px]:gap-1 md:gap-4 group flex-shrink-0',
+    'flex items-center gap-1.5 max-[370px]:gap-1 max-[390px]:gap-1.5 md:gap-4 group flex-shrink-0',
     onClick && 'cursor-pointer',
     className
   )

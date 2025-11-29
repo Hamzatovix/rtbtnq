@@ -32,8 +32,8 @@ export default function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/95 dark:bg-fintage-charcoal/95 backdrop-blur-sm supports-[backdrop-filter]:bg-fintage-offwhite/90 dark:supports-[backdrop-filter]:bg-fintage-charcoal/90 shadow-fintage-sm">
-      <div className="container mx-auto px-3 sm:px-6 md:px-12 lg:px-12">
-        <div className="flex h-16 md:h-20 items-center justify-between gap-2">
+      <div className="container mx-auto px-2 max-[370px]:px-2 sm:px-6 md:px-12 lg:px-12">
+        <div className="flex min-h-16 h-16 md:h-20 items-center justify-between gap-1 max-[370px]:gap-1">
           {/* Левая группа: Logo/Text */}
           <div className="flex items-center flex-shrink-0 min-w-0">
             {/* Mobile и Desktop: логотип + текст */}
@@ -119,7 +119,7 @@ export default function SiteHeader() {
           </nav>
 
           {/* Правая группа: Actions */}
-          <div className="flex items-center gap-1.5 max-[390px]:gap-1 md:gap-2.5 ml-auto">
+          <div className="flex items-center gap-0.5 max-[370px]:gap-0.5 max-[390px]:gap-1 md:gap-2.5 ml-auto flex-shrink-0">
             {/* Mobile: кнопки + кнопка меню */}
             <div className="flex items-center gap-1.5 max-[390px]:gap-1 md:hidden">
               {(() => {
@@ -348,27 +348,8 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       initial="hidden"
       animate="visible"
     >
-      {/* Branded header */}
-      <motion.div
-        variants={itemVariants}
-        className="px-3 pt-2 pb-3 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
-      >
-        <div className="flex items-center justify-between">
-          <Logo variant="compact" showText={false} />
-          <span className="text-[10px] font-mono font-semibold tracking-[0.2em] text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase">
-            MENU
-          </span>
-        </div>
-      </motion.div>
-
       {/* Navigation - технический стиль Vintage Nike */}
       <nav className="px-3 pt-2 pb-3 space-y-2">
-        {/* Техническая подпись секции */}
-        <div className="px-2 mb-2">
-          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
-            {t('header.navigation') || 'NAVIGATION'}
-          </span>
-        </div>
         {navigationLinks.map((link, index) => {
           // Нормализуем pathname для сравнения (убираем локализацию)
           const normalizedPathname = pathname.replace(/^\/[a-z]{2}(\/|$)/, '/') || '/'
@@ -385,7 +366,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
                   className={cn(
-                  'group relative flex items-center rounded-sm px-2 py-2 text-sm md:text-base font-medium font-body transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 tracking-[0.1em]',
+                  'group relative flex items-center rounded-sm px-2 py-2 text-sm md:text-base font-medium font-body transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 tracking-[0.1em] normal-case',
                   isActive
                     ? 'text-accent'
                     : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg'

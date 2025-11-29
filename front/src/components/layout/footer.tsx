@@ -20,7 +20,7 @@ export function Footer() {
           
           <div className="flex space-x-8 md:space-x-10">
             <a 
-              href="https://t.me/rsbtnqstore"
+              href="https://t.me/rsbtnq"
               target="_blank"
               rel="noopener noreferrer"
               className="text-fintage-graphite dark:text-fintage-graphite/70 hover:text-accent transition-fintage group border border-transparent hover:border-hover-border dark:hover:border-hover-border p-2 rounded-sm"
