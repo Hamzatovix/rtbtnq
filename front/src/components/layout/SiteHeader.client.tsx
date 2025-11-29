@@ -15,6 +15,7 @@ import { useTranslations } from '@/hooks/useTranslations'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { MOBILE_MENU_CONFIG } from './mobile-menu.constants'
+import { Logo } from '@/components/ui/logo'
 
 export default function SiteHeader() {
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -33,21 +34,18 @@ export default function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/95 dark:bg-fintage-charcoal/95 backdrop-blur-sm supports-[backdrop-filter]:bg-fintage-offwhite/90 dark:supports-[backdrop-filter]:bg-fintage-charcoal/90 shadow-fintage-sm">
       <div className="container mx-auto px-6 md:px-12 lg:px-12">
         <div className="flex h-16 md:h-20 items-center justify-between">
-          {/* Левая группа: Logo */}
+          {/* Левая группа: Logo/Text */}
           <div className="flex items-center flex-shrink-0 min-w-0">
-            {/* Logo - технический стиль */}
-            <Link href="/" className="flex items-center space-x-2 group flex-shrink-0 min-w-0" aria-label={t('common.goToHome')}>
-              <span
-                className="font-mono text-sm md:text-lg lg:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] tracking-[0.2em] uppercase whitespace-nowrap flex-shrink-0"
-                style={{ wordBreak: 'keep-all', overflowWrap: 'normal', whiteSpace: 'nowrap' }}
-              >
-                <span className="inline md:hidden lg:inline">ROSEBOTANIQUE&nbsp;<span className="text-[0.65em]">STORE</span></span>
-                <span className="hidden md:inline lg:hidden">ROSEBOTANIQUE</span>
-              </span>
-            </Link>
+            {/* Mobile и Desktop: логотип + текст */}
+            <Logo
+              variant="default"
+              showText={true}
+              href="/"
+              aria-label={t('common.goToHome')}
+            />
           </div>
 
-          {/* Центр: Navigation - технический стиль */}
+          {/* Центр: Navigation - технический стиль (только desktop) */}
           <nav 
             className="hidden md:flex items-center justify-center flex-1 space-x-8 lg:space-x-12"
             aria-label={t('common.mainNavigation')}
@@ -121,97 +119,144 @@ export default function SiteHeader() {
           </nav>
 
           {/* Правая группа: Actions */}
-          <div className="flex items-center">
-            {/* Mobile: отдельные кнопки */}
-            <div className="flex items-center space-x-3 md:hidden">
+          <div className="flex items-center gap-2.5 ml-auto">
+            {/* Mobile: кнопки + кнопка меню */}
+            <div className="flex items-center gap-2.5 md:hidden">
               {(() => {
                 const favCount = mounted ? favorites.length : 0
                 return (
-                  <Button
-                    variant="ghost" 
-                    size="icon" 
+                  <button
+                    type="button"
                     onClick={toggleFavorites}
-                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-10 w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    className="relative inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
                     aria-label={`Favorites ${favCount} items`}
                   >
                     <Heart className="h-4 w-4" />
                     {!mounted ? (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                     ) : favCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-steel text-[9px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-steel text-[9px] font-mono text-fintage-offwhite flex items-center justify-center px-1" aria-hidden="true">
                         {favCount}
                       </span>
                     )}
-                  </Button>
+                  </button>
                 )
               })()}
               {(() => {
                 const cartCount = mounted ? getTotalItems() : 0
                 return (
-                  <Button
-                    variant="ghost" 
-                    size="icon" 
+                  <button
+                    type="button"
                     onClick={toggleCart}
-                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-10 w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    className="relative inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
                     aria-label={`Shopping cart ${cartCount} items`}
                   >
                     <ShoppingBag className="h-4 w-4" />
                     {!mounted ? (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                     ) : cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-sm bg-fintage-steel text-[9px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-steel text-[9px] font-mono text-fintage-offwhite flex items-center justify-center px-1" aria-hidden="true">
                         {cartCount}
                       </span>
                     )}
-                  </Button>
+                  </button>
                 )
               })()}
             </div>
 
+            {/* Mobile menu button */}
+            <button
+              ref={menuButtonRef}
+              type="button"
+              aria-label={drawerOpen ? t('common.closeMenu') : t('common.openMenu')}
+              aria-expanded={drawerOpen}
+              aria-controls="mobile-drawer"
+              onClick={() => setDrawerOpen(!drawerOpen)}
+              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80 relative"
+            >
+              <span className="sr-only">{drawerOpen ? "Close menu" : "Open menu"}</span>
+              <div className="relative w-4 h-4 flex items-center justify-center">
+                {/* Верхняя полоска */}
+                <motion.span
+                  className="absolute block h-0.5 w-4 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
+                  animate={{
+                    rotate: drawerOpen ? 45 : 0,
+                    y: drawerOpen ? 0 : -5,
+                  }}
+                  transition={{
+                    duration: 0.28,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
+                />
+                {/* Средняя полоска */}
+                <motion.span
+                  className="absolute block h-0.5 w-4 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
+                  animate={{
+                    opacity: drawerOpen ? 0 : 1,
+                    scale: drawerOpen ? 0 : 1,
+                  }}
+                  transition={{
+                    duration: 0.2,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
+                />
+                {/* Нижняя полоска */}
+                <motion.span
+                  className="absolute block h-0.5 w-4 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
+                  animate={{
+                    rotate: drawerOpen ? -45 : 0,
+                    y: drawerOpen ? 0 : 5,
+                  }}
+                  transition={{
+                    duration: 0.28,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
+                />
+              </div>
+            </button>
+
             {/* Tablet и Desktop: отдельные кнопки + Settings Panel */}
             {/* Визуальный делимитер (только на планшетах) - Stone Island стиль */}
             <div className="hidden md:block lg:hidden h-6 w-px bg-fintage-graphite/30 dark:bg-fintage-graphite/40 mr-3 lg:mr-4" aria-hidden="true" />
-            <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+            <div className="hidden md:flex items-center gap-2.5">
               {(() => {
                 const favCount = mounted ? favorites.length : 0
                 return (
-                  <Button
-                    variant="ghost" 
-                    size="icon" 
+                  <button
+                    type="button"
                     onClick={toggleFavorites}
-                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 lg:h-10 lg:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    className="relative inline-flex h-9 w-9 lg:h-10 lg:w-10 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
                     aria-label={`Favorites ${favCount} items`}
                   >
                     <Heart className="h-4 w-4 lg:h-5 lg:w-5" />
                     {!mounted ? (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                     ) : favCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-steel text-[9px] lg:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-steel text-[9px] font-mono text-fintage-offwhite flex items-center justify-center px-1" aria-hidden="true">
                         {favCount}
                       </span>
                     )}
-                  </Button>
+                  </button>
                 )
               })()}
               {(() => {
                 const cartCount = mounted ? getTotalItems() : 0
                 return (
-                  <Button
-                    variant="ghost" 
-                    size="icon" 
+                  <button
+                    type="button"
                     onClick={toggleCart}
-                    className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 lg:h-10 lg:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-95"
+                    className="relative inline-flex h-9 w-9 lg:h-10 lg:w-10 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
                     aria-label={`Shopping cart ${cartCount} items`}
                   >
                     <ShoppingBag className="h-4 w-4 lg:h-5 lg:w-5" />
                     {!mounted ? (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                     ) : cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 rounded-sm bg-fintage-steel text-[9px] lg:text-[10px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal flex items-center justify-center shadow-fintage-sm tracking-tight" aria-hidden="true">
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-steel text-[9px] font-mono text-fintage-offwhite flex items-center justify-center px-1" aria-hidden="true">
                         {cartCount}
                       </span>
                     )}
-                  </Button>
+                  </button>
                 )
               })()}
               {/* Settings Panel: tablet и desktop */}
@@ -220,57 +265,6 @@ export default function SiteHeader() {
               </div>
             </div>
           </div>
-          
-          {/* Mobile menu button */}
-          <button
-            ref={menuButtonRef}
-            type="button"
-            aria-label={drawerOpen ? t('common.closeMenu') : t('common.openMenu')}
-            aria-expanded={drawerOpen}
-            aria-controls="mobile-drawer"
-            onClick={() => setDrawerOpen(!drawerOpen)}
-            className="md:hidden hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-fintage-graphite/30 dark:border-accent/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-95 relative"
-          >
-            <span className="sr-only">{drawerOpen ? "Close menu" : "Open menu"}</span>
-            <div className="relative w-5 h-5 flex items-center justify-center">
-              {/* Верхняя полоска */}
-              <motion.span
-                className="absolute block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
-                animate={{
-                  rotate: drawerOpen ? 45 : 0,
-                  y: drawerOpen ? 0 : -6,
-                }}
-                transition={{
-                  duration: 0.28,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
-              />
-              {/* Средняя полоска */}
-              <motion.span
-                className="absolute block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
-                animate={{
-                  opacity: drawerOpen ? 0 : 1,
-                  scale: drawerOpen ? 0 : 1,
-                }}
-                transition={{
-                  duration: 0.2,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
-              />
-              {/* Нижняя полоска */}
-              <motion.span
-                className="absolute block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
-                animate={{
-                  rotate: drawerOpen ? -45 : 0,
-                  y: drawerOpen ? 0 : 6,
-                }}
-                transition={{
-                  duration: 0.28,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
-              />
-            </div>
-          </button>
         </div>
       </div>
 
@@ -356,11 +350,24 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       initial="hidden"
       animate="visible"
     >
+      {/* Branded header */}
+      <motion.div
+        variants={itemVariants}
+        className="px-3 pt-2 pb-3 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
+      >
+        <div className="flex items-center justify-between">
+          <Logo variant="compact" showText={false} />
+          <span className="text-[10px] font-mono font-semibold tracking-[0.2em] text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase">
+            MENU
+          </span>
+        </div>
+      </motion.div>
+
       {/* Navigation - технический стиль Vintage Nike */}
       <nav className="px-3 pt-2 pb-3 space-y-2">
         {/* Техническая подпись секции */}
         <div className="px-2 mb-2">
-          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
             {t('header.navigation') || 'NAVIGATION'}
           </span>
         </div>
@@ -379,23 +386,23 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
                 href={link.href}
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
-                className={cn(
-                  'group relative flex items-center justify-between rounded-sm px-4 py-3 text-xs font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 uppercase tracking-[0.2em]',
+                  className={cn(
+                  'group relative flex items-center rounded-sm px-2 py-2 text-sm md:text-base font-medium font-body transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 tracking-[0.1em]',
                   isActive
-                    ? 'bg-fintage-steel text-fintage-offwhite dark:text-fintage-charcoal border-2 border-fintage-steel shadow-fintage-sm font-semibold'
-                    : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent border border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:border-hover-border dark:hover:border-hover-border'
+                    ? 'text-accent'
+                    : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg'
                 )}
               >
-                <span suppressHydrationWarning className="relative z-10 flex-1">
-                  {link.label}
-                </span>
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="w-2 h-2 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal shadow-fintage-sm"
+                    className="absolute left-0 top-0 bottom-0 w-0.5 bg-accent"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
+                <span suppressHydrationWarning className="relative z-10 flex-1 pl-3">
+                  {link.label}
+                </span>
               </Link>
             </motion.div>
           )
@@ -421,7 +428,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       <div className="px-3 pb-3 space-y-2.5">
         {/* Техническая подпись секции */}
         <div className="px-2 mb-2">
-          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
             {t('header.actions') || 'ACTIONS'}
           </span>
         </div>
@@ -455,12 +462,12 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       {/* Settings Section - технический стиль Stone Island */}
       <motion.div 
         variants={itemVariants}
-        className="mt-auto pt-4 border-t-2 border-fintage-graphite/30 dark:border-fintage-graphite/40"
+        className="mt-auto pt-4 border-t border-fintage-graphite/30 dark:border-fintage-graphite/40"
       >
         <div className="px-3 pb-3">
           {/* Техническая подпись секции */}
           <div className="px-2 mb-2">
-            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
               {t('common.settings') || 'SETTINGS'}
             </span>
           </div>
@@ -484,7 +491,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
   )
 })
 
-// Компонент кнопки действия - улучшенный
+// Компонент кнопки действия - упрощенный редакционный стиль
 const ActionButton = memo(function ActionButton({
   icon,
   label,
@@ -503,16 +510,13 @@ const ActionButton = memo(function ActionButton({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="group relative flex w-full items-center justify-between gap-2.5 rounded-sm px-4 py-3 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-accent dark:hover:border-accent transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90 overflow-hidden"
+      className="group flex w-full items-center justify-between gap-2.5 rounded-sm px-3 py-2.5 bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg border border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:border-hover-border dark:hover:border-hover-border transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
     >
-      {/* Hover effect background - технический стиль Stone Island */}
-      <div className="absolute inset-0 bg-gradient-to-r from-fintage-steel/5 to-transparent opacity-0 group-hover:opacity-100 transition-fintage" />
-      
-      <div className="relative flex items-center gap-2.5 flex-1">
-        <div className="p-1.5 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal transition-fintage group-hover:scale-110 group-hover:bg-active-bg border border-fintage-graphite/20 dark:border-fintage-graphite/30 group-hover:border-hover-border dark:group-hover:border-hover-border">
+      <div className="flex items-center gap-2.5 flex-1">
+        <div className="flex items-center justify-center w-7 h-7 rounded-sm bg-fintage-offwhite dark:bg-fintage-charcoal border border-fintage-graphite/20 dark:border-fintage-graphite/30 transition-fintage">
           {icon}
         </div>
-        <span className="text-xs font-mono font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
+        <span className="text-xs md:text-sm font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent transition-fintage tracking-[0.08em] uppercase">
           {label}
         </span>
       </div>
@@ -520,7 +524,7 @@ const ActionButton = memo(function ActionButton({
         <motion.span
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="relative inline-flex h-5 min-w-[20px] items-center justify-center rounded-sm bg-fintage-steel px-2 text-[9px] font-mono font-bold text-fintage-offwhite dark:text-fintage-charcoal tracking-tight"
+          className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-sm bg-fintage-steel px-2 text-[10px] font-mono font-semibold text-fintage-offwhite dark:text-fintage-charcoal"
         >
           {count}
         </motion.span>
@@ -529,7 +533,7 @@ const ActionButton = memo(function ActionButton({
   )
 })
 
-// Компонент карточки настроек - технический стиль Stone Island
+// Компонент карточки настроек - легкий стиль system chips
 const SettingsCard = memo(function SettingsCard({
   label,
   icon,
@@ -538,8 +542,8 @@ const SettingsCard = memo(function SettingsCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="group flex flex-col items-center gap-1 p-2 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-accent dark:hover:border-accent transition-fintage cursor-pointer active:scale-[0.97] active:opacity-90">
-      <div className="flex items-center justify-center">
+    <div className="group flex flex-col items-center gap-1 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/3 dark:bg-fintage-graphite/8 hover:bg-hover-bg/70 dark:hover:bg-hover-bg/70 hover:border-accent dark:hover:border-accent transition-fintage cursor-pointer active:opacity-80 px-2 py-2.5">
+      <div className="flex items-center justify-center group-hover:opacity-90 transition-fintage">
         {icon}
       </div>
       <span className="text-[9px] font-mono text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">

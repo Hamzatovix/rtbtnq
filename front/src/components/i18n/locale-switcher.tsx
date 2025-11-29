@@ -3,7 +3,6 @@
 import { useLocaleStore } from '@/store/locale-store'
 import { useClientLocale } from '@/hooks/useClientLocale'
 import { localeConfigs } from '@/i18n/config'
-import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 
 export function LocaleSwitcher() {
@@ -25,11 +24,10 @@ export function LocaleSwitcher() {
   const nextConfig = localeConfigs[locale === 'ru' ? 'en' : 'ru']
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
+      type="button"
       onClick={mounted ? toggleLocale : undefined}
-      className="h-9 w-9 rounded-sm border-2 border-fintage-graphite/40 dark:border-fintage-graphite/70 bg-fintage-offwhite dark:bg-fintage-graphite/30 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-accent transition-fintage relative group active:scale-95"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80 relative group"
       aria-label={mounted ? `Переключить язык на ${nextConfig.label}` : 'Переключить язык'}
       title={mounted ? `Текущий язык: ${currentConfig.label}. Нажмите для переключения на ${nextConfig.label}` : undefined}
       suppressHydrationWarning
@@ -53,7 +51,7 @@ export function LocaleSwitcher() {
         {nextConfig.flag}
       </span>
       <span className="sr-only">Switch language</span>
-    </Button>
+    </button>
   )
 }
 

@@ -3,15 +3,20 @@
 import Link from 'next/link'
 import { Instagram, Send } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { Logo } from '@/components/ui/logo'
 
 export function Footer() {
   return (
     <footer className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-paper">
       <div className="container mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-16">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 md:gap-12">
-          <h3 className="font-logo text-lg md:text-xl font-medium text-fintage-charcoal dark:text-fintage-offwhite tracking-[0.2em] uppercase">
-            ROSEBOTANIQUE
-          </h3>
+          <Logo
+            variant="compact"
+            showText={true}
+            href="/"
+            className="opacity-80 hover:opacity-100"
+            aria-label="ROSEBOTANIQUE - на главную"
+          />
           
           <div className="flex space-x-8 md:space-x-10">
             <a 

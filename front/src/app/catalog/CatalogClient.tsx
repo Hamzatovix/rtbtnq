@@ -118,10 +118,10 @@ const FiltersPanel = ({
             <button
               key={color.id}
               onClick={() => onSelectColor(color.id)}
-              className={`w-8 h-8 md:w-9 md:h-9 rounded-sm border-2 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] focus:outline-none focus:ring-2 focus:ring-focus-ring dark:focus:ring-focus-ring ${
+              className={`px-3 py-1.5 aspect-square rounded-sm border transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] focus:outline-none focus:ring-2 focus:ring-focus-ring dark:focus:ring-focus-ring ${
                 selectedColor === color.id
-                  ? 'ring-2 ring-accent dark:ring-accent scale-110 shadow-fintage-md border-accent dark:border-accent'
-                  : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60 hover:scale-110 hover:shadow-fintage-md active:scale-105'
+                  ? 'ring-2 ring-accent dark:ring-accent shadow-fintage-md border-accent dark:border-accent'
+                  : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
               }`}
               style={{ backgroundColor: color.hex_code }}
               title={color.name}

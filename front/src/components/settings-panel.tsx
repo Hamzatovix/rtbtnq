@@ -173,18 +173,17 @@ export function SettingsPanel() {
 
   return (
     <>
-      {/* Trigger Button - технический стиль */}
-      <Button
-        variant="ghost"
-        size="icon"
+      {/* Trigger Button - унифицированный стиль */}
+      <button
+        type="button"
         onClick={mounted ? () => setOpen(true) : undefined}
-        className="relative hover:bg-hover-bg dark:hover:bg-hover-bg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-sm h-9 w-9 lg:h-10 lg:w-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border active:scale-[0.97] active:opacity-90"
+        className="relative inline-flex h-9 w-9 lg:h-10 lg:w-10 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
         aria-label={t('common.settings')}
         aria-expanded={open}
         suppressHydrationWarning
       >
         <Settings className={`h-4 w-4 lg:h-5 lg:w-5 text-fintage-charcoal dark:text-fintage-offwhite transition-transform duration-300 ${open ? 'rotate-90' : ''}`} />
-      </Button>
+      </button>
 
       {/* Settings Panel - рендерится в портале только после монтирования */}
       {mounted && panelContent ? createPortal(panelContent, document.body) : null}
