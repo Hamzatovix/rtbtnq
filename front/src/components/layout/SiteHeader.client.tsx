@@ -32,8 +32,8 @@ export default function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/95 dark:bg-fintage-charcoal/95 backdrop-blur-sm supports-[backdrop-filter]:bg-fintage-offwhite/90 dark:supports-[backdrop-filter]:bg-fintage-charcoal/90 shadow-fintage-sm">
-      <div className="container mx-auto px-6 md:px-12 lg:px-12">
-        <div className="flex h-16 md:h-20 items-center justify-between">
+      <div className="container mx-auto px-3 sm:px-6 md:px-12 lg:px-12">
+        <div className="flex h-16 md:h-20 items-center justify-between gap-2">
           {/* Левая группа: Logo/Text */}
           <div className="flex items-center flex-shrink-0 min-w-0">
             {/* Mobile и Desktop: логотип + текст */}
@@ -47,7 +47,7 @@ export default function SiteHeader() {
 
           {/* Центр: Navigation - технический стиль (только desktop) */}
           <nav 
-            className="hidden md:flex items-center justify-center flex-1 space-x-8 lg:space-x-12"
+            className="hidden md:flex items-center justify-center flex-1 space-x-5 md:space-x-6 lg:space-x-12"
             aria-label={t('common.mainNavigation')}
           >
             {(() => {
@@ -119,23 +119,23 @@ export default function SiteHeader() {
           </nav>
 
           {/* Правая группа: Actions */}
-          <div className="flex items-center gap-2.5 ml-auto">
+          <div className="flex items-center gap-1.5 max-[390px]:gap-1 md:gap-2.5 ml-auto">
             {/* Mobile: кнопки + кнопка меню */}
-            <div className="flex items-center gap-2.5 md:hidden">
+            <div className="flex items-center gap-1.5 max-[390px]:gap-1 md:hidden">
               {(() => {
                 const favCount = mounted ? favorites.length : 0
                 return (
                   <button
                     type="button"
                     onClick={toggleFavorites}
-                    className="relative inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
+                    className="relative inline-flex h-8 w-8 max-[390px]:h-7 max-[390px]:w-7 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
                     aria-label={`Favorites ${favCount} items`}
                   >
-                    <Heart className="h-4 w-4" />
+                    <Heart className="h-3.5 w-3.5 max-[390px]:h-3 max-[390px]:w-3" />
                     {!mounted ? (
-                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                      <span className="absolute -top-0.5 -right-0.5 h-3.5 max-[390px]:h-3 max-[390px]:-top-[2px] max-[390px]:-right-[2px] min-w-[14px] max-[390px]:min-w-[12px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                     ) : favCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-steel text-[9px] font-mono text-fintage-offwhite flex items-center justify-center px-1" aria-hidden="true">
+                      <span className="absolute -top-0.5 -right-0.5 h-3.5 max-[390px]:h-3 max-[390px]:-top-[2px] max-[390px]:-right-[2px] min-w-[14px] max-[390px]:min-w-[12px] rounded-sm bg-fintage-steel text-[8px] max-[390px]:text-[7px] font-mono text-fintage-offwhite flex items-center justify-center px-0.5 max-[390px]:px-[1px]" aria-hidden="true">
                         {favCount}
                       </span>
                     )}
@@ -148,14 +148,14 @@ export default function SiteHeader() {
                   <button
                     type="button"
                     onClick={toggleCart}
-                    className="relative inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
+                    className="relative inline-flex h-8 w-8 max-[390px]:h-7 max-[390px]:w-7 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
                     aria-label={`Shopping cart ${cartCount} items`}
                   >
-                    <ShoppingBag className="h-4 w-4" />
+                    <ShoppingBag className="h-3.5 w-3.5 max-[390px]:h-3 max-[390px]:w-3" />
                     {!mounted ? (
-                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
+                      <span className="absolute -top-0.5 -right-0.5 h-3.5 max-[390px]:h-3 max-[390px]:-top-[2px] max-[390px]:-right-[2px] min-w-[14px] max-[390px]:min-w-[12px] rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/40 animate-pulse" aria-hidden="true" />
                     ) : cartCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-[16px] rounded-sm bg-fintage-steel text-[9px] font-mono text-fintage-offwhite flex items-center justify-center px-1" aria-hidden="true">
+                      <span className="absolute -top-0.5 -right-0.5 h-3.5 max-[390px]:h-3 max-[390px]:-top-[2px] max-[390px]:-right-[2px] min-w-[14px] max-[390px]:min-w-[12px] rounded-sm bg-fintage-steel text-[8px] max-[390px]:text-[7px] font-mono text-fintage-offwhite flex items-center justify-center px-0.5 max-[390px]:px-[1px]" aria-hidden="true">
                         {cartCount}
                       </span>
                     )}
@@ -172,16 +172,16 @@ export default function SiteHeader() {
               aria-expanded={drawerOpen}
               aria-controls="mobile-drawer"
               onClick={() => setDrawerOpen(!drawerOpen)}
-              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80 relative"
+              className="md:hidden inline-flex h-8 w-8 max-[390px]:h-7 max-[390px]:w-7 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80 relative"
             >
               <span className="sr-only">{drawerOpen ? "Close menu" : "Open menu"}</span>
-              <div className="relative w-4 h-4 flex items-center justify-center">
+              <div className="relative w-3.5 h-3.5 max-[390px]:w-3 max-[390px]:h-3 flex items-center justify-center">
                 {/* Верхняя полоска */}
                 <motion.span
-                  className="absolute block h-0.5 w-4 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
+                  className="absolute block h-0.5 w-full max-[390px]:h-[1.5px] max-[390px]:w-full bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
                   animate={{
                     rotate: drawerOpen ? 45 : 0,
-                    y: drawerOpen ? 0 : -5,
+                    y: drawerOpen ? 0 : -4.5,
                   }}
                   transition={{
                     duration: 0.28,
@@ -190,7 +190,7 @@ export default function SiteHeader() {
                 />
                 {/* Средняя полоска */}
                 <motion.span
-                  className="absolute block h-0.5 w-4 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
+                  className="absolute block h-0.5 w-full max-[390px]:h-[1.5px] max-[390px]:w-full bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
                   animate={{
                     opacity: drawerOpen ? 0 : 1,
                     scale: drawerOpen ? 0 : 1,
@@ -202,10 +202,10 @@ export default function SiteHeader() {
                 />
                 {/* Нижняя полоска */}
                 <motion.span
-                  className="absolute block h-0.5 w-4 bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
+                  className="absolute block h-0.5 w-full max-[390px]:h-[1.5px] max-[390px]:w-full bg-fintage-charcoal dark:bg-fintage-offwhite origin-center"
                   animate={{
                     rotate: drawerOpen ? -45 : 0,
-                    y: drawerOpen ? 0 : 5,
+                    y: drawerOpen ? 0 : 4.5,
                   }}
                   transition={{
                     duration: 0.28,
@@ -216,8 +216,6 @@ export default function SiteHeader() {
             </button>
 
             {/* Tablet и Desktop: отдельные кнопки + Settings Panel */}
-            {/* Визуальный делимитер (только на планшетах) - Stone Island стиль */}
-            <div className="hidden md:block lg:hidden h-6 w-px bg-fintage-graphite/30 dark:bg-fintage-graphite/40 mr-3 lg:mr-4" aria-hidden="true" />
             <div className="hidden md:flex items-center gap-2.5">
               {(() => {
                 const favCount = mounted ? favorites.length : 0

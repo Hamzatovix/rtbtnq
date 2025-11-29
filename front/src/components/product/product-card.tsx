@@ -8,6 +8,7 @@ import { useCart } from '@/lib/hooks'
 import { useFavoritesStore } from '@/store/favorites-store'
 import type { Product as FavoritableProduct } from '@/types'
 import { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react'
+import { motion, PanInfo } from 'framer-motion'
 import { getOptimizedAsset } from '@/lib/optimized-assets'
 import { useIsCoarsePointer } from '@/hooks/useIsCoarsePointer'
 import { useClientLocale } from '@/hooks/useClientLocale'
@@ -70,7 +71,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const bodyPadding = isCompact ? 'p-3 sm:p-3.5 space-y-1.5' : 'p-4 sm:p-5 space-y-3'
   const titleClass = isCompact ? 'text-xs sm:text-sm' : 'text-base sm:text-lg'
   const descClass = isCompact ? 'text-[9px] sm:text-[10px] line-clamp-1' : 'text-[10px] sm:text-xs line-clamp-2'
-  const priceClass = isCompact ? 'text-xs sm:text-sm font-bold' : 'text-base sm:text-lg font-bold'
+  const priceClass = isCompact ? 'text-[15px] md:text-[16px] font-medium' : 'text-[15px] md:text-[16px] font-medium'
   const colorsGap = isCompact ? 'space-x-1 sm:space-x-1.5' : 'space-x-1.5 sm:space-x-2'
   const swatchSize = isCompact ? 'w-3 h-3 sm:w-3.5 sm:h-3.5' : 'w-5 h-5 sm:w-6 sm:h-6'
   const badgeTR = isCompact ? 'top-2 right-2' : 'top-4 right-4'
@@ -376,6 +377,27 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     }
   }
 
+  // Handle drag end for framer-motion horizontal swipe
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (allImages.length <= 1) return
+    
+    const threshold = 60
+    const { offset, velocity } = info
+    
+    // Check if drag was significant enough
+    if (Math.abs(offset.x) > threshold || Math.abs(velocity.x) > 500) {
+      if (offset.x < -threshold && currentImageIndex < allImages.length - 1) {
+        // Swipe left - next image
+        setCurrentImageIndex((prev) => prev + 1)
+        triggerMobileHaptics()
+      } else if (offset.x > threshold && currentImageIndex > 0) {
+        // Swipe right - previous image
+        setCurrentImageIndex((prev) => prev - 1)
+        triggerMobileHaptics()
+      }
+    }
+  }
+
   const handleColorSelect = (color: ProductColor, index: number) => {
     // При клике на цвет сбрасываем флаг свайпа, чтобы изображение точно обновилось
     isSwipeUpdateRef.current = false
@@ -484,14 +506,18 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       <Card className={`overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm hover:shadow-fintage-md hover:border-fintage-graphite/30 dark:hover:border-fintage-graphite/40 transition-fintage bg-fintage-offwhite dark:bg-fintage-charcoal ${cardRadius}`}>
         <CardContent className="p-0">
           {/* Image - крупное фото fashion-стиль */}
-          <div 
+          <motion.div 
             ref={imageContainerRef}
             className={`relative overflow-hidden rounded-t-sm ${imageRatio}`}
             style={{ 
-              touchAction: 'pan-y pinch-zoom',
+              touchAction: allImages.length > 1 ? 'pan-x pan-y pinch-zoom' : 'pan-y pinch-zoom',
               WebkitOverflowScrolling: 'touch',
               overscrollBehaviorX: 'contain'
             }}
+            drag={allImages.length > 1 ? "x" : false}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={(e) => onTouchEnd(e)}
@@ -550,7 +576,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               positionClass={badgeTR}
               isCompact={isCompact}
             />
-          </div>
+          </motion.div>
 
           {/* Content */}
           <div className={bodyPadding}>
@@ -567,7 +593,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
             
             <div className={`flex items-center justify-between ${priceSectionPadding}`}>
               <div className="flex items-center space-x-2">
-                <span className={`text-fintage-charcoal dark:text-fintage-offwhite font-bold ${priceClass} tracking-tight`}>
+                <span className={`text-fintage-charcoal dark:text-fintage-offwhite ${priceClass} tracking-normal`}>
                   {typeof product.price === 'number'
                     ? formatPriceWithLocale(product.price, locale)
                     : t('product.priceOnRequest')
