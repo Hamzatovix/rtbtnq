@@ -97,7 +97,7 @@ export default function CheckoutPage() {
         price: item.price,
         unitPrice: item.price,
         total: item.price * item.quantity,
-        image: item.image || '/placeholder/about_main_placeholder.jpg',
+        image: item.image || '/placeholder/about_main_placeholder.svg',
         color: item.selectedColor || '',
       }))
       
@@ -269,7 +269,7 @@ export default function CheckoutPage() {
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
-                          target.src = '/placeholder/about_main_placeholder.jpg'
+                          target.src = '/placeholder/about_main_placeholder.svg'
                         }}
                       />
                     </div>

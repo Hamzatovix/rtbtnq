@@ -235,10 +235,17 @@ export async function createOrder(data: {
   })
 
   // Отправляем уведомление в Telegram асинхронно (не блокируем создание заказа)
-  // Используем setImmediate для отправки в следующем тике event loop
-  setImmediate(async () => {
+  // Важно: на Vercel serverless функции завершаются сразу после ответа,
+  // поэтому отправляем уведомление в фоне, но не ждем его завершения
+  // Используем Promise без await, чтобы не блокировать ответ
+  const sendNotificationPromise = (async () => {
     try {
-      console.log('[Order] Начало отправки уведомления в Telegram...')
+      console.log('[Order] Начало отправки уведомления в Telegram...', {
+        orderId: order.id,
+        orderNumber: order.number,
+        timestamp: new Date().toISOString()
+      })
+      
       const shippingAddress = order.addresses?.find(addr => addr.type === 'shipping') || order.addresses?.[0]
       
       const notificationResult = await sendOrderNotification({
@@ -269,14 +276,31 @@ export async function createOrder(data: {
         baseUrl: data.baseUrl,
       })
       
-      console.log('[Order] Результат отправки в Telegram:', notificationResult ? 'успешно' : 'не удалось')
+      console.log('[Order] Результат отправки в Telegram:', {
+        success: notificationResult,
+        orderId: order.id,
+        orderNumber: order.number,
+        timestamp: new Date().toISOString()
+      })
     } catch (error) {
       // Не блокируем создание заказа, если отправка в Telegram не удалась
-      console.error('[Order] Ошибка при отправке уведомления в Telegram:', error)
-      if (error instanceof Error) {
-        console.error('[Order] Stack trace:', error.stack)
-      }
+      console.error('[Order] Ошибка при отправке уведомления в Telegram:', {
+        orderId: order.id,
+        orderNumber: order.number,
+        error: error instanceof Error ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        } : error,
+        timestamp: new Date().toISOString()
+      })
     }
+  })()
+  
+  // Не ждем завершения, но сохраняем промис для возможной обработки ошибок
+  // В production это не блокирует ответ сервера
+  sendNotificationPromise.catch(() => {
+    // Ошибки уже обработаны в try-catch выше
   })
 
   return order

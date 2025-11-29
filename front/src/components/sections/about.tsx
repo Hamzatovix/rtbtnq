@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
@@ -9,6 +9,92 @@ import { StarFieldMedium } from '@/components/visuals/StarFieldMedium'
 import { useTranslations } from '@/hooks/useTranslations'
 import { useClientLocale } from '@/hooks/useClientLocale'
 import { AnimatePresence, motion } from 'framer-motion'
+
+// Локальный компонент звезд для заголовка
+function LocalStarField() {
+  const largeStarsRef = useRef<HTMLDivElement>(null)
+  const mediumStarsRef = useRef<HTMLDivElement>(null)
+  const smallStarsRef = useRef<HTMLDivElement>(null)
+  const tinyStarsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Генерируем звезды с промежуточной яркостью для локального элемента
+    const generateLargeStars = (count: number) => {
+      return Array.from({ length: count }, () => ({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        opacity: Math.random() * 0.25 + 0.35,
+        size: Math.random() * 0.3 + 1.2,
+        twinkleDelay: Math.random() * 20,
+      }))
+    }
+
+    const generateMediumStars = (count: number) => {
+      return Array.from({ length: count }, () => ({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        opacity: Math.random() * 0.2 + 0.25,
+        size: Math.random() * 0.2 + 1,
+        twinkleDelay: Math.random() * 20,
+      }))
+    }
+
+    const generateSmallStars = (count: number) => {
+      return Array.from({ length: count }, () => ({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        opacity: Math.random() * 0.15 + 0.2,
+        size: Math.random() * 0.2 + 0.8,
+        twinkleDelay: Math.random() * 20,
+      }))
+    }
+
+    const generateTinyStars = (count: number) => {
+      return Array.from({ length: count }, () => ({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        opacity: Math.random() * 0.1 + 0.12,
+        size: Math.random() * 0.2 + 0.5,
+        twinkleDelay: Math.random() * 20,
+      }))
+    }
+
+    const largeStars = generateLargeStars(8)
+    const mediumStars = generateMediumStars(15)
+    const smallStars = generateSmallStars(25)
+    const tinyStars = generateTinyStars(35)
+
+    const applyStars = (
+      ref: React.RefObject<HTMLDivElement | null>,
+      stars: Array<{ x: number; y: number; opacity: number; size: number; twinkleDelay: number }>
+    ) => {
+      if (ref.current) {
+        const boxShadow = stars
+          .map(
+            (s) =>
+              `${s.x}% ${s.y}% 0 0 hsl(35 15% 89% / ${s.opacity})`
+          )
+          .join(', ')
+        ref.current.style.boxShadow = boxShadow
+        ref.current.style.setProperty('--twinkle-delay', `${stars[0]?.twinkleDelay || 0}s`)
+      }
+    }
+
+    applyStars(largeStarsRef, largeStars)
+    applyStars(mediumStarsRef, mediumStars)
+    applyStars(smallStarsRef, smallStars)
+    applyStars(tinyStarsRef, tinyStars)
+  }, [])
+
+  return (
+    <div className="absolute inset-0 stars-container pointer-events-none overflow-hidden rounded-sm" aria-hidden="true">
+      <div ref={largeStarsRef} className="stars stars-large" />
+      <div ref={mediumStarsRef} className="stars stars-medium" />
+      <div ref={smallStarsRef} className="stars stars-small" />
+      <div ref={tinyStarsRef} className="stars stars-tiny" />
+    </div>
+  )
+}
 
 export function About() {
   const t = useTranslations()
@@ -50,7 +136,9 @@ export function About() {
           <div className="space-y-8 relative text-center md:text-left">
             {/* Заголовок в стиле технического каталога - Nike/Stone Island */}
             <div className="mb-8 md:mb-12">
-              <div className="flex items-baseline gap-3 md:gap-4 mb-4">
+              <div className="relative flex items-baseline gap-3 md:gap-4 mb-4">
+                {/* Звездное небо в фоне - только в темной теме */}
+                <LocalStarField />
                 {/* Утилитарный номер секции в стиле каталога */}
                 <div className="flex-shrink-0">
                   <span 
@@ -138,7 +226,7 @@ export function About() {
                     unoptimized
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.jpg'
+                      target.src = '/placeholder/about_main_placeholder.svg'
                     }}
                   />
                 </motion.div>
@@ -193,7 +281,7 @@ export function About() {
                   unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_main_placeholder.jpg'
+                    target.src = '/placeholder/about_main_placeholder.svg'
                   }}
                 />
                 {/* Subtle overlay */}
@@ -219,7 +307,7 @@ export function About() {
                   unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_main_placeholder.jpg'
+                    target.src = '/placeholder/about_main_placeholder.svg'
                   }}
                 />
                 {/* Subtle overlay */}
@@ -259,7 +347,7 @@ export function About() {
                     unoptimized
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.jpg'
+                      target.src = '/placeholder/about_main_placeholder.svg'
                     }}
                   />
                 </motion.div>
@@ -320,7 +408,7 @@ export function About() {
                   unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_main_placeholder.jpg'
+                    target.src = '/placeholder/about_main_placeholder.svg'
                   }}
                 />
                 {/* Subtle overlay */}
@@ -346,7 +434,7 @@ export function About() {
                   unoptimized
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    target.src = '/placeholder/about_main_placeholder.jpg'
+                    target.src = '/placeholder/about_main_placeholder.svg'
                   }}
                 />
                 {/* Subtle overlay */}

@@ -81,10 +81,37 @@ async function sendTelegramPhotoByUrl(
       const elapsed = Date.now() - startTime
       clearTimeout(timeoutId)
       console.log('[Telegram] Fetch запрос завершен, статус:', response.status, { elapsed: `${elapsed}ms`, timestamp: new Date().toISOString() })
-    } catch (fetchError) {
+    } catch (fetchError: any) {
       const elapsed = Date.now() - startTime
       clearTimeout(timeoutId)
-      console.error('[Telegram] Fetch запрос завершился с ошибкой:', { elapsed: `${elapsed}ms`, timestamp: new Date().toISOString() })
+      
+      if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
+        console.error('[Telegram] Запрос прерван (таймаут):', { elapsed: `${elapsed}ms`, timestamp: new Date().toISOString() })
+        const timeoutError = new Error('Telegram request timeout after 30s')
+        // @ts-ignore
+        timeoutError.status = 504
+        throw timeoutError
+      }
+      
+      if (fetchError?.code === 'UND_ERR_SOCKET') {
+        console.error('[Telegram] Соединение закрыто сервером:', {
+          elapsed: `${elapsed}ms`,
+          timestamp: new Date().toISOString(),
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const socketError = new Error(`Telegram connection closed: ${fetchError.message}`)
+        // @ts-ignore
+        socketError.status = 503
+        throw socketError
+      }
+      
+      console.error('[Telegram] Fetch запрос завершился с ошибкой:', {
+        elapsed: `${elapsed}ms`,
+        timestamp: new Date().toISOString(),
+        error: fetchError?.message || fetchError,
+        code: fetchError?.code,
+      })
       throw fetchError
     }
 
@@ -181,10 +208,35 @@ async function sendTelegramPhotoByFile(
       const elapsed = Date.now() - startTime
       clearTimeout(timeoutId)
       console.log('[Telegram] Fetch запрос завершен, статус:', response.status, { elapsed: `${elapsed}ms` })
-    } catch (fetchError) {
+    } catch (fetchError: any) {
       const elapsed = Date.now() - startTime
       clearTimeout(timeoutId)
-      console.error('[Telegram] Fetch запрос завершился с ошибкой:', { elapsed: `${elapsed}ms` })
+      
+      if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
+        console.error('[Telegram] Запрос прерван (таймаут при отправке фото как файла):', { elapsed: `${elapsed}ms` })
+        const timeoutError = new Error('Telegram request timeout after 30s')
+        // @ts-ignore
+        timeoutError.status = 504
+        throw timeoutError
+      }
+      
+      if (fetchError?.code === 'UND_ERR_SOCKET') {
+        console.error('[Telegram] Соединение закрыто сервером при отправке фото как файла:', {
+          elapsed: `${elapsed}ms`,
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const socketError = new Error(`Telegram connection closed: ${fetchError.message}`)
+        // @ts-ignore
+        socketError.status = 503
+        throw socketError
+      }
+      
+      console.error('[Telegram] Fetch запрос завершился с ошибкой:', {
+        elapsed: `${elapsed}ms`,
+        error: fetchError?.message || fetchError,
+        code: fetchError?.code,
+      })
       throw fetchError
     }
     
@@ -270,8 +322,32 @@ export async function sendTelegramMediaGroup(
       })
       clearTimeout(timeoutId)
       console.log('[Telegram] Fetch запрос завершен, статус:', response.status)
-    } catch (fetchError) {
+    } catch (fetchError: any) {
       clearTimeout(timeoutId)
+      
+      if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
+        console.error('[Telegram] Запрос прерван (таймаут при отправке медиа-группы)')
+        const timeoutError = new Error('Telegram request timeout after 30s')
+        // @ts-ignore
+        timeoutError.status = 504
+        throw timeoutError
+      }
+      
+      if (fetchError?.code === 'UND_ERR_SOCKET') {
+        console.error('[Telegram] Соединение закрыто сервером при отправке медиа-группы:', {
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const socketError = new Error(`Telegram connection closed: ${fetchError.message}`)
+        // @ts-ignore
+        socketError.status = 503
+        throw socketError
+      }
+      
+      console.error('[Telegram] Ошибка fetch при отправке медиа-группы:', {
+        error: fetchError?.message || fetchError,
+        code: fetchError?.code,
+      })
       throw fetchError
     }
 
@@ -360,8 +436,32 @@ export async function sendTelegramMessage(
       })
       clearTimeout(timeoutId)
       console.log('[Telegram] Fetch запрос завершен, статус:', response.status)
-    } catch (fetchError) {
+    } catch (fetchError: any) {
       clearTimeout(timeoutId)
+      
+      if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
+        console.error('[Telegram] Запрос прерван (таймаут при отправке сообщения)')
+        const timeoutError = new Error('Telegram request timeout after 30s')
+        // @ts-ignore
+        timeoutError.status = 504
+        throw timeoutError
+      }
+      
+      if (fetchError?.code === 'UND_ERR_SOCKET') {
+        console.error('[Telegram] Соединение закрыто сервером при отправке сообщения:', {
+          error: fetchError.message,
+          cause: fetchError.cause,
+        })
+        const socketError = new Error(`Telegram connection closed: ${fetchError.message}`)
+        // @ts-ignore
+        socketError.status = 503
+        throw socketError
+      }
+      
+      console.error('[Telegram] Ошибка fetch при отправке сообщения:', {
+        error: fetchError?.message || fetchError,
+        code: fetchError?.code,
+      })
       throw fetchError
     }
 
@@ -691,9 +791,19 @@ export async function sendOrderNotification(
   const success = await sendTelegramMessage(token, chat, messageOptions)
   
   if (success) {
-    console.log('[Telegram] Уведомление успешно отправлено в Telegram')
+    console.log('[Telegram] ✅ Уведомление успешно отправлено в Telegram:', {
+      orderId: data.orderId,
+      orderNumber: data.orderNumber,
+      timestamp: new Date().toISOString()
+    })
   } else {
-    console.error('[Telegram] Ошибка при отправке уведомления в Telegram')
+    console.error('[Telegram] ❌ Ошибка при отправке уведомления в Telegram:', {
+      orderId: data.orderId,
+      orderNumber: data.orderNumber,
+      timestamp: new Date().toISOString(),
+      hasToken: !!token,
+      hasChatId: !!chat
+    })
   }
   
   return success

@@ -72,7 +72,7 @@ export function OptimizedImage({
         )}
         
         <Image
-          src={hasError ? '/placeholder/about_main_placeholder.jpg' : currentSrc}
+          src={hasError ? '/placeholder/about_main_placeholder.svg' : currentSrc}
           alt={alt}
           fill
           sizes={sizes}
@@ -97,7 +97,7 @@ export function OptimizedImage({
         <div className="absolute inset-0 bg-gray-200 animate-pulse" />
       )}
       <Image
-        src={hasError ? '/placeholder/about_main_placeholder.jpg' : currentSrc}
+        src={hasError ? '/placeholder/about_main_placeholder.svg' : currentSrc}
         alt={alt}
         width={width}
         height={height}

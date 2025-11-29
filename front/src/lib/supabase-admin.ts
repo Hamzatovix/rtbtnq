@@ -18,6 +18,8 @@ function getAuthHeaders(): Record<string, string> {
   }
 }
 
+const SUPABASE_TIMEOUT_MS = 15000 // 15 секунд таймаут для Supabase запросов
+
 async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
   if (!SUPABASE_URL) {
     throw new Error('Supabase URL is not configured')
@@ -30,28 +32,108 @@ async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
     hasAuth: !!SUPABASE_SERVICE_ROLE_KEY,
   })
 
-  const response = await fetch(url, {
-    ...init,
-    headers: {
-      ...getAuthHeaders(),
-      ...(init.headers || {}),
-    },
-  })
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => {
+    console.error('[Supabase] Таймаут запроса (15s)')
+    controller.abort()
+  }, SUPABASE_TIMEOUT_MS)
 
-  console.log('[Supabase] Ответ:', {
-    status: response.status,
-    statusText: response.statusText,
-    ok: response.ok,
-  })
+  const startTime = Date.now()
+  let response: Response
+  
+  try {
+    // Извлекаем signal из init, если он есть, и комбинируем с нашим
+    const { signal: externalSignal, ...restInit } = init
+    const combinedSignal = externalSignal 
+      ? (() => {
+          const combinedController = new AbortController()
+          externalSignal.addEventListener('abort', () => combinedController.abort(), { once: true })
+          controller.signal.addEventListener('abort', () => combinedController.abort(), { once: true })
+          return combinedController.signal
+        })()
+      : controller.signal
+
+    response = await fetch(url, {
+      ...restInit,
+      headers: {
+        ...getAuthHeaders(),
+        ...(restInit.headers || {}),
+      },
+      signal: combinedSignal,
+    })
+    
+    const elapsed = Date.now() - startTime
+    clearTimeout(timeoutId)
+    console.log('[Supabase] Ответ получен:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      elapsed: `${elapsed}ms`,
+    })
+  } catch (fetchError: any) {
+    const elapsed = Date.now() - startTime
+    clearTimeout(timeoutId)
+    
+    if (fetchError?.name === 'AbortError' || controller.signal.aborted) {
+      console.error('[Supabase] Запрос прерван (таймаут или отмена):', {
+        elapsed: `${elapsed}ms`,
+        path,
+      })
+      const timeoutError = new Error(`Supabase request timeout after ${SUPABASE_TIMEOUT_MS}ms`)
+      // @ts-ignore
+      timeoutError.status = 504
+      throw timeoutError
+    }
+    
+    if (fetchError?.code === 'UND_ERR_SOCKET') {
+      console.error('[Supabase] Соединение закрыто сервером:', {
+        elapsed: `${elapsed}ms`,
+        path,
+        error: fetchError.message,
+      })
+      const socketError = new Error(`Supabase connection closed: ${fetchError.message}`)
+      // @ts-ignore
+      socketError.status = 503
+      throw socketError
+    }
+    
+    if (fetchError?.code === 'ECONNRESET') {
+      console.error('[Supabase] TLS соединение сброшено до установления:', {
+        elapsed: `${elapsed}ms`,
+        path,
+        error: fetchError.message,
+        cause: fetchError.cause,
+      })
+      const resetError = new Error(`Supabase TLS connection reset: ${fetchError.message}`)
+      // @ts-ignore
+      resetError.status = 503
+      throw resetError
+    }
+    
+    console.error('[Supabase] Ошибка fetch:', {
+      elapsed: `${elapsed}ms`,
+      path,
+      error: fetchError?.message || fetchError,
+      code: fetchError?.code,
+      cause: fetchError?.cause,
+    })
+    throw fetchError
+  }
 
   if (!response.ok) {
-    const text = await response.text()
+    let errorText = ''
+    try {
+      errorText = await response.text()
+    } catch {
+      errorText = 'Не удалось прочитать тело ответа'
+    }
+    
     console.error('[Supabase] Ошибка ответа:', {
       status: response.status,
       statusText: response.statusText,
-      body: text,
+      body: errorText.substring(0, 500),
     })
-    throw new Error(`${response.status} ${response.statusText}: ${text}`)
+    throw new Error(`${response.status} ${response.statusText}: ${errorText.substring(0, 200)}`)
   }
 
   const contentLength = response.headers.get('content-length')
@@ -59,12 +141,27 @@ async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
     return undefined as T
   }
 
-  const text = await response.text()
+  let text: string
+  try {
+    text = await response.text()
+  } catch (error) {
+    console.error('[Supabase] Ошибка чтения ответа:', error)
+    throw new Error('Failed to read response body')
+  }
+  
   if (!text) {
     return undefined as T
   }
 
-  return JSON.parse(text) as T
+  try {
+    return JSON.parse(text) as T
+  } catch (parseError) {
+    console.error('[Supabase] Ошибка парсинга JSON:', {
+      text: text.substring(0, 200),
+      error: parseError,
+    })
+    throw new Error('Failed to parse response as JSON')
+  }
 }
 
 export async function supabaseSelect<T>(table: string, query = ''): Promise<T> {

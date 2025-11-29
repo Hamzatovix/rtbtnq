@@ -1,5 +1,5 @@
 export const PLACEHOLDERS = {
-  main4x3: '/placeholder/about_main_placeholder.jpg',
+  main4x3: '/placeholder/about_main_placeholder.svg',
   square1: '/placeholder/about_square_macro_placeholder.webp',
   square2: '/placeholder/about_square_tools_placeholder.webp',
   stitchPoster: '/placeholder/about_stitch_poster.webp',

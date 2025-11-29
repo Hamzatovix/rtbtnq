@@ -455,7 +455,7 @@ export default function BackofficeGalleryPage() {
                     unoptimized={img.src.includes('blob.vercel-storage.com')}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.jpg'
+                      target.src = '/placeholder/about_main_placeholder.svg'
                     }}
                   />
                   {/* Overlay при hover */}

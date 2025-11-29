@@ -1496,9 +1496,13 @@ input:-webkit-autofill {
    ============================================ */
 
 /* Контейнер звезд - только в темной теме */
+.stars-container {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
 .dark .stars-container {
   opacity: 1;
-  transition: opacity 0.8s ease-in-out;
 }
 
 /* Базовые стили для звезд - статичные, без анимации */

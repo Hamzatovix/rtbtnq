@@ -420,7 +420,7 @@ export default function BrandPage() {
                           unoptimized={galleryImages[mobileCurrentIndex].src.includes('blob.vercel-storage.com')}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement
-                            target.src = '/placeholder/about_main_placeholder.jpg'
+                            target.src = '/placeholder/about_main_placeholder.svg'
                           }}
                         />
                         {/* Технический номер изображения */}
@@ -524,7 +524,7 @@ export default function BrandPage() {
                     unoptimized={image.src.includes('blob.vercel-storage.com')}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder/about_main_placeholder.jpg'
+                      target.src = '/placeholder/about_main_placeholder.svg'
                     }}
                   />
                   {/* Технический номер изображения */}
@@ -637,7 +637,7 @@ export default function BrandPage() {
                       unoptimized={selectedImage.includes('blob.vercel-storage.com')}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
-                        target.src = '/placeholder/about_main_placeholder.jpg'
+                        target.src = '/placeholder/about_main_placeholder.svg'
                       }}
                     />
                   </motion.div>
