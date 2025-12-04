@@ -52,6 +52,15 @@ export function OptimizedImage({
   }
 
   const handleError = () => {
+    // Логируем ошибку для диагностики (только в development)
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[OptimizedImage] Ошибка загрузки изображения:', {
+        src: currentSrc,
+        fallbackSrc,
+        hasError,
+      })
+    }
+    
     if (fallbackSrc && currentSrc !== fallbackSrc) {
       setCurrentSrc(fallbackSrc)
       setIsLoaded(false)
@@ -82,7 +91,7 @@ export function OptimizedImage({
           blurDataURL={blurDataURL}
           onLoad={handleLoad}
           onError={handleError}
-          unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com')}
+          unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com') || currentSrc.startsWith('http')}
           className={`${className} relative z-10 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } transition-opacity duration-300`}
@@ -109,7 +118,7 @@ export function OptimizedImage({
         blurDataURL={blurDataURL}
         onLoad={handleLoad}
         onError={handleError}
-        unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com')}
+        unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com') || currentSrc.startsWith('http')}
         className={`transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
         }`}

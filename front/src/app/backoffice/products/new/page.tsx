@@ -427,13 +427,16 @@ export default function BackofficeNewProductPage(){
                   {(v.images||[]).map((img,i)=> (
                     <div key={i} className="flex gap-2 items-start">
                       {img.url && (
-                        <div className="w-20 h-20 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 overflow-hidden flex-shrink-0">
+                        <div className="w-20 h-20 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 overflow-hidden flex-shrink-0 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
                           <img 
                             src={img.url.startsWith('http') || img.url.startsWith('/') ? img.url : `/${img.url}`} 
                             alt={`Preview ${i+1}`}
                             className="w-full h-full object-cover"
+                            loading="lazy"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none'
+                              const target = e.target as HTMLImageElement
+                              target.src = '/placeholder/about_main_placeholder.svg'
+                              console.warn('[Product New] Ошибка загрузки изображения:', img.url)
                             }}
                           />
                         </div>

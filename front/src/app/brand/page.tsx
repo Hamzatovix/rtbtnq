@@ -521,10 +521,13 @@ export default function BrandPage() {
                     loading={index < 2 ? 'eager' : 'lazy'}
                     sizes="(max-width: 1024px) 50vw, 25vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                    unoptimized={image.src.startsWith('/uploads/') || image.src.includes('blob.vercel-storage.com')}
+                    unoptimized={image.src.startsWith('/uploads/') || image.src.includes('blob.vercel-storage.com') || image.src.startsWith('http')}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
                       target.src = '/placeholder/about_main_placeholder.svg'
+                      if (process.env.NODE_ENV === 'development') {
+                        console.warn('[Brand] Ошибка загрузки изображения:', image.src)
+                      }
                     }}
                   />
                   {/* Технический номер изображения */}

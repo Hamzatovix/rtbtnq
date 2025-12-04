@@ -65,6 +65,8 @@ const nextConfig = {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Разрешаем неоптимизированные изображения для локальных файлов
+    unoptimized: false,
     remotePatterns: [
       // Локальные загрузки (основной метод)
       {

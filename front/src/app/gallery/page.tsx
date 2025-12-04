@@ -299,10 +299,13 @@ export default function GalleryPage() {
                       priority={currentIndex === 0}
                       loading={currentIndex === 0 ? 'eager' : 'lazy'}
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 95vw, (max-width: 1280px) 90vw, 1400px"
-                      unoptimized={galleryImages[currentIndex].src.startsWith('/uploads/') || galleryImages[currentIndex].src.includes('blob.vercel-storage.com')}
+                      unoptimized={galleryImages[currentIndex].src.startsWith('/uploads/') || galleryImages[currentIndex].src.includes('blob.vercel-storage.com') || galleryImages[currentIndex].src.startsWith('http')}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
                         target.src = '/placeholder/about_main_placeholder.svg'
+                        if (process.env.NODE_ENV === 'development') {
+                          console.warn('[Gallery] Ошибка загрузки изображения:', galleryImages[currentIndex].src)
+                        }
                       }}
                     />
                   </motion.div>

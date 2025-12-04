@@ -310,9 +310,17 @@ export default function ProductPage() {
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
                   className="object-cover transition-opacity duration-300"
-                  unoptimized={currentImage.startsWith('/uploads/') || currentImage.includes('blob.vercel-storage.com')}
+                  unoptimized={currentImage.startsWith('/uploads/') || currentImage.includes('blob.vercel-storage.com') || currentImage.startsWith('http')}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
+                    if (process.env.NODE_ENV === 'development') {
+                      console.warn('[ProductPage] Ошибка загрузки изображения:', {
+                        src: currentImage,
+                        productId: product.id,
+                        selectedColorId,
+                        selectedImageIndex,
+                      })
+                    }
                     target.src = '/placeholder/about_main_placeholder.svg'
                   }}
                 />
@@ -345,6 +353,9 @@ export default function ProductPage() {
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
                           target.src = '/placeholder/about_main_placeholder.svg'
+                          if (process.env.NODE_ENV === 'development') {
+                            console.warn('[ProductPage] Ошибка загрузки миниатюры:', img.url)
+                          }
                         }}
                       />
                     </button>
