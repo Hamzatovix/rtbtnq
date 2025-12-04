@@ -66,17 +66,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
-        pathname: '/products/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
-        pathname: '/gallery/**',
-      },
-      // Локальные загрузки
+      // Локальные загрузки (основной метод)
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -91,6 +81,17 @@ const nextConfig = {
         protocol: 'http',
         hostname: '176.57.213.174',
         pathname: '/uploads/**',
+      },
+      // Обратная совместимость со старыми изображениями из Vercel Blob (если есть)
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+        pathname: '/products/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+        pathname: '/gallery/**',
       },
     ],
   },

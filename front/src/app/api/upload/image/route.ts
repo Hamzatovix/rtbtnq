@@ -1,4 +1,3 @@
-import { put } from '@vercel/blob'
 import { nanoid } from 'nanoid'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -28,25 +27,7 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Проверяем, есть ли токен Vercel Blob
-    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
-
-    if (blobToken && blobToken.trim() !== '') {
-      // Используем Vercel Blob
-      try {
-        const { url } = await put(`${folder}/${filename}`, buffer, {
-          access: 'public',
-          contentType: file.type,
-        })
-        return NextResponse.json({ url, filename })
-      } catch (error) {
-        console.error('Ошибка при загрузке в Vercel Blob:', error)
-        // Fallback на локальное хранение
-        console.log('Переключаемся на локальное хранение...')
-      }
-    }
-
-    // Локальное хранение (fallback или основной метод)
+    // Локальное хранение на сервере
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
     const uploadDir = join(process.cwd(), 'public', 'uploads', folder)
     
@@ -58,7 +39,11 @@ export async function POST(req: NextRequest) {
     await writeFile(filePath, buffer)
     
     // Формируем URL для доступа к файлу
-    const url = `${baseUrl}/uploads/${folder}/${filename}`
+    // Используем относительный путь для лучшей совместимости
+    const url = `/uploads/${folder}/${filename}`
+    
+    console.log(`[Upload] Изображение сохранено: ${filePath}`)
+    console.log(`[Upload] URL: ${url}`)
     
     return NextResponse.json({ url, filename })
   } catch (error) {
