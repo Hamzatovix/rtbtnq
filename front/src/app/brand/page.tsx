@@ -417,7 +417,7 @@ export default function BrandPage() {
                           loading={mobileCurrentIndex === 0 ? 'eager' : 'lazy'}
                           sizes="100vw"
                           className="object-cover"
-                          unoptimized={galleryImages[mobileCurrentIndex].src.includes('blob.vercel-storage.com')}
+                          unoptimized={galleryImages[mobileCurrentIndex].src.startsWith('/uploads/') || galleryImages[mobileCurrentIndex].src.includes('blob.vercel-storage.com')}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement
                             target.src = '/placeholder/about_main_placeholder.svg'
@@ -521,7 +521,7 @@ export default function BrandPage() {
                     loading={index < 2 ? 'eager' : 'lazy'}
                     sizes="(max-width: 1024px) 50vw, 25vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                    unoptimized={image.src.includes('blob.vercel-storage.com')}
+                    unoptimized={image.src.startsWith('/uploads/') || image.src.includes('blob.vercel-storage.com')}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
                       target.src = '/placeholder/about_main_placeholder.svg'
@@ -634,7 +634,7 @@ export default function BrandPage() {
                       className="object-contain"
                       priority
                       sizes="100vw"
-                      unoptimized={selectedImage.includes('blob.vercel-storage.com')}
+                      unoptimized={selectedImage.startsWith('/uploads/') || selectedImage.includes('blob.vercel-storage.com')}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
                         target.src = '/placeholder/about_main_placeholder.svg'
