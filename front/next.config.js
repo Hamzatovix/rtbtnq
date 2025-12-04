@@ -76,6 +76,22 @@ const nextConfig = {
         hostname: '*.public.blob.vercel-storage.com',
         pathname: '/gallery/**',
       },
+      // Локальные загрузки
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'rosebotanique.store',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '176.57.213.174',
+        pathname: '/uploads/**',
+      },
     ],
   },
 

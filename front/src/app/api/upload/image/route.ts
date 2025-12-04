@@ -2,6 +2,8 @@ import { put } from '@vercel/blob'
 import { nanoid } from 'nanoid'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,14 +26,46 @@ export async function POST(req: NextRequest) {
     const folder = (formData.get('folder') as string) || 'products'
 
     const arrayBuffer = await file.arrayBuffer()
-    const { url } = await put(`${folder}/${filename}`, Buffer.from(arrayBuffer), {
-      access: 'public',
-      contentType: file.type,
-    })
+    const buffer = Buffer.from(arrayBuffer)
 
+    // Проверяем, есть ли токен Vercel Blob
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+
+    if (blobToken && blobToken.trim() !== '') {
+      // Используем Vercel Blob
+      try {
+        const { url } = await put(`${folder}/${filename}`, buffer, {
+          access: 'public',
+          contentType: file.type,
+        })
+        return NextResponse.json({ url, filename })
+      } catch (error) {
+        console.error('Ошибка при загрузке в Vercel Blob:', error)
+        // Fallback на локальное хранение
+        console.log('Переключаемся на локальное хранение...')
+      }
+    }
+
+    // Локальное хранение (fallback или основной метод)
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const uploadDir = join(process.cwd(), 'public', 'uploads', folder)
+    
+    // Создаём директорию, если её нет
+    await mkdir(uploadDir, { recursive: true })
+    
+    // Сохраняем файл
+    const filePath = join(uploadDir, filename)
+    await writeFile(filePath, buffer)
+    
+    // Формируем URL для доступа к файлу
+    const url = `${baseUrl}/uploads/${folder}/${filename}`
+    
     return NextResponse.json({ url, filename })
   } catch (error) {
     console.error('Ошибка при загрузке изображения:', error)
-    return NextResponse.json({ error: 'Ошибка при загрузке изображения' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Ошибка при загрузке изображения',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }

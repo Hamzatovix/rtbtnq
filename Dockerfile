@@ -36,10 +36,17 @@ COPY --from=builder /app/next.config.* ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/prisma ./prisma
+# Копируем файлы данных (categories.json, colors.json, products.json)
+COPY --from=builder /app/src/data ./src/data
 
 # Внешний volume для SQLite-базы
 RUN mkdir -p /app/prisma_data
 VOLUME ["/app/prisma_data"]
+
+# Создаём директорию для загрузок изображений
+RUN mkdir -p /app/public/uploads/products
+RUN mkdir -p /app/public/uploads/gallery
+VOLUME ["/app/public/uploads"]
 
 EXPOSE 3000
 
