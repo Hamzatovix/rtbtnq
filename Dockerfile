@@ -4,9 +4,11 @@ WORKDIR /app
 
 # Устанавливаем зависимости
 COPY front/package*.json ./
+# Копируем prisma схему ДО npm ci, чтобы postinstall скрипт мог найти её
+COPY front/prisma ./prisma
 RUN npm ci
 
-# Копируем исходники фронта
+# Копируем остальные исходники фронта
 COPY front ./
 
 # Генерируем Prisma Client и собираем Next.js приложение
