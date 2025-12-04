@@ -2,6 +2,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Устанавливаем OpenSSL для Prisma
+RUN apk add --no-cache openssl1.1-compat
+
 # Устанавливаем зависимости
 COPY front/package*.json ./
 # Копируем prisma схему ДО npm ci, чтобы postinstall скрипт мог найти её
@@ -17,6 +20,9 @@ RUN npm run build
 
 
 FROM node:20-alpine AS runner
+
+# Устанавливаем OpenSSL для Prisma
+RUN apk add --no-cache openssl1.1-compat
 
 ENV NODE_ENV=production
 ENV PORT=3000
