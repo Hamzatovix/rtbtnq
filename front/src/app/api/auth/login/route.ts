@@ -81,13 +81,19 @@ export async function POST(req: NextRequest) {
     )
 
     const isProduction = process.env.NODE_ENV === 'production'
+    // Проверяем, используется ли HTTPS через заголовок запроса (более надёжно)
+    const protocol = req.headers.get('x-forwarded-proto') || 
+                     (req.url?.startsWith('https://') ? 'https' : 'http')
+    const isHttps = protocol === 'https' || 
+                    process.env.VERCEL === '1' ||
+                    process.env.VERCEL_ENV === 'production'
 
     response.cookies.set('auth-token', token, {
       httpOnly: true,
       sameSite: 'strict',
       maxAge: 60 * 60 * 24,
       path: '/',
-      secure: isProduction,
+      secure: isHttps, // Используем secure только если действительно HTTPS
     })
 
     return response
