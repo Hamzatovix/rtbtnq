@@ -82,6 +82,7 @@ export function OptimizedImage({
           blurDataURL={blurDataURL}
           onLoad={handleLoad}
           onError={handleError}
+          unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com')}
           className={`${className} relative z-10 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } transition-opacity duration-300`}
@@ -108,6 +109,7 @@ export function OptimizedImage({
         blurDataURL={blurDataURL}
         onLoad={handleLoad}
         onError={handleError}
+        unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com')}
         className={`transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
         }`}
