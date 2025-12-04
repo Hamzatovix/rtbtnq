@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { writeFile, mkdir } from 'fs/promises'
+import { existsSync } from 'fs'
 import { join } from 'path'
 
 export async function POST(req: NextRequest) {
@@ -39,11 +40,20 @@ export async function POST(req: NextRequest) {
     await writeFile(filePath, buffer)
     
     // Формируем URL для доступа к файлу
-    // Используем относительный путь для лучшей совместимости
+    // Используем API route для отдачи файлов в production
     const url = `/uploads/${folder}/${filename}`
+    
+    // Проверяем, что файл действительно сохранён
+    if (!existsSync(filePath)) {
+      console.error(`[Upload] Ошибка: файл не был сохранён: ${filePath}`)
+      return NextResponse.json({ 
+        error: 'Ошибка при сохранении файла' 
+      }, { status: 500 })
+    }
     
     console.log(`[Upload] Изображение сохранено: ${filePath}`)
     console.log(`[Upload] URL: ${url}`)
+    console.log(`[Upload] Размер файла: ${buffer.length} байт`)
     
     return NextResponse.json({ url, filename })
   } catch (error) {
