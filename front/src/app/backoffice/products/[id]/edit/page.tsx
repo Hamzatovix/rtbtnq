@@ -139,7 +139,7 @@ export default function BackofficeEditProductPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.15em]">Загрузка...</p>
+        <p className="text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs uppercase tracking-[0.15em]">Загрузка...</p>
       </div>
     )
   }
@@ -147,7 +147,7 @@ export default function BackofficeEditProductPage() {
   return (
     <div className="space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+      <div className="flex items-center gap-2 text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
         <Link href="/backoffice" className="hover:text-accent dark:hover:text-accent transition-fintage">Панель</Link>
         <span>/</span>
         <Link href="/backoffice/products" className="hover:text-accent dark:hover:text-accent transition-fintage">Товары</Link>
@@ -227,7 +227,7 @@ export default function BackofficeEditProductPage() {
         <div className="space-y-4">
           <h2 className="font-medium">Варианты</h2>
           {variants.map((v, idx) => (
-            <div key={idx} className="p-4 border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm space-y-3 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
+            <div key={idx} className="p-4 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm space-y-3 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
               <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
                 <div className="md:col-span-2">
                   <Label>Цвет</Label>
@@ -284,11 +284,11 @@ export default function BackofficeEditProductPage() {
                       placeholder="0"
                       className="pr-8"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fintage-graphite/60 dark:text-fintage-graphite/50 text-sm pointer-events-none font-mono">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fintage-graphite/60 dark:text-fintage-graphite/75 text-sm pointer-events-none font-mono">
                       ₽
                     </span>
                   </div>
-                  <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 mt-1 uppercase tracking-[0.15em]">
+                  <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 mt-1 uppercase tracking-[0.15em]">
                     {v.priceCents
                       ? `= ${(v.priceCents / 100).toLocaleString('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
                       : 'Введите цену в рублях'

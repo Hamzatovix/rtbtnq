@@ -27,7 +27,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="text-fintage-charcoal/70 dark:text-fintage-offwhite/70 hover:text-accent dark:hover:text-accent transition-fintage font-mono text-xs tracking-[0.15em] uppercase relative group"
+      className="text-fintage-charcoal/70 dark:text-fintage-offwhite/85 hover:text-accent dark:hover:text-accent transition-fintage font-mono text-xs tracking-[0.15em] uppercase relative group"
     >
       <span>{children}</span>
       <span
@@ -110,7 +110,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
                 className={cn(
                   'group relative block rounded-sm px-5 py-4 text-right text-sm font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.98] uppercase tracking-[0.15em]',
                   isActive
-                    ? 'bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent border border-accent/20 dark:border-accent/20 shadow-fintage-sm'
+                    ? 'bg-accent/10 dark:bg-accent/25 text-accent dark:text-accent border border-accent/20 dark:border-accent/40 shadow-fintage-sm'
                     : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent dark:hover:text-accent'
                 )}
               >
@@ -130,7 +130,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       </nav>
 
       {/* Divider */}
-      <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 mx-4" />
+      <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/45 mx-4" />
 
       {/* Link to storefront */}
       <div className="px-3 sm:px-4 py-3 sm:py-4">
@@ -153,7 +153,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       </div>
 
       {/* Settings Section - внизу */}
-      <div className="mt-auto border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 px-3 sm:px-4 py-3 sm:py-4">
+      <div className="mt-auto border-t border-fintage-graphite/20 dark:border-fintage-graphite/45 px-3 sm:px-4 py-3 sm:py-4">
         <div className="flex gap-2 sm:gap-2.5">
           <motion.div variants={itemVariants} className="flex-1">
             <SettingsCard>
@@ -178,7 +178,7 @@ const SettingsCard = memo(function SettingsCard({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/60 dark:bg-fintage-charcoal/60 backdrop-blur-sm shadow-fintage-sm hover:shadow-fintage-md transition-fintage">
+    <div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/45 bg-fintage-offwhite/60 dark:bg-fintage-charcoal/60 backdrop-blur-sm shadow-fintage-sm hover:shadow-fintage-md transition-fintage">
       {children}
     </div>
   )
@@ -312,7 +312,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-sm h-12 w-12 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent mx-auto mb-4"></div>
-          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.15em]">Проверка авторизации...</p>
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs uppercase tracking-[0.15em]">Проверка авторизации...</p>
         </div>
       </div>
     )
@@ -331,7 +331,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
   return (
     <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 backdrop-blur-md border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-sm">
+      <header className="sticky top-0 z-50 bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 backdrop-blur-md border-b border-fintage-graphite/20 dark:border-fintage-graphite/45 shadow-fintage-sm">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
           <div className="flex h-14 sm:h-16 md:h-16 lg:h-20 items-center justify-between gap-2 sm:gap-3 md:gap-4">
             <Link href="/backoffice" className="flex items-center space-x-1.5 sm:space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
@@ -354,12 +354,12 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       </main>
 
       {/* FOOTER (optional minimal) */}
-      <footer className="mt-8 sm:mt-12 md:mt-16 py-4 sm:py-6 md:py-8 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
+      <footer className="mt-8 sm:mt-12 md:mt-16 py-4 sm:py-6 md:py-8 border-t border-fintage-graphite/20 dark:border-fintage-graphite/45">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <p className="text-[10px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 tracking-[0.2em] uppercase">© RSBTNQ Backoffice</p>
+          <p className="text-[10px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/75 tracking-[0.2em] uppercase">© RSBTNQ Backoffice</p>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            <Link className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/">view storefront</Link>
-            <a className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/api/docs" target="_blank" rel="noreferrer">API docs</a>
+            <Link className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/">view storefront</Link>
+            <a className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/api/docs" target="_blank" rel="noreferrer">API docs</a>
           </div>
         </div>
       </footer>

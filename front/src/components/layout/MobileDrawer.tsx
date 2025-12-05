@@ -198,7 +198,7 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             style={{ top: `${headerHeight}px` }}
-            className="fixed inset-0 z-[48] bg-black/20 dark:bg-black/30 md:hidden backdrop-blur-sm"
+            className="fixed inset-0 z-[48] bg-black/40 dark:bg-black/50 md:hidden backdrop-blur-sm"
             onClick={onClose}
             aria-hidden="true"
           />

@@ -270,7 +270,7 @@ export default function BackofficeGalleryPage() {
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             className="w-12 h-12 border-3 border-sageTint/30 border-t-sageTint dark:border-primary/30 dark:border-t-primary rounded-full mx-auto mb-4"
           />
-          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.15em]">Загрузка галереи...</p>
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs uppercase tracking-[0.15em]">Загрузка галереи...</p>
         </div>
       </div>
     )
@@ -279,26 +279,26 @@ export default function BackofficeGalleryPage() {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Заголовок */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/45">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-gradient-to-br from-accent/10 to-accent/5 dark:from-accent/10 dark:to-accent/5 border border-fintage-graphite/20 dark:border-fintage-graphite/30 flex items-center justify-center">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-gradient-to-br from-accent/10 to-accent/5 dark:from-accent/10 dark:to-accent/5 border border-fintage-graphite/20 dark:border-fintage-graphite/45 flex items-center justify-center">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-accent dark:text-accent" />
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">
               Галерея
             </h1>
           </div>
-          <p className="text-[9px] sm:text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] ml-10 sm:ml-13">
+          <p className="text-[9px] sm:text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em] ml-10 sm:ml-13">
             Управление изображениями галереи
           </p>
         </div>
         {images.length > 0 && (
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 border border-fintage-graphite/20 dark:border-fintage-graphite/45">
             <span className="text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.1em]">
               {images.length}
             </span>
-            <span className="text-[10px] sm:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+            <span className="text-[10px] sm:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
               {images.length === 1 ? 'изображение' : images.length < 5 ? 'изображения' : 'изображений'}
             </span>
           </div>
@@ -355,7 +355,7 @@ export default function BackofficeGalleryPage() {
               </>
             )}
           </motion.label>
-          <p className="text-[10px] sm:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+          <p className="text-[10px] sm:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
             Поддерживаются форматы: JPG, PNG, WebP. Максимум 5MB на файл. Можно выбрать несколько файлов
           </p>
         </div>
@@ -366,10 +366,10 @@ export default function BackofficeGalleryPage() {
             {uploadingFiles.map((file, index) => (
               <div key={index} className="space-y-1">
                 <div className="flex items-center justify-between text-xs font-mono uppercase tracking-[0.1em]">
-                  <span className={`truncate flex-1 mr-2 ${file.error ? 'text-fintage-punch dark:text-fintage-punch' : 'text-fintage-graphite/60 dark:text-fintage-graphite/50'}`}>
+                  <span className={`truncate flex-1 mr-2 ${file.error ? 'text-fintage-punch dark:text-fintage-punch' : 'text-fintage-graphite/60 dark:text-fintage-graphite/75'}`}>
                     {file.name}
                   </span>
-                  <span className={file.error ? 'text-fintage-punch dark:text-fintage-punch' : 'text-fintage-graphite/60 dark:text-fintage-graphite/50'}>
+                  <span className={file.error ? 'text-fintage-punch dark:text-fintage-punch' : 'text-fintage-graphite/60 dark:text-fintage-graphite/75'}>
                     {file.error ? 'Ошибка' : `${file.progress}%`}
                   </span>
                 </div>
@@ -403,10 +403,10 @@ export default function BackofficeGalleryPage() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 mb-6">
             <ImageIcon className="h-10 w-10 text-fintage-graphite/30 dark:text-fintage-graphite/30" />
           </div>
-          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 text-lg mb-2 font-display-vintage font-black uppercase tracking-tighter">
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/75 text-lg mb-2 font-display-vintage font-black uppercase tracking-tighter">
             Галерея пуста
           </p>
-          <p className="text-sm font-mono text-fintage-graphite/50 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+          <p className="text-sm font-mono text-fintage-graphite/50 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
             Добавьте первое изображение, чтобы начать
           </p>
         </motion.div>
@@ -467,7 +467,7 @@ export default function BackofficeGalleryPage() {
 
                 {/* Alt текст */}
                 <div className="space-y-2">
-                  <Label htmlFor={`alt-${img.id}`} className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+                  <Label htmlFor={`alt-${img.id}`} className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
                     Alt текст
                   </Label>
                   <Input
@@ -519,9 +519,9 @@ export default function BackofficeGalleryPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="p-4 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border border-fintage-graphite/20 dark:border-fintage-graphite/30"
+          className="p-4 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border border-fintage-graphite/20 dark:border-fintage-graphite/45"
         >
-          <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 text-center flex items-center justify-center gap-2 uppercase tracking-[0.15em]">
+          <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 text-center flex items-center justify-center gap-2 uppercase tracking-[0.15em]">
             <GripVertical className="w-4 h-4" />
             Перетащите изображения для изменения порядка отображения
           </p>

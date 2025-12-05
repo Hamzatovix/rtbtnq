@@ -107,7 +107,7 @@ export function DropdownMenuContent({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className={`absolute ${positionClass} ${verticalClass} bg-fintage-offwhite dark:bg-fintage-charcoal border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 z-[55] ${className}`}
+          className={`absolute ${positionClass} ${verticalClass} bg-fintage-offwhite dark:bg-fintage-charcoal border-2 border-fintage-graphite/20 dark:border-fintage-graphite/45 shadow-fintage-md z-[55] ${className}`}
           style={offsetStyle}
           onClick={(e) => e.stopPropagation()}
         >

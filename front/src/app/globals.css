@@ -129,12 +129,12 @@
     --secondary: 0 0% 16%;          /* Soft Graphite */
     --secondary-foreground: 0 0% 96%;
     --muted: 0 0% 16%;
-    --muted-foreground: 0 0% 65%;    /* Улучшенная контрастность для темной темы */
+    --muted-foreground: 0 0% 78%;    /* Улучшенная контрастность для темной темы - 78% для WCAG AA */
     --accent: 210 12% 55%;           /* Slate-Blue #6B7F8F - urban vintage акцент (Nike/North Face/Stone Island) */
     --accent-foreground: 0 0% 96%;   /* Off-White для контраста на slate-blue */
     --destructive: 0 75% 55%;        /* Electric Punch */
     --destructive-foreground: 0 0% 96%;
-    --border: 0 0% 20%;
+    --border: 0 0% 25%;              /* Улучшена видимость границ - 25% вместо 20% */
     --input: 0 0% 10%;
     --ring: 210 12% 55%;             /* Slate-Blue focus - urban технический акцент */
     
@@ -143,17 +143,17 @@
     --color-surface: 0 0% 10%;       /* #1A1A1A - поверхность карточек */
     --color-surface-alt: 0 0% 15%;    /* #242424 - альтернативная поверхность */
     --color-text-primary: 0 0% 96%;   /* Off-White #F5F5F3 - основной текст */
-    --color-text-muted: 0 0% 69%;     /* #B0B0B0 - приглушённый текст */
-    --color-border-subtle: 0 0% 20%;  /* #333333 - тонкие границы */
+    --color-text-muted: 0 0% 78%;     /* #C7C7C7 - приглушённый текст - улучшено до 78% для контрастности ~4.8:1 */
+    --color-border-subtle: 0 0% 35%;  /* #595959 - тонкие границы - улучшено до 35% для лучшей видимости */
     --color-accent: 210 12% 55%;      /* Slate-Blue #6B7F8F - urban vintage акцент */
     --color-accent-strong: 0 75% 55%; /* Electric Punch - сильный акцент */
     --color-danger: 0 75% 55%;        /* Electric Punch - ошибки */
     
     /* Токены для состояний взаимодействия (hover/focus/selection) - темная тема */
-    --color-hover-bg: 210 10% 18%;    /* #2A2E32 - легкий slate-blue оттенок для hover фона */
-    --color-hover-border: 210 12% 45%; /* #5A6B7A - slate-blue для hover границ */
-    --color-active-bg: 210 10% 20%;   /* #2F3438 - более заметный slate-blue для active */
-    --color-active-border: 210 12% 40%; /* #4F5D6A - затемненный slate-blue для active */
+    --color-hover-bg: 0 0% 18%;       /* #2E2E2E - улучшенный hover фон для лучшей видимости */
+    --color-hover-border: 0 0% 35%;   /* #595959 - более заметная граница при hover */
+    --color-active-bg: 0 0% 22%;      /* #383838 - более заметный active фон */
+    --color-active-border: 0 0% 40%;  /* #666666 - более заметная граница при active */
     --color-focus-ring: 210 12% 55%;  /* #6B7F8F - slate-blue для focus ring */
     --color-selection-bg: 210 12% 35%; /* #45505A - читаемый slate-blue для выделения текста */
     --color-selection-text: 0 0% 96%; /* Off-White - контрастный текст на selection */

@@ -104,12 +104,12 @@ export default function BackofficeCategoriesPage(){
     }
   }
 
-  if (loading) return <div className="py-10 text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.15em]">Загрузка…</div>
+  if (loading) return <div className="py-10 text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs uppercase tracking-[0.15em]">Загрузка…</div>
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+      <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
         <Link href="/backoffice" className="hover:text-accent dark:hover:text-accent transition-fintage">Панель</Link>
         <span>/</span>
         <span className="text-fintage-charcoal dark:text-fintage-offwhite">Категории</span>
@@ -118,7 +118,7 @@ export default function BackofficeCategoriesPage(){
       <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Категории</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
-        <div className="p-4 sm:p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
+        <div className="p-4 sm:p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
           <h2 className="mb-3 sm:mb-4 text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Создать категорию</h2>
           <form onSubmit={onCreate} className="space-y-3 sm:space-y-4">
             <div>
@@ -138,24 +138,24 @@ export default function BackofficeCategoriesPage(){
           </form>
         </div>
 
-        <div className="p-4 sm:p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-sm shadow-fintage-sm">
+        <div className="p-4 sm:p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm shadow-fintage-sm">
           <h2 className="mb-3 sm:mb-4 text-xs sm:text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.15em]">Список</h2>
           {error && <p className="text-xs sm:text-sm font-mono text-fintage-punch dark:text-fintage-punch mb-3 sm:mb-4 uppercase tracking-[0.1em]">{error}</p>}
           <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <div className="min-w-[600px] sm:min-w-0">
               <table className="w-full text-xs sm:text-sm">
                 <thead>
-                  <tr className="border-b border-fintage-graphite/20 dark:border-fintage-graphite/30">
-                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Позиция</th>
-                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] hidden sm:table-cell">Slug</th>
-                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Название</th>
-                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em] hidden md:table-cell">Публикация</th>
-                    <th className="text-right py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">Действия</th>
+                  <tr className="border-b border-fintage-graphite/20 dark:border-fintage-graphite/45">
+                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">Позиция</th>
+                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em] hidden sm:table-cell">Slug</th>
+                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">Название</th>
+                    <th className="text-left py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em] hidden md:table-cell">Публикация</th>
+                    <th className="text-right py-2 px-2 text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">Действия</th>
                   </tr>
                 </thead>
                 <tbody>
                   {cats.map(c=> (
-                    <tr key={c.id} className="border-b border-fintage-graphite/10 dark:border-fintage-graphite/20 hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage">
+                    <tr key={c.id} className="border-b border-fintage-graphite/10 dark:border-fintage-graphite/35 hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/18 transition-fintage">
                       {editingId === c.id ? (
                         <>
                           <td className="py-2 px-2">
@@ -179,10 +179,10 @@ export default function BackofficeCategoriesPage(){
                               onChange={e=>setEditForm({...editForm, name: e.target.value})}
                               className="h-7 sm:h-8 text-xs sm:text-sm"
                             />
-                            <div className="sm:hidden text-[9px] text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono mt-1">{c.slug}</div>
+                            <div className="sm:hidden text-[9px] text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono mt-1">{c.slug}</div>
                           </td>
                           <td className="py-2 px-2 hidden md:table-cell">
-                            <button onClick={()=>togglePublish(c)} className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-sm border text-[9px] sm:text-xs font-mono uppercase tracking-[0.1em] transition-fintage ${c.is_active ? 'bg-accent/15 dark:bg-accent/20 border-accent/30 dark:border-accent/30 text-fintage-charcoal dark:text-fintage-offwhite' : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/20 border-fintage-graphite/30 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'}`}>
+                            <button onClick={()=>togglePublish(c)} className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-sm border text-[9px] sm:text-xs font-mono uppercase tracking-[0.1em] transition-fintage ${c.is_active ? 'bg-accent/15 dark:bg-accent/30 border-accent/30 dark:border-accent/40 text-fintage-charcoal dark:text-fintage-offwhite' : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/30 border-fintage-graphite/30 dark:border-fintage-graphite/45 text-fintage-graphite/60 dark:text-fintage-graphite/75'}`}>
                               {c.is_active ? 'Опубликована' : 'Черновик'}
                             </button>
                           </td>
@@ -208,13 +208,13 @@ export default function BackofficeCategoriesPage(){
                       ) : (
                         <>
                           <td className="py-2 px-2 text-fintage-charcoal dark:text-fintage-offwhite text-xs sm:text-sm">{c.position}</td>
-                          <td className="py-2 px-2 text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs hidden sm:table-cell">{c.slug}</td>
+                          <td className="py-2 px-2 text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs hidden sm:table-cell">{c.slug}</td>
                           <td className="py-2 px-2 text-fintage-charcoal dark:text-fintage-offwhite text-xs sm:text-sm">
                             {c.name}
-                            <div className="sm:hidden text-[9px] text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono mt-0.5">{c.slug}</div>
+                            <div className="sm:hidden text-[9px] text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono mt-0.5">{c.slug}</div>
                           </td>
                           <td className="py-2 px-2 hidden md:table-cell">
-                            <button onClick={()=>togglePublish(c)} className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-sm border text-[9px] sm:text-xs font-mono uppercase tracking-[0.1em] transition-fintage ${c.is_active !== false ? 'bg-accent/15 dark:bg-accent/20 border-accent/30 dark:border-accent/30 text-fintage-charcoal dark:text-fintage-offwhite' : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/20 border-fintage-graphite/30 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'}`}>
+                            <button onClick={()=>togglePublish(c)} className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-sm border text-[9px] sm:text-xs font-mono uppercase tracking-[0.1em] transition-fintage ${c.is_active !== false ? 'bg-accent/15 dark:bg-accent/30 border-accent/30 dark:border-accent/40 text-fintage-charcoal dark:text-fintage-offwhite' : 'bg-fintage-graphite/20 dark:bg-fintage-graphite/30 border-fintage-graphite/30 dark:border-fintage-graphite/45 text-fintage-graphite/60 dark:text-fintage-graphite/75'}`}>
                               {c.is_active !== false ? 'Опубликована' : 'Черновик'}
                             </button>
                           </td>
