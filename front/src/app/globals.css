@@ -489,7 +489,7 @@
   .dark select {
     accent-color: hsl(var(--color-accent));
     caret-color: hsl(var(--fintage-offwhite));
-    background-color: hsl(var(--fintage-charcoal)) !important;
+    background-color: hsl(0 0% 16% / 0.3) !important; /* fintage-graphite/30 для лучшей видимости */
     color: hsl(var(--fintage-offwhite)) !important;
   }
   
@@ -507,7 +507,7 @@
     outline: none !important;
     border-color: hsl(var(--color-focus-ring)) !important;
     /* Мягкий фокус с greige акцентом - контраст 3:1+ */
-    box-shadow: 0 0 0 2px hsl(var(--color-focus-ring) / 0.25) !important;
+    box-shadow: 0 0 0 2px hsl(var(--color-focus-ring) / 0.35) !important; /* Увеличено с 0.25 до 0.35 для лучшей видимости */
   }
   
   /* Focus для темной темы */
@@ -518,7 +518,7 @@
   .dark select:focus,
   .dark select:focus-visible {
     border-color: hsl(var(--color-focus-ring)) !important;
-    box-shadow: 0 0 0 2px hsl(var(--color-focus-ring) / 0.25) !important;
+    box-shadow: 0 0 0 2px hsl(var(--color-focus-ring) / 0.35) !important; /* Увеличено с 0.25 до 0.35 для лучшей видимости */
   }
   
 }

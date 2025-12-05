@@ -185,7 +185,7 @@ export default function BackofficeEditProductPage() {
             <textarea
               value={materials}
               onChange={e=>setMaterials(e.target.value)}
-              className="mt-2 w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-3 py-2 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/60 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] resize-none transition-fintage"
+              className="mt-2 w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 py-2 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/50 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 resize-none transition-fintage"
               placeholder="Напр.: 100% хлопок; подклад — полиэстер"
             />
           </div>
@@ -194,20 +194,20 @@ export default function BackofficeEditProductPage() {
             <textarea
               value={care}
               onChange={e=>setCare(e.target.value)}
-              className="mt-2 w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-3 py-2 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/60 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] resize-none transition-fintage"
+              className="mt-2 w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 py-2 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/50 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 resize-none transition-fintage"
               placeholder="Напр.: деликатная стирка при 30°; не отбеливать"
             />
           </div>
           <div>
             <Label>Категория</Label>
             <select
-              className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] transition-fintage appearance-none cursor-pointer"
+              className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 transition-fintage appearance-none cursor-pointer"
               value={categoryId}
               onChange={e => setCategoryId(e.target.value)}
             >
-              <option value="" className="bg-fintage-offwhite dark:bg-fintage-charcoal text-fintage-charcoal dark:text-fintage-offwhite">—</option>
+              <option value="" className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">—</option>
               {categories.map(c => (
-                <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-charcoal text-fintage-charcoal dark:text-fintage-offwhite">
+                <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">
                   {c.name}
                 </option>
               ))}
@@ -232,13 +232,13 @@ export default function BackofficeEditProductPage() {
                 <div className="md:col-span-2">
                   <Label>Цвет</Label>
                   <select
-                    className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/50 bg-fintage-offwhite dark:bg-fintage-charcoal px-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.25)] transition-fintage appearance-none cursor-pointer"
+                    className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 transition-fintage appearance-none cursor-pointer"
                     value={v.colorId}
                     onChange={e => updateVariant(idx, { colorId: e.target.value })}
                   >
-                    <option value="" className="bg-fintage-offwhite dark:bg-fintage-charcoal text-fintage-charcoal dark:text-fintage-offwhite">—</option>
+                    <option value="" className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">—</option>
                     {colors.map(c => (
-                      <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-charcoal text-fintage-charcoal dark:text-fintage-offwhite">
+                      <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">
                         {c.name}
                       </option>
                     ))}
