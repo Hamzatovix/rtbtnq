@@ -5,6 +5,7 @@ type Product = {
   slug: string
   name: string
   description?: string
+  categoryId?: string
   variants?: Array<{
     priceCents: number
     stockQty?: number
