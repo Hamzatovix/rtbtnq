@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="rbCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#aeb6af" stop-opacity="0.75"/>
+      <stop offset="60%" stop-color="#aeb6af" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#aeb6af" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Elven Flower simplified for favicon -->
+  <g transform="translate(32, 32)">
+    <!-- 8 petals -->
+    <g class="petal-0" transform="rotate(0)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    <g class="petal-1" transform="rotate(45)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    <g class="petal-2" transform="rotate(90)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    <g class="petal-3" transform="rotate(135)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    <g class="petal-4" transform="rotate(180)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    <g class="petal-5" transform="rotate(225)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    <g class="petal-6" transform="rotate(270)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    <g class="petal-7" transform="rotate(315)">
+      <path d="M0 -24 C 6 -18, 8 -10, 0 0 C -8 -10, -6 -18, 0 -24" fill="#aeb6af" opacity="0.7"/>
+    </g>
+    
+    <!-- Core center -->
+    <circle cx="0" cy="0" r="10" fill="url(#rbCore)"/>
+  </g>
+</svg>

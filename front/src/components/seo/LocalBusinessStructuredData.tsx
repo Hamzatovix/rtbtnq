@@ -5,15 +5,15 @@ export function LocalBusinessStructuredData() {
     ? window.location.origin 
     : process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL 
       ? `https://${process.env.VERCEL_URL}` 
-      : 'https://rosebotanique.com'
+      : 'https://rosebotanique.store'
   
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${baseUrl}#localbusiness`,
     name: 'Rosebotanique',
-    image: `${baseUrl}/logo.png`,
-    description: 'Мастерская сумок ручной работы в Грозном, Чеченская Республика',
+    image: `${baseUrl}/logo/logo_day.svg`,
+    description: 'Мастерская сумок ручной работы в Грозном, Чеченская Республика. Доставка по России, Москве, Кавказу и СНГ. Дизайнерские сумки из натуральных материалов.',
     url: baseUrl,
     telephone: '', // Добавьте телефон при наличии
     address: {
@@ -45,10 +45,48 @@ export function LocalBusinessStructuredData() {
     },
     priceRange: '$$',
     servesCuisine: false,
-    areaServed: {
-      '@type': 'Country',
-      name: 'Россия',
-    },
+    areaServed: [
+      {
+        '@type': 'Country',
+        name: 'Россия',
+      },
+      {
+        '@type': 'City',
+        name: 'Москва',
+      },
+      {
+        '@type': 'State',
+        name: 'Чеченская Республика',
+      },
+      {
+        '@type': 'State',
+        name: 'Кавказ',
+      },
+      {
+        '@type': 'Country',
+        name: 'Казахстан',
+      },
+      {
+        '@type': 'Country',
+        name: 'Беларусь',
+      },
+      {
+        '@type': 'Country',
+        name: 'Украина',
+      },
+      {
+        '@type': 'Country',
+        name: 'Армения',
+      },
+      {
+        '@type': 'Country',
+        name: 'Грузия',
+      },
+      {
+        '@type': 'Country',
+        name: 'Азербайджан',
+      },
+    ],
   }
 
   return (

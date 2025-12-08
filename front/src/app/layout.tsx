@@ -31,7 +31,7 @@ const cormorantGaramond = Cormorant_Garamond({
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.com')
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.store')
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -39,8 +39,22 @@ export const metadata: Metadata = {
     default: 'Rosebotanique - Сумки ручной работы',
     template: '%s | Rosebotanique'
   },
-  description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique. Каждое изделие создано с любовью и вниманием к деталям, вдохновлено природой. Мастерская в Грозном, Чеченская Республика.',
-  keywords: ['сумки ручной работы', 'handcrafted bags', 'rosebotanique', 'сумки из кожи', 'дизайнерские сумки', 'россия', 'грозный', 'чеченская республика', 'сумки грозный', 'мастерская сумок'],
+  description: 'Купить сумки ручной работы Rosebotanique с доставкой по России, Москве, Кавказу и СНГ. Дизайнерские сумки из натуральных материалов. Мастерская в Грозном, Чеченская Республика. Доставка по всей России, Москве, Кавказу, СНГ.',
+  keywords: [
+    'сумки ручной работы', 'handcrafted bags', 'rosebotanique',
+    'сумки из кожи', 'дизайнерские сумки', 'россия', 'грозный', 
+    'чеченская республика', 'сумки грозный', 'мастерская сумок',
+    'сумки москва', 'сумки кавказ', 'сумки россия', 'сумки снг',
+    'купить сумки москва', 'купить сумки россия', 'сумки ручной работы москва',
+    'сумки ручной работы россия', 'сумки ручной работы кавказ',
+    'сумки ручной работы снг', 'дизайнерские сумки москва',
+    'дизайнерские сумки россия', 'сумки из кожи москва',
+    'сумки из кожи россия', 'сумки доставка россия',
+    'сумки доставка москва', 'сумки доставка кавказ',
+    'сумки интернет магазин россия', 'сумки интернет магазин москва',
+    'чеченская республика сумки', 'грозный сумки ручной работы',
+    'кавказ сумки', 'снг сумки', 'россия сумки ручной работы'
+  ],
   authors: [{ name: 'Rosebotanique' }],
   creator: 'Rosebotanique',
   publisher: 'Rosebotanique',
@@ -49,19 +63,34 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+  },
+  manifest: '/manifest.json',
   openGraph: {
     type: 'website',
     locale: 'ru_RU',
     url: baseUrl,
     siteName: 'Rosebotanique',
-    title: 'Rosebotanique - Сумки ручной работы',
-    description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique. Каждое изделие создано с любовью и вниманием к деталям. Мастерская в Грозном, Чеченская Республика.',
+    title: 'Rosebotanique - Сумки ручной работы | Доставка по России, Москве, Кавказу, СНГ',
+    description: 'Купить сумки ручной работы Rosebotanique с доставкой по России, Москве, Кавказу и СНГ. Дизайнерские сумки из натуральных материалов. Мастерская в Грозном, Чеченская Республика. Доставка по всей России, Москве, Кавказу, СНГ.',
     images: [
       {
-        url: '/images/about_c.jpg',
+        url: `${baseUrl}/images/about_h1.jpg.jpg`,
         width: 1200,
         height: 630,
         alt: 'Rosebotanique - Сумки ручной работы',
+        type: 'image/jpeg',
       },
     ],
   },
@@ -69,7 +98,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Rosebotanique - Сумки ручной работы',
     description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique',
-    images: ['/images/about_c.jpg'],
+    images: [`${baseUrl}/images/about_h1.jpg.jpg`],
   },
   alternates: {
     canonical: baseUrl,
