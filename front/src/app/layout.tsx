@@ -19,6 +19,8 @@ const FavoritesDrawer = dynamic(
 import ErrorBoundary from '@/components/ui/error-boundary'
 import { ScrollToTop } from '@/components/layout/scroll-to-top'
 import { ToastContainer } from '@/components/ui/toast'
+import { YandexMetrika } from '@/components/analytics/YandexMetrika'
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 
 const inter = Inter({ 
   subsets: ['latin', 'cyrillic'],
@@ -163,6 +165,16 @@ export default async function RootLayout({
             <FavoritesDrawer />
             <ToastContainer />
             <ScrollToTop />
+            {/* Яндекс.Метрика */}
+            {process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID ? (
+              <YandexMetrika counterId={process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID} />
+            ) : (
+              <YandexMetrika counterId="105738536" />
+            )}
+            {/* Google Analytics */}
+            {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+              <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+            )}
           </Providers>
         </ErrorBoundary>
       </body>
