@@ -47,10 +47,10 @@ async function generateFavicons() {
     // Читаем SVG
     const svgBuffer = fs.readFileSync(logoPath)
     
-    // 1. Генерируем favicon.ico (64x64 для лучшей видимости)
-    console.log('\n📦 Создание favicon.ico (64x64 для лучшей видимости)...')
-    const favicon64 = await sharp(svgBuffer)
-      .resize(64, 64, {
+    // 1. Генерируем favicon.ico (128x128 для лучшей видимости в Chrome)
+    console.log('\n📦 Создание favicon.ico (128x128 для лучшей видимости в Chrome)...')
+    const favicon128 = await sharp(svgBuffer)
+      .resize(128, 128, {
         fit: 'contain',
         background: { r: 245, g: 245, b: 240, alpha: 0 } // Прозрачный фон
       })
@@ -59,8 +59,35 @@ async function generateFavicons() {
     
     // Конвертируем PNG в ICO (простой формат)
     // Для полноценного ICO нужна специальная библиотека, но PNG тоже работает
-    fs.writeFileSync(path.join(publicPath, 'favicon.ico'), favicon64)
-    console.log('✅ favicon.ico создан (64x64 PNG в формате ICO)')
+    fs.writeFileSync(path.join(publicPath, 'favicon.ico'), favicon128)
+    console.log('✅ favicon.ico создан (128x128 PNG в формате ICO)')
+    
+    // 1.1. Создаем дополнительные размеры для лучшей видимости в Chrome
+    console.log('\n📦 Создание дополнительных размеров favicon для Chrome...')
+    
+    // 128x128 для Chrome (стандартный размер)
+    const favicon128png = await sharp(svgBuffer)
+      .resize(128, 128, {
+        fit: 'contain',
+        background: { r: 245, g: 245, b: 240, alpha: 0 }
+      })
+      .png()
+      .toBuffer()
+    
+    fs.writeFileSync(path.join(publicPath, 'favicon-128x128.png'), favicon128png)
+    console.log('✅ favicon-128x128.png создан')
+    
+    // 256x256 для Chrome (высокое разрешение)
+    const favicon256 = await sharp(svgBuffer)
+      .resize(256, 256, {
+        fit: 'contain',
+        background: { r: 245, g: 245, b: 240, alpha: 0 }
+      })
+      .png()
+      .toBuffer()
+    
+    fs.writeFileSync(path.join(publicPath, 'favicon-256x256.png'), favicon256)
+    console.log('✅ favicon-256x256.png создан')
     
     // 2. Генерируем apple-touch-icon.png (180x180 для iOS)
     console.log('\n📦 Создание apple-touch-icon.png (180x180 для iOS)...')
@@ -111,7 +138,9 @@ async function generateFavicons() {
     console.log('\n✨ Готово! Все favicon файлы созданы в front/public/')
     console.log('\n📋 Созданные файлы:')
     console.log('   - favicon.svg (SVG для современных браузеров - масштабируется)')
-    console.log('   - favicon.ico (64x64 для лучшей видимости)')
+    console.log('   - favicon.ico (128x128 для лучшей видимости в Chrome)')
+    console.log('   - favicon-128x128.png (128x128 для Chrome)')
+    console.log('   - favicon-256x256.png (256x256 для Chrome высокого разрешения)')
     console.log('   - apple-touch-icon.png (180x180 для iOS)')
     console.log('   - icon-192x192.png (для Android PWA)')
     console.log('   - icon-512x512.png (для Android PWA высокого разрешения)')
