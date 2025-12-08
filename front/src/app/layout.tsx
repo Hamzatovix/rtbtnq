@@ -18,6 +18,7 @@ const FavoritesDrawer = dynamic(
 )
 import ErrorBoundary from '@/components/ui/error-boundary'
 import { ScrollToTop } from '@/components/layout/scroll-to-top'
+import { ToastContainer } from '@/components/ui/toast'
 
 const inter = Inter({ 
   subsets: ['latin', 'cyrillic'],
@@ -127,6 +128,7 @@ export default async function RootLayout({
             </HideOnBackoffice>
             <CartDrawer />
             <FavoritesDrawer />
+            <ToastContainer />
             <ScrollToTop />
           </Providers>
         </ErrorBoundary>

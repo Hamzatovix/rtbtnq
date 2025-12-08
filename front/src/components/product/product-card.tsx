@@ -466,8 +466,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
       addToCart(mockVariant, 1)
     }
     
-    // Silent add to cart - no toast notification for calmer UX
-    triggerMobileHaptics() // Вибрация при добавлении в корзину
+    // Вибрация и toast уже вызываются в cart-store.addItem()
   }
 
   const handleToggleFavorite = (e: React.MouseEvent) => {

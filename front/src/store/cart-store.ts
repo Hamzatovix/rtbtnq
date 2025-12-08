@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { CartItem } from '@/types'
+import { toast } from '@/components/ui/toast'
+import { triggerHapticFeedback } from '@/lib/haptics'
 
 interface CartStore {
   items: CartItem[]
@@ -55,8 +57,22 @@ export const useCartStore = create<CartStore>()(
               ? { ...item, quantity: item.quantity + 1 }
               : item
           )
+          // Вибрация при добавлении
+          triggerHapticFeedback('success')
+          // Toast для увеличения количества
+          toast.success(
+            'Добавлено',
+            `${existingItem.quantity + 1} шт.`
+          )
         } else {
           newItems = [...items, { ...product, quantity: 1 }]
+          // Вибрация при добавлении
+          triggerHapticFeedback('success')
+          // Toast для нового товара
+          toast.success(
+            'В корзине',
+            product.title
+          )
         }
         
         // Обновляем кеш при изменении items

@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Heart, ShoppingBag, ArrowLeft } from 'lucide-react'
+import { Heart, ShoppingBag, ArrowLeft, ZoomIn } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/product/product-card'
 import { useCartStore } from '@/store/cart-store'
@@ -15,6 +15,7 @@ import { useTranslations } from '@/hooks/useTranslations'
 import { triggerHapticFeedback } from '@/lib/haptics'
 import Link from 'next/link'
 import { ProductStructuredData } from '@/components/seo/ProductStructuredData'
+import { ProductImageLightbox } from '@/components/product/ProductImageLightbox'
 
 type ProductVariant = {
   id?: string
@@ -60,6 +61,9 @@ export default function ProductPage() {
   const [touchStartY, setTouchStartY] = useState<number | null>(null)
   const [touchEndX, setTouchEndX] = useState<number | null>(null)
   const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
+  const [hasSwiped, setHasSwiped] = useState(false)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const swipeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const { addItem } = useCartStore()
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesStore()
@@ -84,6 +88,13 @@ export default function ProductPage() {
         console.error('Error loading product:', err)
         setLoading(false)
       })
+    
+    // Cleanup: очищаем таймер при размонтировании или изменении productSlug
+    return () => {
+      if (swipeTimeoutRef.current) {
+        clearTimeout(swipeTimeoutRef.current)
+      }
+    }
   }, [productSlug])
 
   // Загружаем похожие товары для секции "Вам может понравиться" (используем кеш браузера)
@@ -175,8 +186,8 @@ export default function ProductPage() {
       selectedColor: selectedColor?.name || '',
     })
     
-    // Вибрация при добавлении в корзину
-    triggerHapticFeedback('success')
+    // Вибрация уже вызывается в cart-store.addItem(), но оставляем здесь для обратной совместимости
+    // triggerHapticFeedback('success')
   }
 
   const handleToggleFavorite = () => {
@@ -239,25 +250,28 @@ export default function ProductPage() {
   }
 
   const onImageTouchEnd = () => {
-    if (touchStartX === null || touchEndX === null || !isHorizontalSwipe || currentImages.length <= 1) {
-      setTouchStartX(null)
-      setTouchStartY(null)
-      setTouchEndX(null)
-      setIsHorizontalSwipe(false)
-      return
-    }
+    const wasSwipe = touchStartX !== null && touchEndX !== null && isHorizontalSwipe && currentImages.length > 1
     
-    const distance = touchStartX - touchEndX
-    
-    if (Math.abs(distance) > minSwipeDistance) {
-      if (distance > 0) {
-        // Swipe left - next image
-        setSelectedImageIndex((prev) => (prev + 1) % currentImages.length)
-      } else {
-        // Swipe right - previous image
-        setSelectedImageIndex((prev) => (prev - 1 + currentImages.length) % currentImages.length)
+    if (wasSwipe) {
+      const distance = touchStartX - touchEndX
+      
+      if (Math.abs(distance) > minSwipeDistance) {
+        if (distance > 0) {
+          // Swipe left - next image
+          setSelectedImageIndex((prev) => (prev + 1) % currentImages.length)
+        } else {
+          // Swipe right - previous image
+          setSelectedImageIndex((prev) => (prev - 1 + currentImages.length) % currentImages.length)
+        }
+        triggerHapticFeedback('success')
+        setHasSwiped(true)
+        // Сбрасываем флаг через небольшую задержку
+        // Очищаем предыдущий таймер если он существует
+        if (swipeTimeoutRef.current) {
+          clearTimeout(swipeTimeoutRef.current)
+        }
+        swipeTimeoutRef.current = setTimeout(() => setHasSwiped(false), 300)
       }
-      triggerHapticFeedback('success')
     }
     
     setTouchStartX(null)
@@ -269,18 +283,21 @@ export default function ProductPage() {
   return (
     <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas">
       {product && <ProductStructuredData product={product} variant={selectedVariant} />}
-      <div className="container mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-16 lg:py-20">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12 pt-6 md:pt-8 lg:pt-10 pb-12 md:pb-16 lg:pb-20">
         {/* Back Button - технический стиль */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8 md:mb-12"
+          className="mb-6 md:mb-10"
         >
           <Link href="/catalog">
-            <Button variant="ghost" className="flex items-center space-x-2 h-9 px-3 text-sm font-mono tracking-[0.15em] uppercase text-fintage-graphite dark:text-fintage-graphite/70 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite">
-              <ArrowLeft className="h-4 w-4" />
-              <span>{t('product.backToCatalog')}</span>
+            <Button 
+              variant="outline" 
+              className="flex items-center justify-center space-x-1.5 md:space-x-2 h-9 md:h-9 px-3 md:px-4 text-xs md:text-sm font-mono tracking-[0.15em] uppercase min-w-[36px] md:min-w-auto transition-fintage"
+            >
+              <ArrowLeft className="h-3.5 w-3.5 md:h-4 md:w-4 flex-shrink-0" />
+              <span className="hidden sm:inline">{t('product.backToCatalog')}</span>
             </Button>
           </Link>
         </motion.div>
@@ -293,13 +310,19 @@ export default function ProductPage() {
             transition={{ duration: 0.8 }}
             className="space-y-4 md:space-y-6"
           >
-            <div className="w-full max-w-[420px] md:max-w-[520px] mx-auto space-y-4 md:space-y-6">
+            <div className="w-full max-w-full sm:max-w-[420px] md:max-w-[450px] lg:max-w-[480px] mx-auto space-y-4 md:space-y-6">
               <div 
-                className="relative aspect-square w-full rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30"
+                className="relative aspect-[3/4] sm:aspect-[3/4] md:aspect-[4/5] lg:aspect-[4/5] w-full rounded-sm overflow-hidden border border-fintage-graphite/20 dark:border-fintage-graphite/30 group cursor-pointer"
                 style={{ touchAction: 'pan-y pinch-zoom' }}
                 onTouchStart={onImageTouchStart}
                 onTouchMove={onImageTouchMove}
                 onTouchEnd={onImageTouchEnd}
+                onClick={(e) => {
+                  // Открываем lightbox при клике (не при свайпе)
+                  if (!hasSwiped && !isHorizontalSwipe) {
+                    setIsLightboxOpen(true)
+                  }
+                }}
               >
                 <Image
                   key={`${product.id}-${selectedColorId}-${selectedImageIndex}`}
@@ -308,7 +331,7 @@ export default function ProductPage() {
                     : `/${currentImage}`}
                   alt={product.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                  sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 45vw, 480px"
                   className="object-cover transition-opacity duration-300"
                   unoptimized={currentImage.startsWith('/uploads/') || currentImage.includes('blob.vercel-storage.com') || currentImage.startsWith('http')}
                   onError={(e) => {
@@ -324,6 +347,12 @@ export default function ProductPage() {
                     target.src = '/placeholder/about_main_placeholder.svg'
                   }}
                 />
+                {/* Индикатор увеличения - только на desktop */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-fintage flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+                  <div className="px-3 py-1.5 bg-black/60 dark:bg-black/80 backdrop-blur-sm rounded-sm border border-white/20">
+                    <ZoomIn className="h-4 w-4 text-white" />
+                  </div>
+                </div>
               </div>
               {/* Миниатюры изображений - технический стиль */}
               {currentImages.length > 1 && (
@@ -481,16 +510,16 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="pt-12 md:pt-16 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30"
+          className="pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30"
         >
-          <div className="mb-8 md:mb-12 text-center">
-            <h2 className="text-title-1 md:text-[1.75rem] font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] tracking-tighter uppercase mb-4">
+          <div className="mb-4 md:mb-6 text-center">
+            <h2 className="text-lg md:text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] tracking-tighter uppercase mb-2">
               {t('product.youMightLike')}
             </h2>
             {/* Разделительная линия */}
-            <div className="h-px bg-gradient-to-r from-transparent via-fintage-graphite/20 to-transparent dark:via-fintage-graphite/30 w-32 mx-auto" aria-hidden="true" />
+            <div className="h-px bg-gradient-to-r from-transparent via-fintage-graphite/20 to-transparent dark:via-fintage-graphite/30 w-24 mx-auto" aria-hidden="true" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
             {relatedProducts.map((relatedProduct) => {
               const firstVariant = (relatedProduct.variants || [])[0]
               const relatedPrice = firstVariant ? firstVariant.priceCents / 100 : 0
@@ -527,6 +556,18 @@ export default function ProductPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* Image Lightbox - для детального просмотра */}
+      {product && (
+        <ProductImageLightbox
+          isOpen={isLightboxOpen}
+          onClose={() => setIsLightboxOpen(false)}
+          images={currentImages}
+          currentIndex={selectedImageIndex}
+          onIndexChange={setSelectedImageIndex}
+          productName={product.name}
+        />
+      )}
     </div>
   )
 }

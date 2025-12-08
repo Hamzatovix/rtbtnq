@@ -7,7 +7,6 @@ import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { StarFieldSubtle } from '@/components/visuals/StarFieldSubtle'
 import { useTranslations } from '@/hooks/useTranslations'
-import { useClientLocale } from '@/hooks/useClientLocale'
 
 interface FeaturedProductsProps {
   products: CatalogProduct[]
@@ -15,14 +14,16 @@ interface FeaturedProductsProps {
 
 export function FeaturedProducts({ products }: FeaturedProductsProps) {
   const t = useTranslations()
-  const locale = useClientLocale()
 
   const hasProducts = products.length > 0
   const emptyMessage = t('home.featuredProducts.empty')
 
-  // Уникальные категории для утилитарных меток
+  // Берем последние 3 товара для отображения
+  const displayedProducts = products.slice(-3)
+
+  // Уникальные категории для утилитарных меток (из последних 3 товаров)
   const uniqueCategories = Array.from(
-    new Set(products.slice(0, 6).map(p => p.category?.name).filter(Boolean))
+    new Set(displayedProducts.map(p => p.category?.name).filter(Boolean))
   ).slice(0, 3)
 
   return (
@@ -84,7 +85,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
         {/* Сетка товаров - асимметричная на больших экранах (Stone Island style) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-16">
           {hasProducts ? (
-            products.slice(0, 6).map((product) => (
+            displayedProducts.map((product) => (
               <div key={product.id}>
                 <ProductCard product={product} density="compact" />
               </div>
