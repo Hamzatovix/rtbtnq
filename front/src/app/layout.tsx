@@ -86,11 +86,11 @@ export const metadata: Metadata = {
     description: 'Купить сумки ручной работы Rosebotanique с доставкой по России, Москве, Кавказу и СНГ. Дизайнерские сумки из натуральных материалов. Мастерская в Грозном, Чеченская Республика. Доставка по всей России, Москве, Кавказу, СНГ.',
     images: [
       {
-        url: `${baseUrl}/images/about_h1.jpg.jpg`,
-        width: 1200,
-        height: 630,
+        url: `${baseUrl}/logo/logo_day.svg`,
+        width: 1024,
+        height: 1536,
         alt: 'Rosebotanique - Сумки ручной работы',
-        type: 'image/jpeg',
+        type: 'image/svg+xml',
       },
     ],
   },
@@ -98,7 +98,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Rosebotanique - Сумки ручной работы',
     description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique',
-    images: [`${baseUrl}/images/about_h1.jpg.jpg`],
+    images: [`${baseUrl}/logo/logo_day.svg`],
   },
   alternates: {
     canonical: baseUrl,

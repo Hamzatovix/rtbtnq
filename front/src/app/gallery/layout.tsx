@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     url: `${baseUrl}/gallery`,
     images: [
       {
-        url: `${baseUrl}/images/about_c.jpg`,
-        width: 1200,
-        height: 630,
+        url: `${baseUrl}/logo/logo_day.svg`,
+        width: 1024,
+        height: 1536,
         alt: 'Галерея сумок ручной работы - Rosebotanique',
-        type: 'image/jpeg',
+        type: 'image/svg+xml',
       },
     ],
     siteName: 'Rosebotanique',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Галерея сумок ручной работы - Rosebotanique | Доставка по России, Москве, Кавказу, СНГ',
     description: 'Галерея работ и изделий Rosebotanique - сумки ручной работы, вдохновленные природой. Доставка по России, Москве, Кавказу и СНГ.',
-    images: [`${baseUrl}/images/about-m.png`],
+    images: [`${baseUrl}/logo/logo_day.svg`],
   },
   alternates: {
     canonical: `${baseUrl}/gallery`,

@@ -61,11 +61,11 @@ export async function generateMetadata({
       locale: 'ru_RU',
       images: [
         {
-          url: `${baseUrl}/images/about_h1.jpg.jpg`,
-          width: 1200,
-          height: 630,
+          url: `${baseUrl}/logo/logo_day.svg`,
+          width: 1024,
+          height: 1536,
           alt: title,
-          type: 'image/jpeg',
+          type: 'image/svg+xml',
         },
       ],
     },
@@ -73,7 +73,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: [`${baseUrl}/images/about_h1.jpg.jpg`],
+      images: [`${baseUrl}/logo/logo_day.svg`],
     },
     alternates: {
       canonical: canonicalUrl,

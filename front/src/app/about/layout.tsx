@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     url: `${baseUrl}/about`,
     images: [
       {
-        url: `${baseUrl}/images/about_c.jpg`,
-        width: 1200,
-        height: 630,
+        url: `${baseUrl}/logo/logo_day.svg`,
+        width: 1024,
+        height: 1536,
         alt: 'О нас - Rosebotanique | Доставка по России, Москве, Кавказу, СНГ',
-        type: 'image/jpeg',
+        type: 'image/svg+xml',
       },
     ],
     siteName: 'Rosebotanique',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'О нас - Rosebotanique',
     description: 'Узнайте историю создания Rosebotanique',
-    images: ['/images/about-m.png'],
+    images: [`${baseUrl}/logo/logo_day.svg`],
   },
   alternates: {
     canonical: `${baseUrl}/about`,
