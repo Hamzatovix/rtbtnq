@@ -47,10 +47,10 @@ async function generateFavicons() {
     // Читаем SVG
     const svgBuffer = fs.readFileSync(logoPath)
     
-    // 1. Генерируем favicon.ico (32x32)
-    console.log('\n📦 Создание favicon.ico (32x32)...')
-    const favicon32 = await sharp(svgBuffer)
-      .resize(32, 32, {
+    // 1. Генерируем favicon.ico (64x64 для лучшей видимости)
+    console.log('\n📦 Создание favicon.ico (64x64 для лучшей видимости)...')
+    const favicon64 = await sharp(svgBuffer)
+      .resize(64, 64, {
         fit: 'contain',
         background: { r: 245, g: 245, b: 240, alpha: 0 } // Прозрачный фон
       })
@@ -59,12 +59,12 @@ async function generateFavicons() {
     
     // Конвертируем PNG в ICO (простой формат)
     // Для полноценного ICO нужна специальная библиотека, но PNG тоже работает
-    fs.writeFileSync(path.join(publicPath, 'favicon.ico'), favicon32)
-    console.log('✅ favicon.ico создан (32x32 PNG в формате ICO)')
+    fs.writeFileSync(path.join(publicPath, 'favicon.ico'), favicon64)
+    console.log('✅ favicon.ico создан (64x64 PNG в формате ICO)')
     
-    // 2. Генерируем apple-touch-icon.png (180x180)
-    console.log('\n📦 Создание apple-touch-icon.png (180x180)...')
-    const appleIcon = await sharp(svgBuffer)
+    // 2. Генерируем apple-touch-icon.png (180x180 для iOS)
+    console.log('\n📦 Создание apple-touch-icon.png (180x180 для iOS)...')
+    const appleIcon180 = await sharp(svgBuffer)
       .resize(180, 180, {
         fit: 'contain',
         background: { r: 245, g: 245, b: 240, alpha: 1 } // Белый фон для Apple
@@ -72,43 +72,52 @@ async function generateFavicons() {
       .png()
       .toBuffer()
     
-    fs.writeFileSync(path.join(publicPath, 'apple-touch-icon.png'), appleIcon)
+    fs.writeFileSync(path.join(publicPath, 'apple-touch-icon.png'), appleIcon180)
     console.log('✅ apple-touch-icon.png создан (180x180)')
     
-    // 3. Также создаем дополнительные размеры для лучшей поддержки
-    console.log('\n📦 Создание дополнительных размеров...')
+    // 3. Генерируем иконки для Android PWA
+    console.log('\n📦 Создание иконок для Android PWA...')
     
-    // 16x16 для старых браузеров
-    const favicon16 = await sharp(svgBuffer)
-      .resize(16, 16, {
+    // 192x192 для Android (стандартный размер)
+    const icon192 = await sharp(svgBuffer)
+      .resize(192, 192, {
         fit: 'contain',
-        background: { r: 245, g: 245, b: 240, alpha: 0 }
+        background: { r: 245, g: 245, b: 240, alpha: 1 }
       })
       .png()
       .toBuffer()
     
-    // 48x48 для лучшего качества
-    const favicon48 = await sharp(svgBuffer)
-      .resize(48, 48, {
+    fs.writeFileSync(path.join(publicPath, 'icon-192x192.png'), icon192)
+    console.log('✅ icon-192x192.png создан (для Android PWA)')
+    
+    // 512x512 для Android (высокое разрешение)
+    const icon512 = await sharp(svgBuffer)
+      .resize(512, 512, {
         fit: 'contain',
-        background: { r: 245, g: 245, b: 240, alpha: 0 }
+        background: { r: 245, g: 245, b: 240, alpha: 1 }
       })
       .png()
       .toBuffer()
     
-    console.log('✅ Дополнительные размеры созданы')
+    fs.writeFileSync(path.join(publicPath, 'icon-512x512.png'), icon512)
+    console.log('✅ icon-512x512.png создан (для Android PWA высокого разрешения)')
     
     // Копируем logo_day.svg как favicon.svg для использования в браузере
+    // SVG масштабируется автоматически и будет выглядеть четко на любом размере
     console.log('\n📦 Создание favicon.svg из логотипа...')
     fs.copyFileSync(logoPath, faviconSvgPath)
-    console.log('✅ favicon.svg создан (копия logo_day.svg)')
+    console.log('✅ favicon.svg создан (копия logo_day.svg - масштабируется автоматически)')
     
     console.log('\n✨ Готово! Все favicon файлы созданы в front/public/')
     console.log('\n📋 Созданные файлы:')
-    console.log('   - favicon.svg (SVG для современных браузеров)')
-    console.log('   - favicon.ico (32x32 для старых браузеров)')
+    console.log('   - favicon.svg (SVG для современных браузеров - масштабируется)')
+    console.log('   - favicon.ico (64x64 для лучшей видимости)')
     console.log('   - apple-touch-icon.png (180x180 для iOS)')
+    console.log('   - icon-192x192.png (для Android PWA)')
+    console.log('   - icon-512x512.png (для Android PWA высокого разрешения)')
     console.log('\n💡 Совет: Перезапустите Next.js сервер для применения изменений')
+    console.log('💡 Совет: Очистите кеш браузера (Ctrl+Shift+Delete) для обновления favicon')
+    console.log('💡 Совет: На мобильных устройствах очистите кеш приложения или переустановите PWA')
     
   } catch (error) {
     console.error('❌ Ошибка при генерации:', error.message)
@@ -123,4 +132,3 @@ async function generateFavicons() {
 }
 
 generateFavicons()
-
