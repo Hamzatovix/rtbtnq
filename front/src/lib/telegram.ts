@@ -889,11 +889,30 @@ export async function sendOrderNotification(
     itemsWithImages: data.items.filter(item => item.image).length
   })
   
-  // Собираем уникальные изображения товаров (убираем дубликаты)
+  // Собираем уникальные изображения товаров (убираем дубликаты и placeholder)
   const uniqueImages = new Map<string, string>()
+  
+  console.log('[Telegram] Проверка изображений товаров:', {
+    itemsCount: data.items.length,
+    itemsWithImages: data.items.filter(item => item.image).length,
+    baseUrl,
+    items: data.items.map(item => ({
+      name: item.name,
+      hasImage: !!item.image,
+      image: item.image ? item.image.substring(0, 50) + '...' : null
+    }))
+  })
+  
   data.items.forEach(item => {
     if (item.image && item.image.trim()) {
       const imageUrl = item.image.trim()
+      
+      // Пропускаем placeholder изображения
+      if (imageUrl.includes('placeholder') || imageUrl.includes('about_main_placeholder')) {
+        console.log('[Telegram] Пропущено placeholder изображение:', imageUrl)
+        return
+      }
+      
       // Формируем абсолютный URL для изображения
       let fullImageUrl = imageUrl
       if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
@@ -903,10 +922,19 @@ export async function sendOrderNotification(
       }
       // Используем Map для автоматического удаления дубликатов
       uniqueImages.set(fullImageUrl, fullImageUrl)
+      console.log('[Telegram] Добавлено изображение:', {
+        original: imageUrl.substring(0, 50),
+        full: fullImageUrl.substring(0, 80)
+      })
     }
   })
   
   const imageUrls = Array.from(uniqueImages.values())
+  
+  console.log('[Telegram] Итого уникальных изображений:', {
+    count: imageUrls.length,
+    urls: imageUrls.map(url => url.substring(0, 80))
+  })
   
   // Если есть изображения, отправляем медиа-группу с первым фото и подписью
   if (imageUrls.length > 0) {
@@ -928,7 +956,17 @@ export async function sendOrderNotification(
     }
     
     // Пытаемся отправить медиа-группу
+    console.log('[Telegram] Попытка отправить медиа-группу:', {
+      mediaCount: media.length,
+      firstImageUrl: media[0]?.media?.substring(0, 100),
+      captionLength: media[0]?.caption?.length || 0
+    })
+    
     const mediaGroupSuccess = await sendTelegramMediaGroup(token, chat, media)
+    
+    console.log('[Telegram] Результат отправки медиа-группы:', {
+      success: mediaGroupSuccess
+    })
     
     if (mediaGroupSuccess) {
       // Если медиа-группа отправлена успешно, отправляем кнопку отдельным сообщением (если нужно)
