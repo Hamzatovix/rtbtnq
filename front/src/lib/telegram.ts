@@ -959,7 +959,9 @@ export async function sendOrderNotification(
   if (imageUrls.length > 0) {
     console.log('[Telegram] Отправка уведомления с изображениями товаров:', {
       imagesCount: imageUrls.length,
-      itemsCount: data.items.length
+      itemsCount: data.items.length,
+      totalItemsQty: data.items.reduce((sum, item) => sum + item.qty, 0),
+      willSendCount: Math.min(imageUrls.length, 10) // Telegram ограничивает до 10 фото в группе
     })
     
     // Формируем медиа-группу (максимум 10 фото в группе по лимиту Telegram)
