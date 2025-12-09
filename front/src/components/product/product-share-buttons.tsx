@@ -300,14 +300,20 @@ export function ProductShareButtons({
     // Премиальный брендинг внизу
     // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
-    const minBrandY = lastElementBottom + 120 // Увеличенный отступ для предотвращения наложения
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
+    const brandHeight = brandFontSize + 8 + 10 // Высота текста + подчеркивание + отступ
     
-    // Убеждаемся, что брендинг помещается на canvas (не выходит за границы)
-    // Максимальная позиция: canvas.height - brandFontSize - 20 (отступ снизу)
-    const maxBrandY = canvas.height - brandFontSize - 20
-    const brandY = Math.min(Math.max(canvas.height - 160, minBrandY), maxBrandY)
+    // Минимальная позиция брендинга: минимум 120px от последнего элемента
+    const minBrandY = lastElementBottom + 120
+    
+    // Максимальная позиция брендинга: не ближе 20px от низа canvas
+    const maxBrandY = canvas.height - brandHeight - 20
+    
+    // Брендинг должен быть минимум на 120px ниже последнего элемента
+    // Но не должен выходить за границы canvas
+    // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
+    const brandY = Math.min(minBrandY, maxBrandY)
     
     ctx.fillStyle = '#0F0F0F' // Charcoal Black
     // Используем fallback шрифты на случай, если Inter не загружен
@@ -646,14 +652,20 @@ export function ProductShareButtons({
     // Премиальный брендинг внизу
     // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
-    const minBrandY = lastElementBottom + 120 // Увеличенный отступ для предотвращения наложения
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
+    const brandHeight = brandFontSize + 8 + 10 // Высота текста + подчеркивание + отступ
     
-    // Убеждаемся, что брендинг помещается на canvas (не выходит за границы)
-    // Максимальная позиция: canvas.height - brandFontSize - 20 (отступ снизу)
-    const maxBrandY = canvas.height - brandFontSize - 20
-    const brandY = Math.min(Math.max(canvas.height - 160, minBrandY), maxBrandY)
+    // Минимальная позиция брендинга: минимум 120px от последнего элемента
+    const minBrandY = lastElementBottom + 120
+    
+    // Максимальная позиция брендинга: не ближе 20px от низа canvas
+    const maxBrandY = canvas.height - brandHeight - 20
+    
+    // Брендинг должен быть минимум на 120px ниже последнего элемента
+    // Но не должен выходить за границы canvas
+    // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
+    const brandY = Math.min(minBrandY, maxBrandY)
     
     ctx.fillStyle = '#0F0F0F' // Charcoal Black
     // Используем fallback шрифты на случай, если Inter не загружен
