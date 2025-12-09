@@ -83,14 +83,17 @@ export function ProductShareButtons({
     let drawY = imageY
 
     if (imgAspect > targetAspect) {
-      // Изображение шире - подгоняем по высоте
+      // Изображение шире - подгоняем по высоте и центрируем по горизонтали
       drawWidth = imageHeight * imgAspect
       drawX = imageX - (drawWidth - imageWidth) / 2
     } else {
-      // Изображение выше - подгоняем по ширине, но не выходим за верхнюю границу
+      // Изображение выше - подгоняем по ширине и центрируем по вертикали
       drawHeight = imageWidth / imgAspect
-      const maxDrawY = imageY
-      drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
+      drawY = imageY - (drawHeight - imageHeight) / 2
+      // Ограничиваем сверху, чтобы не выходить за верхнюю границу
+      if (drawY < imageY) {
+        drawY = imageY
+      }
     }
 
     // Рисуем изображение
@@ -432,14 +435,17 @@ export function ProductShareButtons({
     let drawY = imageY
 
     if (imgAspect > targetAspect) {
-      // Изображение шире - подгоняем по высоте
+      // Изображение шире - подгоняем по высоте и центрируем по горизонтали
       drawWidth = imageHeight * imgAspect
       drawX = imageX - (drawWidth - imageWidth) / 2
     } else {
-      // Изображение выше - подгоняем по ширине, но не выходим за верхнюю границу
+      // Изображение выше - подгоняем по ширине и центрируем по вертикали
       drawHeight = imageWidth / imgAspect
-      const maxDrawY = imageY
-      drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
+      drawY = imageY - (drawHeight - imageHeight) / 2
+      // Ограничиваем сверху, чтобы не выходить за верхнюю границу
+      if (drawY < imageY) {
+        drawY = imageY
+      }
     }
 
     // Рисуем изображение
