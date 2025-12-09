@@ -58,17 +58,20 @@ export function ProductShareButtons({
       img.src = productImageUrl
     })
 
-    // Фон (Off-White из палитры проекта)
-    ctx.fillStyle = '#F5F5F3'
+    // Премиальный фон с легким градиентом (Off-White из палитры проекта)
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+    gradient.addColorStop(0, '#F5F5F3') // Off-White сверху
+    gradient.addColorStop(1, '#FAFAF8') // Чуть светлее снизу для глубины
+    ctx.fillStyle = gradient
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Изображение с отступами по бокам, сверху и снизу (как в предыдущем варианте)
-    const imagePadding = 80 // Отступы по бокам (увеличены для Stories)
-    const topPadding = 120 // Отступ сверху (больше для визуального баланса)
-    const imageHeight = Math.floor(canvas.height * 0.55) // ~1056px для контента остается ~864px
-    const imageWidth = canvas.width - imagePadding * 2 // С отступами по бокам
+    // Изображение с увеличенными отступами для большего воздуха
+    const imagePadding = 100 // Увеличено с 80px для большего воздуха
+    const topPadding = 140 // Увеличено с 120px для лучшего баланса
+    const imageHeight = Math.floor(canvas.height * 0.52) // Немного уменьшено для большего пространства под текстом
+    const imageWidth = canvas.width - imagePadding * 2
     const imageX = imagePadding
-    const imageY = topPadding // Отступ сверху
+    const imageY = topPadding
 
     // Рисуем изображение с сохранением пропорций
     const imgAspect = img.width / img.height
@@ -86,11 +89,26 @@ export function ProductShareButtons({
     } else {
       // Изображение выше - подгоняем по ширине, но не выходим за верхнюю границу
       drawHeight = imageWidth / imgAspect
-      const maxDrawY = imageY // Максимальная позиция сверху
+      const maxDrawY = imageY
       drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
     }
 
+    // Добавляем тонкую тень под изображением для глубины
+    const shadowBlur = 40
+    const shadowOffsetY = 8
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.15)'
+    ctx.shadowBlur = shadowBlur
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = shadowOffsetY
+    
+    // Рисуем изображение с тенью
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
+    
+    // Сбрасываем тень для остальных элементов
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
 
     // Определяем фактическую нижнюю границу изображения (учитываем возможное обрезание при cover)
     const actualImageBottom = Math.max(
@@ -99,70 +117,102 @@ export function ProductShareButtons({
     )
     
     // Контент внизу - центрируем относительно изображения
-    // Увеличиваем отступ, чтобы текст не налезал на фото
-    const contentY = actualImageBottom + 100 // Увеличенный отступ после изображения
+    // Увеличиваем отступ для большего воздуха
+    const contentY = actualImageBottom + 120 // Увеличенный отступ после изображения
     const contentHeight = canvas.height - contentY
-    const contentPadding = imagePadding // Используем те же отступы, что и у изображения
+    const contentPadding = imagePadding
 
-    // Тонкая линия-разделитель (в стиле Stone Island/Nike)
-    const dividerY = contentY + 35
-    ctx.strokeStyle = 'rgba(102, 102, 102, 0.2)' // Graphite с прозрачностью
-    ctx.lineWidth = 0.5
+    // Премиальная линия-разделитель с градиентом
+    const dividerY = contentY + 50
+    const dividerPadding = contentPadding + 60 // Уменьшаем длину линии для элегантности
+    
+    // Градиент для разделителя
+    const dividerGradient = ctx.createLinearGradient(dividerPadding, dividerY, canvas.width - dividerPadding, dividerY)
+    dividerGradient.addColorStop(0, 'rgba(102, 102, 102, 0)')
+    dividerGradient.addColorStop(0.5, 'rgba(102, 102, 102, 0.3)')
+    dividerGradient.addColorStop(1, 'rgba(102, 102, 102, 0)')
+    
+    ctx.strokeStyle = dividerGradient
+    ctx.lineWidth = 1 // Немного толще для лучшей видимости
     ctx.beginPath()
-    ctx.moveTo(contentPadding, dividerY)
-    ctx.lineTo(canvas.width - contentPadding, dividerY)
+    ctx.moveTo(dividerPadding, dividerY)
+    ctx.lineTo(canvas.width - dividerPadding, dividerY)
     ctx.stroke()
 
     // Определяем максимальную ширину текста
     const maxTitleWidth = canvas.width - contentPadding * 2
 
-    // Название товара - центрируем относительно изображения
-    // Увеличиваем отступ от линии-разделителя, чтобы текст не налезал на фото
-    const titleY = dividerY + 60 // Отступ после линии-разделителя
+    // Название товара - премиальная типографика
+    const titleY = dividerY + 80 // Увеличенный отступ для большего воздуха
     ctx.fillStyle = '#0F0F0F' // Charcoal Black из палитры
-    ctx.font = '900 64px "Cormorant Garamond", serif' // font-black = 900
-    ctx.textAlign = 'center' // Центрируем
-    ctx.textBaseline = 'top'
-    ctx.letterSpacing = '-0.02em' // tracking-tighter
-    const titleText = productName.toUpperCase() // uppercase
-    const titleLines = wrapText(ctx, titleText, maxTitleWidth, 64)
-    const lineHeight = 64 * 0.95 // leading-[0.95]
     
+    // Улучшенная типографика: больше размер, лучший tracking
+    const titleFontSize = 80 // Увеличено с 72px для большего визуального веса
+    ctx.font = `900 ${titleFontSize}px "Cormorant Garamond", serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+    ctx.letterSpacing = '-0.03em' // Более плотный tracking для элегантности
+    
+    const titleText = productName.toUpperCase()
+    const titleLines = wrapText(ctx, titleText, maxTitleWidth, titleFontSize)
+    const lineHeight = titleFontSize * 1.15 // Улучшенный leading для читаемости
+    
+    // Рисуем название с легкой тенью для глубины
     titleLines.forEach((line, index) => {
+      // Легкая тень для глубины
+      ctx.shadowColor = 'rgba(15, 15, 15, 0.08)'
+      ctx.shadowBlur = 4
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 2
       ctx.fillText(line, canvas.width / 2, titleY + index * lineHeight, maxTitleWidth)
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
     })
 
     const titleHeight = titleLines.length * lineHeight
 
-    // Цвет товара (если есть) - центрируем относительно изображения
-    let colorY = titleY + titleHeight + 36 // space-y
+    // Цвет товара (если есть) - премиальное отображение с тенью
+    // Цвет идет сразу после названия
+    let colorY = titleY + titleHeight + 60 // Увеличенный отступ после названия
+    let colorBottomY = colorY // Нижняя граница цвета (для расчета следующего элемента)
+    
     if (productColor) {
       const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
       const colorName = getColorDisplayName(productColor.name, 'ru')
       
-      // Устанавливаем шрифт для измерения текста цвета
-      ctx.font = '400 28px "Courier New", monospace'
-      ctx.letterSpacing = '0.15em'
+      // Улучшенная типографика для цвета
+      const colorFontSize = 32 // Увеличено с 30px
+      ctx.font = `400 ${colorFontSize}px "Courier New", monospace`
+      ctx.letterSpacing = '0.18em' // Увеличенный tracking для элегантности
       
-      // Центрируем цветной индикатор и текст
-      // Квадратный индикатор как в карточке товара (rounded-sm, без бордера)
-      const colorIndicatorSize = 24
-      const borderRadius = 2 // rounded-sm = 2px
+      // Увеличенный индикатор цвета для лучшей видимости
+      const colorIndicatorSize = 36 // Увеличено с 32px
+      const borderRadius = 3 // Немного больше скругление
       const colorTextWidth = ctx.measureText(colorName.toUpperCase()).width
-      const totalColorWidth = colorIndicatorSize + 16 + colorTextWidth
+      const totalColorWidth = colorIndicatorSize + 20 + colorTextWidth // Увеличенный отступ между индикатором и текстом
       const colorStartX = (canvas.width - totalColorWidth) / 2
       const colorIndicatorX = colorStartX
-      const colorIndicatorY = colorY + 12 - colorIndicatorSize / 2
+      const colorIndicatorY = colorY + 14 - colorIndicatorSize / 2
       
-      // Рисуем квадратный индикатор с закругленными углами (без обводки)
-      ctx.fillStyle = colorHex
-      ctx.beginPath()
-      // Рисуем закругленный прямоугольник вручную
+      // Рисуем квадратный индикатор с закругленными углами и тонкой обводкой
       const x = colorIndicatorX
       const y = colorIndicatorY
       const w = colorIndicatorSize
       const h = colorIndicatorSize
       const r = borderRadius
+      
+      // Тень для индикатора
+      ctx.shadowColor = 'rgba(15, 15, 15, 0.12)'
+      ctx.shadowBlur = 8
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 2
+      
+      // Рисуем закругленный прямоугольник
+      ctx.fillStyle = colorHex
+      ctx.beginPath()
       ctx.moveTo(x + r, y)
       ctx.lineTo(x + w - r, y)
       ctx.quadraticCurveTo(x + w, y, x + w, y + r)
@@ -174,42 +224,130 @@ export function ProductShareButtons({
       ctx.quadraticCurveTo(x, y, x + r, y)
       ctx.closePath()
       ctx.fill()
+      
+      // Тонкая обводка для премиального вида
+      ctx.strokeStyle = 'rgba(15, 15, 15, 0.08)'
+      ctx.lineWidth = 0.5
+      ctx.stroke()
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
 
-      // Название цвета (font-mono, tracking-[0.15em], uppercase) - справа от индикатора
-      ctx.fillStyle = '#666666' // Graphite из палитры
-      ctx.font = '400 28px "Courier New", monospace' // font-mono
-      ctx.letterSpacing = '0.15em' // tracking-[0.15em]
+      // Название цвета - улучшенная типографика
+      ctx.fillStyle = '#2A2A2A' // Soft Graphite - темнее для лучшей читаемости
+      ctx.font = `400 ${colorFontSize}px "Courier New", monospace`
+      ctx.letterSpacing = '0.18em'
       ctx.textAlign = 'left'
       ctx.textBaseline = 'middle'
-      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 16, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
       
-      colorY += 48
+      // Легкая тень для текста
+      ctx.shadowColor = 'rgba(42, 42, 42, 0.08)'
+      ctx.shadowBlur = 2
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 1
+      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 20, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
+      
+      // Рассчитываем фактическую нижнюю границу цвета (индикатор 36px + отступ)
+      // Индикатор центрирован относительно colorY, его нижняя граница: colorY + 14 + 18 = colorY + 32
+      // Текст имеет высоту 32px и выровнен по середине индикатора
+      // Фактическая нижняя граница: максимальная из индикатора и текста
+      colorBottomY = Math.max(
+        colorIndicatorY + colorIndicatorSize, // Нижняя граница индикатора
+        colorIndicatorY + colorIndicatorSize / 2 + colorFontSize / 2 // Нижняя граница текста (middle baseline)
+      )
     }
 
-    // Брендинг внизу как кликабельная ссылка (элегантно, минималистично)
-    const brandY = canvas.height - 140
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black - более заметный цвет для ссылки
-    ctx.font = '300 24px "Inter", sans-serif' // font-light
-    ctx.letterSpacing = '0.1em'
+    // Цена товара (если есть) - премиальное отображение
+    // Цена идет после цвета (или после названия, если цвета нет)
+    let priceY = colorBottomY + 70 // Отступ после цвета (или после названия, если цвета нет)
+    let priceBottomY = priceY // Нижняя граница цены (для расчета следующего элемента)
+    
+    if (productPrice && productPrice > 0) {
+      // Более заметная цена с улучшенной типографикой
+      ctx.fillStyle = '#2A2A2A' // Soft Graphite - темнее для лучшей читаемости
+      const priceFontSize = 48 // Увеличено с 42px для большего визуального веса
+      ctx.font = `600 ${priceFontSize}px "Cormorant Garamond", serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'top'
+      ctx.letterSpacing = '0.08em' // Увеличенный tracking для элегантности
+      
+      const priceText = `${productPrice.toLocaleString('ru-RU')} ₽`
+      
+      // Легкая тень для глубины
+      ctx.shadowColor = 'rgba(42, 42, 42, 0.1)'
+      ctx.shadowBlur = 3
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 1
+      ctx.fillText(priceText, canvas.width / 2, priceY, maxTitleWidth)
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
+      
+      // Рассчитываем фактическую нижнюю границу цены
+      const priceMetrics = ctx.measureText(priceText)
+      priceBottomY = priceY + priceFontSize + 10 // Высота текста + небольшой отступ
+    }
+
+    // Премиальный брендинг внизу
+    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
+    const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
+    const minBrandY = lastElementBottom + 120 // Увеличенный отступ для предотвращения наложения
+    const brandY = Math.max(canvas.height - 160, minBrandY) // Увеличенный отступ снизу или минимум от последнего элемента
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    const brandFontSize = 26 // Увеличено с 24px
+    ctx.font = `300 ${brandFontSize}px "Inter", sans-serif`
+    ctx.letterSpacing = '0.12em' // Увеличенный tracking для элегантности
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
     
     // Измеряем ширину текста для подчеркивания
-    const brandText = 'ROSEBOTANIQUE'
+    const brandText = 'rosebotanique.store'
     const brandTextMetrics = ctx.measureText(brandText)
     const brandTextWidth = brandTextMetrics.width
     const brandTextX = (canvas.width - brandTextWidth) / 2
     
-    // Рисуем текст брендинга
+    // Рисуем текст брендинга с легкой тенью
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.1)'
+    ctx.shadowBlur = 3
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 1
     ctx.fillText(brandText, canvas.width / 2, brandY, maxTitleWidth)
     
-    // Подчеркиваем текст как ссылку (минималистично)
-    const underlineY = brandY + 24 + 6 // font-size + небольшой отступ
-    ctx.strokeStyle = '#0F0F0F'
+    // Сбрасываем тень
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetY = 0
+    
+    // Элегантное подчеркивание с градиентом
+    const underlineY = brandY + brandFontSize + 8
+    const underlinePadding = 40 // Отступы для подчеркивания
+    
+    // Градиент для подчеркивания
+    const underlineGradient = ctx.createLinearGradient(
+      brandTextX - underlinePadding, 
+      underlineY, 
+      brandTextX + brandTextWidth + underlinePadding, 
+      underlineY
+    )
+    underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
+    underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
+    underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
+    underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
+    
+    ctx.strokeStyle = underlineGradient
     ctx.lineWidth = 1.5
     ctx.beginPath()
-    ctx.moveTo(brandTextX, underlineY)
-    ctx.lineTo(brandTextX + brandTextWidth, underlineY)
+    ctx.moveTo(brandTextX - underlinePadding, underlineY)
+    ctx.lineTo(brandTextX + brandTextWidth + underlinePadding, underlineY)
     ctx.stroke()
 
     // Конвертируем canvas в File
@@ -254,17 +392,20 @@ export function ProductShareButtons({
       img.src = productImageUrl
     })
 
-    // Фон (Off-White из палитры проекта)
-    ctx.fillStyle = '#F5F5F3'
+    // Премиальный фон с легким градиентом (Off-White из палитры проекта)
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+    gradient.addColorStop(0, '#F5F5F3') // Off-White сверху
+    gradient.addColorStop(1, '#FAFAF8') // Чуть светлее снизу для глубины
+    ctx.fillStyle = gradient
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Изображение с отступами по бокам, сверху и снизу (как в предыдущем варианте)
-    const imagePadding = 80 // Отступы по бокам (увеличены для Stories)
-    const topPadding = 120 // Отступ сверху (больше для визуального баланса)
-    const imageHeight = Math.floor(canvas.height * 0.55) // ~1056px для контента остается ~864px
-    const imageWidth = canvas.width - imagePadding * 2 // С отступами по бокам
+    // Изображение с увеличенными отступами для большего воздуха
+    const imagePadding = 100 // Увеличено с 80px для большего воздуха
+    const topPadding = 140 // Увеличено с 120px для лучшего баланса
+    const imageHeight = Math.floor(canvas.height * 0.52) // Немного уменьшено для большего пространства под текстом
+    const imageWidth = canvas.width - imagePadding * 2
     const imageX = imagePadding
-    const imageY = topPadding // Отступ сверху
+    const imageY = topPadding
 
     // Рисуем изображение с сохранением пропорций
     const imgAspect = img.width / img.height
@@ -282,11 +423,26 @@ export function ProductShareButtons({
     } else {
       // Изображение выше - подгоняем по ширине, но не выходим за верхнюю границу
       drawHeight = imageWidth / imgAspect
-      const maxDrawY = imageY // Максимальная позиция сверху
+      const maxDrawY = imageY
       drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
     }
 
+    // Добавляем тонкую тень под изображением для глубины
+    const shadowBlur = 40
+    const shadowOffsetY = 8
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.15)'
+    ctx.shadowBlur = shadowBlur
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = shadowOffsetY
+    
+    // Рисуем изображение с тенью
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
+    
+    // Сбрасываем тень для остальных элементов
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
 
     // Определяем фактическую нижнюю границу изображения (учитываем возможное обрезание при cover)
     const actualImageBottom = Math.max(
@@ -295,70 +451,102 @@ export function ProductShareButtons({
     )
     
     // Контент внизу - центрируем относительно изображения
-    // Увеличиваем отступ, чтобы текст не налезал на фото
-    const contentY = actualImageBottom + 100 // Увеличенный отступ после изображения
+    // Увеличиваем отступ для большего воздуха
+    const contentY = actualImageBottom + 120 // Увеличенный отступ после изображения
     const contentHeight = canvas.height - contentY
-    const contentPadding = imagePadding // Используем те же отступы, что и у изображения
+    const contentPadding = imagePadding
 
-    // Тонкая линия-разделитель (в стиле Stone Island/Nike)
-    const dividerY = contentY + 35
-    ctx.strokeStyle = 'rgba(102, 102, 102, 0.2)' // Graphite с прозрачностью
-    ctx.lineWidth = 0.5
+    // Премиальная линия-разделитель с градиентом
+    const dividerY = contentY + 50
+    const dividerPadding = contentPadding + 60 // Уменьшаем длину линии для элегантности
+    
+    // Градиент для разделителя
+    const dividerGradient = ctx.createLinearGradient(dividerPadding, dividerY, canvas.width - dividerPadding, dividerY)
+    dividerGradient.addColorStop(0, 'rgba(102, 102, 102, 0)')
+    dividerGradient.addColorStop(0.5, 'rgba(102, 102, 102, 0.3)')
+    dividerGradient.addColorStop(1, 'rgba(102, 102, 102, 0)')
+    
+    ctx.strokeStyle = dividerGradient
+    ctx.lineWidth = 1 // Немного толще для лучшей видимости
     ctx.beginPath()
-    ctx.moveTo(contentPadding, dividerY)
-    ctx.lineTo(canvas.width - contentPadding, dividerY)
+    ctx.moveTo(dividerPadding, dividerY)
+    ctx.lineTo(canvas.width - dividerPadding, dividerY)
     ctx.stroke()
 
     // Определяем максимальную ширину текста
     const maxTitleWidth = canvas.width - contentPadding * 2
 
-    // Название товара - центрируем относительно изображения
-    // Увеличиваем отступ от линии-разделителя, чтобы текст не налезал на фото
-    const titleY = dividerY + 60 // Отступ после линии-разделителя
+    // Название товара - премиальная типографика
+    const titleY = dividerY + 80 // Увеличенный отступ для большего воздуха
     ctx.fillStyle = '#0F0F0F' // Charcoal Black из палитры
-    ctx.font = '900 64px "Cormorant Garamond", serif' // font-black = 900
-    ctx.textAlign = 'center' // Центрируем
-    ctx.textBaseline = 'top'
-    ctx.letterSpacing = '-0.02em' // tracking-tighter
-    const titleText = productName.toUpperCase() // uppercase
-    const titleLines = wrapText(ctx, titleText, maxTitleWidth, 64)
-    const lineHeight = 64 * 0.95 // leading-[0.95]
     
+    // Улучшенная типографика: больше размер, лучший tracking
+    const titleFontSize = 80 // Увеличено с 72px для большего визуального веса
+    ctx.font = `900 ${titleFontSize}px "Cormorant Garamond", serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+    ctx.letterSpacing = '-0.03em' // Более плотный tracking для элегантности
+    
+    const titleText = productName.toUpperCase()
+    const titleLines = wrapText(ctx, titleText, maxTitleWidth, titleFontSize)
+    const lineHeight = titleFontSize * 1.15 // Улучшенный leading для читаемости
+    
+    // Рисуем название с легкой тенью для глубины
     titleLines.forEach((line, index) => {
+      // Легкая тень для глубины
+      ctx.shadowColor = 'rgba(15, 15, 15, 0.08)'
+      ctx.shadowBlur = 4
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 2
       ctx.fillText(line, canvas.width / 2, titleY + index * lineHeight, maxTitleWidth)
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
     })
 
     const titleHeight = titleLines.length * lineHeight
 
-    // Цвет товара (если есть) - центрируем относительно изображения
-    let colorY = titleY + titleHeight + 36 // space-y
+    // Цвет товара (если есть) - премиальное отображение с тенью
+    // Цвет идет сразу после названия
+    let colorY = titleY + titleHeight + 60 // Увеличенный отступ после названия
+    let colorBottomY = colorY // Нижняя граница цвета (для расчета следующего элемента)
+    
     if (productColor) {
       const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
       const colorName = getColorDisplayName(productColor.name, 'ru')
       
-      // Устанавливаем шрифт для измерения текста цвета
-      ctx.font = '400 28px "Courier New", monospace'
-      ctx.letterSpacing = '0.15em'
+      // Улучшенная типографика для цвета
+      const colorFontSize = 32 // Увеличено с 30px
+      ctx.font = `400 ${colorFontSize}px "Courier New", monospace`
+      ctx.letterSpacing = '0.18em' // Увеличенный tracking для элегантности
       
-      // Центрируем цветной индикатор и текст
-      // Квадратный индикатор как в карточке товара (rounded-sm, без бордера)
-      const colorIndicatorSize = 24
-      const borderRadius = 2 // rounded-sm = 2px
+      // Увеличенный индикатор цвета для лучшей видимости
+      const colorIndicatorSize = 36 // Увеличено с 32px
+      const borderRadius = 3 // Немного больше скругление
       const colorTextWidth = ctx.measureText(colorName.toUpperCase()).width
-      const totalColorWidth = colorIndicatorSize + 16 + colorTextWidth
+      const totalColorWidth = colorIndicatorSize + 20 + colorTextWidth // Увеличенный отступ между индикатором и текстом
       const colorStartX = (canvas.width - totalColorWidth) / 2
       const colorIndicatorX = colorStartX
-      const colorIndicatorY = colorY + 12 - colorIndicatorSize / 2
+      const colorIndicatorY = colorY + 14 - colorIndicatorSize / 2
       
-      // Рисуем квадратный индикатор с закругленными углами (без обводки)
-      ctx.fillStyle = colorHex
-      ctx.beginPath()
-      // Рисуем закругленный прямоугольник вручную
+      // Рисуем квадратный индикатор с закругленными углами и тонкой обводкой
       const x = colorIndicatorX
       const y = colorIndicatorY
       const w = colorIndicatorSize
       const h = colorIndicatorSize
       const r = borderRadius
+      
+      // Тень для индикатора
+      ctx.shadowColor = 'rgba(15, 15, 15, 0.12)'
+      ctx.shadowBlur = 8
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 2
+      
+      // Рисуем закругленный прямоугольник
+      ctx.fillStyle = colorHex
+      ctx.beginPath()
       ctx.moveTo(x + r, y)
       ctx.lineTo(x + w - r, y)
       ctx.quadraticCurveTo(x + w, y, x + w, y + r)
@@ -370,42 +558,130 @@ export function ProductShareButtons({
       ctx.quadraticCurveTo(x, y, x + r, y)
       ctx.closePath()
       ctx.fill()
+      
+      // Тонкая обводка для премиального вида
+      ctx.strokeStyle = 'rgba(15, 15, 15, 0.08)'
+      ctx.lineWidth = 0.5
+      ctx.stroke()
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
 
-      // Название цвета (font-mono, tracking-[0.15em], uppercase) - справа от индикатора
-      ctx.fillStyle = '#666666' // Graphite из палитры
-      ctx.font = '400 28px "Courier New", monospace' // font-mono
-      ctx.letterSpacing = '0.15em' // tracking-[0.15em]
+      // Название цвета - улучшенная типографика
+      ctx.fillStyle = '#2A2A2A' // Soft Graphite - темнее для лучшей читаемости
+      ctx.font = `400 ${colorFontSize}px "Courier New", monospace`
+      ctx.letterSpacing = '0.18em'
       ctx.textAlign = 'left'
       ctx.textBaseline = 'middle'
-      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 16, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
       
-      colorY += 48
+      // Легкая тень для текста
+      ctx.shadowColor = 'rgba(42, 42, 42, 0.08)'
+      ctx.shadowBlur = 2
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 1
+      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 20, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
+      
+      // Рассчитываем фактическую нижнюю границу цвета (индикатор 36px + отступ)
+      // Индикатор центрирован относительно colorY, его нижняя граница: colorY + 14 + 18 = colorY + 32
+      // Текст имеет высоту 32px и выровнен по середине индикатора
+      // Фактическая нижняя граница: максимальная из индикатора и текста
+      colorBottomY = Math.max(
+        colorIndicatorY + colorIndicatorSize, // Нижняя граница индикатора
+        colorIndicatorY + colorIndicatorSize / 2 + colorFontSize / 2 // Нижняя граница текста (middle baseline)
+      )
     }
 
-    // Брендинг внизу как кликабельная ссылка (элегантно, минималистично)
-    const brandY = canvas.height - 140
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black - более заметный цвет для ссылки
-    ctx.font = '300 24px "Inter", sans-serif' // font-light
-    ctx.letterSpacing = '0.1em'
+    // Цена товара (если есть) - премиальное отображение
+    // Цена идет после цвета (или после названия, если цвета нет)
+    let priceY = colorBottomY + 70 // Отступ после цвета (или после названия, если цвета нет)
+    let priceBottomY = priceY // Нижняя граница цены (для расчета следующего элемента)
+    
+    if (productPrice && productPrice > 0) {
+      // Более заметная цена с улучшенной типографикой
+      ctx.fillStyle = '#2A2A2A' // Soft Graphite - темнее для лучшей читаемости
+      const priceFontSize = 48 // Увеличено с 42px для большего визуального веса
+      ctx.font = `600 ${priceFontSize}px "Cormorant Garamond", serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'top'
+      ctx.letterSpacing = '0.08em' // Увеличенный tracking для элегантности
+      
+      const priceText = `${productPrice.toLocaleString('ru-RU')} ₽`
+      
+      // Легкая тень для глубины
+      ctx.shadowColor = 'rgba(42, 42, 42, 0.1)'
+      ctx.shadowBlur = 3
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 1
+      ctx.fillText(priceText, canvas.width / 2, priceY, maxTitleWidth)
+      
+      // Сбрасываем тень
+      ctx.shadowColor = 'transparent'
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
+      
+      // Рассчитываем фактическую нижнюю границу цены
+      const priceMetrics = ctx.measureText(priceText)
+      priceBottomY = priceY + priceFontSize + 10 // Высота текста + небольшой отступ
+    }
+
+    // Премиальный брендинг внизу
+    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
+    const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
+    const minBrandY = lastElementBottom + 120 // Увеличенный отступ для предотвращения наложения
+    const brandY = Math.max(canvas.height - 160, minBrandY) // Увеличенный отступ снизу или минимум от последнего элемента
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    const brandFontSize = 26 // Увеличено с 24px
+    ctx.font = `300 ${brandFontSize}px "Inter", sans-serif`
+    ctx.letterSpacing = '0.12em' // Увеличенный tracking для элегантности
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
     
     // Измеряем ширину текста для подчеркивания
-    const brandText = 'ROSEBOTANIQUE'
+    const brandText = 'rosebotanique.store'
     const brandTextMetrics = ctx.measureText(brandText)
     const brandTextWidth = brandTextMetrics.width
     const brandTextX = (canvas.width - brandTextWidth) / 2
     
-    // Рисуем текст брендинга
+    // Рисуем текст брендинга с легкой тенью
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.1)'
+    ctx.shadowBlur = 3
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 1
     ctx.fillText(brandText, canvas.width / 2, brandY, maxTitleWidth)
     
-    // Подчеркиваем текст как ссылку (минималистично)
-    const underlineY = brandY + 24 + 6 // font-size + небольшой отступ
-    ctx.strokeStyle = '#0F0F0F'
+    // Сбрасываем тень
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetY = 0
+    
+    // Элегантное подчеркивание с градиентом
+    const underlineY = brandY + brandFontSize + 8
+    const underlinePadding = 40 // Отступы для подчеркивания
+    
+    // Градиент для подчеркивания
+    const underlineGradient = ctx.createLinearGradient(
+      brandTextX - underlinePadding, 
+      underlineY, 
+      brandTextX + brandTextWidth + underlinePadding, 
+      underlineY
+    )
+    underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
+    underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
+    underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
+    underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
+    
+    ctx.strokeStyle = underlineGradient
     ctx.lineWidth = 1.5
     ctx.beginPath()
-    ctx.moveTo(brandTextX, underlineY)
-    ctx.lineTo(brandTextX + brandTextWidth, underlineY)
+    ctx.moveTo(brandTextX - underlinePadding, underlineY)
+    ctx.lineTo(brandTextX + brandTextWidth + underlinePadding, underlineY)
     ctx.stroke()
 
     // Конвертируем canvas в File
@@ -446,7 +722,7 @@ export function ProductShareButtons({
           // Для Telegram важно передать ссылку и в text, и в url для максимальной совместимости
           await navigator.share({
             files: [imageFile],
-            title: `${productName} - ROSEBOTANIQUE`,
+            title: `${productName} - rosebotanique.store`,
             text: telegramText, // Текст с ссылкой для отображения
             url: productUrl, // Ссылка для кликабельности
           })
@@ -488,7 +764,7 @@ export function ProductShareButtons({
           if (navigator.canShare({ files: [imageFile] })) {
           await navigator.share({
             files: [imageFile],
-            title: `${productName} - ROSEBOTANIQUE`,
+            title: `${productName} - rosebotanique.store`,
             text: `🌸 ${productName}\n\n🔗 ${productUrl}`,
             url: productUrl, // Ссылка на конкретный товар
           })
@@ -548,26 +824,33 @@ export function ProductShareButtons({
   }
 
   if (variant === 'card') {
-    // Компактный вариант для карточки товара
+    // Компактный вариант для карточки товара - улучшенный дизайн
     return (
       <div className={cn('flex gap-1.5', className)}>
         <button
           onClick={handleShareTelegram}
-          className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-sm md:backdrop-blur-md shadow-fintage-sm bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 border border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:scale-110 active:scale-105 transition-all duration-300"
+          className="group relative inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-sm md:backdrop-blur-md shadow-fintage-sm bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 border border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite hover:border-[#0088cc]/40 dark:hover:border-[#0088cc]/50 hover:bg-[#0088cc]/5 dark:hover:bg-[#0088cc]/10 hover:scale-110 active:scale-105 transition-all duration-300"
           aria-label="Поделиться в Telegram с изображением"
           title="Поделиться в Telegram с изображением"
         >
-          <Send className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+          <Send className="h-3 w-3 sm:h-3.5 sm:w-3.5 group-hover:text-[#0088cc] dark:group-hover:text-[#0088cc] transition-colors duration-300" />
         </button>
         {productImageUrl && (
           <button
             onClick={handleShareInstagramStory}
             disabled={isGeneratingStory}
-            className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-sm md:backdrop-blur-md shadow-fintage-sm bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 border border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:scale-110 active:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group relative inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-sm md:backdrop-blur-md shadow-fintage-sm bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 border border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite hover:border-[#dc2743]/40 dark:hover:border-[#dc2743]/50 hover:bg-gradient-to-br hover:from-[#f09433]/10 hover:via-[#e6683c]/10 hover:to-[#dc2743]/10 dark:hover:from-[#f09433]/15 dark:hover:via-[#e6683c]/15 dark:hover:to-[#dc2743]/15 hover:scale-110 active:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Поделиться в Instagram Stories"
             title="Поделиться в Instagram Stories"
           >
-            <Instagram className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <Instagram className="h-3 w-3 sm:h-3.5 sm:w-3.5 group-hover:opacity-80 transition-opacity duration-300" 
+              style={{
+                background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            />
           </button>
         )}
       </div>
@@ -576,26 +859,54 @@ export function ProductShareButtons({
 
   // Полный вариант для страницы товара
   return (
-    <div className={cn('flex gap-3', className)}>
-      <Button
-        variant="outline"
-        onClick={handleShareTelegram}
-        className="flex items-center gap-2 px-4 h-12 text-sm rounded-sm border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:bg-hover-bg dark:hover:bg-hover-bg"
-      >
-        <Send className="h-4 w-4" />
-        <span>Telegram</span>
-      </Button>
-      {productImageUrl && (
+    <div className={cn('flex flex-col gap-3', className)}>
+      {/* Заголовок "Поделиться" */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-mono uppercase tracking-[0.15em] text-fintage-graphite dark:text-fintage-graphite/70">
+          Поделиться
+        </span>
+        <div className="h-px flex-1 bg-gradient-to-r from-fintage-graphite/20 via-fintage-graphite/30 to-transparent dark:from-fintage-graphite/30 dark:via-fintage-graphite/40" />
+      </div>
+      
+      {/* Кнопки с иконками */}
+      <div className="flex gap-3">
+        {/* Telegram кнопка - только иконка */}
         <Button
           variant="outline"
-          onClick={handleShareInstagramStory}
-          disabled={isGeneratingStory}
-          className="flex items-center gap-2 px-4 h-12 text-sm rounded-sm border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:bg-hover-bg dark:hover:bg-hover-bg disabled:opacity-50"
+          onClick={handleShareTelegram}
+          size="icon"
+          className="group relative h-12 w-12 rounded-sm border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-transparent hover:bg-[#0088cc]/5 dark:hover:bg-[#0088cc]/10 hover:border-[#0088cc]/30 dark:hover:border-[#0088cc]/40 transition-all duration-300 overflow-hidden"
         >
-          <Instagram className="h-4 w-4" />
-          <span>{isGeneratingStory ? 'Отправка...' : 'Instagram Stories'}</span>
+          {/* Фоновый эффект при hover */}
+          <span className="absolute inset-0 bg-gradient-to-r from-[#0088cc]/0 via-[#0088cc]/5 to-[#0088cc]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          
+          <Send className="h-5 w-5 relative z-10 text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-[#0088cc] dark:group-hover:text-[#0088cc] group-hover:scale-110 transition-all duration-300" />
         </Button>
-      )}
+        
+        {productImageUrl && (
+          /* Instagram кнопка - только иконка */
+          <Button
+            variant="outline"
+            onClick={handleShareInstagramStory}
+            disabled={isGeneratingStory}
+            size="icon"
+            className="group relative h-12 w-12 rounded-sm border-fintage-graphite/30 dark:border-fintage-graphite/40 bg-transparent hover:bg-gradient-to-r hover:from-[#f09433]/10 hover:via-[#e6683c]/10 hover:to-[#dc2743]/10 dark:hover:from-[#f09433]/15 dark:hover:via-[#e6683c]/15 dark:hover:to-[#dc2743]/15 hover:border-[#dc2743]/30 dark:hover:border-[#dc2743]/40 transition-all duration-300 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {/* Градиентный фон при hover */}
+            <span className="absolute inset-0 bg-gradient-to-r from-[#f09433]/0 via-[#e6683c]/5 to-[#dc2743]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            <Instagram 
+              className="h-5 w-5 relative z-10 group-hover:scale-110 transition-transform duration-300" 
+              style={{
+                background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            />
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

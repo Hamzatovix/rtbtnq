@@ -8,21 +8,21 @@ async function getColorsPath() {
 }
 
 const defaultColors = [
-  { id: '1', slug: 'black', name: 'Черный', hex: '#000000' },
-  { id: '2', slug: 'white', name: 'Белый', hex: '#FFFFFF' },
-  { id: '3', slug: 'beige', name: 'Бежевый', hex: '#D9C7B2' },
-  { id: '4', slug: 'brown', name: 'Коричневый', hex: '#8B4513' },
-  { id: '5', slug: 'gray', name: 'Серый', hex: '#808080' },
-  { id: '6', slug: 'red', name: 'Красный', hex: '#FF0000' },
-  { id: '7', slug: 'blue', name: 'Синий', hex: '#0000FF' },
-  { id: '8', slug: 'green', name: 'Зеленый', hex: '#008000' },
-  { id: '9', slug: 'pink', name: 'Розовый', hex: '#FFC0CB' },
-  { id: '10', slug: 'yellow', name: 'Желтый', hex: '#FFFF00' },
-  { id: '11', slug: 'orange', name: 'Оранжевый', hex: '#FFA500' },
-  { id: '12', slug: 'purple', name: 'Фиолетовый', hex: '#800080' },
-  { id: '13', slug: 'navy', name: 'Темно-синий', hex: '#000080' },
-  { id: '14', slug: 'khaki', name: 'Хаки', hex: '#C3B091' },
-  { id: '15', slug: 'terracotta', name: 'Терракотовый', hex: '#E2725B' },
+  { id: '1', slug: 'black', name: 'Black', hex: '#000000' },
+  { id: '2', slug: 'white', name: 'White', hex: '#FFFFFF' },
+  { id: '3', slug: 'beige', name: 'Beige', hex: '#D9C7B2' },
+  { id: '4', slug: 'brown', name: 'Brown', hex: '#8B4513' },
+  { id: '5', slug: 'gray', name: 'Gray', hex: '#808080' },
+  { id: '6', slug: 'red', name: 'Red', hex: '#FF0000' },
+  { id: '7', slug: 'blue', name: 'Blue', hex: '#0000FF' },
+  { id: '8', slug: 'green', name: 'Green', hex: '#008000' },
+  { id: '9', slug: 'pink', name: 'Pink', hex: '#FFC0CB' },
+  { id: '10', slug: 'yellow', name: 'Yellow', hex: '#FFFF00' },
+  { id: '11', slug: 'orange', name: 'Orange', hex: '#FFA500' },
+  { id: '12', slug: 'purple', name: 'Purple', hex: '#800080' },
+  { id: '13', slug: 'navy', name: 'Navy', hex: '#000080' },
+  { id: '14', slug: 'khaki', name: 'Khaki', hex: '#C3B091' },
+  { id: '15', slug: 'terracotta', name: 'Terracotta', hex: '#E2725B' },
 ]
 
 export async function POST(req: NextRequest) {
