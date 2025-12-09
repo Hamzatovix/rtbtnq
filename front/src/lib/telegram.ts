@@ -878,13 +878,80 @@ export async function sendOrderNotification(
   console.log('[Telegram] Отправка уведомления о заказе:', {
     orderNumber: data.orderNumber,
     orderUrl,
-    isValidUrl
+    isValidUrl,
+    itemsWithImages: data.items.filter(item => item.image).length
   })
   
-  // Изображения товаров отключены - отправляем только текстовое сообщение
-  // Это ускоряет отправку и избегает проблем с таймаутами и недоступными изображениями
-  console.log('[Telegram] Отправка изображений отключена, отправляется только текстовое сообщение')
-
+  // Собираем изображения товаров
+  const itemsWithImages = data.items.filter(item => item.image && item.image.trim())
+  
+  // Если есть изображения, отправляем медиа-группу с первым фото и подписью
+  if (itemsWithImages.length > 0) {
+    console.log('[Telegram] Отправка уведомления с изображениями товаров:', {
+      imagesCount: itemsWithImages.length
+    })
+    
+    // Формируем медиа-группу (максимум 10 фото в группе)
+    const media = itemsWithImages.slice(0, 10).map(item => {
+      // Формируем абсолютный URL для изображения
+      let imageUrl = item.image!.trim()
+      if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+        // Если путь относительный, добавляем baseUrl
+        imageUrl = imageUrl.startsWith('/') 
+          ? `${baseUrl}${imageUrl}`
+          : `${baseUrl}/${imageUrl}`
+      }
+      
+      return {
+        type: 'photo' as const,
+        media: imageUrl,
+        caption: undefined, // Подпись будет только у первого фото
+      }
+    })
+    
+    // Добавляем подпись к первому фото (текстовое сообщение)
+    if (media.length > 0) {
+      media[0].caption = message.substring(0, 1024) // Telegram ограничивает подпись 1024 символами
+    }
+    
+    // Пытаемся отправить медиа-группу
+    const mediaGroupSuccess = await sendTelegramMediaGroup(token, chat, media)
+    
+    if (mediaGroupSuccess) {
+      // Если медиа-группа отправлена успешно, отправляем кнопку отдельным сообщением (если нужно)
+      if (isValidUrl) {
+        const buttonMessage = `🔗 [Посмотреть заказ](${orderUrl})`
+        await sendTelegramMessage(token, chat, {
+          text: buttonMessage,
+          parseMode: 'Markdown',
+          replyMarkup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '📋 Посмотреть заказ',
+                  url: orderUrl,
+                },
+              ],
+            ],
+          },
+        })
+      }
+      
+      console.log('[Telegram] ✅ Уведомление с изображениями успешно отправлено в Telegram:', {
+        orderId: data.orderId,
+        orderNumber: data.orderNumber,
+        imagesCount: media.length,
+        timestamp: new Date().toISOString()
+      })
+      return true
+    } else {
+      console.warn('[Telegram] Не удалось отправить медиа-группу, отправляем только текстовое сообщение')
+      // Продолжаем отправку текстового сообщения
+    }
+  } else {
+    console.log('[Telegram] Изображения товаров отсутствуют, отправляется только текстовое сообщение')
+  }
+  
   // Формируем сообщение с кнопкой или без (если localhost)
   const messageOptions: TelegramMessageOptions = {
     text: message,
