@@ -574,6 +574,10 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               onToggleFavorite={handleToggleFavorite}
               positionClass={badgeTR}
               isCompact={isCompact}
+              productName={product.name}
+              productUrl={`${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}/product/${product.slug}`}
+              productImageUrl={asset.src.startsWith('http') ? asset.src : `${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}${asset.src}`}
+              productPrice={typeof product.price === 'number' ? product.price : Number(product.price ?? 0)}
             />
           </motion.div>
 

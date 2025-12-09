@@ -2,12 +2,17 @@
 
 import { Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ProductShareButtons } from './product-share-buttons'
 
 interface ProductCardQuickActionsProps {
   favorite: boolean
   onToggleFavorite: (event: React.MouseEvent<HTMLButtonElement>) => void
   positionClass: string
   isCompact?: boolean
+  productName?: string
+  productUrl?: string
+  productImageUrl?: string
+  productPrice?: number
 }
 
 export default function ProductCardQuickActions({
@@ -15,6 +20,10 @@ export default function ProductCardQuickActions({
   onToggleFavorite,
   positionClass,
   isCompact = false,
+  productName,
+  productUrl,
+  productImageUrl,
+  productPrice,
 }: ProductCardQuickActionsProps) {
   const buttonSize = isCompact ? 'h-7 w-7 sm:h-8 sm:w-8' : 'h-9 w-9'
   const iconSize = isCompact ? 'h-3 w-3 sm:h-3.5 sm:w-3.5' : 'h-4 w-4'
@@ -34,6 +43,16 @@ export default function ProductCardQuickActions({
       >
         <Heart className={iconSize} fill={favorite ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.5} />
       </button>
+      {productName && productUrl && (
+        <ProductShareButtons
+          productName={productName}
+          productUrl={productUrl}
+          productImageUrl={productImageUrl}
+          productPrice={productPrice}
+          variant="card"
+          className="opacity-100"
+        />
+      )}
     </div>
   )
 }

@@ -16,6 +16,7 @@ import { triggerHapticFeedback } from '@/lib/haptics'
 import Link from 'next/link'
 import { ProductStructuredData } from '@/components/seo/ProductStructuredData'
 import { ProductImageLightbox } from '@/components/product/ProductImageLightbox'
+import { ProductShareButtons } from '@/components/product/product-share-buttons'
 
 type ProductVariant = {
   id?: string
@@ -474,6 +475,19 @@ export default function ProductPage() {
                 <Heart className="h-4 w-4" fill={favorite ? 'currentColor' : 'none'} />
               </Button>
             </div>
+
+            {/* Share buttons */}
+            {product && (
+              <div className="pt-4 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
+                <ProductShareButtons
+                  productName={product.name}
+                  productUrl={`${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}/product/${product.slug}`}
+                  productImageUrl={currentImage.startsWith('http') ? currentImage : `${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}${currentImage.startsWith('/') ? currentImage : '/' + currentImage}`}
+                  productPrice={selectedVariant ? selectedVariant.priceCents / 100 : 0}
+                  variant="page"
+                />
+              </div>
+            )}
 
             {/* Product Details - технический стиль */}
             {(product.materials || product.care) && (
