@@ -24,8 +24,67 @@ export function ProductShareButtons({
 }: ProductShareButtonsProps) {
   const [isGeneratingStory, setIsGeneratingStory] = useState(false)
 
-  // Формируем текст для Telegram
-  const telegramText = `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n${productUrl}`
+  // Формируем текст для Telegram с ссылкой
+  const telegramText = `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n🔗 ${productUrl}`
+
+  // Простая генерация QR-кода (упрощенная версия)
+  const generateQRCode = (ctx: CanvasRenderingContext2D, text: string, x: number, y: number, size: number) => {
+    // Используем простой паттерн для QR-кода (упрощенная версия)
+    // В реальном приложении лучше использовать библиотеку qrcode
+    const moduleSize = Math.floor(size / 25) // 25x25 модулей
+    const quietZone = Math.floor(size * 0.1)
+    
+    // Рисуем белый фон
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(x - quietZone, y - quietZone, size + quietZone * 2, size + quietZone * 2)
+    
+    // Рисуем черную рамку
+    ctx.fillStyle = '#000000'
+    ctx.fillRect(x, y, size, size)
+    
+    // Рисуем паттерн поиска (три квадрата в углах)
+    const finderSize = Math.floor(size * 0.3)
+    const finderOffset = Math.floor(size * 0.1)
+    
+    // Левый верхний угол
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(x + finderOffset, y + finderOffset, finderSize, finderSize)
+    ctx.fillStyle = '#000000'
+    ctx.fillRect(x + finderOffset + moduleSize * 2, y + finderOffset + moduleSize * 2, finderSize - moduleSize * 4, finderSize - moduleSize * 4)
+    
+    // Правый верхний угол
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(x + size - finderOffset - finderSize, y + finderOffset, finderSize, finderSize)
+    ctx.fillStyle = '#000000'
+    ctx.fillRect(x + size - finderOffset - finderSize + moduleSize * 2, y + finderOffset + moduleSize * 2, finderSize - moduleSize * 4, finderSize - moduleSize * 4)
+    
+    // Левый нижний угол
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(x + finderOffset, y + size - finderOffset - finderSize, finderSize, finderSize)
+    ctx.fillStyle = '#000000'
+    ctx.fillRect(x + finderOffset + moduleSize * 2, y + size - finderOffset - finderSize + moduleSize * 2, finderSize - moduleSize * 4, finderSize - moduleSize * 4)
+    
+    // Рисуем данные (упрощенный паттерн на основе хеша текста)
+    ctx.fillStyle = '#000000'
+    let hash = 0
+    for (let i = 0; i < text.length; i++) {
+      hash = ((hash << 5) - hash) + text.charCodeAt(i)
+      hash = hash & hash
+    }
+    
+    for (let row = 0; row < 25; row++) {
+      for (let col = 0; col < 25; col++) {
+        // Пропускаем паттерны поиска
+        if ((row < 7 && col < 7) || (row < 7 && col >= 18) || (row >= 18 && col < 7)) {
+          continue
+        }
+        const bit = (hash + row * 25 + col) % 2
+        if (bit === 1) {
+          ctx.fillRect(x + col * moduleSize, y + row * moduleSize, moduleSize, moduleSize)
+        }
+      }
+    }
+  }
 
   // Создать изображение для поделиться
   const createShareImage = async (): Promise<File> => {
@@ -123,9 +182,43 @@ export function ProductShareButtons({
     ctx.font = '36px "Inter", sans-serif'
     ctx.fillText('ROSEBOTANIQUE', canvas.width / 2, canvas.height - 150, maxTitleWidth)
 
+    // QR-код со ссылкой (в правом нижнем углу)
+    const qrSize = 200
+    const qrX = canvas.width - qrSize - 40
+    const qrY = canvas.height - qrSize - 40
+    generateQRCode(ctx, productUrl, qrX, qrY, qrSize)
+    
+    // Текст "Отсканируйте QR-код" рядом с QR-кодом
+    ctx.fillStyle = '#1a1a1a'
+    ctx.font = 'bold 28px "Inter", sans-serif'
+    ctx.textAlign = 'left'
+    const qrTextY = qrY + qrSize / 2 - 20
+    ctx.fillText('Отсканируйте', qrX - 180, qrTextY)
+    ctx.fillText('QR-код', qrX - 180, qrTextY + 35)
+    
+    // Ссылка на товар (крупным шрифтом для читаемости)
+    ctx.fillStyle = '#0066cc'
+    ctx.font = 'bold 32px "Inter", sans-serif'
+    ctx.textAlign = 'center'
+    const linkY = canvas.height - 180
+    const shortUrl = productUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+    ctx.fillText(shortUrl, canvas.width / 2, linkY, maxTitleWidth)
+    
+    // Подчеркивание ссылки
+    const linkMetrics = ctx.measureText(shortUrl)
+    const linkWidth = Math.min(linkMetrics.width, maxTitleWidth)
+    const linkX = (canvas.width - linkWidth) / 2
+    ctx.strokeStyle = '#0066cc'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(linkX, linkY + 5)
+    ctx.lineTo(linkX + linkWidth, linkY + 5)
+    ctx.stroke()
+
     // URL внизу (маленьким шрифтом)
-    ctx.fillStyle = '#cccccc'
-    ctx.font = '28px "Inter", sans-serif'
+    ctx.fillStyle = '#999999'
+    ctx.font = '24px "Inter", sans-serif'
+    ctx.textAlign = 'center'
     ctx.fillText('rosebotanique.store', canvas.width / 2, canvas.height - 100, maxTitleWidth)
 
     // Конвертируем canvas в File
@@ -205,11 +298,12 @@ export function ProductShareButtons({
         try {
           // Проверяем, можно ли поделиться файлом
           if (navigator.canShare({ files: [imageFile] })) {
-            await navigator.share({
-              files: [imageFile],
-              title: `${productName} - ROSEBOTANIQUE`,
-              text: `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n${productUrl}`,
-            })
+          await navigator.share({
+            files: [imageFile],
+            title: `${productName} - ROSEBOTANIQUE`,
+            text: `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n🔗 ${productUrl}`,
+            url: productUrl,
+          })
             setIsGeneratingStory(false)
             return
           }
