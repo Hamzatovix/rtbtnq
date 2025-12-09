@@ -44,6 +44,7 @@ type Color = {
   name: string
   hex?: string
   hex_code?: string
+  slug?: string
 }
 
 export default function ProductPage() {
@@ -493,7 +494,7 @@ export default function ProductPage() {
                   productUrl={`${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}/product/${product.slug}`}
                   productImageUrl={currentImage.startsWith('http') ? currentImage : `${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}${currentImage.startsWith('/') ? currentImage : '/' + currentImage}`}
                   productPrice={selectedVariant ? selectedVariant.priceCents / 100 : 0}
-                  productColor={selectedColor ? { name: selectedColor.name, hex: selectedColor.hex, hex_code: selectedColor.hex_code, slug: (selectedColor as any).slug } : null}
+                  productColor={selectedColor ? { name: selectedColor.name, hex: selectedColor.hex, hex_code: selectedColor.hex_code, slug: selectedColor.slug } : null}
                   productCategory={Array.isArray(categories) ? categories.find(c => String(c.id) === String(product.categoryId))?.name : undefined}
                   variant="page"
                 />
