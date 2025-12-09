@@ -759,7 +759,8 @@ export function formatOrderNotification(data: OrderNotificationData): string {
   let message = `✨ *НОВЫЙ ЗАКАЗ*\n`
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`
   
-  message += `📦 *Заказ:* \`${orderNumber}\`\n`
+  // Номер заказа в формате кода для легкого копирования (блок кода)
+  message += `📦 *Заказ:*\n\`\`\`\n${orderNumber}\n\`\`\`\n`
   message += `👤 *Клиент:* ${customerName}\n`
   message += `📞 *Телефон:* ${phoneText}\n`
   
