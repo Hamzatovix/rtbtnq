@@ -298,7 +298,7 @@ export function ProductShareButtons({
     // Учитываем высоту текста + подчеркивание + отступ
     const maxBrandY = canvas.height - brandFontSize - underlineHeight - bottomPadding
     
-    // Брендинг должен быть минимум на 120px ниже последнего элемента
+    // Брендинг должен быть минимум на 80px ниже последнего элемента
     // Но не должен выходить за границы canvas
     // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
     let brandY = Math.min(minBrandY, maxBrandY)
@@ -647,7 +647,7 @@ export function ProductShareButtons({
     // Учитываем высоту текста + подчеркивание + отступ
     const maxBrandY = canvas.height - brandFontSize - underlineHeight - bottomPadding
     
-    // Брендинг должен быть минимум на 120px ниже последнего элемента
+    // Брендинг должен быть минимум на 80px ниже последнего элемента
     // Но не должен выходить за границы canvas
     // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
     let brandY = Math.min(minBrandY, maxBrandY)
