@@ -10,7 +10,7 @@ interface ProductShareButtonsProps {
   productUrl: string
   productImageUrl?: string
   productPrice?: number
-  productColor?: { name: string; hex?: string; hex_code?: string } | null
+  productColor?: { name: string; hex?: string; hex_code?: string; slug?: string } | null
   productCategory?: string
   variant?: 'card' | 'page'
   className?: string
@@ -181,7 +181,7 @@ export function ProductShareButtons({
     
     if (productColor) {
       const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
-      const colorName = getColorEnglishName(productColor.name, productColor.slug)
+      const colorName = getColorEnglishName(productColor.name, productColor.slug || undefined)
       
       // Улучшенная типографика для цвета
       const colorFontSize = 32 // Увеличено с 30px
@@ -297,25 +297,37 @@ export function ProductShareButtons({
       priceBottomY = priceY + priceFontSize + 10 // Высота текста + небольшой отступ
     }
 
-    // Премиальный брендинг внизу
+    // Премиальный брендинг внизу - ВСЕГДА рисуем брендинг
     // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
-    const brandHeight = brandFontSize + 8 + 10 // Высота текста + подчеркивание + отступ
+    const underlineHeight = 8 // Высота подчеркивания
+    const bottomPadding = 20 // Отступ снизу
     
     // Минимальная позиция брендинга: минимум 120px от последнего элемента
     const minBrandY = lastElementBottom + 120
     
-    // Максимальная позиция брендинга: не ближе 20px от низа canvas
-    const maxBrandY = canvas.height - brandHeight - 20
+    // Максимальная позиция брендинга: не ближе bottomPadding от низа canvas
+    // Учитываем высоту текста + подчеркивание + отступ
+    const maxBrandY = canvas.height - brandFontSize - underlineHeight - bottomPadding
     
     // Брендинг должен быть минимум на 120px ниже последнего элемента
     // Но не должен выходить за границы canvas
     // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
-    const brandY = Math.min(minBrandY, maxBrandY)
+    let brandY = Math.min(minBrandY, maxBrandY)
     
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    // Если minBrandY больше maxBrandY, значит контент слишком большой
+    // В этом случае используем фиксированную позицию снизу с достаточным отступом
+    if (minBrandY > maxBrandY) {
+      brandY = maxBrandY
+    }
+    
+    // Убеждаемся, что brandY в допустимых пределах
+    brandY = Math.max(0, Math.min(brandY, canvas.height - brandFontSize - 10))
+    
+    // ВСЕГДА рисуем брендинг, если он помещается на canvas
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black - темный цвет на светлом фоне
     // Используем fallback шрифты на случай, если Inter не загружен
     ctx.font = `300 ${brandFontSize}px "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`
     ctx.letterSpacing = '0.12em' // Увеличенный tracking для элегантности
@@ -327,12 +339,45 @@ export function ProductShareButtons({
     const brandTextWidth = brandTextMetrics.width
     const brandTextX = (canvas.width - brandTextWidth) / 2
     
-    // Рисуем текст брендинга с легкой тенью
-    ctx.shadowColor = 'rgba(15, 15, 15, 0.1)'
-    ctx.shadowBlur = 3
+    // Рисуем текст брендинга с легкой тенью для лучшей видимости
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.15)' // Увеличена непрозрачность тени
+    ctx.shadowBlur = 4
     ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 1
+    ctx.shadowOffsetY = 2
     ctx.fillText(brandText, canvas.width / 2, brandY, maxTitleWidth)
+    
+    // Сбрасываем тень
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetY = 0
+    
+    // Элегантное подчеркивание с градиентом
+    const underlineY = brandY + brandFontSize + 8
+    
+    // Убеждаемся, что подчеркивание не выходит за границы canvas
+    if (underlineY < canvas.height - 5) {
+      const underlinePadding = 40 // Отступы для подчеркивания
+      const underlineStartX = Math.max(0, brandTextX - underlinePadding)
+      const underlineEndX = Math.min(canvas.width, brandTextX + brandTextWidth + underlinePadding)
+      
+      const underlineGradient = ctx.createLinearGradient(
+        underlineStartX, 
+        underlineY, 
+        underlineEndX, 
+        underlineY
+      )
+      underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
+      underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.4)') // Увеличена непрозрачность
+      underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.4)') // Увеличена непрозрачность
+      underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
+      
+      ctx.strokeStyle = underlineGradient
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.moveTo(underlineStartX, underlineY)
+      ctx.lineTo(underlineEndX, underlineY)
+      ctx.stroke()
+    }
     
     // Сбрасываем тень
     ctx.shadowColor = 'transparent'
@@ -533,7 +578,7 @@ export function ProductShareButtons({
     
     if (productColor) {
       const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
-      const colorName = getColorEnglishName(productColor.name, productColor.slug)
+      const colorName = getColorEnglishName(productColor.name, productColor.slug || undefined)
       
       // Улучшенная типографика для цвета
       const colorFontSize = 32 // Увеличено с 30px
@@ -649,25 +694,37 @@ export function ProductShareButtons({
       priceBottomY = priceY + priceFontSize + 10 // Высота текста + небольшой отступ
     }
 
-    // Премиальный брендинг внизу
+    // Премиальный брендинг внизу - ВСЕГДА рисуем брендинг
     // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
-    const brandHeight = brandFontSize + 8 + 10 // Высота текста + подчеркивание + отступ
+    const underlineHeight = 8 // Высота подчеркивания
+    const bottomPadding = 20 // Отступ снизу
     
     // Минимальная позиция брендинга: минимум 120px от последнего элемента
     const minBrandY = lastElementBottom + 120
     
-    // Максимальная позиция брендинга: не ближе 20px от низа canvas
-    const maxBrandY = canvas.height - brandHeight - 20
+    // Максимальная позиция брендинга: не ближе bottomPadding от низа canvas
+    // Учитываем высоту текста + подчеркивание + отступ
+    const maxBrandY = canvas.height - brandFontSize - underlineHeight - bottomPadding
     
     // Брендинг должен быть минимум на 120px ниже последнего элемента
     // Но не должен выходить за границы canvas
     // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
-    const brandY = Math.min(minBrandY, maxBrandY)
+    let brandY = Math.min(minBrandY, maxBrandY)
     
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    // Если minBrandY больше maxBrandY, значит контент слишком большой
+    // В этом случае используем фиксированную позицию снизу с достаточным отступом
+    if (minBrandY > maxBrandY) {
+      brandY = maxBrandY
+    }
+    
+    // Убеждаемся, что brandY в допустимых пределах
+    brandY = Math.max(0, Math.min(brandY, canvas.height - brandFontSize - 10))
+    
+    // ВСЕГДА рисуем брендинг, если он помещается на canvas
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black - темный цвет на светлом фоне
     // Используем fallback шрифты на случай, если Inter не загружен
     ctx.font = `300 ${brandFontSize}px "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`
     ctx.letterSpacing = '0.12em' // Увеличенный tracking для элегантности
@@ -679,12 +736,45 @@ export function ProductShareButtons({
     const brandTextWidth = brandTextMetrics.width
     const brandTextX = (canvas.width - brandTextWidth) / 2
     
-    // Рисуем текст брендинга с легкой тенью
-    ctx.shadowColor = 'rgba(15, 15, 15, 0.1)'
-    ctx.shadowBlur = 3
+    // Рисуем текст брендинга с легкой тенью для лучшей видимости
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.15)' // Увеличена непрозрачность тени
+    ctx.shadowBlur = 4
     ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 1
+    ctx.shadowOffsetY = 2
     ctx.fillText(brandText, canvas.width / 2, brandY, maxTitleWidth)
+    
+    // Сбрасываем тень
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetY = 0
+    
+    // Элегантное подчеркивание с градиентом
+    const underlineY = brandY + brandFontSize + 8
+    
+    // Убеждаемся, что подчеркивание не выходит за границы canvas
+    if (underlineY < canvas.height - 5) {
+      const underlinePadding = 40 // Отступы для подчеркивания
+      const underlineStartX = Math.max(0, brandTextX - underlinePadding)
+      const underlineEndX = Math.min(canvas.width, brandTextX + brandTextWidth + underlinePadding)
+      
+      const underlineGradient = ctx.createLinearGradient(
+        underlineStartX, 
+        underlineY, 
+        underlineEndX, 
+        underlineY
+      )
+      underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
+      underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.4)') // Увеличена непрозрачность
+      underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.4)') // Увеличена непрозрачность
+      underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
+      
+      ctx.strokeStyle = underlineGradient
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.moveTo(underlineStartX, underlineY)
+      ctx.lineTo(underlineEndX, underlineY)
+      ctx.stroke()
+    }
     
     // Сбрасываем тень
     ctx.shadowColor = 'transparent'

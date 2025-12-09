@@ -80,7 +80,13 @@ export default function ProductPage() {
       .then(([productData, colorsData, categoriesData]) => {
         setProduct(productData)
         setColors(colorsData.results || colorsData)
-        setCategories(categoriesData.results || categoriesData || [])
+        // Убеждаемся, что categories всегда массив
+        const categoriesArray = Array.isArray(categoriesData) 
+          ? categoriesData 
+          : (Array.isArray(categoriesData?.results) 
+              ? categoriesData.results 
+              : [])
+        setCategories(categoriesArray)
         
         // Выбираем первый доступный цвет
         if (productData.variants && productData.variants.length > 0) {
@@ -487,8 +493,8 @@ export default function ProductPage() {
                   productUrl={`${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}/product/${product.slug}`}
                   productImageUrl={currentImage.startsWith('http') ? currentImage : `${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}${currentImage.startsWith('/') ? currentImage : '/' + currentImage}`}
                   productPrice={selectedVariant ? selectedVariant.priceCents / 100 : 0}
-                  productColor={selectedColor ? { name: selectedColor.name, hex: selectedColor.hex, hex_code: selectedColor.hex_code } : null}
-                  productCategory={categories.find(c => String(c.id) === String(product.categoryId))?.name}
+                  productColor={selectedColor ? { name: selectedColor.name, hex: selectedColor.hex, hex_code: selectedColor.hex_code, slug: (selectedColor as any).slug } : null}
+                  productCategory={Array.isArray(categories) ? categories.find(c => String(c.id) === String(product.categoryId))?.name : undefined}
                   variant="page"
                 />
               </div>
