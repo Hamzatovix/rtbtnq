@@ -378,40 +378,6 @@ export function ProductShareButtons({
       ctx.lineTo(underlineEndX, underlineY)
       ctx.stroke()
     }
-    
-    // Сбрасываем тень
-    ctx.shadowColor = 'transparent'
-    ctx.shadowBlur = 0
-    ctx.shadowOffsetY = 0
-    
-    // Элегантное подчеркивание с градиентом
-    const underlineY = brandY + brandFontSize + 8
-    const underlinePadding = 40 // Отступы для подчеркивания
-    
-    // Убеждаемся, что подчеркивание не выходит за границы canvas
-    if (underlineY < canvas.height - 5) {
-      // Градиент для подчеркивания
-      const underlineStartX = Math.max(0, brandTextX - underlinePadding)
-      const underlineEndX = Math.min(canvas.width, brandTextX + brandTextWidth + underlinePadding)
-      
-      const underlineGradient = ctx.createLinearGradient(
-        underlineStartX, 
-        underlineY, 
-        underlineEndX, 
-        underlineY
-      )
-      underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
-      underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
-      underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
-      underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
-      
-      ctx.strokeStyle = underlineGradient
-      ctx.lineWidth = 1.5
-      ctx.beginPath()
-      ctx.moveTo(underlineStartX, underlineY)
-      ctx.lineTo(underlineEndX, underlineY)
-      ctx.stroke()
-    }
 
     // Конвертируем canvas в File
     return new Promise((resolve, reject) => {
@@ -766,40 +732,6 @@ export function ProductShareButtons({
       underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
       underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.4)') // Увеличена непрозрачность
       underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.4)') // Увеличена непрозрачность
-      underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
-      
-      ctx.strokeStyle = underlineGradient
-      ctx.lineWidth = 1.5
-      ctx.beginPath()
-      ctx.moveTo(underlineStartX, underlineY)
-      ctx.lineTo(underlineEndX, underlineY)
-      ctx.stroke()
-    }
-    
-    // Сбрасываем тень
-    ctx.shadowColor = 'transparent'
-    ctx.shadowBlur = 0
-    ctx.shadowOffsetY = 0
-    
-    // Элегантное подчеркивание с градиентом
-    const underlineY = brandY + brandFontSize + 8
-    const underlinePadding = 40 // Отступы для подчеркивания
-    
-    // Убеждаемся, что подчеркивание не выходит за границы canvas
-    if (underlineY < canvas.height - 5) {
-      // Градиент для подчеркивания
-      const underlineStartX = Math.max(0, brandTextX - underlinePadding)
-      const underlineEndX = Math.min(canvas.width, brandTextX + brandTextWidth + underlinePadding)
-      
-      const underlineGradient = ctx.createLinearGradient(
-        underlineStartX, 
-        underlineY, 
-        underlineEndX, 
-        underlineY
-      )
-      underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
-      underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
-      underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
       underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
       
       ctx.strokeStyle = underlineGradient
