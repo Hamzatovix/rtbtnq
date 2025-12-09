@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Белый фон для контраста -->
+  <rect width="512" height="512" fill="#ffffff"/>
+  
+  <defs>
+    <radialGradient id="rbCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#000000" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Упрощенный цветок для favicon - ОЧЕНЬ крупные элементы для максимальной видимости -->
+  <g transform="translate(256, 256)">
+    <!-- 8 ОЧЕНЬ крупных лепестков - занимают почти весь размер (95% площади) -->
+    <g transform="rotate(0)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    <g transform="rotate(45)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    <g transform="rotate(90)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    <g transform="rotate(135)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    <g transform="rotate(180)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    <g transform="rotate(225)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    <g transform="rotate(270)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    <g transform="rotate(315)">
+      <path d="M0 -230 C 60 -170, 85 -90, 0 0 C -85 -90, -60 -170, 0 -230" fill="#000000" opacity="1"/>
+    </g>
+    
+    <!-- Центр - ОЧЕНЬ крупный и контрастный -->
+    <circle cx="0" cy="0" r="100" fill="url(#rbCore)"/>
+    <circle cx="0" cy="0" r="75" fill="#000000" opacity="1"/>
+  </g>
+</svg>

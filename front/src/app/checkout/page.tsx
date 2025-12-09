@@ -79,7 +79,7 @@ export default function CheckoutPage() {
 
   const total = mounted ? getTotalPrice() : 0
   const shipping = shippingPrices[form.shippingMethod]
-  const grand = total + shipping
+  const grand = total
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -118,10 +118,10 @@ export default function CheckoutPage() {
             line1: form.addressOptional || '',
             postal: '', // Индекс не запрашивается в форме
             shippingMethod: form.shippingMethod,
-            shippingPrice: shipping,
+            shippingPrice: 0,
           }],
           shippingMethod: form.shippingMethod,
-          shippingPrice: shipping,
+          shippingPrice: 0,
           total: grand,
           currency: 'RUB',
           note: form.note || '',
@@ -223,9 +223,6 @@ export default function CheckoutPage() {
                           {t(`checkout.shippingMethods.${method}`)}
                         </span>
                       </div>
-                      <span className="text-base font-light text-fintage-charcoal dark:text-fintage-offwhite whitespace-nowrap" suppressHydrationWarning>
-                        {formatPriceWithLocale(shippingPrices[method], locale)}
-                      </span>
                     </label>
                   ))}
                 </div>
@@ -290,15 +287,7 @@ export default function CheckoutPage() {
               ))}
             </div>
             <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 pt-4 space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-graphite/50">{locale === 'ru' ? 'Сумма:' : 'Subtotal:'}</span>
-                <span className="text-fintage-charcoal dark:text-fintage-offwhite font-bold" suppressHydrationWarning>{formatPriceWithLocale(total, locale)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-graphite/50">{locale === 'ru' ? 'Доставка:' : 'Shipping:'}</span>
-                <span className="text-fintage-charcoal dark:text-fintage-offwhite font-bold" suppressHydrationWarning>{formatPriceWithLocale(shipping, locale)}</span>
-              </div>
-              <div className="flex justify-between text-lg font-black border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 pt-2 mt-2">
+              <div className="flex justify-between text-lg font-black">
                 <span className="text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">{t('checkout.total')}</span>
                 <span className="text-fintage-charcoal dark:text-fintage-offwhite" suppressHydrationWarning>{formatPriceWithLocale(grand, locale)}</span>
               </div>

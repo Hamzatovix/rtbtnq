@@ -721,12 +721,12 @@ export function formatOrderNotification(data: OrderNotificationData): string {
 
   // Форматируем список товаров
   const itemsText = items
-    .map(item => {
-      const colorText = item.color ? ` — ${item.color}` : ''
+    .map((item, index) => {
+      const colorText = item.color ? ` • ${item.color}` : ''
       const priceText = formatPrice(item.total, currency)
-      return `  • ${item.name}${colorText} (x${item.qty}) — ${priceText}`
+      return `${index + 1}. *${item.name}*${colorText}\n   ${item.qty} шт. × ${formatPrice(item.price, currency)} = ${priceText}`
     })
-    .join('\n')
+    .join('\n\n')
 
   // Форматируем адрес доставки
   let addressText = ''
@@ -746,7 +746,8 @@ export function formatOrderNotification(data: OrderNotificationData): string {
   if (shippingMethod) {
     const methodName = shippingMethodNames[shippingMethod]?.ru || shippingMethod
     shippingText = methodName
-    if (shippingPrice !== null && shippingPrice !== undefined) {
+    // Показываем цену доставки только если она больше 0
+    if (shippingPrice !== null && shippingPrice !== undefined && shippingPrice > 0) {
       shippingText += ` — ${formatPrice(shippingPrice, currency)}`
     }
   }
@@ -755,16 +756,23 @@ export function formatOrderNotification(data: OrderNotificationData): string {
   const phoneText = customerPhone ? formatPhone(customerPhone) : '—'
 
   // Собираем сообщение с улучшенным форматированием
-  let message = `🛍️ *Новый заказ!*\n\n`
-  message += `📦 *Номер заказа:* ${orderNumber}\n`
-  message += `👤 *Клиент:* ${customerName}\n`
-  message += `📞 *Телефон:* ${phoneText}\n\n`
+  let message = `✨ *НОВЫЙ ЗАКАЗ*\n`
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`
   
-  message += `🛒 *Товары:*\n${itemsText}\n\n`
-  message += `💰 *Итого:* ${formatPrice(total, currency)}\n`
+  message += `📦 *Заказ:* \`${orderNumber}\`\n`
+  message += `👤 *Клиент:* ${customerName}\n`
+  message += `📞 *Телефон:* ${phoneText}\n`
+  
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n\n`
+  
+  message += `🛒 *ТОВАРЫ*\n\n${itemsText}\n`
+  
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n\n`
+  
+  message += `💰 *ИТОГО:* ${formatPrice(total, currency)}\n`
 
   if (shippingText) {
-    message += `\n🚚 *Способ доставки:*\n${shippingText}\n`
+    message += `\n🚚 *Доставка:* ${shippingText}\n`
   }
 
   if (addressText) {

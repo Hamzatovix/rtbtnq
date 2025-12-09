@@ -30,7 +30,7 @@ export function Hero() {
           {/* Год - технический стиль */}
           <div className="flex justify-center mb-8 md:mb-12">
             <span className="text-[10px] md:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 tracking-[0.3em] uppercase">
-              2024
+              2020
             </span>
           </div>
 
