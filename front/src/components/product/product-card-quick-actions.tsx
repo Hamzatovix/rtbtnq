@@ -50,7 +50,7 @@ export default function ProductCardQuickActions({
           productImageUrl={productImageUrl}
           productPrice={productPrice}
           variant="card"
-          className="opacity-100"
+          className="opacity-100 hidden md:flex"
         />
       )}
     </div>
