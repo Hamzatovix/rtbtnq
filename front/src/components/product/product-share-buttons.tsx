@@ -27,65 +27,6 @@ export function ProductShareButtons({
   // Формируем текст для Telegram с ссылкой
   const telegramText = `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n🔗 ${productUrl}`
 
-  // Простая генерация QR-кода (упрощенная версия)
-  const generateQRCode = (ctx: CanvasRenderingContext2D, text: string, x: number, y: number, size: number) => {
-    // Используем простой паттерн для QR-кода (упрощенная версия)
-    // В реальном приложении лучше использовать библиотеку qrcode
-    const moduleSize = Math.floor(size / 25) // 25x25 модулей
-    const quietZone = Math.floor(size * 0.1)
-    
-    // Рисуем белый фон
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(x - quietZone, y - quietZone, size + quietZone * 2, size + quietZone * 2)
-    
-    // Рисуем черную рамку
-    ctx.fillStyle = '#000000'
-    ctx.fillRect(x, y, size, size)
-    
-    // Рисуем паттерн поиска (три квадрата в углах)
-    const finderSize = Math.floor(size * 0.3)
-    const finderOffset = Math.floor(size * 0.1)
-    
-    // Левый верхний угол
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(x + finderOffset, y + finderOffset, finderSize, finderSize)
-    ctx.fillStyle = '#000000'
-    ctx.fillRect(x + finderOffset + moduleSize * 2, y + finderOffset + moduleSize * 2, finderSize - moduleSize * 4, finderSize - moduleSize * 4)
-    
-    // Правый верхний угол
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(x + size - finderOffset - finderSize, y + finderOffset, finderSize, finderSize)
-    ctx.fillStyle = '#000000'
-    ctx.fillRect(x + size - finderOffset - finderSize + moduleSize * 2, y + finderOffset + moduleSize * 2, finderSize - moduleSize * 4, finderSize - moduleSize * 4)
-    
-    // Левый нижний угол
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(x + finderOffset, y + size - finderOffset - finderSize, finderSize, finderSize)
-    ctx.fillStyle = '#000000'
-    ctx.fillRect(x + finderOffset + moduleSize * 2, y + size - finderOffset - finderSize + moduleSize * 2, finderSize - moduleSize * 4, finderSize - moduleSize * 4)
-    
-    // Рисуем данные (упрощенный паттерн на основе хеша текста)
-    ctx.fillStyle = '#000000'
-    let hash = 0
-    for (let i = 0; i < text.length; i++) {
-      hash = ((hash << 5) - hash) + text.charCodeAt(i)
-      hash = hash & hash
-    }
-    
-    for (let row = 0; row < 25; row++) {
-      for (let col = 0; col < 25; col++) {
-        // Пропускаем паттерны поиска
-        if ((row < 7 && col < 7) || (row < 7 && col >= 18) || (row >= 18 && col < 7)) {
-          continue
-        }
-        const bit = (hash + row * 25 + col) % 2
-        if (bit === 1) {
-          ctx.fillRect(x + col * moduleSize, y + row * moduleSize, moduleSize, moduleSize)
-        }
-      }
-    }
-  }
-
   // Создать изображение для поделиться
   const createShareImage = async (): Promise<File> => {
     if (!productImageUrl) {
@@ -177,49 +118,50 @@ export function ProductShareButtons({
       )
     }
 
-    // Логотип/бренд внизу
-    ctx.fillStyle = '#999999'
-    ctx.font = '36px "Inter", sans-serif'
-    ctx.fillText('ROSEBOTANIQUE', canvas.width / 2, canvas.height - 150, maxTitleWidth)
-
-    // QR-код со ссылкой (в правом нижнем углу)
-    const qrSize = 200
-    const qrX = canvas.width - qrSize - 40
-    const qrY = canvas.height - qrSize - 40
-    generateQRCode(ctx, productUrl, qrX, qrY, qrSize)
-    
-    // Текст "Отсканируйте QR-код" рядом с QR-кодом
-    ctx.fillStyle = '#1a1a1a'
-    ctx.font = 'bold 28px "Inter", sans-serif'
-    ctx.textAlign = 'left'
-    const qrTextY = qrY + qrSize / 2 - 20
-    ctx.fillText('Отсканируйте', qrX - 180, qrTextY)
-    ctx.fillText('QR-код', qrX - 180, qrTextY + 35)
-    
-    // Ссылка на товар (крупным шрифтом для читаемости)
-    ctx.fillStyle = '#0066cc'
-    ctx.font = 'bold 32px "Inter", sans-serif'
-    ctx.textAlign = 'center'
-    const linkY = canvas.height - 180
+    // Красивая кнопка-ссылка в стиле проекта
+    const linkY = canvas.height - 200
+    const linkPadding = 40
+    const linkHeight = 80
     const shortUrl = productUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
-    ctx.fillText(shortUrl, canvas.width / 2, linkY, maxTitleWidth)
     
-    // Подчеркивание ссылки
-    const linkMetrics = ctx.measureText(shortUrl)
-    const linkWidth = Math.min(linkMetrics.width, maxTitleWidth)
+    // Измеряем ширину текста ссылки
+    ctx.font = 'bold 36px "Inter", sans-serif'
+    ctx.textAlign = 'left'
+    const linkTextMetrics = ctx.measureText(shortUrl)
+    const linkWidth = linkTextMetrics.width + linkPadding * 2
     const linkX = (canvas.width - linkWidth) / 2
-    ctx.strokeStyle = '#0066cc'
-    ctx.lineWidth = 2
+    
+    // Рисуем фон кнопки (в стиле проекта - Charcoal Black)
+    ctx.fillStyle = '#0F0F0F'
+    ctx.fillRect(linkX, linkY, linkWidth, linkHeight)
+    
+    // Рисуем текст ссылки (Off-White)
+    ctx.fillStyle = '#F5F5F3'
+    ctx.font = 'bold 36px "Inter", sans-serif'
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(shortUrl, linkX + linkPadding, linkY + linkHeight / 2)
+    
+    // Добавляем иконку стрелки справа от текста
+    const arrowSize = 24
+    const arrowX = linkX + linkWidth - linkPadding - arrowSize
+    const arrowY = linkY + linkHeight / 2
+    ctx.strokeStyle = '#F5F5F3'
+    ctx.lineWidth = 3
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
     ctx.beginPath()
-    ctx.moveTo(linkX, linkY + 5)
-    ctx.lineTo(linkX + linkWidth, linkY + 5)
+    ctx.moveTo(arrowX, arrowY - arrowSize / 3)
+    ctx.lineTo(arrowX + arrowSize / 2, arrowY)
+    ctx.lineTo(arrowX, arrowY + arrowSize / 3)
     ctx.stroke()
-
-    // URL внизу (маленьким шрифтом)
-    ctx.fillStyle = '#999999'
-    ctx.font = '24px "Inter", sans-serif'
+    
+    // Логотип/бренд выше кнопки
+    ctx.fillStyle = '#6B6B6B'
+    ctx.font = '32px "Inter", sans-serif'
     ctx.textAlign = 'center'
-    ctx.fillText('rosebotanique.store', canvas.width / 2, canvas.height - 100, maxTitleWidth)
+    ctx.textBaseline = 'bottom'
+    ctx.fillText('ROSEBOTANIQUE', canvas.width / 2, linkY - 30, maxTitleWidth)
 
     // Конвертируем canvas в File
     return new Promise((resolve, reject) => {
