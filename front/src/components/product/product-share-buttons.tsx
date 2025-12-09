@@ -3,7 +3,7 @@
 import { Send, Instagram } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { cn, getColorValue, getColorDisplayName } from '@/lib/utils'
+import { cn, getColorValue, getColorDisplayName, getColorEnglishName } from '@/lib/utils'
 
 interface ProductShareButtonsProps {
   productName: string
@@ -181,7 +181,7 @@ export function ProductShareButtons({
     
     if (productColor) {
       const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
-      const colorName = getColorDisplayName(productColor.name, 'ru')
+      const colorName = getColorEnglishName(productColor.name, productColor.slug)
       
       // Улучшенная типографика для цвета
       const colorFontSize = 32 // Увеличено с 30px
@@ -527,7 +527,7 @@ export function ProductShareButtons({
     
     if (productColor) {
       const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
-      const colorName = getColorDisplayName(productColor.name, 'ru')
+      const colorName = getColorEnglishName(productColor.name, productColor.slug)
       
       // Улучшенная типографика для цвета
       const colorFontSize = 32 // Увеличено с 30px
