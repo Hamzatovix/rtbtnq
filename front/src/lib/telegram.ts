@@ -754,7 +754,8 @@ export function formatOrderNotification(data: OrderNotificationData): string {
 
   // Форматируем телефон
   const phoneText = customerPhone ? formatPhone(customerPhone) : '—'
-
+  const phoneDigits = customerPhone ? customerPhone.replace(/\D/g, '') : ''
+  
   // Собираем сообщение с улучшенным форматированием
   let message = `✨ *НОВЫЙ ЗАКАЗ*\n`
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`
@@ -762,7 +763,13 @@ export function formatOrderNotification(data: OrderNotificationData): string {
   // Номер заказа в формате кода для легкого копирования (блок кода)
   message += `📦 *Заказ:*\n\`\`\`\n${orderNumber}\n\`\`\`\n`
   message += `👤 *Клиент:* ${customerName}\n`
-  message += `📞 *Телефон:* ${phoneText}\n`
+  
+  // Номер телефона в формате кода для легкого копирования
+  if (customerPhone && phoneDigits) {
+    message += `📞 *Телефон:*\n\`\`\`\n${phoneText}\n\`\`\`\n`
+  } else {
+    message += `📞 *Телефон:* ${phoneText}\n`
+  }
   
   message += `\n━━━━━━━━━━━━━━━━━━━━\n\n`
   
@@ -882,32 +889,38 @@ export async function sendOrderNotification(
     itemsWithImages: data.items.filter(item => item.image).length
   })
   
-  // Собираем изображения товаров
-  const itemsWithImages = data.items.filter(item => item.image && item.image.trim())
-  
-  // Если есть изображения, отправляем медиа-группу с первым фото и подписью
-  if (itemsWithImages.length > 0) {
-    console.log('[Telegram] Отправка уведомления с изображениями товаров:', {
-      imagesCount: itemsWithImages.length
-    })
-    
-    // Формируем медиа-группу (максимум 10 фото в группе)
-    const media = itemsWithImages.slice(0, 10).map(item => {
+  // Собираем уникальные изображения товаров (убираем дубликаты)
+  const uniqueImages = new Map<string, string>()
+  data.items.forEach(item => {
+    if (item.image && item.image.trim()) {
+      const imageUrl = item.image.trim()
       // Формируем абсолютный URL для изображения
-      let imageUrl = item.image!.trim()
+      let fullImageUrl = imageUrl
       if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
-        // Если путь относительный, добавляем baseUrl
-        imageUrl = imageUrl.startsWith('/') 
+        fullImageUrl = imageUrl.startsWith('/') 
           ? `${baseUrl}${imageUrl}`
           : `${baseUrl}/${imageUrl}`
       }
-      
-      return {
-        type: 'photo' as const,
-        media: imageUrl,
-        caption: undefined, // Подпись будет только у первого фото
-      }
+      // Используем Map для автоматического удаления дубликатов
+      uniqueImages.set(fullImageUrl, fullImageUrl)
+    }
+  })
+  
+  const imageUrls = Array.from(uniqueImages.values())
+  
+  // Если есть изображения, отправляем медиа-группу с первым фото и подписью
+  if (imageUrls.length > 0) {
+    console.log('[Telegram] Отправка уведомления с изображениями товаров:', {
+      imagesCount: imageUrls.length,
+      itemsCount: data.items.length
     })
+    
+    // Формируем медиа-группу (максимум 10 фото в группе по лимиту Telegram)
+    const media = imageUrls.slice(0, 10).map(imageUrl => ({
+      type: 'photo' as const,
+      media: imageUrl,
+      caption: undefined, // Подпись будет только у первого фото
+    }))
     
     // Добавляем подпись к первому фото (текстовое сообщение)
     if (media.length > 0) {
