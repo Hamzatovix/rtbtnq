@@ -28,19 +28,20 @@ export function ProductShareButtons({
 }: ProductShareButtonsProps) {
   const [isGeneratingStory, setIsGeneratingStory] = useState(false)
 
-  // Формируем текст для Telegram с ссылкой на товар
+  // Формируем текст для Telegram с кликабельной ссылкой на товар
+  // Ссылка в тексте будет автоматически кликабельной в Telegram
   const telegramText = `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n🔗 ${productUrl}`
 
-  // Создать изображение для Telegram (квадратный формат)
+  // Создать изображение для Telegram (такой же формат как для Instagram Stories)
   const createTelegramImage = async (): Promise<File> => {
     if (!productImageUrl) {
       throw new Error('Изображение товара недоступно')
     }
 
-    // Создаем canvas для генерации изображения Telegram (1200x1200px - квадратный формат)
+    // Создаем canvas для генерации изображения Telegram (1080x1920px - такой же как для Stories)
     const canvas = document.createElement('canvas')
-    canvas.width = 1200
-    canvas.height = 1200
+    canvas.width = 1080
+    canvas.height = 1920
     const ctx = canvas.getContext('2d')
 
     if (!ctx) {
@@ -62,9 +63,9 @@ export function ProductShareButtons({
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Изображение с отступами по бокам, сверху и снизу (как в предыдущем варианте)
-    const imagePadding = 60 // Отступы по бокам и сверху/снизу
-    const topPadding = 80 // Отступ сверху (больше для визуального баланса)
-    const imageHeight = Math.floor(canvas.height * 0.60) // ~720px для контента остается ~480px
+    const imagePadding = 80 // Отступы по бокам (увеличены для Stories)
+    const topPadding = 120 // Отступ сверху (больше для визуального баланса)
+    const imageHeight = Math.floor(canvas.height * 0.55) // ~1056px для контента остается ~864px
     const imageWidth = canvas.width - imagePadding * 2 // С отступами по бокам
     const imageX = imagePadding
     const imageY = topPadding // Отступ сверху
@@ -99,12 +100,12 @@ export function ProductShareButtons({
     
     // Контент внизу - центрируем относительно изображения
     // Увеличиваем отступ, чтобы текст не налезал на фото
-    const contentY = actualImageBottom + 80 // Увеличенный отступ после изображения
+    const contentY = actualImageBottom + 100 // Увеличенный отступ после изображения
     const contentHeight = canvas.height - contentY
     const contentPadding = imagePadding // Используем те же отступы, что и у изображения
 
     // Тонкая линия-разделитель (в стиле Stone Island/Nike)
-    const dividerY = contentY + 25
+    const dividerY = contentY + 35
     ctx.strokeStyle = 'rgba(102, 102, 102, 0.2)' // Graphite с прозрачностью
     ctx.lineWidth = 0.5
     ctx.beginPath()
@@ -117,15 +118,15 @@ export function ProductShareButtons({
 
     // Название товара - центрируем относительно изображения
     // Увеличиваем отступ от линии-разделителя, чтобы текст не налезал на фото
-    const titleY = dividerY + 45 // Отступ после линии-разделителя
+    const titleY = dividerY + 60 // Отступ после линии-разделителя
     ctx.fillStyle = '#0F0F0F' // Charcoal Black из палитры
-    ctx.font = '900 52px "Cormorant Garamond", serif' // font-black = 900
+    ctx.font = '900 64px "Cormorant Garamond", serif' // font-black = 900
     ctx.textAlign = 'center' // Центрируем
     ctx.textBaseline = 'top'
     ctx.letterSpacing = '-0.02em' // tracking-tighter
     const titleText = productName.toUpperCase() // uppercase
-    const titleLines = wrapText(ctx, titleText, maxTitleWidth, 52)
-    const lineHeight = 52 * 0.95 // leading-[0.95]
+    const titleLines = wrapText(ctx, titleText, maxTitleWidth, 64)
+    const lineHeight = 64 * 0.95 // leading-[0.95]
     
     titleLines.forEach((line, index) => {
       ctx.fillText(line, canvas.width / 2, titleY + index * lineHeight, maxTitleWidth)
@@ -134,24 +135,24 @@ export function ProductShareButtons({
     const titleHeight = titleLines.length * lineHeight
 
     // Цвет товара (если есть) - центрируем относительно изображения
-    let colorY = titleY + titleHeight + 28 // space-y
+    let colorY = titleY + titleHeight + 36 // space-y
     if (productColor) {
       const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
       const colorName = getColorDisplayName(productColor.name, 'ru')
       
       // Устанавливаем шрифт для измерения текста цвета
-      ctx.font = '400 24px "Courier New", monospace'
+      ctx.font = '400 28px "Courier New", monospace'
       ctx.letterSpacing = '0.15em'
       
       // Центрируем цветной индикатор и текст
       // Квадратный индикатор как в карточке товара (rounded-sm, без бордера)
-      const colorIndicatorSize = 20
+      const colorIndicatorSize = 24
       const borderRadius = 2 // rounded-sm = 2px
       const colorTextWidth = ctx.measureText(colorName.toUpperCase()).width
-      const totalColorWidth = colorIndicatorSize + 12 + colorTextWidth
+      const totalColorWidth = colorIndicatorSize + 16 + colorTextWidth
       const colorStartX = (canvas.width - totalColorWidth) / 2
       const colorIndicatorX = colorStartX
-      const colorIndicatorY = colorY + 10 - colorIndicatorSize / 2
+      const colorIndicatorY = colorY + 12 - colorIndicatorSize / 2
       
       // Рисуем квадратный индикатор с закругленными углами (без обводки)
       ctx.fillStyle = colorHex
@@ -176,19 +177,19 @@ export function ProductShareButtons({
 
       // Название цвета (font-mono, tracking-[0.15em], uppercase) - справа от индикатора
       ctx.fillStyle = '#666666' // Graphite из палитры
-      ctx.font = '400 24px "Courier New", monospace' // font-mono
+      ctx.font = '400 28px "Courier New", monospace' // font-mono
       ctx.letterSpacing = '0.15em' // tracking-[0.15em]
       ctx.textAlign = 'left'
       ctx.textBaseline = 'middle'
-      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 12, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
+      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 16, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
       
-      colorY += 40
+      colorY += 48
     }
 
     // Брендинг внизу как кликабельная ссылка (элегантно, минималистично)
-    const brandY = canvas.height - 120
+    const brandY = canvas.height - 140
     ctx.fillStyle = '#0F0F0F' // Charcoal Black - более заметный цвет для ссылки
-    ctx.font = '300 18px "Inter", sans-serif' // font-light
+    ctx.font = '300 24px "Inter", sans-serif' // font-light
     ctx.letterSpacing = '0.1em'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
@@ -203,9 +204,9 @@ export function ProductShareButtons({
     ctx.fillText(brandText, canvas.width / 2, brandY, maxTitleWidth)
     
     // Подчеркиваем текст как ссылку (минималистично)
-    const underlineY = brandY + 18 + 4 // font-size + небольшой отступ
+    const underlineY = brandY + 24 + 6 // font-size + небольшой отступ
     ctx.strokeStyle = '#0F0F0F'
-    ctx.lineWidth = 1
+    ctx.lineWidth = 1.5
     ctx.beginPath()
     ctx.moveTo(brandTextX, underlineY)
     ctx.lineTo(brandTextX + brandTextWidth, underlineY)
@@ -442,11 +443,12 @@ export function ProductShareButtons({
         
         // Проверяем, можно ли поделиться файлом
         if (navigator.canShare({ files: [imageFile] })) {
+          // Для Telegram важно передать ссылку и в text, и в url для максимальной совместимости
           await navigator.share({
             files: [imageFile],
-            title: productName,
-            text: telegramText,
-            url: productUrl, // Ссылка на конкретный товар
+            title: `${productName} - ROSEBOTANIQUE`,
+            text: telegramText, // Текст с ссылкой для отображения
+            url: productUrl, // Ссылка для кликабельности
           })
           setIsGeneratingStory(false)
           return
@@ -516,8 +518,8 @@ export function ProductShareButtons({
 
       setIsGeneratingStory(false)
 
-      // Показываем инструкцию
-      alert('Изображение для Stories сохранено! Откройте Instagram и загрузите его в Stories.')
+      // Показываем инструкцию с информацией о ссылке
+      alert(`Изображение для Stories сохранено!\n\nОткройте Instagram и загрузите его в Stories.\n\nДля добавления активной ссылки:\n1. Загрузите изображение в Stories\n2. Нажмите на иконку стикера (📎)\n3. Выберите "Ссылка"\n4. Вставьте: ${productUrl}`)
     } catch (error) {
       console.error('Ошибка при создании изображения для Stories:', error)
       setIsGeneratingStory(false)
