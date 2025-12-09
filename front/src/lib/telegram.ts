@@ -903,13 +903,18 @@ export async function sendOrderNotification(
     }))
   })
   
-  data.items.forEach(item => {
+  // Обрабатываем все товары в заказе
+  data.items.forEach((item, index) => {
     if (item.image && item.image.trim()) {
       const imageUrl = item.image.trim()
       
       // Пропускаем placeholder изображения
       if (imageUrl.includes('placeholder') || imageUrl.includes('about_main_placeholder')) {
-        console.log('[Telegram] Пропущено placeholder изображение:', imageUrl)
+        console.log('[Telegram] Пропущено placeholder изображение для товара:', {
+          itemIndex: index + 1,
+          itemName: item.name,
+          imageUrl: imageUrl.substring(0, 50)
+        })
         return
       }
       
@@ -920,11 +925,25 @@ export async function sendOrderNotification(
           ? `${baseUrl}${imageUrl}`
           : `${baseUrl}/${imageUrl}`
       }
+      
       // Используем Map для автоматического удаления дубликатов
+      // Если товар добавлен несколько раз с одинаковым изображением, оно будет отправлено только один раз
+      const wasAdded = uniqueImages.has(fullImageUrl)
       uniqueImages.set(fullImageUrl, fullImageUrl)
-      console.log('[Telegram] Добавлено изображение:', {
+      
+      console.log('[Telegram] Обработка изображения товара:', {
+        itemIndex: index + 1,
+        itemName: item.name,
+        qty: item.qty,
         original: imageUrl.substring(0, 50),
-        full: fullImageUrl.substring(0, 80)
+        full: fullImageUrl.substring(0, 80),
+        wasDuplicate: wasAdded
+      })
+    } else {
+      console.log('[Telegram] Товар без изображения:', {
+        itemIndex: index + 1,
+        itemName: item.name,
+        qty: item.qty
       })
     }
   })
