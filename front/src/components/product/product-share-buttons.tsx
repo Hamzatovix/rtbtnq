@@ -301,16 +301,22 @@ export function ProductShareButtons({
     // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const minBrandY = lastElementBottom + 120 // Увеличенный отступ для предотвращения наложения
-    const brandY = Math.max(canvas.height - 160, minBrandY) // Увеличенный отступ снизу или минимум от последнего элемента
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black
     const brandFontSize = 26 // Увеличено с 24px
-    ctx.font = `300 ${brandFontSize}px "Inter", sans-serif`
+    const brandText = 'rosebotanique.store'
+    
+    // Убеждаемся, что брендинг помещается на canvas (не выходит за границы)
+    // Максимальная позиция: canvas.height - brandFontSize - 20 (отступ снизу)
+    const maxBrandY = canvas.height - brandFontSize - 20
+    const brandY = Math.min(Math.max(canvas.height - 160, minBrandY), maxBrandY)
+    
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    // Используем fallback шрифты на случай, если Inter не загружен
+    ctx.font = `300 ${brandFontSize}px "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`
     ctx.letterSpacing = '0.12em' // Увеличенный tracking для элегантности
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
     
     // Измеряем ширину текста для подчеркивания
-    const brandText = 'rosebotanique.store'
     const brandTextMetrics = ctx.measureText(brandText)
     const brandTextWidth = brandTextMetrics.width
     const brandTextX = (canvas.width - brandTextWidth) / 2
@@ -331,24 +337,30 @@ export function ProductShareButtons({
     const underlineY = brandY + brandFontSize + 8
     const underlinePadding = 40 // Отступы для подчеркивания
     
-    // Градиент для подчеркивания
-    const underlineGradient = ctx.createLinearGradient(
-      brandTextX - underlinePadding, 
-      underlineY, 
-      brandTextX + brandTextWidth + underlinePadding, 
-      underlineY
-    )
-    underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
-    underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
-    underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
-    underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
-    
-    ctx.strokeStyle = underlineGradient
-    ctx.lineWidth = 1.5
-    ctx.beginPath()
-    ctx.moveTo(brandTextX - underlinePadding, underlineY)
-    ctx.lineTo(brandTextX + brandTextWidth + underlinePadding, underlineY)
-    ctx.stroke()
+    // Убеждаемся, что подчеркивание не выходит за границы canvas
+    if (underlineY < canvas.height - 5) {
+      // Градиент для подчеркивания
+      const underlineStartX = Math.max(0, brandTextX - underlinePadding)
+      const underlineEndX = Math.min(canvas.width, brandTextX + brandTextWidth + underlinePadding)
+      
+      const underlineGradient = ctx.createLinearGradient(
+        underlineStartX, 
+        underlineY, 
+        underlineEndX, 
+        underlineY
+      )
+      underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
+      underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
+      underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
+      underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
+      
+      ctx.strokeStyle = underlineGradient
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.moveTo(underlineStartX, underlineY)
+      ctx.lineTo(underlineEndX, underlineY)
+      ctx.stroke()
+    }
 
     // Конвертируем canvas в File
     return new Promise((resolve, reject) => {
@@ -635,16 +647,22 @@ export function ProductShareButtons({
     // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const minBrandY = lastElementBottom + 120 // Увеличенный отступ для предотвращения наложения
-    const brandY = Math.max(canvas.height - 160, minBrandY) // Увеличенный отступ снизу или минимум от последнего элемента
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black
     const brandFontSize = 26 // Увеличено с 24px
-    ctx.font = `300 ${brandFontSize}px "Inter", sans-serif`
+    const brandText = 'rosebotanique.store'
+    
+    // Убеждаемся, что брендинг помещается на canvas (не выходит за границы)
+    // Максимальная позиция: canvas.height - brandFontSize - 20 (отступ снизу)
+    const maxBrandY = canvas.height - brandFontSize - 20
+    const brandY = Math.min(Math.max(canvas.height - 160, minBrandY), maxBrandY)
+    
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    // Используем fallback шрифты на случай, если Inter не загружен
+    ctx.font = `300 ${brandFontSize}px "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`
     ctx.letterSpacing = '0.12em' // Увеличенный tracking для элегантности
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
     
     // Измеряем ширину текста для подчеркивания
-    const brandText = 'rosebotanique.store'
     const brandTextMetrics = ctx.measureText(brandText)
     const brandTextWidth = brandTextMetrics.width
     const brandTextX = (canvas.width - brandTextWidth) / 2
@@ -665,24 +683,30 @@ export function ProductShareButtons({
     const underlineY = brandY + brandFontSize + 8
     const underlinePadding = 40 // Отступы для подчеркивания
     
-    // Градиент для подчеркивания
-    const underlineGradient = ctx.createLinearGradient(
-      brandTextX - underlinePadding, 
-      underlineY, 
-      brandTextX + brandTextWidth + underlinePadding, 
-      underlineY
-    )
-    underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
-    underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
-    underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
-    underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
-    
-    ctx.strokeStyle = underlineGradient
-    ctx.lineWidth = 1.5
-    ctx.beginPath()
-    ctx.moveTo(brandTextX - underlinePadding, underlineY)
-    ctx.lineTo(brandTextX + brandTextWidth + underlinePadding, underlineY)
-    ctx.stroke()
+    // Убеждаемся, что подчеркивание не выходит за границы canvas
+    if (underlineY < canvas.height - 5) {
+      // Градиент для подчеркивания
+      const underlineStartX = Math.max(0, brandTextX - underlinePadding)
+      const underlineEndX = Math.min(canvas.width, brandTextX + brandTextWidth + underlinePadding)
+      
+      const underlineGradient = ctx.createLinearGradient(
+        underlineStartX, 
+        underlineY, 
+        underlineEndX, 
+        underlineY
+      )
+      underlineGradient.addColorStop(0, 'rgba(15, 15, 15, 0)')
+      underlineGradient.addColorStop(0.3, 'rgba(15, 15, 15, 0.3)')
+      underlineGradient.addColorStop(0.7, 'rgba(15, 15, 15, 0.3)')
+      underlineGradient.addColorStop(1, 'rgba(15, 15, 15, 0)')
+      
+      ctx.strokeStyle = underlineGradient
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.moveTo(underlineStartX, underlineY)
+      ctx.lineTo(underlineEndX, underlineY)
+      ctx.stroke()
+    }
 
     // Конвертируем canvas в File
     return new Promise((resolve, reject) => {
