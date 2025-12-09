@@ -965,15 +965,15 @@ export async function sendOrderNotification(
     })
     
     // Формируем медиа-группу (максимум 10 фото в группе по лимиту Telegram)
-    const media = imageUrls.slice(0, 10).map(imageUrl => ({
+    const media: Array<{ type: 'photo'; media: string; caption?: string }> = imageUrls.slice(0, 10).map((imageUrl, index) => ({
       type: 'photo' as const,
       media: imageUrl,
-      caption: undefined, // Подпись будет только у первого фото
+      // Подпись будет только у первого фото
+      caption: index === 0 ? message.substring(0, 1024) : undefined, // Telegram ограничивает подпись 1024 символами
     }))
     
-    // Добавляем подпись к первому фото (текстовое сообщение)
-    if (media.length > 0) {
-      media[0].caption = message.substring(0, 1024) // Telegram ограничивает подпись 1024 символами
+    // Проверяем, что подпись добавлена к первому фото
+    if (media.length > 0 && media[0].caption) {
     }
     
     // Пытаемся отправить медиа-группу
