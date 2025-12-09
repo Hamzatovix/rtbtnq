@@ -578,6 +578,8 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               productUrl={`${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}/product/${product.slug}`}
               productImageUrl={asset.src.startsWith('http') ? asset.src : `${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}${asset.src}`}
               productPrice={typeof product.price === 'number' ? product.price : Number(product.price ?? 0)}
+              productColor={selectedColor ? { name: selectedColor.name, hex_code: selectedColor.hex_code } : null}
+              productCategory={product.category?.name}
             />
           </motion.div>
 

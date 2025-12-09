@@ -13,6 +13,8 @@ interface ProductCardQuickActionsProps {
   productUrl?: string
   productImageUrl?: string
   productPrice?: number
+  productColor?: { name: string; hex?: string; hex_code?: string } | null
+  productCategory?: string
 }
 
 export default function ProductCardQuickActions({
@@ -24,6 +26,8 @@ export default function ProductCardQuickActions({
   productUrl,
   productImageUrl,
   productPrice,
+  productColor,
+  productCategory,
 }: ProductCardQuickActionsProps) {
   const buttonSize = isCompact ? 'h-7 w-7 sm:h-8 sm:w-8' : 'h-9 w-9'
   const iconSize = isCompact ? 'h-3 w-3 sm:h-3.5 sm:w-3.5' : 'h-4 w-4'
@@ -49,6 +53,8 @@ export default function ProductCardQuickActions({
           productUrl={productUrl}
           productImageUrl={productImageUrl}
           productPrice={productPrice}
+          productColor={productColor}
+          productCategory={productCategory}
           variant="card"
           className="opacity-100 hidden md:flex"
         />

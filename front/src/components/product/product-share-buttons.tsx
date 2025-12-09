@@ -3,13 +3,15 @@
 import { Send, Instagram } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { cn, getColorValue, getColorDisplayName } from '@/lib/utils'
 
 interface ProductShareButtonsProps {
   productName: string
   productUrl: string
   productImageUrl?: string
   productPrice?: number
+  productColor?: { name: string; hex?: string; hex_code?: string } | null
+  productCategory?: string
   variant?: 'card' | 'page'
   className?: string
 }
@@ -19,15 +21,17 @@ export function ProductShareButtons({
   productUrl,
   productImageUrl,
   productPrice,
+  productColor,
+  productCategory,
   variant = 'page',
   className,
 }: ProductShareButtonsProps) {
   const [isGeneratingStory, setIsGeneratingStory] = useState(false)
 
-  // Формируем текст для Telegram с ссылкой
+  // Формируем текст для Telegram с ссылкой на товар
   const telegramText = `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n🔗 ${productUrl}`
 
-  // Создать изображение для Telegram в стиле карточки товара (квадратный формат)
+  // Создать изображение для Telegram (квадратный формат)
   const createTelegramImage = async (): Promise<File> => {
     if (!productImageUrl) {
       throw new Error('Изображение товара недоступно')
@@ -53,17 +57,19 @@ export function ProductShareButtons({
       img.src = productImageUrl
     })
 
-    // Фон карточки (Off-White как в карточке)
+    // Фон (Off-White из палитры проекта)
     ctx.fillStyle = '#F5F5F3'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Рисуем изображение товара (занимает верхнюю часть, как в карточке)
-    const imageHeight = Math.floor(canvas.height * 0.65) // ~780px
-    const imageWidth = canvas.width
-    const imageX = 0
-    const imageY = 0
+    // Изображение с отступами по бокам, сверху и снизу (как в предыдущем варианте)
+    const imagePadding = 60 // Отступы по бокам и сверху/снизу
+    const topPadding = 80 // Отступ сверху (больше для визуального баланса)
+    const imageHeight = Math.floor(canvas.height * 0.60) // ~720px для контента остается ~480px
+    const imageWidth = canvas.width - imagePadding * 2 // С отступами по бокам
+    const imageX = imagePadding
+    const imageY = topPadding // Отступ сверху
 
-    // Рисуем изображение с сохранением пропорций (cover как в карточке)
+    // Рисуем изображение с сохранением пропорций
     const imgAspect = img.width / img.height
     const targetAspect = imageWidth / imageHeight
     
@@ -77,88 +83,132 @@ export function ProductShareButtons({
       drawWidth = imageHeight * imgAspect
       drawX = imageX - (drawWidth - imageWidth) / 2
     } else {
-      // Изображение выше - подгоняем по ширине
+      // Изображение выше - подгоняем по ширине, но не выходим за верхнюю границу
       drawHeight = imageWidth / imgAspect
-      drawY = imageY - (drawHeight - imageHeight) / 2
+      const maxDrawY = imageY // Максимальная позиция сверху
+      drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
     }
 
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
 
-    // Нижняя часть карточки с информацией (Off-White фон)
-    const contentY = imageHeight
-    const contentHeight = canvas.height - imageHeight
-    ctx.fillStyle = '#F5F5F3'
-    ctx.fillRect(0, contentY, canvas.width, contentHeight)
-
-    // Отступы как в карточке
-    const padding = 50
-    const contentStartY = contentY + padding
-
-    // Название товара (как в карточке - font-display-vintage, font-black, uppercase)
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black
-    ctx.font = 'bold 52px "Cormorant Garamond", serif'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'top'
+    // Определяем фактическую нижнюю границу изображения (учитываем возможное обрезание при cover)
+    const actualImageBottom = Math.max(
+      imageY + imageHeight, // Нижняя граница области изображения
+      drawY + drawHeight    // Фактическая нижняя граница изображения (если выходит за область)
+    )
     
-    const titleY = contentStartY
-    const maxTitleWidth = canvas.width - padding * 2
-    const titleLines = wrapText(ctx, productName.toUpperCase(), maxTitleWidth, 52)
+    // Контент внизу - центрируем относительно изображения
+    // Увеличиваем отступ, чтобы текст не налезал на фото
+    const contentY = actualImageBottom + 80 // Увеличенный отступ после изображения
+    const contentHeight = canvas.height - contentY
+    const contentPadding = imagePadding // Используем те же отступы, что и у изображения
+
+    // Тонкая линия-разделитель (в стиле Stone Island/Nike)
+    const dividerY = contentY + 25
+    ctx.strokeStyle = 'rgba(102, 102, 102, 0.2)' // Graphite с прозрачностью
+    ctx.lineWidth = 0.5
+    ctx.beginPath()
+    ctx.moveTo(contentPadding, dividerY)
+    ctx.lineTo(canvas.width - contentPadding, dividerY)
+    ctx.stroke()
+
+    // Определяем максимальную ширину текста
+    const maxTitleWidth = canvas.width - contentPadding * 2
+
+    // Название товара - центрируем относительно изображения
+    // Увеличиваем отступ от линии-разделителя, чтобы текст не налезал на фото
+    const titleY = dividerY + 45 // Отступ после линии-разделителя
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black из палитры
+    ctx.font = '900 52px "Cormorant Garamond", serif' // font-black = 900
+    ctx.textAlign = 'center' // Центрируем
+    ctx.textBaseline = 'top'
+    ctx.letterSpacing = '-0.02em' // tracking-tighter
+    const titleText = productName.toUpperCase() // uppercase
+    const titleLines = wrapText(ctx, titleText, maxTitleWidth, 52)
+    const lineHeight = 52 * 0.95 // leading-[0.95]
     
     titleLines.forEach((line, index) => {
-      ctx.fillText(line, padding, titleY + index * 60, maxTitleWidth)
+      ctx.fillText(line, canvas.width / 2, titleY + index * lineHeight, maxTitleWidth)
     })
 
-    const titleHeight = titleLines.length * 60
+    const titleHeight = titleLines.length * lineHeight
 
-    // Цена (если есть) - как в карточке
-    if (productPrice) {
-      ctx.fillStyle = '#0F0F0F' // Charcoal Black
-      ctx.font = 'bold 44px "Inter", sans-serif'
-      const priceY = titleY + titleHeight + 25
-      ctx.fillText(
-        `${productPrice.toLocaleString('ru-RU')} ₽`,
-        padding,
-        priceY,
-        maxTitleWidth
-      )
+    // Цвет товара (если есть) - центрируем относительно изображения
+    let colorY = titleY + titleHeight + 28 // space-y
+    if (productColor) {
+      const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
+      const colorName = getColorDisplayName(productColor.name, 'ru')
+      
+      // Устанавливаем шрифт для измерения текста цвета
+      ctx.font = '400 24px "Courier New", monospace'
+      ctx.letterSpacing = '0.15em'
+      
+      // Центрируем цветной индикатор и текст
+      // Квадратный индикатор как в карточке товара (rounded-sm, без бордера)
+      const colorIndicatorSize = 20
+      const borderRadius = 2 // rounded-sm = 2px
+      const colorTextWidth = ctx.measureText(colorName.toUpperCase()).width
+      const totalColorWidth = colorIndicatorSize + 12 + colorTextWidth
+      const colorStartX = (canvas.width - totalColorWidth) / 2
+      const colorIndicatorX = colorStartX
+      const colorIndicatorY = colorY + 10 - colorIndicatorSize / 2
+      
+      // Рисуем квадратный индикатор с закругленными углами (без обводки)
+      ctx.fillStyle = colorHex
+      ctx.beginPath()
+      // Рисуем закругленный прямоугольник вручную
+      const x = colorIndicatorX
+      const y = colorIndicatorY
+      const w = colorIndicatorSize
+      const h = colorIndicatorSize
+      const r = borderRadius
+      ctx.moveTo(x + r, y)
+      ctx.lineTo(x + w - r, y)
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+      ctx.lineTo(x + w, y + h - r)
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+      ctx.lineTo(x + r, y + h)
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+      ctx.lineTo(x, y + r)
+      ctx.quadraticCurveTo(x, y, x + r, y)
+      ctx.closePath()
+      ctx.fill()
+
+      // Название цвета (font-mono, tracking-[0.15em], uppercase) - справа от индикатора
+      ctx.fillStyle = '#666666' // Graphite из палитры
+      ctx.font = '400 24px "Courier New", monospace' // font-mono
+      ctx.letterSpacing = '0.15em' // tracking-[0.15em]
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 12, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
+      
+      colorY += 40
     }
 
-    // Кнопка-ссылка внизу (в стиле карточки)
-    const linkPadding = 35
-    const linkHeight = 75
-    const linkY = canvas.height - linkHeight - padding
-    const shortUrl = productUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+    // Брендинг внизу как кликабельная ссылка (элегантно, минималистично)
+    const brandY = canvas.height - 120
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black - более заметный цвет для ссылки
+    ctx.font = '300 18px "Inter", sans-serif' // font-light
+    ctx.letterSpacing = '0.1em'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
     
-    // Измеряем ширину текста ссылки
-    ctx.font = 'bold 36px "Inter", sans-serif'
-    ctx.textAlign = 'left'
-    const linkTextMetrics = ctx.measureText(shortUrl)
-    const linkWidth = linkTextMetrics.width + linkPadding * 2
-    const linkX = (canvas.width - linkWidth) / 2
+    // Измеряем ширину текста для подчеркивания
+    const brandText = 'ROSEBOTANIQUE'
+    const brandTextMetrics = ctx.measureText(brandText)
+    const brandTextWidth = brandTextMetrics.width
+    const brandTextX = (canvas.width - brandTextWidth) / 2
     
-    // Рисуем фон кнопки (в стиле проекта - Charcoal Black)
-    ctx.fillStyle = '#0F0F0F'
-    ctx.fillRect(linkX, linkY, linkWidth, linkHeight)
+    // Рисуем текст брендинга
+    ctx.fillText(brandText, canvas.width / 2, brandY, maxTitleWidth)
     
-    // Рисуем текст ссылки (Off-White)
-    ctx.fillStyle = '#F5F5F3'
-    ctx.font = 'bold 36px "Inter", sans-serif'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'middle'
-    ctx.fillText(shortUrl, linkX + linkPadding, linkY + linkHeight / 2)
-    
-    // Добавляем иконку стрелки справа от текста
-    const arrowSize = 24
-    const arrowX = linkX + linkWidth - linkPadding - arrowSize
-    const arrowY = linkY + linkHeight / 2
-    ctx.strokeStyle = '#F5F5F3'
-    ctx.lineWidth = 2.5
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
+    // Подчеркиваем текст как ссылку (минималистично)
+    const underlineY = brandY + 18 + 4 // font-size + небольшой отступ
+    ctx.strokeStyle = '#0F0F0F'
+    ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo(arrowX, arrowY - arrowSize / 3)
-    ctx.lineTo(arrowX + arrowSize / 2, arrowY)
-    ctx.lineTo(arrowX, arrowY + arrowSize / 3)
+    ctx.moveTo(brandTextX, underlineY)
+    ctx.lineTo(brandTextX + brandTextWidth, underlineY)
     ctx.stroke()
 
     // Конвертируем canvas в File
@@ -177,7 +227,7 @@ export function ProductShareButtons({
     })
   }
 
-  // Создать изображение для поделиться в стиле карточки товара (Stories формат)
+  // Создать изображение для Instagram Stories (Stories формат)
   const createShareImage = async (): Promise<File> => {
     if (!productImageUrl) {
       throw new Error('Изображение товара недоступно')
@@ -203,18 +253,19 @@ export function ProductShareButtons({
       img.src = productImageUrl
     })
 
-    // Фон карточки (Off-White как в карточке)
+    // Фон (Off-White из палитры проекта)
     ctx.fillStyle = '#F5F5F3'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Рисуем изображение товара (занимает верхнюю часть, как в карточке - соотношение 3:4)
-    // В Stories формате изображение занимает примерно 60% высоты
-    const imageHeight = Math.floor(canvas.height * 0.6) // ~1152px
-    const imageWidth = canvas.width
-    const imageX = 0
-    const imageY = 0
+    // Изображение с отступами по бокам, сверху и снизу (как в предыдущем варианте)
+    const imagePadding = 80 // Отступы по бокам (увеличены для Stories)
+    const topPadding = 120 // Отступ сверху (больше для визуального баланса)
+    const imageHeight = Math.floor(canvas.height * 0.55) // ~1056px для контента остается ~864px
+    const imageWidth = canvas.width - imagePadding * 2 // С отступами по бокам
+    const imageX = imagePadding
+    const imageY = topPadding // Отступ сверху
 
-    // Рисуем изображение с сохранением пропорций (cover как в карточке)
+    // Рисуем изображение с сохранением пропорций
     const imgAspect = img.width / img.height
     const targetAspect = imageWidth / imageHeight
     
@@ -228,88 +279,132 @@ export function ProductShareButtons({
       drawWidth = imageHeight * imgAspect
       drawX = imageX - (drawWidth - imageWidth) / 2
     } else {
-      // Изображение выше - подгоняем по ширине
+      // Изображение выше - подгоняем по ширине, но не выходим за верхнюю границу
       drawHeight = imageWidth / imgAspect
-      drawY = imageY - (drawHeight - imageHeight) / 2
+      const maxDrawY = imageY // Максимальная позиция сверху
+      drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
     }
 
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
 
-    // Нижняя часть карточки с информацией (Off-White фон)
-    const contentY = imageHeight
-    const contentHeight = canvas.height - imageHeight
-    ctx.fillStyle = '#F5F5F3'
-    ctx.fillRect(0, contentY, canvas.width, contentHeight)
-
-    // Отступы как в карточке (пропорционально увеличены для Stories)
-    const padding = 60
-    const contentStartY = contentY + padding
-
-    // Название товара (как в карточке - font-display-vintage, font-black, uppercase, tracking-tighter)
-    ctx.fillStyle = '#0F0F0F' // Charcoal Black
-    ctx.font = 'bold 72px "Cormorant Garamond", serif'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'top'
+    // Определяем фактическую нижнюю границу изображения (учитываем возможное обрезание при cover)
+    const actualImageBottom = Math.max(
+      imageY + imageHeight, // Нижняя граница области изображения
+      drawY + drawHeight    // Фактическая нижняя граница изображения (если выходит за область)
+    )
     
-    const titleY = contentStartY
-    const maxTitleWidth = canvas.width - padding * 2
-    const titleLines = wrapText(ctx, productName.toUpperCase(), maxTitleWidth, 72)
+    // Контент внизу - центрируем относительно изображения
+    // Увеличиваем отступ, чтобы текст не налезал на фото
+    const contentY = actualImageBottom + 100 // Увеличенный отступ после изображения
+    const contentHeight = canvas.height - contentY
+    const contentPadding = imagePadding // Используем те же отступы, что и у изображения
+
+    // Тонкая линия-разделитель (в стиле Stone Island/Nike)
+    const dividerY = contentY + 35
+    ctx.strokeStyle = 'rgba(102, 102, 102, 0.2)' // Graphite с прозрачностью
+    ctx.lineWidth = 0.5
+    ctx.beginPath()
+    ctx.moveTo(contentPadding, dividerY)
+    ctx.lineTo(canvas.width - contentPadding, dividerY)
+    ctx.stroke()
+
+    // Определяем максимальную ширину текста
+    const maxTitleWidth = canvas.width - contentPadding * 2
+
+    // Название товара - центрируем относительно изображения
+    // Увеличиваем отступ от линии-разделителя, чтобы текст не налезал на фото
+    const titleY = dividerY + 60 // Отступ после линии-разделителя
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black из палитры
+    ctx.font = '900 64px "Cormorant Garamond", serif' // font-black = 900
+    ctx.textAlign = 'center' // Центрируем
+    ctx.textBaseline = 'top'
+    ctx.letterSpacing = '-0.02em' // tracking-tighter
+    const titleText = productName.toUpperCase() // uppercase
+    const titleLines = wrapText(ctx, titleText, maxTitleWidth, 64)
+    const lineHeight = 64 * 0.95 // leading-[0.95]
     
     titleLines.forEach((line, index) => {
-      ctx.fillText(line, padding, titleY + index * 80, maxTitleWidth)
+      ctx.fillText(line, canvas.width / 2, titleY + index * lineHeight, maxTitleWidth)
     })
 
-    const titleHeight = titleLines.length * 80
+    const titleHeight = titleLines.length * lineHeight
 
-    // Цена (если есть) - как в карточке
-    if (productPrice) {
-      ctx.fillStyle = '#0F0F0F' // Charcoal Black
-      ctx.font = 'bold 60px "Inter", sans-serif'
-      const priceY = titleY + titleHeight + 40
-      ctx.fillText(
-        `${productPrice.toLocaleString('ru-RU')} ₽`,
-        padding,
-        priceY,
-        maxTitleWidth
-      )
+    // Цвет товара (если есть) - центрируем относительно изображения
+    let colorY = titleY + titleHeight + 36 // space-y
+    if (productColor) {
+      const colorHex = productColor.hex || productColor.hex_code || getColorValue(productColor.name)
+      const colorName = getColorDisplayName(productColor.name, 'ru')
+      
+      // Устанавливаем шрифт для измерения текста цвета
+      ctx.font = '400 28px "Courier New", monospace'
+      ctx.letterSpacing = '0.15em'
+      
+      // Центрируем цветной индикатор и текст
+      // Квадратный индикатор как в карточке товара (rounded-sm, без бордера)
+      const colorIndicatorSize = 24
+      const borderRadius = 2 // rounded-sm = 2px
+      const colorTextWidth = ctx.measureText(colorName.toUpperCase()).width
+      const totalColorWidth = colorIndicatorSize + 16 + colorTextWidth
+      const colorStartX = (canvas.width - totalColorWidth) / 2
+      const colorIndicatorX = colorStartX
+      const colorIndicatorY = colorY + 12 - colorIndicatorSize / 2
+      
+      // Рисуем квадратный индикатор с закругленными углами (без обводки)
+      ctx.fillStyle = colorHex
+      ctx.beginPath()
+      // Рисуем закругленный прямоугольник вручную
+      const x = colorIndicatorX
+      const y = colorIndicatorY
+      const w = colorIndicatorSize
+      const h = colorIndicatorSize
+      const r = borderRadius
+      ctx.moveTo(x + r, y)
+      ctx.lineTo(x + w - r, y)
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+      ctx.lineTo(x + w, y + h - r)
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+      ctx.lineTo(x + r, y + h)
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+      ctx.lineTo(x, y + r)
+      ctx.quadraticCurveTo(x, y, x + r, y)
+      ctx.closePath()
+      ctx.fill()
+
+      // Название цвета (font-mono, tracking-[0.15em], uppercase) - справа от индикатора
+      ctx.fillStyle = '#666666' // Graphite из палитры
+      ctx.font = '400 28px "Courier New", monospace' // font-mono
+      ctx.letterSpacing = '0.15em' // tracking-[0.15em]
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(colorName.toUpperCase(), colorStartX + colorIndicatorSize + 16, colorIndicatorY + colorIndicatorSize / 2, maxTitleWidth)
+      
+      colorY += 48
     }
 
-    // Кнопка-ссылка внизу (в стиле карточки)
-    const linkPadding = 40
-    const linkHeight = 90
-    const linkY = canvas.height - linkHeight - padding
-    const shortUrl = productUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+    // Брендинг внизу как кликабельная ссылка (элегантно, минималистично)
+    const brandY = canvas.height - 140
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black - более заметный цвет для ссылки
+    ctx.font = '300 24px "Inter", sans-serif' // font-light
+    ctx.letterSpacing = '0.1em'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
     
-    // Измеряем ширину текста ссылки
-    ctx.font = 'bold 40px "Inter", sans-serif'
-    ctx.textAlign = 'left'
-    const linkTextMetrics = ctx.measureText(shortUrl)
-    const linkWidth = linkTextMetrics.width + linkPadding * 2
-    const linkX = (canvas.width - linkWidth) / 2
+    // Измеряем ширину текста для подчеркивания
+    const brandText = 'ROSEBOTANIQUE'
+    const brandTextMetrics = ctx.measureText(brandText)
+    const brandTextWidth = brandTextMetrics.width
+    const brandTextX = (canvas.width - brandTextWidth) / 2
     
-    // Рисуем фон кнопки (в стиле проекта - Charcoal Black)
-    ctx.fillStyle = '#0F0F0F'
-    ctx.fillRect(linkX, linkY, linkWidth, linkHeight)
+    // Рисуем текст брендинга
+    ctx.fillText(brandText, canvas.width / 2, brandY, maxTitleWidth)
     
-    // Рисуем текст ссылки (Off-White)
-    ctx.fillStyle = '#F5F5F3'
-    ctx.font = 'bold 40px "Inter", sans-serif'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'middle'
-    ctx.fillText(shortUrl, linkX + linkPadding, linkY + linkHeight / 2)
-    
-    // Добавляем иконку стрелки справа от текста
-    const arrowSize = 28
-    const arrowX = linkX + linkWidth - linkPadding - arrowSize
-    const arrowY = linkY + linkHeight / 2
-    ctx.strokeStyle = '#F5F5F3'
-    ctx.lineWidth = 3
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
+    // Подчеркиваем текст как ссылку (минималистично)
+    const underlineY = brandY + 24 + 6 // font-size + небольшой отступ
+    ctx.strokeStyle = '#0F0F0F'
+    ctx.lineWidth = 1.5
     ctx.beginPath()
-    ctx.moveTo(arrowX, arrowY - arrowSize / 3)
-    ctx.lineTo(arrowX + arrowSize / 2, arrowY)
-    ctx.lineTo(arrowX, arrowY + arrowSize / 3)
+    ctx.moveTo(brandTextX, underlineY)
+    ctx.lineTo(brandTextX + brandTextWidth, underlineY)
     ctx.stroke()
 
     // Конвертируем canvas в File
@@ -351,7 +446,7 @@ export function ProductShareButtons({
             files: [imageFile],
             title: productName,
             text: telegramText,
-            url: productUrl,
+            url: productUrl, // Ссылка на конкретный товар
           })
           setIsGeneratingStory(false)
           return
@@ -392,8 +487,8 @@ export function ProductShareButtons({
           await navigator.share({
             files: [imageFile],
             title: `${productName} - ROSEBOTANIQUE`,
-            text: `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n🔗 ${productUrl}`,
-            url: productUrl,
+            text: `🌸 ${productName}\n\n🔗 ${productUrl}`,
+            url: productUrl, // Ссылка на конкретный товар
           })
             setIsGeneratingStory(false)
             return

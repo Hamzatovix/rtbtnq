@@ -54,6 +54,7 @@ export default function ProductPage() {
   
   const [product, setProduct] = useState<Product | null>(null)
   const [colors, setColors] = useState<Color[]>([])
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([])
   const [loading, setLoading] = useState(true)
   const [selectedColorId, setSelectedColorId] = useState<string>('')
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
@@ -70,14 +71,16 @@ export default function ProductPage() {
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesStore()
 
   useEffect(() => {
-    // Загружаем товар и цвета (используем кеш браузера)
+    // Загружаем товар, цвета и категории (используем кеш браузера)
     Promise.all([
       fetch(`/api/products/${productSlug}`).then(r => r.json()),
       fetch('/api/colors').then(r => r.json()),
+      fetch('/api/categories').then(r => r.json()).catch(() => ({ results: [] })),
     ])
-      .then(([productData, colorsData]) => {
+      .then(([productData, colorsData, categoriesData]) => {
         setProduct(productData)
         setColors(colorsData.results || colorsData)
+        setCategories(categoriesData.results || categoriesData || [])
         
         // Выбираем первый доступный цвет
         if (productData.variants && productData.variants.length > 0) {
@@ -484,6 +487,8 @@ export default function ProductPage() {
                   productUrl={`${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}/product/${product.slug}`}
                   productImageUrl={currentImage.startsWith('http') ? currentImage : `${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}${currentImage.startsWith('/') ? currentImage : '/' + currentImage}`}
                   productPrice={selectedVariant ? selectedVariant.priceCents / 100 : 0}
+                  productColor={selectedColor ? { name: selectedColor.name, hex: selectedColor.hex, hex_code: selectedColor.hex_code } : null}
+                  productCategory={categories.find(c => String(c.id) === String(product.categoryId))?.name}
                   variant="page"
                 />
               </div>
