@@ -33,8 +33,17 @@ docker run -d \
   --network shtraf_default \
   -p 3000:3000 \
   --restart unless-stopped \
+  -v /opt/rosebotanique/front/prisma_data:/app/prisma_data \
+  -v /opt/rosebotanique/front/src/data:/app/src/data \
+  -v /opt/rosebotanique/front/public/uploads:/app/public/uploads \
+  --env-file front/.env.production \
   rosebotanique:prod
 ```
+
+**Важно:** Убедитесь, что файл `front/.env.production` существует и содержит необходимые переменные окружения:
+- `TELEGRAM_BOT_TOKEN` - токен Telegram бота
+- `TELEGRAM_CHAT_ID` - Chat ID для уведомлений
+- `NEXT_PUBLIC_BASE_URL` - базовый URL сайта
 
 ## 7. Проверка статуса контейнера
 ```bash
@@ -60,6 +69,10 @@ docker run -d \
   --network shtraf_default \
   -p 3000:3000 \
   --restart unless-stopped \
+  -v /opt/rosebotanique/front/prisma_data:/app/prisma_data \
+  -v /opt/rosebotanique/front/src/data:/app/src/data \
+  -v /opt/rosebotanique/front/public/uploads:/app/public/uploads \
+  --env-file front/.env.production \
   rosebotanique:prod && \
 docker ps | grep rosebotanique
 ```

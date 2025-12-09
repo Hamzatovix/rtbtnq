@@ -27,16 +27,16 @@ export function ProductShareButtons({
   // Формируем текст для Telegram с ссылкой
   const telegramText = `🌸 ${productName}${productPrice ? ` — ${productPrice.toLocaleString('ru-RU')} ₽` : ''}\n\n🔗 ${productUrl}`
 
-  // Создать изображение для поделиться
-  const createShareImage = async (): Promise<File> => {
+  // Создать изображение для Telegram в стиле карточки товара (квадратный формат)
+  const createTelegramImage = async (): Promise<File> => {
     if (!productImageUrl) {
       throw new Error('Изображение товара недоступно')
     }
 
-    // Создаем canvas для генерации изображения (1080x1920px для Stories, или 1200x1200 для обычного)
+    // Создаем canvas для генерации изображения Telegram (1200x1200px - квадратный формат)
     const canvas = document.createElement('canvas')
-    canvas.width = 1080
-    canvas.height = 1920
+    canvas.width = 1200
+    canvas.height = 1200
     const ctx = canvas.getContext('2d')
 
     if (!ctx) {
@@ -53,24 +53,17 @@ export function ProductShareButtons({
       img.src = productImageUrl
     })
 
-    // Фон (градиент или цвет)
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
-    gradient.addColorStop(0, '#ffffff')
-    gradient.addColorStop(1, '#f5f5f5')
-    ctx.fillStyle = gradient
+    // Фон карточки (Off-White как в карточке)
+    ctx.fillStyle = '#F5F5F3'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Рисуем изображение товара (центрируем, занимает ~60% высоты)
-    const imageHeight = Math.floor(canvas.height * 0.6)
-    const imageWidth = Math.floor(canvas.width * 0.9)
-    const imageX = (canvas.width - imageWidth) / 2
-    const imageY = 200
+    // Рисуем изображение товара (занимает верхнюю часть, как в карточке)
+    const imageHeight = Math.floor(canvas.height * 0.65) // ~780px
+    const imageWidth = canvas.width
+    const imageX = 0
+    const imageY = 0
 
-    // Белая рамка вокруг изображения
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(imageX - 10, imageY - 10, imageWidth + 20, imageHeight + 20)
-
-    // Рисуем изображение с сохранением пропорций
+    // Рисуем изображение с сохранением пропорций (cover как в карточке)
     const imgAspect = img.width / img.height
     const targetAspect = imageWidth / imageHeight
     
@@ -91,37 +84,49 @@ export function ProductShareButtons({
 
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
 
-    // Название товара
-    ctx.fillStyle = '#1a1a1a'
-    ctx.font = 'bold 64px "Cormorant Garamond", serif'
-    ctx.textAlign = 'center'
+    // Нижняя часть карточки с информацией (Off-White фон)
+    const contentY = imageHeight
+    const contentHeight = canvas.height - imageHeight
+    ctx.fillStyle = '#F5F5F3'
+    ctx.fillRect(0, contentY, canvas.width, contentHeight)
+
+    // Отступы как в карточке
+    const padding = 50
+    const contentStartY = contentY + padding
+
+    // Название товара (как в карточке - font-display-vintage, font-black, uppercase)
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    ctx.font = 'bold 52px "Cormorant Garamond", serif'
+    ctx.textAlign = 'left'
     ctx.textBaseline = 'top'
     
-    const titleY = imageY + imageHeight + 80
-    const maxTitleWidth = canvas.width - 120
-    const titleLines = wrapText(ctx, productName, maxTitleWidth, 64)
+    const titleY = contentStartY
+    const maxTitleWidth = canvas.width - padding * 2
+    const titleLines = wrapText(ctx, productName.toUpperCase(), maxTitleWidth, 52)
     
     titleLines.forEach((line, index) => {
-      ctx.fillText(line, canvas.width / 2, titleY + index * 80, maxTitleWidth)
+      ctx.fillText(line, padding, titleY + index * 60, maxTitleWidth)
     })
 
-    // Цена (если есть)
+    const titleHeight = titleLines.length * 60
+
+    // Цена (если есть) - как в карточке
     if (productPrice) {
-      ctx.fillStyle = '#666666'
-      ctx.font = '48px "Inter", sans-serif'
-      const priceY = titleY + titleLines.length * 80 + 40
+      ctx.fillStyle = '#0F0F0F' // Charcoal Black
+      ctx.font = 'bold 44px "Inter", sans-serif'
+      const priceY = titleY + titleHeight + 25
       ctx.fillText(
         `${productPrice.toLocaleString('ru-RU')} ₽`,
-        canvas.width / 2,
+        padding,
         priceY,
         maxTitleWidth
       )
     }
 
-    // Красивая кнопка-ссылка в стиле проекта
-    const linkY = canvas.height - 200
-    const linkPadding = 40
-    const linkHeight = 80
+    // Кнопка-ссылка внизу (в стиле карточки)
+    const linkPadding = 35
+    const linkHeight = 75
+    const linkY = canvas.height - linkHeight - padding
     const shortUrl = productUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
     
     // Измеряем ширину текста ссылки
@@ -147,6 +152,157 @@ export function ProductShareButtons({
     const arrowX = linkX + linkWidth - linkPadding - arrowSize
     const arrowY = linkY + linkHeight / 2
     ctx.strokeStyle = '#F5F5F3'
+    ctx.lineWidth = 2.5
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    ctx.beginPath()
+    ctx.moveTo(arrowX, arrowY - arrowSize / 3)
+    ctx.lineTo(arrowX + arrowSize / 2, arrowY)
+    ctx.lineTo(arrowX, arrowY + arrowSize / 3)
+    ctx.stroke()
+
+    // Конвертируем canvas в File
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error('Не удалось создать изображение'))
+          return
+        }
+        const file = new File([blob], `${productName.replace(/[^a-zа-я0-9]/gi, '_')}_telegram.jpg`, {
+          type: 'image/jpeg',
+          lastModified: Date.now(),
+        })
+        resolve(file)
+      }, 'image/jpeg', 0.95)
+    })
+  }
+
+  // Создать изображение для поделиться в стиле карточки товара (Stories формат)
+  const createShareImage = async (): Promise<File> => {
+    if (!productImageUrl) {
+      throw new Error('Изображение товара недоступно')
+    }
+
+    // Создаем canvas для генерации изображения Stories (1080x1920px)
+    const canvas = document.createElement('canvas')
+    canvas.width = 1080
+    canvas.height = 1920
+    const ctx = canvas.getContext('2d')
+
+    if (!ctx) {
+      throw new Error('Не удалось создать canvas')
+    }
+
+    // Загружаем изображение товара
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    
+    await new Promise((resolve, reject) => {
+      img.onload = resolve
+      img.onerror = reject
+      img.src = productImageUrl
+    })
+
+    // Фон карточки (Off-White как в карточке)
+    ctx.fillStyle = '#F5F5F3'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Рисуем изображение товара (занимает верхнюю часть, как в карточке - соотношение 3:4)
+    // В Stories формате изображение занимает примерно 60% высоты
+    const imageHeight = Math.floor(canvas.height * 0.6) // ~1152px
+    const imageWidth = canvas.width
+    const imageX = 0
+    const imageY = 0
+
+    // Рисуем изображение с сохранением пропорций (cover как в карточке)
+    const imgAspect = img.width / img.height
+    const targetAspect = imageWidth / imageHeight
+    
+    let drawWidth = imageWidth
+    let drawHeight = imageHeight
+    let drawX = imageX
+    let drawY = imageY
+
+    if (imgAspect > targetAspect) {
+      // Изображение шире - подгоняем по высоте
+      drawWidth = imageHeight * imgAspect
+      drawX = imageX - (drawWidth - imageWidth) / 2
+    } else {
+      // Изображение выше - подгоняем по ширине
+      drawHeight = imageWidth / imgAspect
+      drawY = imageY - (drawHeight - imageHeight) / 2
+    }
+
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
+
+    // Нижняя часть карточки с информацией (Off-White фон)
+    const contentY = imageHeight
+    const contentHeight = canvas.height - imageHeight
+    ctx.fillStyle = '#F5F5F3'
+    ctx.fillRect(0, contentY, canvas.width, contentHeight)
+
+    // Отступы как в карточке (пропорционально увеличены для Stories)
+    const padding = 60
+    const contentStartY = contentY + padding
+
+    // Название товара (как в карточке - font-display-vintage, font-black, uppercase, tracking-tighter)
+    ctx.fillStyle = '#0F0F0F' // Charcoal Black
+    ctx.font = 'bold 72px "Cormorant Garamond", serif'
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'top'
+    
+    const titleY = contentStartY
+    const maxTitleWidth = canvas.width - padding * 2
+    const titleLines = wrapText(ctx, productName.toUpperCase(), maxTitleWidth, 72)
+    
+    titleLines.forEach((line, index) => {
+      ctx.fillText(line, padding, titleY + index * 80, maxTitleWidth)
+    })
+
+    const titleHeight = titleLines.length * 80
+
+    // Цена (если есть) - как в карточке
+    if (productPrice) {
+      ctx.fillStyle = '#0F0F0F' // Charcoal Black
+      ctx.font = 'bold 60px "Inter", sans-serif'
+      const priceY = titleY + titleHeight + 40
+      ctx.fillText(
+        `${productPrice.toLocaleString('ru-RU')} ₽`,
+        padding,
+        priceY,
+        maxTitleWidth
+      )
+    }
+
+    // Кнопка-ссылка внизу (в стиле карточки)
+    const linkPadding = 40
+    const linkHeight = 90
+    const linkY = canvas.height - linkHeight - padding
+    const shortUrl = productUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+    
+    // Измеряем ширину текста ссылки
+    ctx.font = 'bold 40px "Inter", sans-serif'
+    ctx.textAlign = 'left'
+    const linkTextMetrics = ctx.measureText(shortUrl)
+    const linkWidth = linkTextMetrics.width + linkPadding * 2
+    const linkX = (canvas.width - linkWidth) / 2
+    
+    // Рисуем фон кнопки (в стиле проекта - Charcoal Black)
+    ctx.fillStyle = '#0F0F0F'
+    ctx.fillRect(linkX, linkY, linkWidth, linkHeight)
+    
+    // Рисуем текст ссылки (Off-White)
+    ctx.fillStyle = '#F5F5F3'
+    ctx.font = 'bold 40px "Inter", sans-serif'
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(shortUrl, linkX + linkPadding, linkY + linkHeight / 2)
+    
+    // Добавляем иконку стрелки справа от текста
+    const arrowSize = 28
+    const arrowX = linkX + linkWidth - linkPadding - arrowSize
+    const arrowY = linkY + linkHeight / 2
+    ctx.strokeStyle = '#F5F5F3'
     ctx.lineWidth = 3
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -155,13 +311,6 @@ export function ProductShareButtons({
     ctx.lineTo(arrowX + arrowSize / 2, arrowY)
     ctx.lineTo(arrowX, arrowY + arrowSize / 3)
     ctx.stroke()
-    
-    // Логотип/бренд выше кнопки
-    ctx.fillStyle = '#6B6B6B'
-    ctx.font = '32px "Inter", sans-serif'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'bottom'
-    ctx.fillText('ROSEBOTANIQUE', canvas.width / 2, linkY - 30, maxTitleWidth)
 
     // Конвертируем canvas в File
     return new Promise((resolve, reject) => {
@@ -194,7 +343,7 @@ export function ProductShareButtons({
     if (navigator.share && navigator.canShare) {
       try {
         setIsGeneratingStory(true)
-        const imageFile = await createShareImage()
+        const imageFile = await createTelegramImage() // Используем специальный формат для Telegram
         
         // Проверяем, можно ли поделиться файлом
         if (navigator.canShare({ files: [imageFile] })) {
