@@ -822,11 +822,20 @@ export async function sendOrderNotification(
   const token = botToken || process.env.TELEGRAM_BOT_TOKEN
   const chat = chatId || process.env.TELEGRAM_CHAT_ID
 
+  // Детальное логирование для диагностики
   console.log('[Telegram] Проверка конфигурации:', {
     hasToken: !!token,
     hasChatId: !!chat,
     chatId: chat,
-    tokenPreview: token ? `${token.substring(0, 10)}...` : 'не установлен'
+    tokenPreview: token ? `${token.substring(0, 10)}...` : 'не установлен',
+    // Дополнительная диагностика
+    envTokenExists: !!process.env.TELEGRAM_BOT_TOKEN,
+    envChatIdExists: !!process.env.TELEGRAM_CHAT_ID,
+    envTokenLength: process.env.TELEGRAM_BOT_TOKEN?.length || 0,
+    envChatIdValue: process.env.TELEGRAM_CHAT_ID || 'не установлен',
+    nodeEnv: process.env.NODE_ENV,
+    // Проверяем все переменные окружения, начинающиеся с TELEGRAM
+    allTelegramEnvVars: Object.keys(process.env).filter(key => key.startsWith('TELEGRAM'))
   })
 
   if (!token || !chat) {
