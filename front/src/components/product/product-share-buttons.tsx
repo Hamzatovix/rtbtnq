@@ -176,7 +176,7 @@ export function ProductShareButtons({
 
     // Цвет товара (если есть) - премиальное отображение с тенью
     // Цвет идет сразу после названия
-    let colorY = titleY + titleHeight + 60 // Увеличенный отступ после названия
+    let colorY = titleY + titleHeight + 45 // Уменьшенный отступ после названия
     let colorBottomY = colorY // Нижняя граница цвета (для расчета следующего элемента)
     
     if (productColor) {
@@ -266,7 +266,7 @@ export function ProductShareButtons({
 
     // Цена товара (если есть) - премиальное отображение
     // Цена идет после цвета (или после названия, если цвета нет)
-    let priceY = colorBottomY + 70 // Отступ после цвета (или после названия, если цвета нет)
+    let priceY = colorBottomY + 50 // Уменьшенный отступ после цвета (или после названия, если цвета нет)
     let priceBottomY = priceY // Нижняя граница цены (для расчета следующего элемента)
     
     if (productPrice && productPrice > 0) {
@@ -298,15 +298,15 @@ export function ProductShareButtons({
     }
 
     // Премиальный брендинг внизу - ВСЕГДА рисуем брендинг
-    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
+    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 80px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
     const underlineHeight = 8 // Высота подчеркивания
     const bottomPadding = 20 // Отступ снизу
     
-    // Минимальная позиция брендинга: минимум 120px от последнего элемента
-    const minBrandY = lastElementBottom + 120
+    // Минимальная позиция брендинга: минимум 80px от последнего элемента (уменьшено с 120px)
+    const minBrandY = lastElementBottom + 80
     
     // Максимальная позиция брендинга: не ближе bottomPadding от низа canvas
     // Учитываем высоту текста + подчеркивание + отступ
@@ -539,7 +539,7 @@ export function ProductShareButtons({
 
     // Цвет товара (если есть) - премиальное отображение с тенью
     // Цвет идет сразу после названия
-    let colorY = titleY + titleHeight + 60 // Увеличенный отступ после названия
+    let colorY = titleY + titleHeight + 45 // Уменьшенный отступ после названия
     let colorBottomY = colorY // Нижняя граница цвета (для расчета следующего элемента)
     
     if (productColor) {
@@ -629,7 +629,7 @@ export function ProductShareButtons({
 
     // Цена товара (если есть) - премиальное отображение
     // Цена идет после цвета (или после названия, если цвета нет)
-    let priceY = colorBottomY + 70 // Отступ после цвета (или после названия, если цвета нет)
+    let priceY = colorBottomY + 50 // Уменьшенный отступ после цвета (или после названия, если цвета нет)
     let priceBottomY = priceY // Нижняя граница цены (для расчета следующего элемента)
     
     if (productPrice && productPrice > 0) {
@@ -661,15 +661,15 @@ export function ProductShareButtons({
     }
 
     // Премиальный брендинг внизу - ВСЕГДА рисуем брендинг
-    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 120px от последнего элемента
+    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 80px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
     const underlineHeight = 8 // Высота подчеркивания
     const bottomPadding = 20 // Отступ снизу
     
-    // Минимальная позиция брендинга: минимум 120px от последнего элемента
-    const minBrandY = lastElementBottom + 120
+    // Минимальная позиция брендинга: минимум 80px от последнего элемента (уменьшено с 120px)
+    const minBrandY = lastElementBottom + 80
     
     // Максимальная позиция брендинга: не ближе bottomPadding от низа canvas
     // Учитываем высоту текста + подчеркивание + отступ
