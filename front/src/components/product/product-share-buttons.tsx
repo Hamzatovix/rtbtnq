@@ -93,22 +93,8 @@ export function ProductShareButtons({
       drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
     }
 
-    // Добавляем тонкую тень под изображением для глубины
-    const shadowBlur = 40
-    const shadowOffsetY = 8
-    ctx.shadowColor = 'rgba(15, 15, 15, 0.15)'
-    ctx.shadowBlur = shadowBlur
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = shadowOffsetY
-    
-    // Рисуем изображение с тенью
+    // Рисуем изображение
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
-    
-    // Сбрасываем тень для остальных элементов
-    ctx.shadowColor = 'transparent'
-    ctx.shadowBlur = 0
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 0
 
     // Определяем фактическую нижнюю границу изображения (учитываем возможное обрезание при cover)
     const actualImageBottom = Math.max(
@@ -456,22 +442,8 @@ export function ProductShareButtons({
       drawY = Math.max(maxDrawY, imageY - (drawHeight - imageHeight) / 2)
     }
 
-    // Добавляем тонкую тень под изображением для глубины
-    const shadowBlur = 40
-    const shadowOffsetY = 8
-    ctx.shadowColor = 'rgba(15, 15, 15, 0.15)'
-    ctx.shadowBlur = shadowBlur
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = shadowOffsetY
-    
-    // Рисуем изображение с тенью
+    // Рисуем изображение
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
-    
-    // Сбрасываем тень для остальных элементов
-    ctx.shadowColor = 'transparent'
-    ctx.shadowBlur = 0
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 0
 
     // Определяем фактическую нижнюю границу изображения (учитываем возможное обрезание при cover)
     const actualImageBottom = Math.max(
