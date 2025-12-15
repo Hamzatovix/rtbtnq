@@ -719,16 +719,17 @@ const shippingMethodNames: Record<string, { ru: string; en: string }> = {
 export function formatOrderNotification(data: OrderNotificationData): string {
   const { orderNumber, customerName, customerPhone, items, total, currency, address, shippingMethod, shippingPrice, note } = data
 
-  // Форматируем список товаров
+  // Форматируем список товаров с улучшенным дизайном
   const itemsText = items
     .map((item, index) => {
-      const colorText = item.color ? ` • ${item.color}` : ''
+      const colorText = item.color ? `\n   _${item.color}_` : ''
       const priceText = formatPrice(item.total, currency)
-      return `${index + 1}. *${item.name}*${colorText}\n   ${item.qty} шт. × ${formatPrice(item.price, currency)} = ${priceText}`
+      const unitPrice = formatPrice(item.price, currency)
+      return `*${index + 1}.* ${item.name}${colorText}\n   \`${item.qty} × ${unitPrice} = ${priceText}\``
     })
     .join('\n\n')
 
-  // Форматируем адрес доставки
+  // Форматируем адрес доставки с улучшенной структурой
   let addressText = ''
   if (address) {
     const addressParts = [
@@ -748,7 +749,7 @@ export function formatOrderNotification(data: OrderNotificationData): string {
     shippingText = methodName
     // Показываем цену доставки только если она больше 0
     if (shippingPrice !== null && shippingPrice !== undefined && shippingPrice > 0) {
-      shippingText += ` — ${formatPrice(shippingPrice, currency)}`
+      shippingText += ` • ${formatPrice(shippingPrice, currency)}`
     }
   }
 
@@ -756,40 +757,56 @@ export function formatOrderNotification(data: OrderNotificationData): string {
   const phoneText = customerPhone ? formatPhone(customerPhone) : '—'
   const phoneDigits = customerPhone ? customerPhone.replace(/\D/g, '') : ''
   
-  // Собираем сообщение с улучшенным форматированием
-  let message = `✨ *НОВЫЙ ЗАКАЗ*\n`
+  // Профессиональное форматирование в стиле бренда Rose Botanique
+  // Минималистичный, элегантный, премиальный стиль
+  let message = `*ROSEBOTANIQUE*\n`
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`
   
-  // Номер заказа в формате кода для легкого копирования (блок кода)
-  message += `📦 *Заказ:*\n\`\`\`\n${orderNumber}\n\`\`\`\n`
-  message += `👤 *Клиент:* ${customerName}\n`
+  // Заголовок заказа в стиле бренда
+  message += `*НОВЫЙ ЗАКАЗ*\n\n`
+  
+  // Номер заказа в формате кода для легкого копирования
+  message += `\`${orderNumber}\`\n\n`
+  
+  // Информация о клиенте с улучшенным форматированием
+  message += `*Клиент:*\n${customerName}\n`
   
   // Номер телефона в формате кода для легкого копирования
   if (customerPhone && phoneDigits) {
-    message += `📞 *Телефон:*\n\`\`\`\n${phoneText}\n\`\`\`\n`
+    message += `\n*Телефон:*\n\`${phoneText}\`\n`
   } else {
-    message += `📞 *Телефон:* ${phoneText}\n`
+    message += `\n*Телефон:* ${phoneText}\n`
   }
   
   message += `\n━━━━━━━━━━━━━━━━━━━━\n\n`
   
-  message += `🛒 *ТОВАРЫ*\n\n${itemsText}\n`
+  // Товары с улучшенным форматированием
+  message += `*ТОВАРЫ*\n\n${itemsText}\n`
   
   message += `\n━━━━━━━━━━━━━━━━━━━━\n\n`
   
-  message += `💰 *ИТОГО:* ${formatPrice(total, currency)}\n`
+  // Итоговая сумма с акцентом
+  message += `*ИТОГО:* \`${formatPrice(total, currency)}\`\n`
 
+  // Доставка
   if (shippingText) {
-    message += `\n🚚 *Доставка:* ${shippingText}\n`
+    message += `\n*Доставка:* ${shippingText}\n`
   }
 
+  // Адрес с улучшенным форматированием
   if (addressText) {
-    message += `\n📍 *Адрес:*\n${addressText}\n`
+    message += `\n*Адрес доставки:*\n\`${addressText}\`\n`
   }
 
+  // Комментарий клиента
   if (note) {
-    message += `\n💬 *Комментарий:*\n${note}`
+    message += `\n━━━━━━━━━━━━━━━━━━━━\n\n`
+    message += `*Комментарий клиента:*\n_${note}_`
   }
+
+  // Футер с брендингом
+  message += `\n\n━━━━━━━━━━━━━━━━━━━━\n`
+  message += `_rosebotanique.store_`
 
   return message
 }
