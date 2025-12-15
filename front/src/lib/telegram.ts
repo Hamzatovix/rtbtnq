@@ -820,6 +820,7 @@ function formatPhone(phone: string): string {
 
 /**
  * Отправляет уведомление о новом заказе в Telegram
+ * Поддерживает отправку нескольким пользователям (Chat ID через запятую)
  */
 export async function sendOrderNotification(
   data: OrderNotificationData,
@@ -828,13 +829,19 @@ export async function sendOrderNotification(
 ): Promise<boolean> {
   // Проверяем наличие токена и chat_id
   const token = botToken || process.env.TELEGRAM_BOT_TOKEN
-  const chat = chatId || process.env.TELEGRAM_CHAT_ID
+  const chatIdsString = chatId || process.env.TELEGRAM_CHAT_ID
+
+  // Поддерживаем несколько Chat ID через запятую
+  const chatIds = chatIdsString
+    ? chatIdsString.split(',').map(id => id.trim()).filter(Boolean)
+    : []
 
   // Детальное логирование для диагностики
   console.log('[Telegram] Проверка конфигурации:', {
     hasToken: !!token,
-    hasChatId: !!chat,
-    chatId: chat,
+    hasChatIds: chatIds.length > 0,
+    chatIdsCount: chatIds.length,
+    chatIds: chatIds.map(id => id.substring(0, 10) + '...'),
     tokenPreview: token ? `${token.substring(0, 10)}...` : 'не установлен',
     // Дополнительная диагностика
     envTokenExists: !!process.env.TELEGRAM_BOT_TOKEN,
@@ -846,13 +853,67 @@ export async function sendOrderNotification(
     allTelegramEnvVars: Object.keys(process.env).filter(key => key.startsWith('TELEGRAM'))
   })
 
-  if (!token || !chat) {
+  if (!token || chatIds.length === 0) {
     console.warn('[Telegram] Telegram bot token or chat ID not configured', {
       token: token ? 'установлен' : 'не установлен',
-      chatId: chat ? 'установлен' : 'не установлен'
+      chatIdsCount: chatIds.length
     })
     return false
   }
+
+  // Отправляем уведомления всем указанным Chat ID
+  // logDetails = true только для первого Chat ID, чтобы не дублировать логи
+  const results = await Promise.allSettled(
+    chatIds.map((chat, index) => sendOrderNotificationToChat(data, token, chat, index === 0))
+  )
+
+  // Обрабатываем результаты
+  const successResults: Array<{ chatId: string; success: boolean }> = []
+  const failedResults: Array<{ chatId: string; error: string }> = []
+
+  results.forEach((result, index) => {
+    const chatId = chatIds[index]
+    if (result.status === 'fulfilled') {
+      successResults.push({ chatId, success: result.value })
+    } else {
+      failedResults.push({
+        chatId,
+        error: result.reason instanceof Error ? result.reason.message : String(result.reason)
+      })
+    }
+  })
+
+  const successCount = successResults.filter(r => r.success).length
+  const success = successCount > 0
+
+  console.log('[Telegram] Результат отправки уведомлений:', {
+    totalChatIds: chatIds.length,
+    successCount,
+    failedCount: failedResults.length,
+    success,
+    successfulChatIds: successResults.filter(r => r.success).map(r => r.chatId.substring(0, 10) + '...'),
+    failedChatIds: failedResults.map(r => ({ chatId: r.chatId.substring(0, 10) + '...', error: r.error }))
+  })
+
+  // Логируем ошибки для каждого Chat ID отдельно
+  if (failedResults.length > 0) {
+    failedResults.forEach(({ chatId, error }) => {
+      console.error(`[Telegram] ❌ Ошибка отправки для Chat ID ${chatId.substring(0, 10)}...:`, error)
+    })
+  }
+
+  return success
+}
+
+/**
+ * Отправляет уведомление о заказе в конкретный чат
+ */
+async function sendOrderNotificationToChat(
+  data: OrderNotificationData,
+  token: string,
+  chat: string,
+  logDetails: boolean = true
+): Promise<boolean> {
 
   // Форматируем сообщение
   const message = formatOrderNotification(data)
@@ -882,12 +943,15 @@ export async function sendOrderNotification(
   // Telegram не принимает localhost URLs в inline кнопках
   const isValidUrl = !baseUrl.includes('localhost') && !baseUrl.includes('127.0.0.1')
   
-  console.log('[Telegram] Отправка уведомления о заказе:', {
-    orderNumber: data.orderNumber,
-    orderUrl,
-    isValidUrl,
-    itemsWithImages: data.items.filter(item => item.image).length
-  })
+  if (logDetails) {
+    console.log('[Telegram] Отправка уведомления о заказе:', {
+      chatId: chat.substring(0, 10) + '...',
+      orderNumber: data.orderNumber,
+      orderUrl,
+      isValidUrl,
+      itemsWithImages: data.items.filter(item => item.image).length
+    })
+  }
   
   // Собираем уникальные изображения товаров (убираем дубликаты и placeholder)
   const uniqueImages = new Map<string, string>()
@@ -1009,12 +1073,15 @@ export async function sendOrderNotification(
         })
       }
       
-      console.log('[Telegram] ✅ Уведомление с изображениями успешно отправлено в Telegram:', {
-        orderId: data.orderId,
-        orderNumber: data.orderNumber,
-        imagesCount: media.length,
-        timestamp: new Date().toISOString()
-      })
+      if (logDetails) {
+        console.log('[Telegram] ✅ Уведомление с изображениями успешно отправлено в Telegram:', {
+          chatId: chat.substring(0, 10) + '...',
+          orderId: data.orderId,
+          orderNumber: data.orderNumber,
+          imagesCount: media.length,
+          timestamp: new Date().toISOString()
+        })
+      }
       return true
     } else {
       console.warn('[Telegram] Не удалось отправить медиа-группу, отправляем только текстовое сообщение')
@@ -1053,18 +1120,21 @@ export async function sendOrderNotification(
   const success = await sendTelegramMessage(token, chat, messageOptions)
   
   if (success) {
-    console.log('[Telegram] ✅ Уведомление успешно отправлено в Telegram:', {
-      orderId: data.orderId,
-      orderNumber: data.orderNumber,
-      timestamp: new Date().toISOString()
-    })
+    if (logDetails) {
+      console.log('[Telegram] ✅ Уведомление успешно отправлено в Telegram:', {
+        chatId: chat.substring(0, 10) + '...',
+        orderId: data.orderId,
+        orderNumber: data.orderNumber,
+        timestamp: new Date().toISOString()
+      })
+    }
   } else {
     console.error('[Telegram] ❌ Ошибка при отправке уведомления в Telegram:', {
+      chatId: chat.substring(0, 10) + '...',
       orderId: data.orderId,
       orderNumber: data.orderNumber,
       timestamp: new Date().toISOString(),
-      hasToken: !!token,
-      hasChatId: !!chat
+      hasToken: !!token
     })
   }
   
