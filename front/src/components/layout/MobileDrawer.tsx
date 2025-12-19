@@ -21,15 +21,14 @@ export type MobileDrawerProps = {
  * Mobile slide-out drawer component.
  * Renders in a portal to document.body.
  * Features:
- * - Slide-in animation from top (under header)
+ * - Soft slide-in animation from slightly above (under header)
  * - Styled to match header appearance
- * - Swipe gesture to close (swipe up)
+ * - Swipe gesture to close (swipe down) - native mobile behavior
  * - Focus trap management
  * - Multiple ways to close:
  *   - ESC key
  *   - Click on backdrop (area below menu)
- *   - Click on close button (X)
- *   - Swipe up gesture
+ *   - Swipe down gesture
  *   - Click on navigation links
  *   - Click on action buttons (cart, favorites)
  *   - Automatically closes on route change
@@ -44,9 +43,9 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
   const firstFocusableRef = useRef<HTMLElement | null>(null)
   const focusableElementsRef = useRef<NodeListOf<HTMLElement> | null>(null)
   
-  // Motion values for swipe gesture
+  // Motion values for swipe gesture (downward drag)
   const y = useMotionValue(0)
-  const opacity = useTransform(y, [-100, 0], [0, 1])
+  const opacity = useTransform(y, [0, 100], [1, 0])
   const [isDragging, setIsDragging] = useState(false)
 
   useLockBodyScroll(open)
@@ -152,14 +151,14 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
     }
   }, [open, mounted, onClose])
 
-  // Handle swipe gesture - только вверх для закрытия
+  // Handle swipe gesture - swipe down to close (native mobile behavior)
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = MOBILE_MENU_CONFIG.SWIPE_THRESHOLD
     const velocity = info.velocity.y
 
-    // Закрываем только при свайпе вверх (отрицательное значение y)
-    if (info.offset.y < -threshold || velocity < -MOBILE_MENU_CONFIG.SWIPE_VELOCITY) {
-      // Swipe up - close menu
+    // Close on swipe down (positive y values)
+    if (info.offset.y > threshold || velocity > MOBILE_MENU_CONFIG.SWIPE_VELOCITY) {
+      // Swipe down - close menu
       onClose()
     } else {
       // Return to original position
@@ -168,10 +167,11 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
     setIsDragging(false)
   }
 
-  // Ограничиваем drag только вверх
+  // Constrain drag to downward direction only
   const handleDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    // Разрешаем drag только вверх (отрицательные значения y)
-    if (info.offset.y > 0) {
+    // Only allow dragging down (positive y values)
+    // Prevent dragging up (negative y values)
+    if (info.offset.y < 0) {
       y.set(0)
     }
   }
@@ -198,7 +198,7 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             style={{ top: `${headerHeight}px` }}
-            className="fixed inset-0 z-[48] bg-black/20 dark:bg-black/30 md:hidden backdrop-blur-sm"
+            className="fixed inset-0 z-[48] bg-black/40 dark:bg-black/50 md:hidden backdrop-blur-sm"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -207,8 +207,8 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
           <motion.div
             ref={panelRef}
             drag="y"
-            dragConstraints={{ top: -Infinity, bottom: 0 }}
-            dragElastic={{ top: MOBILE_MENU_CONFIG.DRAG_ELASTIC, bottom: 0 }}
+            dragConstraints={{ top: 0, bottom: Infinity }}
+            dragElastic={{ top: 0, bottom: MOBILE_MENU_CONFIG.DRAG_ELASTIC }}
             onDragStart={() => setIsDragging(true)}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
@@ -216,24 +216,21 @@ export function MobileDrawer({ open, onClose, title = 'Menu', id, children, trig
               top: `${headerHeight}px`,
               ...(isDragging ? { y, opacity } : {}),
             }}
-            initial={reducedMotion ? {} : { y: '-100%', opacity: 0 }}
+            initial={reducedMotion ? {} : { y: -16, opacity: 0 }}
             animate={reducedMotion || isDragging ? {} : { y: 0, opacity: 1 }}
-            exit={reducedMotion ? {} : { y: '-100%', opacity: 0 }}
+            exit={reducedMotion ? {} : { y: -16, opacity: 0 }}
             transition={isDragging ? { duration: 0 } : motionConfig}
             role="dialog"
             aria-modal="true"
             aria-label={title || 'Mobile menu'}
             id={drawerId}
-            className="fixed left-0 right-0 z-[49] w-full bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 border-b border-mistGray/30 dark:border-border shadow-breathing dark:shadow-breathing will-change-[transform,opacity]"
+            className="fixed left-0 right-0 z-[49] w-full bg-fintage-offwhite dark:bg-fintage-charcoal border-b border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-md will-change-[transform,opacity]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Swipe indicator - улучшенный, более заметный */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
-
             {/* Container с контентом */}
-            <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="container mx-auto px-3 md:px-6 lg:px-8">
               {/* Content */}
-              <div className="relative flex flex-col pb-6 pt-4">
+              <div className="relative flex flex-col pb-6 pt-3 max-h-[calc(100vh-64px)] overflow-y-auto">
                 {children}
               </div>
             </div>

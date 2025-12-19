@@ -139,7 +139,7 @@ export default function BackofficeEditProductPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-inkSoft/60">Загрузка...</p>
+        <p className="text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs uppercase tracking-[0.15em]">Загрузка...</p>
       </div>
     )
   }
@@ -147,19 +147,19 @@ export default function BackofficeEditProductPage() {
   return (
     <div className="space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-inkSoft/60">
-        <Link href="/backoffice" className="hover:text-sageTint transition-colors">Панель</Link>
+      <div className="flex items-center gap-2 text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
+        <Link href="/backoffice" className="hover:text-accent dark:hover:text-accent transition-fintage">Панель</Link>
         <span>/</span>
-        <Link href="/backoffice/products" className="hover:text-sageTint transition-colors">Товары</Link>
+        <Link href="/backoffice/products" className="hover:text-accent dark:hover:text-accent transition-fintage">Товары</Link>
         <span>/</span>
-        <span className="text-inkSoft">Редактировать</span>
+        <span className="text-fintage-charcoal dark:text-fintage-offwhite">Редактировать</span>
       </div>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-title-1 font-light">Редактировать товар</h1>
+        <h1 className="text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Редактировать товар</h1>
         <Link
           href="/backoffice/products"
-          className="text-sageTint hover:underline inline-flex items-center gap-2 transition-colors"
+          className="text-xs font-mono text-accent dark:text-accent hover:underline inline-flex items-center gap-2 transition-fintage uppercase tracking-[0.15em]"
         >
           <ArrowLeft className="h-4 w-4" />
           назад к товарам
@@ -185,7 +185,7 @@ export default function BackofficeEditProductPage() {
             <textarea
               value={materials}
               onChange={e=>setMaterials(e.target.value)}
-              className="mt-2 w-full min-h-24 rounded-2xl border border-mistGray/30 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sageTint focus:border-sageTint"
+              className="mt-2 w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 py-2 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/50 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 resize-none transition-fintage"
               placeholder="Напр.: 100% хлопок; подклад — полиэстер"
             />
           </div>
@@ -194,20 +194,20 @@ export default function BackofficeEditProductPage() {
             <textarea
               value={care}
               onChange={e=>setCare(e.target.value)}
-              className="mt-2 w-full min-h-24 rounded-2xl border border-mistGray/30 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sageTint focus:border-sageTint"
+              className="mt-2 w-full min-h-24 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 py-2 text-sm text-fintage-charcoal dark:text-fintage-offwhite placeholder:text-fintage-graphite/60 dark:placeholder:text-fintage-graphite/50 outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 resize-none transition-fintage"
               placeholder="Напр.: деликатная стирка при 30°; не отбеливать"
             />
           </div>
           <div>
             <Label>Категория</Label>
             <select
-              className="w-full h-11 rounded-2xl border border-mistGray/30 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-sageTint focus:border-sageTint"
+              className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 transition-fintage appearance-none cursor-pointer"
               value={categoryId}
               onChange={e => setCategoryId(e.target.value)}
             >
-              <option value="">—</option>
+              <option value="" className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">—</option>
               {categories.map(c => (
-                <option key={c.id} value={c.id}>
+                <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">
                   {c.name}
                 </option>
               ))}
@@ -227,18 +227,18 @@ export default function BackofficeEditProductPage() {
         <div className="space-y-4">
           <h2 className="font-medium">Варианты</h2>
           {variants.map((v, idx) => (
-            <div key={idx} className="p-4 border rounded-2xl space-y-3">
+            <div key={idx} className="p-4 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm space-y-3 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
               <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
                 <div className="md:col-span-2">
                   <Label>Цвет</Label>
                   <select
-                    className="w-full h-11 rounded-2xl border border-mistGray/30 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-sageTint focus:border-sageTint"
+                    className="w-full h-11 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/60 bg-fintage-offwhite dark:bg-fintage-graphite/30 px-3 text-sm text-fintage-charcoal dark:text-fintage-offwhite outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-2 focus:border-focus-ring focus:shadow-[0_0_0_2px_hsl(var(--color-focus-ring)/0.35)] hover:border-fintage-graphite/40 dark:hover:border-fintage-graphite/70 transition-fintage appearance-none cursor-pointer"
                     value={v.colorId}
                     onChange={e => updateVariant(idx, { colorId: e.target.value })}
                   >
-                    <option value="">—</option>
+                    <option value="" className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">—</option>
                     {colors.map(c => (
-                      <option key={c.id} value={c.id}>
+                      <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">
                         {c.name}
                       </option>
                     ))}
@@ -284,11 +284,11 @@ export default function BackofficeEditProductPage() {
                       placeholder="0"
                       className="pr-8"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-inkSoft/60 text-sm pointer-events-none">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fintage-graphite/60 dark:text-fintage-graphite/75 text-sm pointer-events-none font-mono">
                       ₽
                     </span>
                   </div>
-                  <p className="text-xs text-inkSoft/60 mt-1">
+                  <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 mt-1 uppercase tracking-[0.15em]">
                     {v.priceCents
                       ? `= ${(v.priceCents / 100).toLocaleString('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
                       : 'Введите цену в рублях'
@@ -309,8 +309,9 @@ export default function BackofficeEditProductPage() {
                       type="checkbox"
                       checked={!!v.isDefault}
                       onChange={e => updateVariant(idx, { isDefault: e.target.checked })}
+                      className="rounded-sm border-fintage-graphite/30 dark:border-fintage-graphite/40 text-accent dark:text-accent focus:ring-focus-ring focus:ring-2"
                     />
-                    <span>Дефолтный</span>
+                    <span className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-[0.1em]">Дефолтный</span>
                   </label>
                 </div>
               </div>
@@ -320,13 +321,16 @@ export default function BackofficeEditProductPage() {
                   {(v.images || []).map((img, i) => (
                     <div key={i} className="flex gap-2 items-start">
                       {img.url && (
-                        <div className="w-20 h-20 rounded-lg border border-mistGray/30 overflow-hidden flex-shrink-0">
+                        <div className="w-20 h-20 rounded-sm border border-fintage-graphite/30 dark:border-fintage-graphite/40 overflow-hidden flex-shrink-0 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
                           <img 
                             src={img.url.startsWith('http') || img.url.startsWith('/') ? img.url : `/${img.url}`} 
                             alt={`Preview ${i+1}`}
                             className="w-full h-full object-cover"
+                            loading="lazy"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none'
+                              const target = e.target as HTMLImageElement
+                              target.src = '/placeholder/about_main_placeholder.svg'
+                              console.warn('[Product Edit] Ошибка загрузки изображения:', img.url)
                             }}
                           />
                         </div>
@@ -389,7 +393,7 @@ export default function BackofficeEditProductPage() {
                     />
                     <label
                       htmlFor={`file-upload-edit-${idx}`}
-                      className="inline-flex items-center justify-center px-4 py-2 border border-mistGray/30 rounded-xl text-sm font-medium text-inkSoft bg-white hover:bg-mistGray/10 cursor-pointer transition-colors"
+                      className="inline-flex items-center justify-center px-4 py-2 border border-fintage-graphite/30 dark:border-fintage-graphite/40 rounded-sm text-sm font-mono uppercase tracking-[0.15em] text-fintage-charcoal dark:text-fintage-offwhite bg-fintage-offwhite dark:bg-fintage-charcoal hover:bg-hover-bg dark:hover:bg-hover-bg cursor-pointer transition-fintage"
                     >
                       📁 Загрузить файл
                     </label>

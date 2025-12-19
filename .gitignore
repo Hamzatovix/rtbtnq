@@ -28,6 +28,7 @@ front/coverage/
 front/.env
 front/.env.*
 !front/.env.example
+!front/.env.production.example
 .vercel
 
 # Системные файлы Windows

@@ -48,7 +48,7 @@ export default function ElvenKoru({ size = 180, className = '', opacity = 1 }: E
 
   return (
     <div 
-      className={`rb-koru ${className}`} 
+      className={`rb-koru text-fintage-graphite ${className}`} 
       style={{ width: size, height: size, opacity }}
       aria-hidden="true"
     >
@@ -57,7 +57,7 @@ export default function ElvenKoru({ size = 180, className = '', opacity = 1 }: E
         <path 
           d={pathData}
           className="koru-stroke"
-          stroke="#aeb6af"
+          stroke="currentColor"
           strokeWidth="1.25"
           fill="none"
           pathLength="600"
@@ -80,7 +80,7 @@ export default function ElvenKoru({ size = 180, className = '', opacity = 1 }: E
             >
               <path
                 d="M0 -4 C 2 -3, 2 -1, 0 0 C -2 -1, -2 -3, 0 -4"
-                stroke="#aeb6af"
+                stroke="currentColor"
                 strokeWidth="1.1"
                 fill="none"
                 strokeLinecap="round"

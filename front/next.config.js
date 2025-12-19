@@ -4,11 +4,11 @@ const createNextIntlPlugin = require('next-intl/plugin')(
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://mc.yandex.ru https://www.googletagmanager.com https://www.google-analytics.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob: https://*.public.blob.vercel-storage.com;
+  img-src 'self' data: blob: https://*.public.blob.vercel-storage.com http://localhost:3000 https://rosebotanique.store http://176.57.213.174:3000 https://mc.yandex.ru https://www.google-analytics.com;
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://*.supabase.co;
+  connect-src 'self' https://*.supabase.co https://mc.yandex.ru https://www.google-analytics.com https://www.googletagmanager.com;
   media-src 'self';
   object-src 'none';
   frame-ancestors 'none';
@@ -65,7 +65,26 @@ const nextConfig = {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Разрешаем неоптимизированные изображения для локальных файлов
+    unoptimized: false,
     remotePatterns: [
+      // Локальные загрузки (основной метод)
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'rosebotanique.store',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '176.57.213.174',
+        pathname: '/uploads/**',
+      },
+      // Обратная совместимость со старыми изображениями из Vercel Blob (если есть)
       {
         protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',

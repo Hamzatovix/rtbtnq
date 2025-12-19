@@ -27,12 +27,12 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="text-inkSoft/70 dark:text-foreground/70 hover:text-sageTint dark:hover:text-primary transition-colors font-light text-base tracking-wide relative group"
+      className="text-fintage-charcoal/70 dark:text-fintage-offwhite/85 hover:text-accent dark:hover:text-accent transition-fintage font-mono text-xs tracking-[0.15em] uppercase relative group"
     >
       <span>{children}</span>
       <span
         className={
-          "absolute -bottom-2 left-0 h-px w-0 bg-gradient-to-r from-sageTint to-transparent transition-all duration-500 ease-graceful " +
+          "absolute -bottom-2 left-0 h-px w-0 bg-gradient-to-r from-accent to-transparent transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] " +
           (active ? "!w-full" : "group-hover:w-full")
         }
       />
@@ -42,7 +42,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 
 function DesktopNav() {
   return (
-    <nav className="hidden lg:flex items-center space-x-8 xl:space-x-12">
+    <nav className="hidden md:flex items-center space-x-6 md:space-x-8 xl:space-x-12">
       <NavLink href="/backoffice/products">товары</NavLink>
       <NavLink href="/backoffice/categories">категории</NavLink>
       <NavLink href="/backoffice/orders">заказы</NavLink>
@@ -98,7 +98,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       animate="visible"
     >
       {/* Navigation */}
-      <nav className="px-4 pt-6 pb-4 space-y-2">
+      <nav className="px-3 sm:px-4 pt-4 sm:pt-6 pb-3 sm:pb-4 space-y-2 sm:space-y-2.5">
         {navigationLinks.map((link) => {
           const isActive = pathname?.startsWith(link.href)
           return (
@@ -108,10 +108,10 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'group relative block rounded-xl px-5 py-4 text-right text-base font-light transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]',
+                  'group relative block rounded-sm px-5 py-4 text-right text-sm font-mono transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.98] uppercase tracking-[0.15em]',
                   isActive
-                    ? 'bg-sageTint/10 dark:bg-primary/10 text-sageTint dark:text-primary border border-sageTint/20 dark:border-primary/20 shadow-sm dark:shadow-md'
-                    : 'text-inkSoft dark:text-foreground hover:bg-white/60 dark:hover:bg-card/60 hover:text-sageTint dark:hover:text-primary'
+                    ? 'bg-accent/10 dark:bg-accent/25 text-accent dark:text-accent border border-accent/20 dark:border-accent/40 shadow-fintage-sm'
+                    : 'text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent dark:hover:text-accent'
                 )}
               >
                 <span suppressHydrationWarning className="relative z-10">
@@ -119,7 +119,7 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
                 </span>
                 {!isActive && (
                   <span
-                    className="pointer-events-none absolute inset-0 rounded-xl border border-transparent group-hover:border-sageTint/20 dark:group-hover:border-primary/20 transition-all duration-300 ease-brand"
+                    className="pointer-events-none absolute inset-0 rounded-sm border border-transparent group-hover:border-accent/20 dark:group-hover:border-accent/20 transition-fintage"
                     aria-hidden="true"
                   />
                 )}
@@ -130,22 +130,22 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       </nav>
 
       {/* Divider */}
-      <div className="border-t border-mistGray/15 dark:border-border/40 mx-4" />
+      <div className="border-t border-fintage-graphite/20 dark:border-fintage-graphite/45 mx-4" />
 
       {/* Link to storefront */}
-      <div className="px-4 py-4">
+      <div className="px-3 sm:px-4 py-3 sm:py-4">
         <motion.div variants={itemVariants}>
           <Link
             href="/"
             onClick={onClose}
-            className="group relative block rounded-xl px-5 py-4 text-right text-base font-light text-inkSoft dark:text-foreground hover:bg-white/60 dark:hover:bg-card/60 hover:text-sageTint dark:hover:text-primary transition-all duration-300 ease-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]"
+            className="group relative block rounded-sm px-5 py-4 text-right text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent dark:hover:text-accent transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-[0.98] uppercase tracking-[0.15em]"
           >
             <span className="relative z-10 flex items-center justify-end gap-2">
               <span>↖</span>
               <span>на витрину</span>
             </span>
             <span
-              className="pointer-events-none absolute inset-0 rounded-xl border border-transparent group-hover:border-sageTint/20 dark:group-hover:border-primary/20 transition-all duration-300 ease-brand"
+              className="pointer-events-none absolute inset-0 rounded-sm border border-transparent group-hover:border-accent/20 dark:group-hover:border-accent/20 transition-fintage"
               aria-hidden="true"
             />
           </Link>
@@ -153,8 +153,8 @@ const BackofficeMobileDrawerContent = memo(function BackofficeMobileDrawerConten
       </div>
 
       {/* Settings Section - внизу */}
-      <div className="mt-auto border-t border-mistGray/15 dark:border-border/40 px-4 py-4">
-        <div className="flex gap-2">
+      <div className="mt-auto border-t border-fintage-graphite/20 dark:border-fintage-graphite/45 px-3 sm:px-4 py-3 sm:py-4">
+        <div className="flex gap-2 sm:gap-2.5">
           <motion.div variants={itemVariants} className="flex-1">
             <SettingsCard>
               <ThemeToggle />
@@ -178,7 +178,7 @@ const SettingsCard = memo(function SettingsCard({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-mistGray/20 dark:border-border/60 bg-white/60 dark:bg-card/60 backdrop-blur-sm shadow-sm dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:shadow-md dark:hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-300 ease-brand">
+    <div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/45 bg-fintage-offwhite/60 dark:bg-fintage-charcoal/60 backdrop-blur-sm shadow-fintage-sm hover:shadow-fintage-md transition-fintage">
       {children}
     </div>
   )
@@ -196,13 +196,13 @@ function MobileNav() {
         aria-expanded={drawerOpen}
         aria-controls="backoffice-mobile-drawer"
         onClick={() => setDrawerOpen(true)}
-        className="lg:hidden hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out rounded-full inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-mistGray/30 dark:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-98"
+        className="md:hidden hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage rounded-sm inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-fintage-graphite/30 dark:border-fintage-graphite/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:scale-95 touch-manipulation"
       >
         <span className="sr-only">Open menu</span>
         <div className="space-y-1.5">
-          <span className="block h-0.5 w-5 bg-inkSoft dark:bg-foreground" />
-          <span className="block h-0.5 w-5 bg-inkSoft dark:bg-foreground" />
-          <span className="block h-0.5 w-5 bg-inkSoft dark:bg-foreground" />
+          <span className="block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite" />
+          <span className="block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite" />
+          <span className="block h-0.5 w-5 bg-fintage-charcoal dark:bg-fintage-offwhite" />
         </div>
       </button>
 
@@ -249,11 +249,11 @@ function QuickActions() {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="inline-flex h-9 sm:h-10 md:h-11 px-3 sm:px-4 md:px-6 min-w-0 sm:min-w-[148px] items-center justify-center rounded-xl sm:rounded-2xl hover:bg-sageTint/10 dark:hover:bg-primary/10 transition-all duration-500 ease-graceful gap-1 sm:gap-2"
+            className="inline-flex h-9 sm:h-10 md:h-10 lg:h-11 px-3 sm:px-4 md:px-5 lg:px-6 min-w-0 sm:min-w-[148px] items-center justify-center rounded-sm hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage gap-1 sm:gap-2"
             aria-label="Меню аккаунта"
           >
-            <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-roseBeige/70 dark:bg-primary/30 border border-mistGray/40 dark:border-border flex-shrink-0" />
-            <span className="hidden sm:inline text-xs sm:text-sm font-light text-inkSoft dark:text-foreground">аккаунт</span>
+            <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-sm bg-fintage-graphite/20 dark:bg-fintage-graphite/30 border border-fintage-graphite/30 dark:border-fintage-graphite/40 flex-shrink-0" />
+            <span className="hidden sm:inline text-xs sm:text-sm md:text-sm font-mono uppercase tracking-[0.1em] text-fintage-charcoal dark:text-fintage-offwhite">аккаунт</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-48">
@@ -309,10 +309,10 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
   // Показываем загрузку, пока проверяем авторизацию
   if (pathname !== '/backoffice/login' && isAuthenticated === null) {
     return (
-      <div className="min-h-screen bg-linenWhite dark:bg-background text-inkSoft dark:text-foreground flex items-center justify-center">
+      <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sageTint dark:border-primary mx-auto mb-4"></div>
-          <p className="text-inkSoft/60 dark:text-muted-foreground">Проверка авторизации...</p>
+          <div className="animate-spin rounded-sm h-12 w-12 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent mx-auto mb-4"></div>
+          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs uppercase tracking-[0.15em]">Проверка авторизации...</p>
         </div>
       </div>
     )
@@ -329,13 +329,13 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <div className="min-h-screen bg-linenWhite dark:bg-background text-inkSoft dark:text-foreground">
+    <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-linenWhite/90 dark:bg-background/90 backdrop-blur-md border-b border-mistGray/20 dark:border-border shadow-breathing">
+      <header className="sticky top-0 z-50 bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 backdrop-blur-md border-b border-fintage-graphite/20 dark:border-fintage-graphite/45 shadow-fintage-sm">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
-          <div className="flex h-16 sm:h-20 md:h-24 items-center justify-between gap-3 sm:gap-4">
-            <Link href="/backoffice" className="flex items-center space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
-              <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-light text-inkSoft dark:text-foreground group-hover:text-sageTint dark:group-hover:text-primary transition-colors duration-500 ease-graceful font-display whitespace-nowrap">
+          <div className="flex h-14 sm:h-16 md:h-16 lg:h-20 items-center justify-between gap-2 sm:gap-3 md:gap-4">
+            <Link href="/backoffice" className="flex items-center space-x-1.5 sm:space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
+              <span className="text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite group-hover:text-accent dark:group-hover:text-accent transition-fintage tracking-[0.15em] sm:tracking-[0.2em] uppercase whitespace-nowrap">
                 rosebotanique — backoffice
               </span>
             </Link>
@@ -349,17 +349,17 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       </header>
 
       {/* MAIN */}
-      <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-6 sm:py-8 md:py-10">
+      <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-4 sm:py-6 md:py-8 lg:py-10">
         {children}
       </main>
 
       {/* FOOTER (optional minimal) */}
-      <footer className="mt-12 sm:mt-16 md:mt-20 py-6 sm:py-8 md:py-10 text-xs sm:text-sm text-inkSoft/60 dark:text-muted-foreground">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© RSBTNQ Backoffice</p>
+      <footer className="mt-8 sm:mt-12 md:mt-16 py-4 sm:py-6 md:py-8 border-t border-fintage-graphite/20 dark:border-fintage-graphite/45">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+          <p className="text-[10px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/75 tracking-[0.2em] uppercase">© RSBTNQ Backoffice</p>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            <Link className="hover:text-sageTint dark:hover:text-primary transition-colors" href="/">view storefront</Link>
-            <a className="hover:text-sageTint dark:hover:text-primary transition-colors" href="/api/docs" target="_blank" rel="noreferrer">API docs</a>
+            <Link className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/">view storefront</Link>
+            <a className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 hover:text-accent dark:hover:text-accent transition-fintage uppercase tracking-[0.15em]" href="/api/docs" target="_blank" rel="noreferrer">API docs</a>
           </div>
         </div>
       </footer>

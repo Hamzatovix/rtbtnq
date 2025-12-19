@@ -24,7 +24,7 @@
           "isDefault": true,
           "images": [
             {
-              "url": "/images/about-one.png",
+              "url": "/images/about_c.jpg",
               "position": 0
             },
             {
@@ -43,7 +43,7 @@
           "isDefault": false,
           "images": [
             {
-              "url": "/images/about-three.png",
+              "url": "/images/about_c3.jpg",
               "position": 0
             }
           ]
@@ -73,11 +73,11 @@
           "isDefault": true,
           "images": [
             {
-              "url": "/images/about-m.jpg.png",
+              "url": "/images/about-m.png",
               "position": 0
             },
             {
-              "url": "/images/about-one.png",
+              "url": "/images/about_c.jpg",
               "position": 1
             }
           ]
@@ -122,11 +122,11 @@
           "isDefault": true,
           "images": [
             {
-              "url": "/images/about-three.png",
+              "url": "/images/about_c3.jpg",
               "position": 0
             },
             {
-              "url": "/images/about-m.jpg.png",
+              "url": "/images/about-m.png",
               "position": 1
             }
           ]
@@ -156,7 +156,7 @@
           "isDefault": true,
           "images": [
             {
-              "url": "/images/about-one.png",
+              "url": "/images/about_c.jpg",
               "position": 0
             }
           ]
@@ -201,7 +201,7 @@
           "isDefault": true,
           "images": [
             {
-              "url": "/images/about-three.png",
+              "url": "/images/about_c3.jpg",
               "position": 0
             }
           ]
@@ -216,7 +216,7 @@
           "isDefault": false,
           "images": [
             {
-              "url": "/images/about-m.jpg.png",
+              "url": "/images/about-m.png",
               "position": 0
             }
           ]

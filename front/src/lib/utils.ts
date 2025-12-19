@@ -93,6 +93,64 @@ export function getColorDisplayName(color: string, locale: 'ru' | 'en' = 'ru'): 
   return map[color] || color
 }
 
+/**
+ * Преобразует название цвета в английское для отображения в бэк-офисе
+ * Использует обратный маппинг русских названий в английские
+ */
+export function getColorEnglishName(colorName: string, colorSlug?: string): string {
+  // Обратный маппинг русских названий в английские
+  const reverseMap: Record<string, string> = {
+    'лен': 'Linen',
+    'натуральный': 'Natural',
+    'сливочный': 'Cream',
+    'шалфей': 'Sage',
+    'приглушённый зелёный': 'Muted Green',
+    'холст': 'Canvas',
+    'камень': 'Stone',
+    'серый': 'Gray',
+    'конопляный': 'Hemp',
+    'облако': 'Cloud',
+    'молочный': 'Off-White',
+    'хлопок': 'Cotton',
+    'серый камень': 'Stone Gray',
+    'тон‑в‑тон': 'Tonal',
+    'штормовой серый': 'Storm Gray',
+    'фисташка': 'Pistachio',
+    'чёрный': 'Black',
+    'черный': 'Black',
+    'тростник': 'Reed',
+    'красный': 'Red',
+    'нежно-розовый': 'Soft Pink',
+    'тёмно-коричневый': 'Dark Brown',
+    'темно-коричневый': 'Dark Brown',
+    'оливковый': 'Olive',
+    'тёплый офф-вайт': 'Warm Off-White',
+    'теплый офф-вайт': 'Warm Off-White',
+    'глухой синий': 'Muted Blue',
+  }
+  
+  // Если название уже на английском, возвращаем как есть
+  if (reverseMap[colorName.toLowerCase()]) {
+    return reverseMap[colorName.toLowerCase()]
+  }
+  
+  // Если название похоже на английское (нет кириллицы), возвращаем с заглавной буквы
+  if (!/[а-яё]/i.test(colorName)) {
+    return colorName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')
+  }
+  
+  // Если есть slug, используем его для генерации английского названия
+  if (colorSlug) {
+    return colorSlug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+  
+  // Fallback: возвращаем оригинальное название
+  return colorName
+}
+
 export function formatPriceWithLocale(price: number, _locale: 'ru' | 'en'): string {
   // Всегда показываем рубли независимо от языка
   return new Intl.NumberFormat('ru-RU', {

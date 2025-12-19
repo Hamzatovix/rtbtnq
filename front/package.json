@@ -10,7 +10,9 @@
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "typecheck:strict": "tsc --noEmit -p tsconfig.strict.json",
-    "images:optimize": "node ./scripts/optimize-collection-images.mjs"
+    "images:optimize": "node ./scripts/optimize-collection-images.mjs",
+    "images:optimize-about": "node ./scripts/optimize-about-images.mjs",
+    "favicon:generate": "node ./scripts/generate-favicon.js"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",

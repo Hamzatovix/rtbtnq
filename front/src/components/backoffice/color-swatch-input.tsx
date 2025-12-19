@@ -57,45 +57,45 @@ export function ColorSwatchInput({ value, onChange, label, error }: ColorSwatchI
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs
   }
 
-  // Проверка контраста с текстом (inkSoft #4b4b4b и белым)
+  // Проверка контраста с текстом (fintage-charcoal и белым)
   const getContrastRatio = (bgHex: string): { 
-    withInkSoft: number
+    withCharcoal: number
     withWhite: number
-    recommended: 'inkSoft' | 'white'
+    recommended: 'charcoal' | 'white'
   } => {
     const bgRgb = hexToRgb(bgHex)
-    if (!bgRgb) return { withInkSoft: 0, withWhite: 0, recommended: 'white' }
+    if (!bgRgb) return { withCharcoal: 0, withWhite: 0, recommended: 'white' }
 
     const [bgR, bgG, bgB] = bgRgb
     const bgLum = getLuminance(bgR, bgG, bgB)
 
-    // inkSoft #4b4b4b = rgb(75, 75, 75)
-    const inkSoftLum = getLuminance(75, 75, 75)
+    // fintage-charcoal #0F0F0F = rgb(15, 15, 15)
+    const charcoalLum = getLuminance(15, 15, 15)
     // white = rgb(255, 255, 255)
     const whiteLum = getLuminance(255, 255, 255)
 
-    const contrastWithInkSoft = (Math.max(bgLum, inkSoftLum) + 0.05) / (Math.min(bgLum, inkSoftLum) + 0.05)
+    const contrastWithCharcoal = (Math.max(bgLum, charcoalLum) + 0.05) / (Math.min(bgLum, charcoalLum) + 0.05)
     const contrastWithWhite = (Math.max(bgLum, whiteLum) + 0.05) / (Math.min(bgLum, whiteLum) + 0.05)
 
     return {
-      withInkSoft: contrastWithInkSoft,
+      withCharcoal: contrastWithCharcoal,
       withWhite: contrastWithWhite,
-      recommended: contrastWithInkSoft >= 4.5 ? 'inkSoft' : 'white' // WCAG AA = 4.5
+      recommended: contrastWithCharcoal >= 4.5 ? 'charcoal' : 'white' // WCAG AA = 4.5
     }
   }
 
   const contrast = hexPattern.test(hexValue) ? getContrastRatio(hexValue) : null
   const contrastPass = contrast 
-    ? (contrast.recommended === 'inkSoft' ? contrast.withInkSoft >= 4.5 : contrast.withWhite >= 4.5)
+    ? (contrast.recommended === 'charcoal' ? contrast.withCharcoal >= 4.5 : contrast.withWhite >= 4.5)
     : false
 
   return (
     <div className="space-y-2">
-      {label && <Label className="text-inkSoft/80">{label}</Label>}
+      {label && <Label className="text-fintage-charcoal/80 dark:text-fintage-offwhite/80">{label}</Label>}
       <div className="flex items-center gap-3">
         {/* Color swatch preview */}
         <div 
-          className="w-12 h-12 rounded-xl border-2 border-mistGray/30 shadow-warm flex-shrink-0"
+          className="w-12 h-12 rounded-sm border-2 border-fintage-graphite/30 dark:border-fintage-graphite/40 shadow-fintage-sm flex-shrink-0"
           style={{ backgroundColor: hexPattern.test(hexValue) ? hexValue : '#000000' }}
           aria-label={`Color preview: ${hexValue}`}
         />
@@ -107,11 +107,11 @@ export function ColorSwatchInput({ value, onChange, label, error }: ColorSwatchI
             value={hexValue}
             onChange={handleChange}
             placeholder="#000000"
-            className={`font-mono ${!isValid || error ? 'border-red-500' : ''} focus:ring-2 focus:ring-sageTint`}
+            className={`font-mono ${!isValid || error ? 'border-fintage-punch dark:border-fintage-punch' : ''} focus:ring-2 focus:ring-focus-ring`}
             maxLength={7}
           />
           {(!isValid || error) && (
-            <p className="text-xs text-red-500 mt-1">
+            <p className="text-xs font-mono text-fintage-punch dark:text-fintage-punch mt-1 uppercase tracking-[0.1em]">
               {error || 'Введите корректный HEX цвет (#RRGGBB или #RGB)'}
             </p>
           )}
@@ -121,12 +121,12 @@ export function ColorSwatchInput({ value, onChange, label, error }: ColorSwatchI
         {contrast && hexPattern.test(hexValue) && (
           <div className="flex items-center gap-2">
             <div 
-              className={`px-2 py-1 rounded-full text-xs font-medium backdrop-blur-md shadow-warm ${
+              className={`px-2 py-1 rounded-sm text-xs font-mono uppercase tracking-[0.1em] backdrop-blur-md shadow-fintage-sm ${
                 contrastPass 
-                  ? 'bg-sageTint/15 text-inkSoft border border-sageTint/30' 
-                  : 'bg-red-100/80 text-red-700 border border-red-300/50'
+                  ? 'bg-accent/15 dark:bg-accent/20 text-fintage-charcoal dark:text-fintage-offwhite border border-accent/30 dark:border-accent/30' 
+                  : 'bg-fintage-punch/15 dark:bg-fintage-punch/20 text-fintage-punch dark:text-fintage-punch border border-fintage-punch/30 dark:border-fintage-punch/40'
               }`}
-              title={`Контраст с ${contrast.recommended === 'inkSoft' ? 'текстом' : 'белым'}: ${contrast.recommended === 'inkSoft' ? contrast.withInkSoft.toFixed(2) : contrast.withWhite.toFixed(2)}`}
+              title={`Контраст с ${contrast.recommended === 'charcoal' ? 'текстом' : 'белым'}: ${contrast.recommended === 'charcoal' ? contrast.withCharcoal.toFixed(2) : contrast.withWhite.toFixed(2)}`}
             >
               {contrastPass ? '✓ WCAG AA' : '⚠ Низкий контраст'}
             </div>

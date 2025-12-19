@@ -2,25 +2,23 @@
   "images": [
     {
       "id": "1",
-      "src": "/images/about-one.png",
+      "src": "/images/about_c.jpg",
       "alt": "Процесс создания"
     },
     {
       "id": "2",
-      "src": "/images/about-two.png",
-      "alt": "Текстура материалов"
+      "src": "/images/about_c2.jpg",
+      "alt": "Детали"
     },
     {
       "id": "3",
-      "src": "/images/about-three.png",
-      "alt": "Ручная отстрочка"
+      "src": "/images/about_c3.jpg",
+      "alt": "Ручная работа"
     },
     {
       "id": "4",
-      "src": "/images/about-m.jpg.png",
+      "src": "/images/about-m.png",
       "alt": "Мастерская"
     }
   ]
 }
-
-

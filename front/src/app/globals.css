@@ -5,9 +5,8 @@
 /* Modern No. 20 Font Face */
 @font-face {
   font-family: 'Modern No. 20';
-  src: url('/fonts/Modern-No-20.woff2') format('woff2'),
-       url('/fonts/Modern-No-20.woff') format('woff'),
-       url('/fonts/Modern-No-20.ttf') format('truetype');
+  src: url('/fonts/Modern No. 20.ttf') format('truetype'),
+       url('/fonts/Modern%20No.%2020.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -15,91 +14,202 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 0 0% 15%;  /* Улучшенная контрастность - темнее для лучшей читаемости */
-    --card: 0 0% 98%;
-    --card-foreground: 0 0% 15%;  /* Улучшенная контрастность */
+    /* Fintage палитра согласно дизайн-документу */
+    --background: 0 0% 96%;          /* Off-White #F5F5F3 */
+    --foreground: 0 0% 6%;           /* Charcoal Black #0F0F0F */
+    --card: 0 0% 98%;                /* Off-White светлее */
+    --card-foreground: 0 0% 6%;
     --popover: 0 0% 98%;
-    --popover-foreground: 0 0% 15%;  /* Улучшенная контрастность */
-    --primary: 160 12% 55%;  /* Улучшенная контрастность для доступности */
-    --primary-foreground: 0 0% 98%;
-    --secondary: 45 18% 95%;
-    --secondary-foreground: 0 0% 15%;  /* Улучшенная контрастность */
-    --muted: 45 18% 95%;
-    --muted-foreground: 0 0% 40%;  /* Улучшенная контрастность для приглушенного текста */
-    --accent: 45 18% 95%;
-    --accent-foreground: 0 0% 15%;  /* Улучшенная контрастность */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 45 15% 88%;
-    --input: 45 15% 88%;
-    --ring: 160 12% 55%;  /* Синхронизировано с primary для консистентности */
-    --radius: 1rem;
+    --popover-foreground: 0 0% 6%;
+    --primary: 0 0% 6%;              /* Charcoal Black - основной акцент */
+    --primary-foreground: 0 0% 96%;
+    --secondary: 0 0% 16%;          /* Soft Graphite #2A2A2A */
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 35%;    /* Улучшенная контрастность для читаемости */
+    --accent: 180 8% 45%;            /* Sage Slate #6B7F7F - сбалансированный технический акцент с природным оттенком */
+    --accent-foreground: 0 0% 96%;   /* Off-White для контраста на sage-slate */
+    --destructive: 0 75% 55%;        /* Electric Punch #E63946 */
+    --destructive-foreground: 0 0% 96%;
+    --border: 0 0% 80%;              /* Более заметная граница для лучшей читаемости */
+    --input: 0 0% 98%;
+    --ring: 180 8% 45%;              /* Sage Slate focus - сбалансированный технический акцент */
+    --radius: 0.125rem;              /* 2px - минимальное скругление */
     
-    /* Font variables */
+    /* Семантические токены согласно дизайн-системе */
+    --color-bg: 0 0% 96%;             /* Off-White #F5F5F3 - основной фон страницы */
+    --color-surface: 0 0% 100%;       /* #FFFFFF - поверхность карточек, панелей */
+    --color-surface-alt: 0 0% 98%;   /* #FAFAF8 - альтернативная поверхность */
+    --color-text-primary: 0 0% 6%;    /* Charcoal Black #0F0F0F - основной текст */
+    --color-text-muted: 0 0% 42%;     /* #6B6B6B - приглушённый текст */
+    --color-border-subtle: 0 0% 88%;  /* #E0E0E0 - тонкие границы, разделители */
+    --color-accent: 180 8% 45%;       /* Sage Slate #6B7F7F - сбалансированный технический акцент с природным оттенком */
+    --color-accent-strong: 0 75% 55%; /* Electric Punch #E63946 - сильный акцент */
+    --color-danger: 0 75% 55%;         /* Electric Punch - ошибки, предупреждения */
+    
+    /* Токены для состояний взаимодействия (hover/focus/selection) */
+    --color-hover-bg: 180 8% 96%;      /* #F5F6F6 - легкий sage-slate оттенок для hover фона */
+    --color-hover-border: 180 8% 60%;  /* #8A9B9B - sage-slate для hover границ */
+    --color-active-bg: 180 8% 94%;     /* #E8EAEA - более заметный sage-slate для active */
+    --color-active-border: 180 8% 55%; /* #7A8B8B - затемненный sage-slate для active */
+    --color-focus-ring: 180 8% 45%;   /* #6B7F7F - основной sage-slate для focus ring */
+    --color-selection-bg: 180 8% 88%; /* #D4D8D8 - читаемый sage-slate для выделения текста */
+    --color-selection-text: 0 0% 6%;  /* Charcoal Black - контрастный текст на selection */
+    
+    /* Font variables - используем оригинальные шрифты */
+    /* Примечание: --font-body и --font-cormorant устанавливаются в layout.tsx через next/font */
     --font-display: var(--font-cormorant);
-    --font-body: var(--font-inter);
+    --font-vintage: var(--font-cormorant);
+    --font-logo: 'Modern No. 20'; /* Шрифт для логотипа */
     
-    /* New brand colors for natural minimalism (HSL format) */
-    --roseBeige: 34 35% 93%;   /* #f4efe8 - Rose Beige */
-    --mistGray: 39 9% 82%;     /* #d6d3ce - Mist Gray */
-    --linenWhite: 0 0% 98%;    /* #f9f9f9 - Linen White */
-    --sageTint: 125 8% 70%;    /* #aeb6af - Sage Tint */
-    --inkSoft: 0 0% 22%;       /* Улучшенная контрастность - темнее для лучшей заметности текста */
-    --soft-shadow: 0 4px 20px rgba(174, 182, 175, 0.08);
-    --medium-shadow: 0 8px 30px rgba(174, 182, 175, 0.15);
-    --warm-shadow: 0 6px 25px rgba(244, 239, 232, 0.4);
-    --breathing-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    /* Fintage цвета бренда */
+    --fintage-charcoal: 0 0% 6%;     /* #0F0F0F - Charcoal Black */
+    --fintage-graphite: 0 0% 16%;    /* #2A2A2A - Soft Graphite */
+    --fintage-offwhite: 0 0% 96%;    /* #F5F5F3 - Off-White */
+    --fintage-greige: 180 8% 45%;    /* Sage Slate #6B7F7F - сбалансированный технический акцент с природным оттенком */
+    --fintage-steel: 180 8% 45%;     /* Sage Slate - сбалансированный технический акцент */
+    --fintage-punch: 0 75% 55%;      /* #E63946 - Electric Punch */
+    
+    /* Совместимость - старый sand теперь sage-slate */
+    --fintage-sand: 180 8% 45%;      /* Sage Slate вместо Accent Sand */
+    
+    /* Токены отступов согласно дизайн-документу */
+    --space-xs: 0.5rem;              /* 8px */
+    --space-sm: 1rem;                /* 16px */
+    --space-md: 2rem;                /* 32px */
+    --space-lg: 3rem;                /* 48px */
+    --space-xl: 4rem;                /* 64px */
+    
+    /* Токены прозрачности согласно дизайн-документу */
+    --opacity-low: 0.2;
+    --opacity-mid: 0.5;
+    --opacity-high: 0.8;
+    
+    /* Старые переменные для совместимости */
+    --vintage-cream: 0 0% 96%;
+    --vintage-beige: 0 0% 85%;
+    --vintage-black: 0 0% 6%;
+    --vintage-gray: 0 0% 40%;
+    --vintage-gold: 38 30% 75%;
+    --vintage-brown: 0 0% 16%;
+    
+    /* Fintage тени - минимальные, но выразительные */
+    --fintage-shadow-sm: 0 1px 3px rgba(15, 15, 15, 0.12), 0 1px 2px rgba(15, 15, 15, 0.08);
+    --fintage-shadow-md: 0 2px 8px rgba(15, 15, 15, 0.15), 0 1px 3px rgba(15, 15, 15, 0.1);
+    --fintage-shadow-elevated: 0 4px 16px rgba(15, 15, 15, 0.12), 0 2px 4px rgba(15, 15, 15, 0.08);
+    
+    /* Винтажные тени (совместимость) */
+    --vintage-shadow-sm: var(--fintage-shadow-sm);
+    --vintage-shadow-md: var(--fintage-shadow-md);
+    --vintage-shadow-lg: var(--fintage-shadow-md);
+    --vintage-shadow-vintage: var(--fintage-shadow-md);
+    
+    /* Старые переменные для совместимости */
+    --roseBeige: 45 20% 97%;
+    --mistGray: 30 8% 80%;
+    --linenWhite: 45 15% 99%;
+    --sageTint: 0 0% 8%;
+    --inkSoft: 0 0% 8%;
+    --soft-shadow: var(--vintage-shadow-sm);
+    --medium-shadow: var(--vintage-shadow-md);
+    --warm-shadow: var(--vintage-shadow-vintage);
+    --breathing-shadow: var(--vintage-shadow-md);
   }
 
-  /* Dark Mode Variables */
+  /* Dark Mode - Fintage темная тема */
   .dark {
-    /* Основные фоны */
-    --background: 30 11% 9%;           /* Deep Earth */
-    --foreground: 35 18% 91%;         /* Moonlit Glow - доработанный лунный свет текста (более яркий и гармоничный) */
+    --background: 0 0% 6%;           /* Charcoal Black */
+    --foreground: 0 0% 96%;          /* Off-White */
+    --card: 0 0% 10%;                /* Dark Card */
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 0 0% 96%;             /* Off-White акцент */
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 16%;          /* Soft Graphite */
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 78%;    /* Улучшенная контрастность для темной темы - 78% для WCAG AA */
+    --accent: 210 12% 55%;           /* Slate-Blue #6B7F8F - urban vintage акцент (Nike/North Face/Stone Island) */
+    --accent-foreground: 0 0% 96%;   /* Off-White для контраста на slate-blue */
+    --destructive: 0 75% 55%;        /* Electric Punch */
+    --destructive-foreground: 0 0% 96%;
+    --border: 0 0% 25%;              /* Улучшена видимость границ - 25% вместо 20% */
+    --input: 0 0% 10%;
+    --ring: 210 12% 55%;             /* Slate-Blue focus - urban технический акцент */
     
-    /* Карточки и контейнеры */
-    --card: 30 9% 15%;                /* Warm Charcoal */
-    --card-foreground: 35 18% 91%;    /* Moonlit Glow */
-    --popover: 30 9% 15%;             /* Warm Charcoal */
-    --popover-foreground: 35 18% 91%; /* Moonlit Glow */
+    /* Семантические токены для темной темы */
+    --color-bg: 0 0% 6%;              /* Charcoal Black #0F0F0F - основной фон */
+    --color-surface: 0 0% 10%;       /* #1A1A1A - поверхность карточек */
+    --color-surface-alt: 0 0% 15%;    /* #242424 - альтернативная поверхность */
+    --color-text-primary: 0 0% 96%;   /* Off-White #F5F5F3 - основной текст */
+    --color-text-muted: 0 0% 78%;     /* #C7C7C7 - приглушённый текст - улучшено до 78% для контрастности ~4.8:1 */
+    --color-border-subtle: 0 0% 35%;  /* #595959 - тонкие границы - улучшено до 35% для лучшей видимости */
+    --color-accent: 210 12% 55%;      /* Slate-Blue #6B7F8F - urban vintage акцент */
+    --color-accent-strong: 0 75% 55%; /* Electric Punch - сильный акцент */
+    --color-danger: 0 75% 55%;        /* Electric Punch - ошибки */
     
-    /* Акценты */
-    --primary: 35 18% 62%;            /* Moonlit Linen - доработанный лунный свет (более светлый и серебристый) */
-    --primary-foreground: 35 18% 91%; /* Moonlit Glow */
-    --secondary: 40 5% 22%;           /* Moss Shadow */
-    --secondary-foreground: 35 18% 91%; /* Moonlit Glow */
+    /* Токены для состояний взаимодействия (hover/focus/selection) - темная тема */
+    --color-hover-bg: 0 0% 18%;       /* #2E2E2E - улучшенный hover фон для лучшей видимости */
+    --color-hover-border: 0 0% 35%;   /* #595959 - более заметная граница при hover */
+    --color-active-bg: 0 0% 22%;      /* #383838 - более заметный active фон */
+    --color-active-border: 0 0% 40%;  /* #666666 - более заметная граница при active */
+    --color-focus-ring: 210 12% 55%;  /* #6B7F8F - slate-blue для focus ring */
+    --color-selection-bg: 210 12% 35%; /* #45505A - читаемый slate-blue для выделения текста */
+    --color-selection-text: 0 0% 96%; /* Off-White - контрастный текст на selection */
     
-    /* Приглушенные элементы */
-    --muted: 40 5% 22%;               /* Moss Shadow */
-    --muted-foreground: 35 12% 68%;   /* Приглушенный текст - доработанный */
-    --accent: 40 5% 22%;              /* Moss Shadow */
-    --accent-foreground: 35 18% 91%;  /* Moonlit Glow */
+    /* Fintage цвета для темной темы */
+    --fintage-charcoal: 0 0% 6%;
+    --fintage-graphite: 0 0% 16%;
+    --fintage-offwhite: 0 0% 96%;
+    --fintage-greige: 210 12% 55%;    /* Slate-Blue #6B7F8F - urban vintage вместо greige */
+    --fintage-steel: 210 12% 55%;     /* Slate-Blue - технический urban акцент */
+    --fintage-punch: 0 75% 55%;
     
-    /* Границы и инпуты */
-    --border: 40 5% 22%;              /* Moss Shadow */
-    --input: 40 5% 22%;               /* Moss Shadow */
+    /* Совместимость - старый sand теперь slate-blue */
+    --fintage-sand: 210 12% 55%;      /* Slate-Blue вместо Accent Sand */
     
-    /* Фокус и кольца */
-    --ring: 35 18% 62%;               /* Moonlit Linen - доработанный */
+    /* Винтажные цвета для темной темы (совместимость) */
+    --vintage-cream: 0 0% 6%;
+    --vintage-beige: 0 0% 16%;
+    --vintage-black: 0 0% 6%;
+    --vintage-gray: 0 0% 60%;
+    --vintage-gold: 200 15% 60%;     /* Cold Steel Light вместо золотого */
+    --vintage-brown: 0 0% 16%;
     
-    /* Деструктивные действия */
-    --destructive: 0 65% 50%;         /* Приглушенный красный */
-    --destructive-foreground: 35 18% 91%; /* Moonlit Glow */
+    /* Токены отступов для темной темы (те же значения) */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 2rem;
+    --space-lg: 3rem;
+    --space-xl: 4rem;
     
-    /* Брендовые цвета (Dark Mode адаптация) */
-    --roseBeige: 30 9% 15%;           /* Warm Charcoal */
-    --mistGray: 40 5% 22%;            /* Moss Shadow */
-    --linenWhite: 30 11% 9%;          /* Deep Earth */
-    --sageTint: 120 10% 61%;          /* Sage Glow */
-    --inkSoft: 35 18% 91%;            /* Moonlit Glow - доработанный */
+    /* Токены прозрачности для темной темы (те же значения) */
+    --opacity-low: 0.2;
+    --opacity-mid: 0.5;
+    --opacity-high: 0.8;
     
-    /* Тени для темной темы */
-    --soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    --medium-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-    --warm-shadow: 0 6px 25px rgba(143, 166, 143, 0.15);
-    --breathing-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    --glow-shadow: 0 0 20px rgba(143, 166, 143, 0.2);
+    /* Тени для темной темы - минимальные, но выразительные */
+    --fintage-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --fintage-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.4);
+    --fintage-shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+    
+    /* Винтажные тени (совместимость) */
+    --vintage-shadow-sm: var(--fintage-shadow-sm);
+    --vintage-shadow-md: var(--fintage-shadow-md);
+    --vintage-shadow-lg: var(--fintage-shadow-md);
+    --vintage-shadow-vintage: var(--fintage-shadow-md);
+    
+    /* Совместимость */
+    --roseBeige: 0 0% 8%;
+    --mistGray: 0 0% 20%;
+    --linenWhite: 0 0% 12%;
+    --sageTint: 45 15% 95%;
+    --inkSoft: 45 15% 95%;
+    --soft-shadow: var(--vintage-shadow-sm);
+    --medium-shadow: var(--vintage-shadow-md);
+    --warm-shadow: var(--vintage-shadow-vintage);
+    --breathing-shadow: var(--vintage-shadow-md);
   }
 }
 
@@ -108,12 +218,13 @@
     border-color: hsl(var(--border));
   }
   body {
-    @apply bg-white dark:bg-background font-sans;
-    font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 17px;
-    font-weight: 400; /* Нормальный вес для лучшей читаемости */
-    line-height: 1.8;
+    @apply bg-fintage-offwhite dark:bg-fintage-charcoal font-sans;
+    font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Arial", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.8; /* Большая межстрочность - fashion эстетика */
     color: hsl(var(--foreground)) !important;
+    letter-spacing: -0.01em;
   }
   
   /* Принудительное переопределение цвета для body в темной теме */
@@ -121,12 +232,14 @@
     color: hsl(var(--foreground)) !important;
   }
   
-  /* Плавный переход при смене темы */
+  /* Плавный переход при смене темы - slow fade 220-350ms */
   * {
     transition: 
-      background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-      color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   /* Исключения для анимаций */
@@ -139,11 +252,12 @@
     transition: none; /* Анимации не должны прерываться */
   }
   
-  h1, h2, h3 {
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display), "Cormorant Garamond", serif;
-    font-weight: 400; /* Нормальный вес для лучшей заметности */
-    letter-spacing: 0.02em;
+    font-weight: 600;
+    letter-spacing: -0.03em; /* Уверенная типографика */
     color: hsl(var(--foreground));
+    line-height: 1.2; /* Больше воздуха для fashion эстетики */
   }
   
   /* Адаптивные line-height для заголовков - улучшает читаемость на мобильных */
@@ -165,12 +279,14 @@
   }
   
   /* Переопределение для всех дочерних элементов - принудительно убираем синий */
-  .dark *:not([class*="text-"]):not(svg):not(path):not(circle):not(rect):not(line):not(polygon) {
+  /* Исключаем кнопки, ссылки, их дочерние элементы и элементы с явно заданным цветом через классы Tailwind */
+  .dark *:not([class*="text-"]):not(svg):not(path):not(circle):not(rect):not(line):not(polygon):not(button):not(a):not(button *):not(a *) {
     color: hsl(var(--foreground)) !important;
   }
   
   /* Исключения для элементов с явно заданным цветом через классы Tailwind */
-  .dark [class*="text-"] {
+  /* Для кнопок и ссылок используем более специфичное правило */
+  .dark [class*="text-"]:not(button):not(a) {
     color: inherit !important;
   }
   
@@ -181,13 +297,150 @@
   }
   
   /* Ссылки без классов - наследуют цвет */
-  .dark a:not([class*="text-"]) {
+  /* Исключаем ссылки с явно заданным цветом через Tailwind классы */
+  .dark a:not([class*="text-"]):not([class*="dark:text-"]):not([class*="dark:!text-"]) {
     color: hsl(var(--foreground)) !important;
   }
   
   /* Кнопки без классов - наследуют цвет текста */
-  .dark button:not([class*="text-"]) {
+  /* Исключаем кнопки с явно заданным цветом через Tailwind классы */
+  .dark button:not([class*="text-"]):not([class*="dark:text-"]):not([class*="dark:!text-"]),
+  .dark a[class*="button"]:not([class*="text-"]):not([class*="dark:text-"]):not([class*="dark:!text-"]) {
     color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Специфичное правило для primary кнопок в темной теме - принудительно применяем Charcoal цвет */
+  /* Primary кнопки в темной теме имеют bg-fintage-offwhite и должны иметь text-fintage-charcoal */
+  /* Это правило должно иметь максимальную специфичность и применяться после всех остальных */
+  .dark button[class*="bg-fintage-offwhite"],
+  .dark a[class*="bg-fintage-offwhite"],
+  .dark button[class*="dark:bg-fintage-offwhite"],
+  .dark a[class*="dark:bg-fintage-offwhite"],
+  .dark button.dark\:bg-fintage-offwhite,
+  .dark a.dark\:bg-fintage-offwhite {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
+  
+  /* Также для hover и active состояний primary кнопок */
+  .dark button[class*="bg-fintage-offwhite"]:hover,
+  .dark a[class*="bg-fintage-offwhite"]:hover,
+  .dark button[class*="dark:bg-fintage-offwhite"]:hover,
+  .dark a[class*="dark:bg-fintage-offwhite"]:hover,
+  .dark button.dark\:bg-fintage-offwhite:hover,
+  .dark a.dark\:bg-fintage-offwhite:hover,
+  .dark button[class*="bg-fintage-offwhite"]:active,
+  .dark a[class*="bg-fintage-offwhite"]:active,
+  .dark button[class*="dark:bg-fintage-offwhite"]:active,
+  .dark a[class*="dark:bg-fintage-offwhite"]:active,
+  .dark button.dark\:bg-fintage-offwhite:active,
+  .dark a.dark\:bg-fintage-offwhite:active {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
+  
+  /* Принудительно применяем цвет для кнопок и ссылок с явно заданным цветом через dark:text- */
+  /* Исключаем primary кнопки, которые обрабатываются выше и ниже */
+  .dark button[class*="text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
+  .dark button[class*="dark:text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
+  .dark a[class*="text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
+  .dark a[class*="dark:text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
+  .dark a[class*="button"][class*="text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]) {
+    color: inherit !important;
+  }
+  
+  /* Специфичное правило для кнопок с темным фоном и светлым текстом в темной теме */
+  /* Кнопки с bg-fintage-charcoal должны иметь text-fintage-offwhite */
+  .dark button[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]),
+  .dark a[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]),
+  .dark button[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]),
+  .dark a[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]) {
+    color: hsl(var(--fintage-offwhite)) !important;
+  }
+  
+  /* Также для hover и active состояний кнопок с темным фоном */
+  .dark button[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
+  .dark a[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
+  .dark button[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
+  .dark a[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
+  .dark button[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active,
+  .dark a[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active,
+  .dark button[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active,
+  .dark a[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active {
+    color: hsl(var(--fintage-offwhite)) !important;
+  }
+  
+  /* Правило для кнопок с явно заданным dark:text-fintage-offwhite */
+  .dark button[class*="dark:text-fintage-offwhite"],
+  .dark button[class*="dark:!text-fintage-offwhite"],
+  .dark a[class*="dark:text-fintage-offwhite"],
+  .dark a[class*="dark:!text-fintage-offwhite"] {
+    color: hsl(var(--fintage-offwhite)) !important;
+  }
+  
+  /* КРИТИЧНО: Правило для primary кнопок с dark:!text-fintage-charcoal */
+  /* Primary кнопки должны иметь темный текст на светлом фоне в темной теме */
+  .dark button[class*="dark:!text-fintage-charcoal"],
+  .dark button[class*="dark:text-fintage-charcoal"],
+  .dark a[class*="dark:!text-fintage-charcoal"],
+  .dark a[class*="dark:text-fintage-charcoal"],
+  .dark button.dark\:\!text-fintage-charcoal,
+  .dark a.dark\:\!text-fintage-charcoal {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
+  
+  /* Также для hover и active состояний */
+  .dark button[class*="dark:!text-fintage-charcoal"]:hover,
+  .dark button[class*="dark:text-fintage-charcoal"]:hover,
+  .dark a[class*="dark:!text-fintage-charcoal"]:hover,
+  .dark a[class*="dark:text-fintage-charcoal"]:hover,
+  .dark button[class*="dark:!text-fintage-charcoal"]:active,
+  .dark button[class*="dark:text-fintage-charcoal"]:active,
+  .dark a[class*="dark:!text-fintage-charcoal"]:active,
+  .dark a[class*="dark:text-fintage-charcoal"]:active {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
+  
+  /* ФИНАЛЬНОЕ ПРАВИЛО: Максимальная специфичность для primary кнопок */
+  /* Комбинированный селектор для кнопок с bg-fintage-offwhite И dark:!text-fintage-charcoal */
+  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
+  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
+  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
+  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
+  .dark button.dark\:bg-fintage-offwhite[class*="dark:!text-fintage-charcoal"],
+  .dark a.dark\:bg-fintage-offwhite[class*="dark:!text-fintage-charcoal"] {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
+  
+  /* Также для hover и active */
+  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
+  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
+  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
+  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
+  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active,
+  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active,
+  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active,
+  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
+  
+  /* КРИТИЧНО: Правило для span и других дочерних элементов внутри primary кнопок */
+  /* Дочерние элементы должны иметь явный цвет charcoal */
+  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
+  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
+  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
+  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
+  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
+  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
+  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
+  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
+  
+  /* Также для кнопок с dark:!text-fintage-charcoal без bg-fintage-offwhite в селекторе */
+  .dark button[class*="dark:!text-fintage-charcoal"] *,
+  .dark a[class*="dark:!text-fintage-charcoal"] *,
+  .dark button[class*="dark:!text-fintage-charcoal"] span,
+  .dark a[class*="dark:!text-fintage-charcoal"] span {
+    color: hsl(var(--fintage-charcoal)) !important;
   }
   
   /* Переопределение для всех текстовых элементов */
@@ -205,11 +458,27 @@
   .dark th {
     color: hsl(var(--foreground)) !important;
   }
+  
+  /* КРИТИЧНО: Исключаем span внутри primary кнопок из правила выше */
+  /* Span внутри primary кнопок должны наследовать цвет от кнопки (charcoal) */
+  /* Это правило должно идти ПОСЛЕ правила для всех span, чтобы переопределить его */
+  .dark button[class*="bg-fintage-offwhite"] span,
+  .dark a[class*="bg-fintage-offwhite"] span,
+  .dark button[class*="dark:bg-fintage-offwhite"] span,
+  .dark a[class*="dark:bg-fintage-offwhite"] span,
+  .dark button[class*="dark:!text-fintage-charcoal"] span,
+  .dark a[class*="dark:!text-fintage-charcoal"] span,
+  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
+  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
+  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
+  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span {
+    color: hsl(var(--fintage-charcoal)) !important;
+  }
 
-  /* Form controls: brand focus and autofill reset */
+  /* Form controls: Fintage focus and autofill reset */
   input, textarea, select {
-    accent-color: hsl(var(--sageTint));
-    caret-color: hsl(var(--inkSoft));
+    accent-color: hsl(var(--color-accent));
+    caret-color: hsl(var(--fintage-charcoal));
     background-color: hsl(var(--background)) !important; /* жёстко фиксируем фон */
     color: hsl(var(--foreground));
   }
@@ -218,9 +487,16 @@
   .dark input,
   .dark textarea,
   .dark select {
-    accent-color: hsl(var(--sageTint));
-    caret-color: hsl(var(--inkSoft));
-    color: hsl(var(--foreground));
+    accent-color: hsl(var(--color-accent));
+    caret-color: hsl(var(--fintage-offwhite));
+    background-color: hsl(0 0% 16% / 0.3) !important; /* fintage-graphite/30 для лучшей видимости */
+    color: hsl(var(--fintage-offwhite)) !important;
+  }
+  
+  /* Стили для option элементов в темной теме */
+  .dark select option {
+    background-color: hsl(var(--fintage-charcoal)) !important;
+    color: hsl(var(--fintage-offwhite)) !important;
   }
   input:focus,
   input:focus-visible,
@@ -229,9 +505,9 @@
   select:focus,
   select:focus-visible {
     outline: none !important;
-    border-color: hsl(var(--sageTint)) !important;
-    /* Мягкий фокус для лучшего UX - уменьшена непрозрачность */
-    box-shadow: 0 0 0 2px hsl(var(--sageTint) / 0.3) !important;
+    border-color: hsl(var(--color-focus-ring)) !important;
+    /* Мягкий фокус с greige акцентом - контраст 3:1+ */
+    box-shadow: 0 0 0 2px hsl(var(--color-focus-ring) / 0.35) !important; /* Увеличено с 0.25 до 0.35 для лучшей видимости */
   }
   
   /* Focus для темной темы */
@@ -241,8 +517,8 @@
   .dark textarea:focus-visible,
   .dark select:focus,
   .dark select:focus-visible {
-    border-color: hsl(var(--ring)) !important;
-    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3) !important;
+    border-color: hsl(var(--color-focus-ring)) !important;
+    box-shadow: 0 0 0 2px hsl(var(--color-focus-ring) / 0.35) !important; /* Увеличено с 0.25 до 0.35 для лучшей видимости */
   }
   
 }
@@ -264,16 +540,26 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Брендовая подсветка выделенного текста внутри input/textarea */
+  /* Глобальная подсветка выделенного текста - используем greige акцент */
+  ::selection {
+    background: hsl(var(--color-selection-bg));
+    color: hsl(var(--color-selection-text));
+  }
+  ::-moz-selection {
+    background: hsl(var(--color-selection-bg));
+    color: hsl(var(--color-selection-text));
+  }
+  
+  /* Fintage подсветка выделенного текста внутри input/textarea */
   html input::selection,
   html textarea::selection {
-    background: theme(colors.sageTint / 0.35);
-    color: hsl(var(--foreground));
+    background: hsl(var(--color-selection-bg));
+    color: hsl(var(--color-selection-text));
   }
   html input::-moz-selection,
   html textarea::-moz-selection {
-    background: theme(colors.sageTint / 0.35);
-    color: hsl(var(--foreground));
+    background: hsl(var(--color-selection-bg));
+    color: hsl(var(--color-selection-text));
   }
 
   /* Windows High Contrast / Edge forced-colors — только для наших полей */
@@ -411,10 +697,159 @@
       radial-gradient(circle at 70% 30%, rgba(214, 211, 206, 0.15) 0%, transparent 60%);
   }
   
-  .text-graceful {
-    font-family: "Modern No. 20", var(--font-display), "Cormorant Garamond", serif;
-    letter-spacing: 0.02em;
+  /* Винтажная типографика с оригинальными шрифтами */
+  .text-vintage {
+    font-family: var(--font-vintage), "Cormorant Garamond", serif;
+    letter-spacing: -0.01em;
     font-weight: 400;
+  }
+  
+  .text-display-vintage {
+    font-family: var(--font-display), "Cormorant Garamond", serif;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  
+  .text-graceful {
+    font-family: var(--font-display), "Cormorant Garamond", serif;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+  
+  /* Fintage система зернистости - утилиты согласно дизайн-документу (3-6% для light, до 8% для dark) */
+  .grain-light {
+    position: relative;
+  }
+  .grain-light::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain-light'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23grain-light)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .grain-medium {
+    position: relative;
+  }
+  .grain-medium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain-medium'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23grain-medium)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .grain-strong {
+    position: relative;
+  }
+  .grain-strong::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain-strong'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23grain-strong)' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  /* Fintage текстуры с зернистостью */
+  .bg-fintage-grain {
+    position: relative;
+  }
+  .bg-fintage-grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='fintage-noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23fintage-noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .bg-vintage-paper {
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.015) 2px, rgba(0, 0, 0, 0.015) 4px);
+    background-color: hsl(var(--fintage-offwhite));
+    position: relative;
+  }
+  .bg-vintage-paper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23paper-noise)' opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .bg-vintage-canvas {
+    background-color: hsl(var(--fintage-offwhite));
+    position: relative;
+  }
+  .bg-vintage-canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='canvas-noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23canvas-noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  /* Зернистость для темной темы - до 8% согласно дизайн-системе */
+  .dark .grain-light::before {
+    opacity: 0.04; /* 4% для light в dark theme */
+  }
+  .dark .grain-medium::before {
+    opacity: 0.06; /* 6% для medium в dark theme */
+  }
+  .dark .grain-strong::before {
+    opacity: 0.08; /* 8% для strong в dark theme */
+  }
+  .dark .bg-vintage-paper::before,
+  .dark .bg-vintage-canvas::before {
+    opacity: 0.05; /* 5% для текстур в dark theme */
+  }
+  
+  /* Винтажные границы */
+  .border-vintage {
+    border: 1px solid hsl(var(--vintage-beige));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Винтажные тени */
+  .shadow-vintage {
+    box-shadow: var(--vintage-shadow-vintage);
+  }
+  
+  .shadow-vintage-sm {
+    box-shadow: var(--vintage-shadow-sm);
+  }
+  
+  .shadow-vintage-md {
+    box-shadow: var(--vintage-shadow-md);
+  }
+  
+  .shadow-vintage-lg {
+    box-shadow: var(--vintage-shadow-lg);
+  }
+  
+  /* Fintage тени */
+  .shadow-fintage-sm {
+    box-shadow: var(--fintage-shadow-sm);
+  }
+  
+  .shadow-fintage-md {
+    box-shadow: var(--fintage-shadow-md);
+  }
+  
+  .shadow-fintage-elevated {
+    box-shadow: var(--fintage-shadow-elevated);
   }
   
   .backdrop-breathing {
@@ -446,6 +881,89 @@
     transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
   
+  /* Fintage анимации - улучшенная плавность 280-300ms */
+  .transition-fintage {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .transition-fintage-slow {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Быстрая анимация для микро-взаимодействий */
+  .transition-fintage-fast {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Fade анимации */
+  .fade-in {
+    animation: fintage-fade-in 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  
+  .fade-in-slow {
+    animation: fintage-fade-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  
+  @keyframes fintage-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Scale-in 1.01 для hover - fashion-эстетика (улучшенная плавность) */
+  .hover-scale-fintage {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+  .hover-scale-fintage:hover {
+    transform: scale(1.01);
+  }
+  
+  /* Тонкий hover эффект для карточек - повышение контраста (улучшенная плавность) */
+  .hover-contrast-fintage {
+    transition: filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-contrast-fintage:hover {
+    filter: contrast(1.05) brightness(0.98);
+  }
+  
+  /* Hover эффект для текста - тонкое изменение цвета на accent (улучшенная плавность) */
+  .hover-text-greige {
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-text-greige:hover {
+    color: hsl(var(--color-accent));
+  }
+  
+  /* Совместимость - старый класс */
+  .hover-text-steel {
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-text-steel:hover {
+    color: hsl(var(--color-accent));
+  }
+  
+  /* Плавное появление элементов - улучшенная версия */
+  @keyframes fintage-fade-in-smooth {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-smooth {
+    animation: fintage-fade-in-smooth 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  
   .bg-misty {
     background-image: 
       radial-gradient(circle at 25% 75%, rgba(244, 239, 232, 0.3) 0%, transparent 50%),
@@ -473,16 +991,16 @@
   }
   
   .text-whisper {
-    color: rgba(56, 56, 56, 0.7); /* Улучшенная контрастность - темнее и заметнее */
+    color: hsl(var(--fintage-graphite) / 0.7); /* Улучшенная контрастность */
   }
   
   /* Text Whisper для темной темы */
   .dark .text-whisper {
-    color: hsl(35 15% 72%);  /* Улучшенная контрастность для темной темы */
+    color: hsl(var(--fintage-graphite) / 0.7);  /* Улучшенная контрастность для темной темы */
   }
   
   .shadow-misty {
-    box-shadow: 0 8px 32px rgba(174, 182, 175, 0.12);
+    box-shadow: 0 8px 32px hsl(var(--fintage-steel) / 0.12);
   }
   
   .backdrop-misty {
@@ -515,12 +1033,12 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
   
-  /* Halo эффект для темной темы */
+  /* Halo эффект для темной темы - Cold Steel */
   .dark .halo {
     background: radial-gradient(
       closest-side,
-      rgba(143, 166, 143, 0.18),      /* Sage Glow */
-      rgba(143, 166, 143, 0.10) 60%,  /* Приглушенное свечение */
+      hsl(var(--fintage-steel) / 0.15),      /* Cold Steel Glow */
+      hsl(var(--fintage-steel) / 0.08) 60%,  /* Приглушенное свечение */
       transparent 70%
     );
   }
@@ -698,6 +1216,16 @@
   50%     { transform: scale(1.02); opacity: .2; }
 }
 
+/* Skeleton shimmer анимация согласно дизайн-системе */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 @keyframes rb-crossfade { 
   0%, 40%   { opacity: 1 }
   50%, 90%  { opacity: 0 }
@@ -779,7 +1307,7 @@
 }
 
 .noah-word{
-  font-family: var(--font-inter, Inter), ui-sans-serif, system-ui, -apple-system;
+  font-family: var(--font-body, Inter), ui-sans-serif, system-ui, -apple-system;
   font-size: 12px;
   letter-spacing: .18em;           /* стартовый kerning */
   text-transform: uppercase;
@@ -968,9 +1496,13 @@ input:-webkit-autofill {
    ============================================ */
 
 /* Контейнер звезд - только в темной теме */
+.stars-container {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
 .dark .stars-container {
   opacity: 1;
-  transition: opacity 0.8s ease-in-out;
 }
 
 /* Базовые стили для звезд - статичные, без анимации */
@@ -1045,5 +1577,10 @@ input:-webkit-autofill {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Chrome, Safari и Opera */
+}
+
+/* Утилитный класс для шрифта логотипа - прямая проверка */
+.font-logo {
+  font-family: 'Modern No. 20', var(--font-logo), serif !important;
 }
 

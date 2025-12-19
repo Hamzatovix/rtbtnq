@@ -4,8 +4,8 @@
  */
 
 export const MOBILE_MENU_CONFIG = {
-  /** Высота хедера в пикселях (h-24 = 96px) */
-  HEADER_HEIGHT: 96,
+  /** Высота хедера в пикселях (h-16 = 64px на мобильных, h-20 = 80px на планшетах) */
+  HEADER_HEIGHT: 64, // h-16 для мобильных устройств
 
   /** Минимальное расстояние свайпа для закрытия меню (в пикселях) */
   SWIPE_THRESHOLD: 80,
@@ -14,7 +14,7 @@ export const MOBILE_MENU_CONFIG = {
   SWIPE_VELOCITY: 400,
 
   /** Длительность анимации открытия/закрытия меню (в секундах) */
-  ANIMATION_DURATION: 0.4,
+  ANIMATION_DURATION: 0.3,
 
   /** Задержка перед установкой фокуса (в миллисекундах) */
   FOCUS_DELAY: 100,
@@ -26,7 +26,7 @@ export const MOBILE_MENU_CONFIG = {
   STAGGER_DELAY: 0.06,
 
   /** Задержка перед началом stagger анимации (в секундах) */
-  STAGGER_DELAY_CHILDREN: 0.15,
+  STAGGER_DELAY_CHILDREN: 0.1,
 
   /** Длительность анимации элемента (в секундах) */
   ITEM_ANIMATION_DURATION: 0.35,

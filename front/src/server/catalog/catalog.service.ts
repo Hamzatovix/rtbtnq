@@ -122,10 +122,27 @@ export async function getCatalogData(options: CatalogDataOptions = {}): Promise<
 
   const filteredProducts = filterProducts(products, filters)
 
+  // Собираем уникальные цвета из опубликованных товаров
+  // Используем Set для эффективного хранения уникальных ID цветов
+  const publishedProductColorIds = new Set<string>()
+  products.forEach((product) => {
+    // product.colors уже содержит только цвета, найденные в базе цветов
+    // (см. buildProductListItem, где цвета фильтруются через colors.find)
+    product.colors.forEach((color) => {
+      publishedProductColorIds.add(color.id)
+    })
+  })
+
+  // Фильтруем цвета, оставляя только те, которые есть в опубликованных товарах
+  // Это гарантирует, что в фильтрах каталога отображаются только релевантные цвета
+  const availableColors = colors.filter((color) =>
+    publishedProductColorIds.has(color.id),
+  )
+
   const result: CatalogData = {
     products: filteredProducts,
     categories,
-    colors,
+    colors: availableColors,
   }
 
   if (includeRaw) {

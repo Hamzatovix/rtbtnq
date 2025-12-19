@@ -8,10 +8,21 @@
     "delete": "Delete",
     "edit": "Edit",
     "close": "Close",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "settings": "SETTINGS",
+    "theme": "THEME",
+    "language": "LANGUAGE",
+    "goToHome": "Go to home",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu",
+    "closeSettings": "Close settings",
+    "previousImage": "Previous image",
+    "nextImage": "Next image"
   },
   "header": {
-    "home": "Home",
+    "home": "home",
     "collection": "collection",
     "about": "brand",
     "gallery": "gallery",
@@ -19,7 +30,9 @@
     "favorites": "Favorites",
     "menu": "Menu",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "navigation": "NAVIGATION",
+    "actions": "ACTIONS"
   },
   "footer": {
     "description": "Discover our collection of handcrafted bags inspired by nature.",
@@ -43,7 +56,10 @@
     "tagQuality": "Quality",
     "tagTraditions": "Traditions",
     "tagSimplicity": "Simplicity",
-    "galleryTitle": "Gallery"
+    "galleryTitle": "Gallery",
+    "valuesLabel": "VALUES",
+    "galleryLabel": "GALLERY",
+    "madeIn": "made in daymohk"
   },
   "aboutPage": {
     "heroAlt": "Atelier — quiet craftsmanship in natural materials",
@@ -63,11 +79,12 @@
       "description": "Each piece is carefully made with love and attention to detail.",
       "cta": "Shop collection",
       "tagline": "we make things",
-      "badges": "Natural fabrics · Hand-stitched · Small batches"
+      "badges": "Natural fabrics · Hand-stitched · Small batches",
+      "collectionLabel": "COLLECTION"
     },
     "about": {
       "title": "Brand",
-      "description": "made quietly.",
+      "description": "made locally",
       "readMore": "About the brand",
       "alt": {
         "process": "Handcrafted process",
@@ -77,8 +94,10 @@
     },
     "brand": {
       "title": "Brand",
-      "description": "made quietly.",
+      "description": "made locally",
       "readMore": "About the brand",
+      "learnMore": "LEARN MORE",
+      "subtitleLabel": "ABOUT BRAND",
       "alt": {
         "process": "Handcrafted process",
         "texture": "Linen texture",
@@ -87,7 +106,11 @@
     },
     "featuredProducts": {
       "title": "Collection",
-      "lead": ""
+      "lead": "",
+      "mainCollection": "MAIN COLLECTION",
+      "collectionLabel": "COLLECTION",
+      "piecesCount": "{count} PIECES",
+      "empty": "New pieces are coming soon."
     }
   },
   "catalog": {

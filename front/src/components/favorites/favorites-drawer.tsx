@@ -47,6 +47,9 @@ export function FavoritesDrawer() {
 
   // Закрываем корзину при открытии избранного
   useEffect(() => {
+    // Только после монтирования, чтобы избежать setState во время рендера
+    if (!mounted) return
+    
     // Если избранное только что открылось (было закрыто, стало открыто)
     if (isOpen && !prevIsOpenRef.current && cartIsOpen) {
       // Небольшая задержка для плавного закрытия
@@ -57,7 +60,7 @@ export function FavoritesDrawer() {
       return () => clearTimeout(timeoutId)
     }
     prevIsOpenRef.current = isOpen
-  }, [isOpen, cartIsOpen, toggleCart])
+  }, [isOpen, cartIsOpen, toggleCart, mounted])
 
   // Mount check for SSR and detect desktop
   useEffect(() => {
@@ -259,33 +262,38 @@ export function FavoritesDrawer() {
                 : { y: '-100%', opacity: 0 }
             }
             transition={isDragging ? { duration: 0 } : motionConfig}
-            className={`fixed z-[49] bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 border-mistGray/30 dark:border-border shadow-breathing dark:shadow-breathing will-change-[transform,opacity] flex flex-col ${
+            className={`fixed z-[49] bg-fintage-offwhite dark:bg-fintage-charcoal border border-fintage-graphite/20 dark:border-fintage-steel/30 shadow-fintage-md will-change-[transform,opacity] flex flex-col ${
               isDesktop
-                ? 'right-0 w-full max-w-md border-l'
-                : 'left-0 right-0 w-full max-h-[calc(100vh-96px)] border-b'
+                ? 'right-0 w-full max-w-md border-l-2'
+                : 'left-0 right-0 w-full max-h-[calc(100vh-96px)] border-b-2'
             }`}
             role="dialog"
             aria-modal="true"
             aria-label={t('favorites.title')}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Swipe indicator - только на мобильных */}
+            {/* Swipe indicator - только на мобильных, технический стиль Stone Island */}
             {!isDesktop && (
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-mistGray/40 dark:bg-border/60 shadow-sm" aria-hidden="true" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5" aria-hidden="true">
+                <div className="w-12 h-0.5 rounded-sm bg-fintage-graphite/40 dark:bg-fintage-graphite/60 shadow-fintage-sm" />
+                <span className="text-[8px] font-mono text-fintage-graphite/30 dark:text-fintage-graphite/50 uppercase tracking-[0.3em]">
+                  SWIPE
+                </span>
+              </div>
             )}
 
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b border-mistGray/20 dark:border-border/50">
-              <h2 className="text-xl font-light text-inkSoft dark:text-foreground">
-                {t('favorites.title')} <span suppressHydrationWarning>{favorites.length}</span>
+            {/* Header - технический стиль Stone Island */}
+            <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b-2 border-fintage-graphite/30 dark:border-fintage-graphite/40">
+              <h2 className="text-lg md:text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">
+                {t('favorites.title')} <span className="font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50">({favorites.length})</span>
               </h2>
               <button
                 type="button"
                 onClick={toggleFavorites}
-                className="p-2 hover:bg-mistGray/10 dark:hover:bg-muted/30 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="p-2 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 border border-transparent hover:border-hover-border dark:hover:border-hover-border"
                 aria-label={t('common.close')}
               >
-                <X className="h-5 w-5 text-inkSoft dark:text-foreground" />
+                <X className="h-5 w-5 text-fintage-charcoal dark:text-fintage-offwhite" />
               </button>
             </div>
 
@@ -293,8 +301,8 @@ export function FavoritesDrawer() {
             <div className="flex-1 overflow-y-auto px-4 md:px-6 lg:px-8">
               {favorites.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
-                  <Heart className="h-16 w-16 text-mistGray dark:text-muted-foreground" />
-                  <h3 className="text-lg font-light text-inkSoft dark:text-foreground">{t('favorites.empty')}</h3>
+                  <Heart className="h-16 w-16 text-fintage-graphite dark:text-fintage-graphite/60" />
+                  <h3 className="text-lg font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">{t('favorites.empty')}</h3>
                   <Button onClick={toggleFavorites} asChild>
                     <Link href="/catalog">{t('favorites.continueShopping')}</Link>
                   </Button>
@@ -304,9 +312,9 @@ export function FavoritesDrawer() {
                   {favorites.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center space-x-4 p-4 bg-mistGray/5 dark:bg-muted/10 rounded-xl border border-mistGray/20 dark:border-border"
+                      className="flex items-center space-x-4 p-4 bg-fintage-graphite/10 dark:bg-fintage-graphite/20 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30"
                     >
-                      <div className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg border border-mistGray/20 dark:border-border">
+                      <div className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                         {(() => {
                           if (item.image.startsWith('http')) {
                             return (
@@ -340,10 +348,10 @@ export function FavoritesDrawer() {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-light text-inkSoft dark:text-foreground truncate">{item.title}</h4>
-                        <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+                        <h4 className="font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite truncate text-sm uppercase tracking-tighter">{item.title}</h4>
+                        <p className="text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] line-clamp-1 mt-1">{item.description || ''}</p>
                         <div className="flex items-center justify-between mt-2">
-                          <span className="font-light text-inkSoft dark:text-foreground">
+                          <span className="text-sm font-bold text-fintage-charcoal dark:text-fintage-offwhite">
                             {formatPriceWithLocale(item.price, locale)}
                           </span>
                           <div className="flex space-x-2">
@@ -358,7 +366,7 @@ export function FavoritesDrawer() {
                             <button
                               type="button"
                               onClick={() => removeFromFavorites(item.id)}
-                              className="h-8 w-8 rounded-full border border-mistGray/20 dark:border-border hover:bg-mistGray/10 dark:hover:bg-muted/30 transition-colors flex items-center justify-center text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:focus-visible:ring-red-400 focus-visible:ring-offset-2"
+                              className="h-10 w-10 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 hover:bg-red-100 dark:hover:bg-red-900/30 transition-fintage flex items-center justify-center text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500 dark:hover:border-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:focus-visible:ring-red-400 focus-visible:ring-offset-2 active:scale-[0.97] active:opacity-90"
                               aria-label={locale === 'ru' ? 'удалить из избранного' : 'remove from favorites'}
                             >
                               <X className="h-4 w-4" />
@@ -374,8 +382,8 @@ export function FavoritesDrawer() {
 
             {/* Footer */}
             {favorites.length > 0 && (
-              <div className="border-t border-mistGray/20 dark:border-border/50 px-4 md:px-6 lg:px-8 py-6">
-                <Button variant="outline" className="w-full rounded-full" onClick={toggleFavorites}>
+              <div className="border-t-2 border-fintage-graphite/30 dark:border-fintage-graphite/40 px-4 md:px-6 lg:px-8 py-6">
+                <Button variant="primary" className="w-full rounded-sm" onClick={toggleFavorites}>
                   {t('favorites.continueShopping')}
                 </Button>
               </div>

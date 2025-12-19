@@ -4,62 +4,79 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ElvenFlower from '@/components/visuals/ElvenFlower'
-import { StarField } from '@/components/visuals/StarField'
+import { StarFieldMedium } from '@/components/visuals/StarFieldMedium'
 import { useTranslations } from '@/hooks/useTranslations'
+import { useClientLocale } from '@/hooks/useClientLocale'
 
 export function Hero() {
   const t = useTranslations()
+  const locale = useClientLocale()
+  
   return (
     <section 
-      className="relative min-h-[72svh] md:min-h-[88svh] flex items-center justify-center bg-white dark:bg-background pb-16 md:pb-20"
+      className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-[85vh] lg:min-h-[95vh] flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas pb-20 md:pb-24 border-b border-fintage-graphite/20 dark:border-fintage-graphite/30"
       aria-labelledby="hero-heading"
     >
-      {/* Звездное небо - только в темной теме */}
-      <StarField />
-      {/* Градиентное затухание звезд внизу для плавного перехода */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none z-[5]" aria-hidden="true" />
+      {/* Звездное небо - только в темной теме (такое же как в разделе "О бренде") */}
+      <StarFieldMedium />
       
-      {/* Контент */}
-      <div className="relative z-10 container mx-auto px-5 sm:px-6 md:px-12 lg:px-16">
-        <div className="relative mx-auto max-w-4xl text-center md:-translate-y-[2vh]">
-          {/* Эльфийский цветок — над названием, по центру узла */}
-          <div className="flex justify-center mb-6 md:mb-4">
-            <ElvenFlower className="relative" size={120} ariaLabel="Decorative flower. Hover or focus to bloom." />
+      {/* Fintage декоративные линии - тонкие */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+      
+      {/* Контент - много воздуха */}
+      <div className="relative z-10 container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
+        <div className="relative mx-auto max-w-6xl text-center">
+          {/* Год - технический стиль */}
+          <div className="flex justify-center mb-8 md:mb-12">
+            <span className="text-[10px] md:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 tracking-[0.3em] uppercase">
+              2020
+            </span>
           </div>
 
           <h1 
             id="hero-heading"
-            className="text-4xl xs:text-[2.8rem] sm:text-display-1 font-light text-ink-soft dark:text-foreground leading-[1.02] md:leading-[0.95] mb-10 md:mb-14 tracking-normal"
+            className="text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-display-1 font-logo font-medium text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] mb-8 md:mb-12 tracking-[0.2em]"
           >
-            rosebotanique
+            ROSEBOTANIQUE
           </h1>
 
-          {/* CTA + вторичная тихая ссылка */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          {/* Подзаголовок - технический стиль */}
+          <div className="mb-16 md:mb-20">
+            <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-4">
+              {t('home.hero.tagline')}
+            </p>
+            {/* Разделительная линия */}
+            <div className="w-16 h-px bg-fintage-graphite/30 dark:bg-fintage-graphite/40 mx-auto" aria-hidden="true" />
+          </div>
+
+          {/* CTA - минималистичная кнопка в техническом стиле */}
+          <div className="flex flex-col items-center gap-4">
             <Button
               variant="primary"
               size="lg"
               asChild
+              className="group font-mono tracking-[0.15em]"
             >
-              <Link href="/catalog" aria-label={t('home.hero.cta') + ' rosebotanique'}>
-                <span suppressHydrationWarning>{t('home.hero.cta')}</span>
-                <ArrowRight className="ml-3 h-4 w-4 transition-transform duration-250 ease-brand group-hover:translate-x-1" />
+              <Link href="/catalog" aria-label={t('home.hero.cta') + ' rosebotanique'} className="flex items-center gap-2">
+                <span suppressHydrationWarning className="uppercase text-xs md:text-sm tracking-[0.15em]">
+                  {t('home.hero.cta')}
+                </span>
+                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4 group-hover:translate-x-0.5 transition-fintage" />
               </Link>
             </Button>
 
-            <span
-              className="text-sm sm:text-body font-light tracking-wide leading-relaxed text-inkSoft/80 dark:text-muted-foreground text-center max-w-[20rem]"
-              suppressHydrationWarning
-            >
-              {t('home.hero.tagline')}
-            </span>
+            {/* Техническая подпись под кнопкой */}
+            <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
+              {t('home.hero.collectionLabel')}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Микро-бейджи — в самом низу секции */}
+      {/* Минималистичные бейджи внизу - технический стиль */}
       <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 text-center px-6">
-        <div className="text-[13px] sm:text-xs text-ink-soft/75 dark:text-muted-foreground leading-relaxed" suppressHydrationWarning>
+        <div className="text-[8px] sm:text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 leading-relaxed tracking-[0.15em] sm:tracking-[0.2em] uppercase break-words max-w-full" suppressHydrationWarning>
           {t('home.hero.badges')}
         </div>
       </div>

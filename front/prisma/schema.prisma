@@ -4,7 +4,10 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  /// URL берётся из переменной окружения DATABASE_URL.
+  /// Для dev/prod можно задавать разные значения, например:
+  /// DATABASE_URL="file:./prisma/dev.db" или "file:./prisma_data/prod.db"
+  url      = env("DATABASE_URL")
 }
 
 // NOTE: Модели не описаны. Клиент сгенерируется, чтобы пройти сборку.

@@ -54,53 +54,79 @@ const FiltersPanel = ({
   texts,
   className = '',
 }: FiltersPanelProps) => {
+  const locale = useClientLocale()
+  
   return (
     <div className={className}>
-      <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 md:items-center">
-        <div className="flex flex-wrap gap-2 md:gap-3 items-center" role="group" aria-label={texts.categoryLabel}>
-          <Button
-            variant={selectedCategory === '' ? 'primary' : 'outline'}
-            size="sm"
+      {/* Категории - минималистичный редакторский стиль */}
+      <div className="flex flex-col gap-4 md:gap-5">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em] flex-shrink-0">
+            {texts.categoryLabel || (locale === 'ru' ? 'КАТЕГОРИИ' : 'CATEGORIES')}
+          </span>
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+        </div>
+        <div className="flex flex-wrap gap-2 md:gap-2.5 items-center" role="group" aria-label={texts.categoryLabel}>
+          <button
             onClick={() => onSelectCategory('')}
+            className={`px-3 py-1.5 rounded-sm font-mono text-[10px] md:text-xs uppercase tracking-[0.15em] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] border ${
+              selectedCategory === ''
+                ? 'bg-fintage-charcoal dark:bg-fintage-offwhite text-fintage-offwhite dark:text-fintage-charcoal border-fintage-charcoal dark:border-fintage-offwhite shadow-fintage-sm'
+                : 'bg-transparent text-fintage-graphite/70 dark:text-fintage-graphite/60 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
+            }`}
           >
             {texts.allCategories}
-          </Button>
+          </button>
           {categories.map((category) => (
-            <Button
+            <button
               key={category.id}
-              variant={selectedCategory === category.slug ? 'primary' : 'outline'}
-              size="sm"
               onClick={() => onSelectCategory(category.slug)}
+              className={`px-3 py-1.5 rounded-sm font-mono text-[10px] md:text-xs uppercase tracking-[0.15em] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] border ${
+                selectedCategory === category.slug
+                  ? 'bg-fintage-charcoal dark:bg-fintage-offwhite text-fintage-offwhite dark:text-fintage-charcoal border-fintage-charcoal dark:border-fintage-offwhite shadow-fintage-sm'
+                  : 'bg-transparent text-fintage-graphite/70 dark:text-fintage-graphite/60 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
+              }`}
             >
               {category.name}
-            </Button>
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 md:items-center">
-        <div className="flex flex-wrap gap-2 md:gap-3 items-center" role="group" aria-label={texts.colorLabel}>
-          <Button
-            variant={selectedColor === undefined ? 'primary' : 'outline'}
-            size="sm"
+      {/* Цвета - минималистичный редакторский стиль */}
+      <div className="flex flex-col gap-4 md:gap-5">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em] flex-shrink-0">
+            {texts.colorLabel || (locale === 'ru' ? 'ЦВЕТА' : 'COLORS')}
+          </span>
+          <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
+        </div>
+        <div className="flex flex-wrap gap-2.5 md:gap-3 items-center" role="group" aria-label={texts.colorLabel}>
+          <button
             onClick={() => onSelectColor(undefined)}
+            className={`px-3 py-1.5 rounded-sm font-mono text-[10px] md:text-xs uppercase tracking-[0.15em] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] border ${
+              selectedColor === undefined
+                ? 'bg-fintage-charcoal dark:bg-fintage-offwhite text-fintage-offwhite dark:text-fintage-charcoal border-fintage-charcoal dark:border-fintage-offwhite shadow-fintage-sm'
+                : 'bg-transparent text-fintage-graphite/70 dark:text-fintage-graphite/60 border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:text-fintage-charcoal dark:hover:text-fintage-offwhite hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
+            }`}
           >
             {texts.allColors}
-          </Button>
+          </button>
           {colors.map((color) => (
-            <Button
+            <button
               key={color.id}
-              variant={selectedColor === color.id ? 'primary' : 'outline'}
-              size="sm"
               onClick={() => onSelectColor(color.id)}
-              className="flex items-center gap-2"
-            >
-              <span
-                className="w-3 h-3 rounded-full border border-gray-300"
-                style={{ backgroundColor: color.hex_code }}
-              />
-              {color.name}
-            </Button>
+              className={`px-3 py-1.5 aspect-square rounded-sm border transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] focus:outline-none focus:ring-2 focus:ring-focus-ring dark:focus:ring-focus-ring ${
+                selectedColor === color.id
+                  ? 'ring-2 ring-accent dark:ring-accent shadow-fintage-md border-accent dark:border-accent'
+                  : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60'
+              }`}
+              style={{ backgroundColor: color.hex_code }}
+              title={color.name}
+              aria-label={locale === 'ru' ? `цвет: ${color.name}` : `color: ${color.name}`}
+            />
           ))}
         </div>
       </div>
@@ -363,14 +389,14 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
 
   if (!isMounted) {
     return (
-      <div className="min-h-screen bg-white dark:bg-background relative overflow-hidden">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 relative">
+      <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas relative overflow-hidden">
+        <div className="container mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-20 lg:py-24 relative z-10">
           <div className="text-center mb-16">
-            <div className="h-10 w-48 bg-mistGray/20 rounded mx-auto animate-pulse" />
+            <div className="h-10 w-48 bg-fintage-graphite/20 rounded-sm mx-auto animate-pulse" />
           </div>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-8">
             {Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="h-[320px] sm:h-[360px] bg-mistGray/20 rounded-2xl animate-pulse" />
+              <div key={index} className="h-[320px] sm:h-[360px] bg-fintage-graphite/10 rounded-sm animate-pulse border border-fintage-graphite/20 dark:border-fintage-graphite/30" />
             ))}
           </div>
         </div>
@@ -379,25 +405,51 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-background relative overflow-hidden">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 relative">
-        <div className="text-center mb-16">
-          <h1 className="text-display-1 font-light text-ink-soft dark:text-foreground leading-[0.95] mb-6 tracking-normal">
-            {t('catalog.title')}
-          </h1>
+    <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas relative overflow-hidden">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-20 lg:py-24 relative z-10">
+        {/* Заголовок в стиле технического каталога - Nike/Stone Island */}
+        <div className="mb-12 md:mb-16 lg:mb-20">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6 mb-6">
+            {/* Левая часть: номер секции + заголовок */}
+            <div className="flex items-baseline gap-3 md:gap-4">
+              {/* Утилитарный номер секции в стиле каталога */}
+              <div className="flex-shrink-0">
+                <span 
+                  className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-graphite/30 leading-none tracking-tighter"
+                  aria-hidden="true"
+                >
+                  01
+                </span>
+              </div>
+              <div>
+                <h1 
+                  className="text-title-1 md:text-[2rem] lg:text-[2.5rem] font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] tracking-tighter uppercase"
+                >
+                  <span suppressHydrationWarning>{t('catalog.title')}</span>
+                </h1>
+                {/* Техническая подпись в стиле Stone Island */}
+                <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+                  {locale === 'ru' ? 'ПОЛНЫЙ КАТАЛОГ' : 'FULL CATALOG'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Разделительная линия в стиле технических каталогов */}
+          <div className="h-px bg-gradient-to-r from-transparent via-fintage-graphite/20 to-transparent dark:via-fintage-graphite/30" aria-hidden="true" />
         </div>
 
         {isMounted && (
           <Sheet>
             <div className="md:hidden mb-10">
               <SheetTrigger asChild>
-                <Button variant="outline" size="lg" className="w-full justify-center gap-2 rounded-full shadow-sm">
+                <Button variant="outline" size="lg" className="w-full justify-center gap-2 rounded-sm shadow-fintage-sm font-mono tracking-[0.15em] text-xs uppercase">
                   <SlidersHorizontal className="h-4 w-4" />
-                  {texts.categoryLabel}
+                  {texts.categoryLabel || (locale === 'ru' ? 'ФИЛЬТРЫ' : 'FILTERS')}
                 </Button>
               </SheetTrigger>
             </div>
-            <SheetContent side="bottom" className="bg-white dark:bg-card rounded-t-3xl shadow-2xl dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] !h-auto max-h-[75vh] w-full px-5 pt-6 pb-10 overflow-y-auto">
+            <SheetContent side="bottom" className="bg-fintage-offwhite dark:bg-fintage-charcoal border-t border-fintage-graphite/20 dark:border-fintage-graphite/30 rounded-t-sm shadow-fintage-md !h-auto max-h-[75vh] w-full px-5 pt-6 pb-10 overflow-y-auto">
               <FiltersPanel
                 className="flex flex-col gap-6"
                 categories={categories}
@@ -412,34 +464,40 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
           </Sheet>
         )}
 
-        <div className="mb-12">
+        {/* Фильтры - технический стиль */}
+        <div className="mb-12 md:mb-16">
+          <div className="hidden md:flex flex-col md:flex-row md:flex-wrap gap-6 md:gap-8 justify-center items-start md:items-center">
+            <FiltersPanel
+              className="flex flex-col md:flex-row md:flex-wrap gap-6 md:gap-8"
+              categories={categories}
+              colors={colors}
+              selectedCategory={selectedCategory}
+              selectedColor={selectedColor}
+              onSelectCategory={handleSelectCategory}
+              onSelectColor={handleSelectColor}
+              texts={texts}
+            />
+          </div>
+          
           {(selectedCategory || selectedColor) && (
-            <div className="flex justify-center mt-4">
-              <Button variant="ghost" size="sm" onClick={handleResetFilters}>
+            <div className="flex justify-center mt-6 md:mt-8">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleResetFilters}
+                className="font-mono tracking-[0.15em] text-xs uppercase"
+              >
                 {texts.reset}
               </Button>
             </div>
           )}
         </div>
 
-        <div className="hidden md:flex justify-center mb-12">
-          <FiltersPanel
-            className="flex flex-col md:flex-row md:flex-wrap gap-4 md:gap-6 justify-center"
-            categories={categories}
-            colors={colors}
-            selectedCategory={selectedCategory}
-            selectedColor={selectedColor}
-            onSelectCategory={handleSelectCategory}
-            onSelectColor={handleSelectColor}
-            texts={texts}
-          />
-        </div>
-
         <div aria-live="polite">
           {isLoadingProducts ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-8">
               {Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className="h-[320px] sm:h-[360px] bg-mistGray/20 rounded-2xl animate-pulse" />
+                <div key={index} className="h-[320px] sm:h-[360px] bg-fintage-graphite/10 rounded-sm animate-pulse border border-fintage-graphite/20 dark:border-fintage-graphite/30" />
               ))}
             </div>
           ) : products.length > 0 ? (
@@ -454,12 +512,16 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
               <DefaultProductGrid products={products} isCoarsePointer={coarsePointer} filterKey={queryString} />
             )
           ) : (
-            <div className="text-center py-16">
-              <p className="text-body text-ink-soft/70 dark:text-muted-foreground font-light tracking-wide mb-6">
-                {t('catalog.empty') || 'товары не найдены'}
+            <div className="text-center py-16 md:py-20">
+              <p className="text-sm md:text-base font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-6">
+                {t('catalog.empty') || (locale === 'ru' ? 'товары не найдены' : 'no products found')}
               </p>
-              <Button variant="outline" onClick={handleResetFilters}>
-                {t('catalog.reset') || 'сбросить фильтры'}
+              <Button 
+                variant="outline" 
+                onClick={handleResetFilters}
+                className="font-mono tracking-[0.15em] text-xs uppercase"
+              >
+                {t('catalog.reset') || (locale === 'ru' ? 'сбросить фильтры' : 'reset filters')}
               </Button>
             </div>
           )}

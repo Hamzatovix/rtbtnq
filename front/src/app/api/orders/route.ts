@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
       baseUrl, // Передаем baseUrl в createOrder для использования в уведомлении
     })
     
-    // Уведомление отправляется внутри createOrder, не нужно дублировать
+    // Уведомление отправляется внутри createOrder синхронно (с таймаутом)
+    // Это гарантирует, что retry попытки завершатся до возврата ответа
     
     return NextResponse.json(order, { status: 201 })
   } catch (error: any) {

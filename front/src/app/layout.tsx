@@ -18,6 +18,9 @@ const FavoritesDrawer = dynamic(
 )
 import ErrorBoundary from '@/components/ui/error-boundary'
 import { ScrollToTop } from '@/components/layout/scroll-to-top'
+import { ToastContainer } from '@/components/ui/toast'
+import { YandexMetrika } from '@/components/analytics/YandexMetrika'
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 
 const inter = Inter({ 
   subsets: ['latin', 'cyrillic'],
@@ -30,7 +33,7 @@ const cormorantGaramond = Cormorant_Garamond({
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.com')
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://rosebotanique.store')
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -38,8 +41,22 @@ export const metadata: Metadata = {
     default: 'Rosebotanique - Сумки ручной работы',
     template: '%s | Rosebotanique'
   },
-  description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique. Каждое изделие создано с любовью и вниманием к деталям, вдохновлено природой. Мастерская в Грозном, Чеченская Республика.',
-  keywords: ['сумки ручной работы', 'handcrafted bags', 'rosebotanique', 'сумки из кожи', 'дизайнерские сумки', 'россия', 'грозный', 'чеченская республика', 'сумки грозный', 'мастерская сумок'],
+  description: 'Купить сумки ручной работы Rosebotanique с доставкой по России, Москве, Кавказу и СНГ. Дизайнерские сумки из натуральных материалов. Мастерская в Грозном, Чеченская Республика. Доставка по всей России, Москве, Кавказу, СНГ.',
+  keywords: [
+    'сумки ручной работы', 'handcrafted bags', 'rosebotanique',
+    'сумки из кожи', 'дизайнерские сумки', 'россия', 'грозный', 
+    'чеченская республика', 'сумки грозный', 'мастерская сумок',
+    'сумки москва', 'сумки кавказ', 'сумки россия', 'сумки снг',
+    'купить сумки москва', 'купить сумки россия', 'сумки ручной работы москва',
+    'сумки ручной работы россия', 'сумки ручной работы кавказ',
+    'сумки ручной работы снг', 'дизайнерские сумки москва',
+    'дизайнерские сумки россия', 'сумки из кожи москва',
+    'сумки из кожи россия', 'сумки доставка россия',
+    'сумки доставка москва', 'сумки доставка кавказ',
+    'сумки интернет магазин россия', 'сумки интернет магазин москва',
+    'чеченская республика сумки', 'грозный сумки ручной работы',
+    'кавказ сумки', 'снг сумки', 'россия сумки ручной работы'
+  ],
   authors: [{ name: 'Rosebotanique' }],
   creator: 'Rosebotanique',
   publisher: 'Rosebotanique',
@@ -48,19 +65,47 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: [
+      // SVG favicon - основной, используется современными браузерами
+      { url: '/favicon-logo.svg', type: 'image/svg+xml', sizes: 'any' },
+      { url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' },
+      // PNG/ICO файлы как fallback для старых браузеров
+      { url: '/favicon.ico', sizes: '512x512', type: 'image/x-icon' },
+      { url: '/icon-512x512.png', type: 'image/png', sizes: '512x512' },
+      { url: '/favicon-256x256.png', type: 'image/png', sizes: '256x256' },
+      { url: '/favicon-128x128.png', type: 'image/png', sizes: '128x128' },
+      { url: '/favicon-96x96.png', type: 'image/png', sizes: '96x96' },
+      { url: '/favicon-64x64.png', type: 'image/png', sizes: '64x64' },
+      { url: '/icon-192x192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/favicon-48x48.png', type: 'image/png', sizes: '48x48' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: [
+      { url: '/favicon-logo.svg', type: 'image/svg+xml' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+  },
+  manifest: '/manifest.json',
   openGraph: {
     type: 'website',
     locale: 'ru_RU',
     url: baseUrl,
     siteName: 'Rosebotanique',
-    title: 'Rosebotanique - Сумки ручной работы',
-    description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique. Каждое изделие создано с любовью и вниманием к деталям. Мастерская в Грозном, Чеченская Республика.',
+    title: 'Rosebotanique - Сумки ручной работы | Доставка по России, Москве, Кавказу, СНГ',
+    description: 'Купить сумки ручной работы Rosebotanique с доставкой по России, Москве, Кавказу и СНГ. Дизайнерские сумки из натуральных материалов. Мастерская в Грозном, Чеченская Республика. Доставка по всей России, Москве, Кавказу, СНГ.',
     images: [
       {
-        url: '/images/about-m.jpg.png',
-        width: 1200,
-        height: 630,
+        url: `${baseUrl}/logo/logo_day.svg`,
+        width: 1024,
+        height: 1536,
         alt: 'Rosebotanique - Сумки ручной работы',
+        type: 'image/svg+xml',
       },
     ],
   },
@@ -68,7 +113,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Rosebotanique - Сумки ручной работы',
     description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique',
-    images: ['/images/about-m.jpg.png'],
+    images: [`${baseUrl}/logo/logo_day.svg`],
   },
   alternates: {
     canonical: baseUrl,
@@ -103,34 +148,45 @@ export default async function RootLayout({
     console.warn('next-intl config not found, using default locale:', error)
   }
   
-  return (
-    <html lang={locale} className={`${inter.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
-      <body className="font-body antialiased">
-        <ErrorBoundary>
-          <Providers>
-            {/* Skip link для клавиатурной навигации */}
-            <a 
-              href="#main-content" 
-              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 
-                focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground 
-                focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary 
-                focus:ring-offset-2 dark:focus:bg-primary dark:focus:text-primary-foreground"
-            >
-              Перейти к основному контенту
-            </a>
-            <HideOnBackoffice>
-              <SiteHeader />
-            </HideOnBackoffice>
-            <main id="main-content">{children}</main>
-            <HideOnBackoffice>
-              <Footer />
-            </HideOnBackoffice>
-            <CartDrawer />
-            <FavoritesDrawer />
-            <ScrollToTop />
-          </Providers>
-        </ErrorBoundary>
-      </body>
-    </html>
-  )
+      return (
+        <html lang={locale} className={`${inter.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
+          <body className="font-body antialiased bg-fintage-offwhite dark:bg-fintage-charcoal">
+            {/* Яндекс.Метрика - размещено в начале body для ранней загрузки */}
+            {process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID ? (
+              <YandexMetrika counterId={process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID} />
+            ) : (
+              <YandexMetrika counterId="105738536" />
+            )}
+            <ErrorBoundary>
+              <Providers>
+                {/* Skip link для клавиатурной навигации */}
+                <a 
+                  href="#main-content" 
+                  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 
+                    focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground 
+                    focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary 
+                    focus:ring-offset-2 dark:focus:bg-primary dark:focus:text-primary-foreground"
+                >
+                  Перейти к основному контенту
+                </a>
+                <HideOnBackoffice>
+                  <SiteHeader />
+                </HideOnBackoffice>
+                <main id="main-content">{children}</main>
+                <HideOnBackoffice>
+                  <Footer />
+                </HideOnBackoffice>
+                <CartDrawer />
+                <FavoritesDrawer />
+                <ToastContainer />
+                <ScrollToTop />
+                {/* Google Analytics */}
+                {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+                  <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+                )}
+              </Providers>
+            </ErrorBoundary>
+          </body>
+        </html>
+      )
 }

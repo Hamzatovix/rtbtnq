@@ -109,48 +109,61 @@ export function SettingsPanel() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={motionConfig}
-          className="fixed inset-0 z-[59] bg-black/20 backdrop-blur-sm"
+          className="fixed inset-0 z-[59] bg-black/10 dark:bg-black/20"
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
 
-        {/* Panel - стиль как у мобильного меню */}
+        {/* Panel - технический стиль Stone Island / North Face */}
         <motion.div
           ref={panelRef}
-          initial={reducedMotion ? {} : { opacity: 0, y: -10, scale: 0.95 }}
+          initial={reducedMotion ? {} : { opacity: 0, y: -8, scale: 0.98 }}
           animate={reducedMotion ? {} : { opacity: 1, y: 0, scale: 1 }}
-          exit={reducedMotion ? {} : { opacity: 0, y: -10, scale: 0.95 }}
+          exit={reducedMotion ? {} : { opacity: 0, y: -8, scale: 0.98 }}
           transition={motionConfig}
-          className="fixed right-4 top-24 z-[60] w-auto rounded-xl border border-mistGray/30 dark:border-border bg-white/80 dark:bg-background/80 backdrop-breathing dark:backdrop-breathing supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60 shadow-breathing dark:shadow-breathing p-3"
+          className="fixed right-4 top-20 z-[60] w-[170px] border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite dark:bg-fintage-charcoal shadow-fintage-md p-3"
           role="dialog"
           aria-modal="true"
-          aria-label="Настройки"
+          aria-label={t('common.settings')}
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-end mb-2.5">
+          {/* Header - технический стиль */}
+          <div className="flex items-center justify-between mb-3 pb-2 border-b-2 border-fintage-graphite/20 dark:border-fintage-graphite/30">
+            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+              {t('common.settings')}
+            </span>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setOpen(false)}
-              className="h-6 w-6 rounded-full hover:bg-mistGray/10 dark:hover:bg-muted/30"
-              aria-label="Закрыть настройки"
+              className="h-7 w-7 rounded-sm hover:bg-hover-bg dark:hover:bg-hover-bg border border-transparent hover:border-hover-border dark:hover:border-hover-border transition-fintage active:scale-95"
+              aria-label={t('common.closeSettings')}
             >
-              <X className="h-3 w-3" />
+              <X className="h-3.5 w-3.5 text-fintage-charcoal dark:text-fintage-offwhite" />
             </Button>
           </div>
 
-          {/* Settings Content */}
+          {/* Settings Content - технический стиль */}
           <div className="flex flex-col gap-2">
             {/* Theme Toggle */}
-            <div className="flex items-center justify-center rounded-lg border border-mistGray/20 dark:border-border bg-mistGray/5 dark:bg-muted/10 p-2">
-              <ThemeToggle />
+            <div className="group flex flex-col items-center gap-1.5 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-hover-border transition-fintage p-2.5">
+              <div className="flex items-center justify-center scale-90">
+                <ThemeToggle />
+              </div>
+              <span className="text-[9px] font-mono font-medium text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
+                {t('common.theme')}
+              </span>
             </div>
 
             {/* Language Switcher */}
-            <div className="flex items-center justify-center rounded-lg border border-mistGray/20 dark:border-border bg-mistGray/5 dark:bg-muted/10 p-2">
-              <LocaleSwitcher />
+            <div className="group flex flex-col items-center gap-1.5 rounded-sm border-2 border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 hover:bg-hover-bg dark:hover:bg-hover-bg hover:border-hover-border dark:hover:border-hover-border transition-fintage p-2.5">
+              <div className="flex items-center justify-center scale-90">
+                <LocaleSwitcher />
+              </div>
+              <span className="text-[9px] font-mono font-medium text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
+                {t('common.language')}
+              </span>
             </div>
           </div>
         </motion.div>
@@ -160,17 +173,17 @@ export function SettingsPanel() {
 
   return (
     <>
-      {/* Trigger Button - всегда рендерится одинаково */}
-      <Button
-        variant="ghost"
-        size="icon"
+      {/* Trigger Button - унифицированный стиль */}
+      <button
+        type="button"
         onClick={mounted ? () => setOpen(true) : undefined}
-        className="rounded-full hover:bg-sageTint/5 dark:hover:bg-muted/20 transition-all duration-500 ease-out"
-        aria-label="Настройки"
+        className="relative inline-flex h-9 w-9 lg:h-10 lg:w-10 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80"
+        aria-label={t('common.settings')}
+        aria-expanded={open}
         suppressHydrationWarning
       >
-        <Settings className="h-5 w-5" />
-      </Button>
+        <Settings className={`h-4 w-4 lg:h-5 lg:w-5 text-fintage-charcoal dark:text-fintage-offwhite transition-transform duration-300 ${open ? 'rotate-90' : ''}`} />
+      </button>
 
       {/* Settings Panel - рендерится в портале только после монтирования */}
       {mounted && panelContent ? createPortal(panelContent, document.body) : null}

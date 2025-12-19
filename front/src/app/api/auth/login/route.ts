@@ -29,7 +29,11 @@ async function verifyPassword(password: string, hash: string): Promise<boolean> 
 const JWT_SECRET = (() => {
   const secret = process.env.JWT_SECRET
   if (!secret) {
-    if (process.env.NODE_ENV === 'production') {
+    // При билде Next.js устанавливает NODE_ENV=production, но это не значит, что мы в production
+    // Проверяем только при реальном запуске в production (через VERCEL_ENV или явную проверку)
+    const isRealProduction = process.env.VERCEL_ENV === 'production' || 
+                             (process.env.NODE_ENV === 'production' && process.env.VERCEL === '1')
+    if (isRealProduction) {
       throw new Error('JWT_SECRET environment variable must be set in production')
     }
     console.warn('[auth/login] JWT_SECRET отсутствует, используется dev-значение. Настройте переменную для production.')
@@ -77,13 +81,19 @@ export async function POST(req: NextRequest) {
     )
 
     const isProduction = process.env.NODE_ENV === 'production'
+    // Проверяем, используется ли HTTPS через заголовок запроса (более надёжно)
+    const protocol = req.headers.get('x-forwarded-proto') || 
+                     (req.url?.startsWith('https://') ? 'https' : 'http')
+    const isHttps = protocol === 'https' || 
+                    process.env.VERCEL === '1' ||
+                    process.env.VERCEL_ENV === 'production'
 
     response.cookies.set('auth-token', token, {
       httpOnly: true,
       sameSite: 'strict',
       maxAge: 60 * 60 * 24,
       path: '/',
-      secure: isProduction,
+      secure: isHttps, // Используем secure только если действительно HTTPS
     })
 
     return response

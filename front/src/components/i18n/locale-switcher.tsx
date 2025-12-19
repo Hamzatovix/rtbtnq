@@ -3,7 +3,6 @@
 import { useLocaleStore } from '@/store/locale-store'
 import { useClientLocale } from '@/hooks/useClientLocale'
 import { localeConfigs } from '@/i18n/config'
-import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 
 export function LocaleSwitcher() {
@@ -25,18 +24,17 @@ export function LocaleSwitcher() {
   const nextConfig = localeConfigs[locale === 'ru' ? 'en' : 'ru']
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
+      type="button"
       onClick={mounted ? toggleLocale : undefined}
-      className="rounded-lg border border-mistGray/30 dark:border-border bg-white/80 dark:bg-card/80 hover:bg-white dark:hover:bg-card transition-all duration-500 ease-out shadow-sm relative group"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-sm bg-transparent hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 active:opacity-80 relative group"
       aria-label={mounted ? `Переключить язык на ${nextConfig.label}` : 'Переключить язык'}
       title={mounted ? `Текущий язык: ${currentConfig.label}. Нажмите для переключения на ${nextConfig.label}` : undefined}
       suppressHydrationWarning
     >
       {/* Текущий флаг - всегда рендерится с suppressHydrationWarning */}
       <span 
-        className="text-lg transition-opacity duration-300 group-hover:opacity-0" 
+        className="text-lg transition-opacity duration-300 group-hover:opacity-0 drop-shadow-sm" 
         role="img" 
         aria-hidden="true"
         suppressHydrationWarning
@@ -45,7 +43,7 @@ export function LocaleSwitcher() {
       </span>
       {/* Следующий флаг при hover - всегда рендерится */}
       <span 
-        className="absolute text-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100" 
+        className="absolute text-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100 drop-shadow-sm" 
         role="img" 
         aria-hidden="true"
         suppressHydrationWarning
@@ -53,7 +51,7 @@ export function LocaleSwitcher() {
         {nextConfig.flag}
       </span>
       <span className="sr-only">Switch language</span>
-    </Button>
+    </button>
   )
 }
 

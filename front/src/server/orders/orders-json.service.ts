@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { nanoid } from 'nanoid'
 import { sendOrderNotification } from '@/lib/telegram'
-import { isSupabaseEnabled, supabaseDelete, supabaseSelect, supabaseUpsert } from '@/lib/supabase-admin'
+import { isSupabaseEnabled, supabaseDelete, supabaseSelect, supabaseUpsert, supabaseCount } from '@/lib/supabase-admin'
 
 const SUPABASE_ORDERS_TABLE = process.env.SUPABASE_ORDERS_TABLE || 'orders'
 
@@ -79,6 +79,71 @@ async function loadOrdersFromSupabase(): Promise<Order[]> {
   } catch (error) {
     console.error('Supabase loadOrders error:', error)
     return []
+  }
+}
+
+/**
+ * Оптимизированная загрузка заказов с фильтрацией и пагинацией на уровне БД
+ */
+async function loadOrdersFromSupabaseWithFilters(options?: {
+  status?: string
+  limit?: number
+  offset?: number
+}): Promise<{ orders: Order[]; total: number }> {
+  try {
+    // Строим запрос с фильтрацией и пагинацией
+    let query = `${SUPABASE_ORDERS_TABLE}?select=id,number,order_status,data,created_at,updated_at&order=created_at.desc`
+    
+    // Добавляем фильтр по статусу, если указан
+    if (options?.status) {
+      query += `&order_status=eq.${encodeURIComponent(options.status)}`
+    }
+    
+    // Добавляем пагинацию
+    const limit = options?.limit || 100
+    const offset = options?.offset || 0
+    query += `&limit=${limit}&offset=${offset}`
+    
+    // Загружаем данные
+    const data = await supabaseSelect<Array<{ id: string; number?: string; order_status?: string; data?: Order; created_at?: string; updated_at?: string }>>(query)
+    
+    const orders = (Array.isArray(data) ? data : []).map((row) => {
+      const payload = row.data ?? ({} as Order)
+      return {
+        ...payload,
+        id: payload.id ?? row.id,
+        number: payload.number ?? row.number ?? '',
+        orderStatus: payload.orderStatus ?? row.order_status ?? 'new',
+        createdAt: payload.createdAt ?? row.created_at ?? new Date().toISOString(),
+        updatedAt: payload.updatedAt ?? row.updated_at ?? new Date().toISOString(),
+      }
+    })
+    
+    // Получаем общее количество для метаданных
+    let total = orders.length
+    
+    // Оптимизация: если получили меньше записей чем limit, это последняя страница
+    // total точно равен количеству загруженных записей + offset
+    if (orders.length < limit) {
+      total = offset + orders.length
+    } else {
+      // Если получили полную страницу, нужен точный подсчет (возможно есть еще записи)
+      // Также всегда делаем подсчет если есть фильтр (для корректной пагинации)
+      try {
+        const filter = options?.status ? `order_status=eq.${encodeURIComponent(options.status)}` : ''
+        total = await supabaseCount(SUPABASE_ORDERS_TABLE, filter)
+      } catch (error) {
+        console.error('[Supabase] Ошибка при подсчете заказов:', error)
+        // Если не удалось получить точный count, используем приблизительный
+        // Если получили полную страницу, предполагаем что есть еще записи
+        total = offset + limit + 1 // Приблизительно
+      }
+    }
+    
+    return { orders, total }
+  } catch (error) {
+    console.error('Supabase loadOrdersWithFilters error:', error)
+    return { orders: [], total: 0 }
   }
 }
 
@@ -234,50 +299,79 @@ export async function createOrder(data: {
     total: order.total
   })
 
-  // Отправляем уведомление в Telegram асинхронно (не блокируем создание заказа)
-  // Используем setImmediate для отправки в следующем тике event loop
-  setImmediate(async () => {
-    try {
-      console.log('[Order] Начало отправки уведомления в Telegram...')
-      const shippingAddress = order.addresses?.find(addr => addr.type === 'shipping') || order.addresses?.[0]
-      
-      const notificationResult = await sendOrderNotification({
-        orderId: order.id,
-        orderNumber: order.number,
-        customerName: order.customerName || 'Не указано',
-        customerPhone: order.customerPhone,
-        items: order.items.map(item => ({
-          name: item.name,
-          qty: item.qty,
-          color: (item as any).color || null,
-          price: item.price,
-          total: item.total,
-          image: (item as any).image || null,
-        })),
-        total: order.total,
-        currency: order.currency,
-        address: shippingAddress ? {
-          country: shippingAddress.country,
-          city: shippingAddress.city,
-          line1: shippingAddress.line1,
-          line2: shippingAddress.line2 || null,
-          postal: shippingAddress.postal,
-        } : null,
-        shippingMethod: (shippingAddress as any)?.shippingMethod ?? (order as any).shippingMethod ?? null,
-        shippingPrice: (shippingAddress as any)?.shippingPrice ?? (order as any).shippingPrice ?? null,
-        note: order.note,
-        baseUrl: data.baseUrl,
-      })
-      
-      console.log('[Order] Результат отправки в Telegram:', notificationResult ? 'успешно' : 'не удалось')
-    } catch (error) {
-      // Не блокируем создание заказа, если отправка в Telegram не удалась
-      console.error('[Order] Ошибка при отправке уведомления в Telegram:', error)
-      if (error instanceof Error) {
-        console.error('[Order] Stack trace:', error.stack)
-      }
-    }
-  })
+  // Отправляем уведомление в Telegram синхронно, но не блокируем создание заказа при ошибках
+  // На Vercel serverless функции завершаются сразу после ответа,
+  // поэтому отправляем синхронно с коротким таймаутом и быстрым retry
+  try {
+    console.log('[Order] Начало отправки уведомления в Telegram...', {
+      orderId: order.id,
+      orderNumber: order.number,
+      timestamp: new Date().toISOString()
+    })
+    
+    const shippingAddress = order.addresses?.find(addr => addr.type === 'shipping') || order.addresses?.[0]
+    
+    // Отправляем с таймаутом на весь процесс (включая retry)
+    const notificationPromise = sendOrderNotification({
+      orderId: order.id,
+      orderNumber: order.number,
+      customerName: order.customerName || 'Не указано',
+      customerPhone: order.customerPhone,
+      items: order.items.map(item => ({
+        name: item.name,
+        qty: item.qty,
+        color: (item as any).color || null,
+        price: item.price,
+        total: item.total,
+        image: (item as any).image || null,
+      })),
+      total: order.total,
+      currency: order.currency,
+      address: shippingAddress ? {
+        country: shippingAddress.country,
+        city: shippingAddress.city,
+        line1: shippingAddress.line1,
+        line2: shippingAddress.line2 || null,
+        postal: shippingAddress.postal,
+      } : null,
+      shippingMethod: (shippingAddress as any)?.shippingMethod ?? (order as any).shippingMethod ?? null,
+      shippingPrice: (shippingAddress as any)?.shippingPrice ?? (order as any).shippingPrice ?? null,
+      note: order.note,
+      baseUrl: data.baseUrl,
+    })
+    
+    // Ждем отправки с общим таймаутом (максимум 30 секунд на все retry)
+    // Расчет времени: 15s (таймаут) + 0.5s (задержка) + 15s + 1s + 15s + 2s = ~48.5s максимум
+    // Но обычно Telegram отвечает за 1-3 секунды, поэтому 30 секунд достаточно для большинства случаев
+    // Если не успевает - заказ все равно создается, уведомление может быть пропущено
+    const timeoutPromise = new Promise<boolean>((resolve) => {
+      setTimeout(() => {
+        console.warn('[Order] Таймаут ожидания отправки в Telegram (30s), продолжаем без блокировки')
+        resolve(false)
+      }, 30000) // 30 секунд на все retry попытки
+    })
+    
+    const notificationResult = await Promise.race([notificationPromise, timeoutPromise])
+    
+    console.log('[Order] Результат отправки в Telegram:', {
+      success: notificationResult,
+      orderId: order.id,
+      orderNumber: order.number,
+      timestamp: new Date().toISOString()
+    })
+  } catch (error) {
+    // Не блокируем создание заказа, если отправка в Telegram не удалась
+    console.error('[Order] Ошибка при отправке уведомления в Telegram:', {
+      orderId: order.id,
+      orderNumber: order.number,
+      error: error instanceof Error ? {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      } : error,
+      timestamp: new Date().toISOString()
+    })
+  }
 
   return order
 }
@@ -292,6 +386,24 @@ export async function listOrders(options?: {
   limit?: number
   offset?: number
 }): Promise<{ results: Order[]; meta: { total: number; limit: number; offset: number } }> {
+  const limit = options?.limit || 100
+  const offset = options?.offset || 0
+  
+  // Если используется Supabase, используем оптимизированную загрузку с фильтрацией на уровне БД
+  if (isSupabaseEnabled()) {
+    const { orders, total } = await loadOrdersFromSupabaseWithFilters({
+      status: options?.status,
+      limit,
+      offset,
+    })
+    
+    return {
+      results: orders,
+      meta: { total, limit, offset },
+    }
+  }
+  
+  // Для файловой системы используем старую логику (загружаем все и фильтруем в памяти)
   let orders = await loadOrders()
   
   if (options?.status) {
@@ -299,9 +411,6 @@ export async function listOrders(options?: {
   }
   
   const total = orders.length
-  const limit = options?.limit || 100
-  const offset = options?.offset || 0
-  
   const results = orders.slice(offset, offset + limit)
   
   return {

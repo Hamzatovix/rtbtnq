@@ -28,7 +28,7 @@ export default function ProductCardQuickActions({
         aria-pressed={favorite}
         onClick={onToggleFavorite}
         className={cn(
-          'group inline-flex items-center justify-center ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageTint dark:focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-roseBeige/30 dark:hover:bg-muted/30 rounded-full md:backdrop-blur-md shadow-warm bg-roseBeige/80 dark:bg-card/80 border-mistGray/30 dark:border-border text-inkSoft dark:text-foreground hover:scale-110 transition-transform duration-250 ease-brand',
+          'group inline-flex items-center justify-center ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring dark:focus-visible:ring-focus-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm md:backdrop-blur-md shadow-fintage-sm bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 border border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite hover:scale-110 hover:shadow-fintage-md active:scale-105 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
           buttonSize
         )}
       >

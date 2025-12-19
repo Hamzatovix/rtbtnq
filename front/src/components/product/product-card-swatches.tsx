@@ -92,8 +92,10 @@ export default function ProductCardSwatches({
               event.stopPropagation()
               onSelect(color, index)
             }}
-            className={`${swatchSizeClass} rounded-full border-2 shadow-warm transition-transform duration-250 ease-brand focus:outline-none focus:ring-2 focus:ring-sageTint dark:focus:ring-primary ${
-              checked ? 'ring-2 ring-sageTint dark:ring-primary scale-110 shadow-medium' : 'border-mistGray/30 dark:border-border hover:border-mistGray/50 dark:hover:border-border/60 hover:scale-110'
+            className={`${swatchSizeClass} rounded-sm border-2 shadow-fintage-sm transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] focus:outline-none focus:ring-2 focus:ring-focus-ring dark:focus:ring-focus-ring ${
+              checked 
+                ? 'ring-2 ring-accent dark:ring-accent scale-110 shadow-fintage-md border-accent dark:border-accent' 
+                : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 hover:border-fintage-graphite/50 dark:hover:border-fintage-graphite/60 hover:scale-110 hover:shadow-fintage-md active:scale-105'
             }`}
             style={{ backgroundColor: color.hex_code }}
             title={
@@ -112,7 +114,7 @@ export default function ProductCardSwatches({
 
       {moreCount > 0 && (
         <div
-          className={`${swatchSizeClass} rounded-full border-2 flex items-center justify-center text-[10px] font-medium text-muted-foreground shadow-warm bg-roseBeige dark:bg-card border-mistGray/30 dark:border-border`}
+          className={`${swatchSizeClass} rounded-sm border-2 flex items-center justify-center text-[9px] font-mono font-medium text-fintage-graphite dark:text-fintage-graphite/70 shadow-fintage-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border-fintage-graphite/30 dark:border-fintage-graphite/40`}
           role="img"
           aria-label={locale === 'ru' ? `ещё ${moreCount} цветов доступно` : `${moreCount} more colors available`}
         >

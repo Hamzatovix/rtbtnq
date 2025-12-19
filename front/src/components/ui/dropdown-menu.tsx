@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { ChevronDown } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface DropdownMenuContextValue {
   open: boolean
@@ -92,8 +93,6 @@ export function DropdownMenuContent({
 }: DropdownMenuContentProps) {
   const { open } = React.useContext(DropdownMenuContext)
 
-  if (!open) return null
-
   const positionClass =
     align === 'end' ? 'right-0' : align === 'center' ? 'left-1/2 -translate-x-1/2' : 'left-0'
   const verticalClass = side === 'top' ? 'bottom-full' : 'top-full'
@@ -101,13 +100,21 @@ export function DropdownMenuContent({
     side === 'top' ? { marginBottom: sideOffset } : { marginTop: sideOffset }
 
   return (
-    <div
-      className={`absolute ${positionClass} ${verticalClass} bg-linenWhite dark:bg-card border border-mistGray/20 dark:border-border rounded-2xl shadow-misty dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] py-2 z-[55] ${className}`}
-      style={offsetStyle}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {children}
-    </div>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className={`absolute ${positionClass} ${verticalClass} bg-fintage-offwhite dark:bg-fintage-charcoal border-2 border-fintage-graphite/20 dark:border-fintage-graphite/45 shadow-fintage-md z-[55] ${className}`}
+          style={offsetStyle}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
@@ -122,7 +129,7 @@ export function DropdownMenuItem({ asChild, children, className = '', onClick }:
   if (asChild && React.isValidElement(children)) {
     const child = children as React.ReactElement<any>
     return React.cloneElement(child, {
-      className: `block w-full text-left px-4 py-2 text-inkSoft dark:text-foreground hover:bg-roseBeige/40 dark:hover:bg-muted/30 transition-colors ${className}`,
+      className: `block w-full text-left px-4 py-2 text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage ${className}`,
       onClick: (e: React.MouseEvent) => {
         handleClick()
         if (child.props && typeof (child.props as any).onClick === 'function') {
@@ -134,7 +141,7 @@ export function DropdownMenuItem({ asChild, children, className = '', onClick }:
 
   return (
     <div
-      className={`block w-full text-left px-4 py-2 text-inkSoft dark:text-foreground hover:bg-roseBeige/40 dark:hover:bg-muted/30 transition-colors cursor-pointer ${className}`}
+      className={`block w-full text-left px-4 py-2 text-fintage-charcoal dark:text-fintage-offwhite hover:bg-hover-bg dark:hover:bg-hover-bg transition-fintage cursor-pointer ${className}`}
       onClick={handleClick}
     >
       {children}

@@ -1,6 +1,6 @@
 /**
  * Универсальная функция для тактильной обратной связи (вибрации)
- * Поддерживает Android (Vibration API) и iOS Safari (AudioContext fallback)
+ * Поддерживает Android (Vibration API) и iOS Safari (Haptic Feedback API + AudioContext fallback)
  */
 
 let audioContext: AudioContext | null = null
@@ -45,6 +45,51 @@ function initAudioContext(): AudioContext | null {
 }
 
 /**
+ * Пытается использовать нативный Haptic Feedback API для iOS (iOS 13+)
+ */
+function triggerIOSHapticFeedback(type: 'light' | 'medium' | 'heavy' | 'success'): boolean {
+  if (typeof window === 'undefined') return false
+  
+  try {
+    // Проверяем наличие Haptic Feedback API
+    if ('vibrate' in navigator) {
+      // Для iOS 13+ некоторые браузеры поддерживают Vibration API
+      const nav = navigator as Navigator & { vibrate?: (pattern: number | number[]) => boolean }
+      if (typeof nav.vibrate === 'function') {
+        // iOS поддерживает простые паттерны вибрации
+        const patterns: Record<string, number | number[]> = {
+          light: 10,
+          medium: 15,
+          heavy: 20,
+          success: [10, 20, 10],
+        }
+        nav.vibrate(patterns[type] || patterns.medium)
+        return true
+      }
+    }
+    
+    // Пробуем использовать WebKit messageHandlers для нативных приложений
+    const webkit = (window as any).webkit
+    if (webkit?.messageHandlers) {
+      const hapticHandler =
+        webkit.messageHandlers.notificationFeedback ??
+        webkit.messageHandlers.hapticFeedback ??
+        webkit.messageHandlers.impactFeedback
+      
+      if (hapticHandler?.postMessage) {
+        const hapticType = type === 'success' ? 'success' : type === 'heavy' ? 'heavy' : type === 'light' ? 'light' : 'medium'
+        hapticHandler.postMessage(hapticType)
+        return true
+      }
+    }
+    
+    return false
+  } catch {
+    return false
+  }
+}
+
+/**
  * Определяет, является ли устройство iOS
  */
 function isIOS(): boolean {
@@ -77,8 +122,8 @@ export function triggerHapticFeedback(type: 'light' | 'medium' | 'heavy' | 'succ
   try {
     const nav = navigator as Navigator & { vibrate?: (pattern: number | number[]) => boolean }
     
-    // Android: используем Vibration API
-    if (typeof nav.vibrate === 'function') {
+    // Приоритет 1: Android - используем Vibration API
+    if (typeof nav.vibrate === 'function' && !isIOS()) {
       const patterns: Record<string, number | number[]> = {
         light: 10,
         medium: [10, 15, 10],
@@ -90,8 +135,26 @@ export function triggerHapticFeedback(type: 'light' | 'medium' | 'heavy' | 'succ
       return
     }
     
-    // iOS Safari: используем AudioContext fallback
+    // Приоритет 2: iOS - пробуем нативный Haptic Feedback API
     if (isIOS()) {
+      // Сначала пробуем нативный API
+      if (triggerIOSHapticFeedback(type)) {
+        return
+      }
+      
+      // Fallback: используем Vibration API если доступен (iOS 13+ в некоторых браузерах)
+      if (typeof nav.vibrate === 'function') {
+        const patterns: Record<string, number | number[]> = {
+          light: 10,
+          medium: 15,
+          heavy: 20,
+          success: [10, 20, 10],
+        }
+        nav.vibrate(patterns[type] || patterns.medium)
+        return
+      }
+      
+      // Fallback: AudioContext для старых версий iOS Safari
       const ctx = initAudioContext()
       if (ctx && hapticAudioBuffer) {
         // Восстанавливаем контекст, если он был приостановлен
@@ -123,17 +186,6 @@ export function triggerHapticFeedback(type: 'light' | 'medium' | 'heavy' | 'succ
           .catch(() => {
             // Игнорируем ошибки - вибрация не критична
           })
-      }
-      
-      // Также пробуем использовать WebKit messageHandlers для нативных приложений
-      const webkit = (window as any).webkit
-      const hapticHandler =
-        webkit?.messageHandlers?.notificationFeedback ??
-        webkit?.messageHandlers?.hapticFeedback ??
-        webkit?.messageHandlers?.impactFeedback
-      
-      if (hapticHandler?.postMessage) {
-        hapticHandler.postMessage(type === 'success' ? 'success' : 'medium')
       }
     }
   } catch {

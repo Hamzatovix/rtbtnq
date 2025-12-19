@@ -52,6 +52,15 @@ export function OptimizedImage({
   }
 
   const handleError = () => {
+    // Логируем ошибку для диагностики (только в development)
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[OptimizedImage] Ошибка загрузки изображения:', {
+        src: currentSrc,
+        fallbackSrc,
+        hasError,
+      })
+    }
+    
     if (fallbackSrc && currentSrc !== fallbackSrc) {
       setCurrentSrc(fallbackSrc)
       setIsLoaded(false)
@@ -72,7 +81,7 @@ export function OptimizedImage({
         )}
         
         <Image
-          src={hasError ? '/placeholder/about_main_placeholder.webp' : currentSrc}
+          src={hasError ? '/placeholder/about_main_placeholder.svg' : currentSrc}
           alt={alt}
           fill
           sizes={sizes}
@@ -82,6 +91,7 @@ export function OptimizedImage({
           blurDataURL={blurDataURL}
           onLoad={handleLoad}
           onError={handleError}
+          unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com') || currentSrc.startsWith('http')}
           className={`${className} relative z-10 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } transition-opacity duration-300`}
@@ -97,7 +107,7 @@ export function OptimizedImage({
         <div className="absolute inset-0 bg-gray-200 animate-pulse" />
       )}
       <Image
-        src={hasError ? '/placeholder/about_main_placeholder.webp' : currentSrc}
+        src={hasError ? '/placeholder/about_main_placeholder.svg' : currentSrc}
         alt={alt}
         width={width}
         height={height}
@@ -108,6 +118,7 @@ export function OptimizedImage({
         blurDataURL={blurDataURL}
         onLoad={handleLoad}
         onError={handleError}
+        unoptimized={currentSrc.startsWith('/uploads/') || currentSrc.includes('blob.vercel-storage.com') || currentSrc.startsWith('http')}
         className={`transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
         }`}

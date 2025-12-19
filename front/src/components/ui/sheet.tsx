@@ -85,7 +85,7 @@ export function SheetContent({ side = 'right', children, className = '' }: Sheet
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/20 dark:bg-black/50 z-[60]"
+            className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm dark:backdrop-blur-md z-[60]"
             onClick={() => setOpen(false)}
           />
           {/* Content */}
@@ -93,8 +93,8 @@ export function SheetContent({ side = 'right', children, className = '' }: Sheet
             initial={side === 'right' ? { x: '100%' } : side === 'left' ? { x: '-100%' } : side === 'top' ? { y: '-100%' } : { y: '100%' }}
             animate={{ x: 0, y: 0 }}
             exit={side === 'right' ? { x: '100%' } : side === 'left' ? { x: '-100%' } : side === 'top' ? { y: '-100%' } : { y: '100%' }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className={`fixed z-[61] ${
+            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            className={`fixed z-[61] bg-fintage-offwhite dark:bg-fintage-charcoal border-l border-fintage-graphite/20 dark:border-fintage-graphite/30 shadow-fintage-elevated ${
               side === 'right' ? 'right-0 h-full' :
               side === 'left' ? 'left-0 h-full' :
               side === 'top' ? 'top-0 left-0 w-full' :
@@ -104,9 +104,9 @@ export function SheetContent({ side = 'right', children, className = '' }: Sheet
           >
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 p-2 hover:bg-mistGray/20 dark:hover:bg-muted/30 rounded-full transition-colors z-10"
+              className="absolute top-4 right-4 p-2 hover:bg-hover-bg dark:hover:bg-hover-bg rounded-sm transition-fintage z-10 border border-transparent hover:border-hover-border dark:hover:border-hover-border"
             >
-              <X className="h-5 w-5 text-inkSoft dark:text-foreground" />
+              <X className="h-5 w-5 text-fintage-charcoal dark:text-fintage-offwhite" />
             </button>
             {children}
           </motion.div>
