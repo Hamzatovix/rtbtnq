@@ -41,5 +41,5 @@
     <!-- Центр - ОЧЕНЬ крупный и контрастный -->
     <circle cx="0" cy="0" r="100" fill="url(#rbCore)"/>
     <circle cx="0" cy="0" r="75" fill="#000000" opacity="1"/>
-  </g>
+</g>
 </svg>

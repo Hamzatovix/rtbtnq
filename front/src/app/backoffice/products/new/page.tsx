@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Plus, Trash2, Image as ImageIcon, Info, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { getColorEnglishName } from '@/lib/utils'
 
 type Category = { id:string; slug:string; name:string }
 type Color = { id:string; name:string; slug:string }
@@ -321,11 +322,12 @@ export default function BackofficeNewProductPage(){
                     {colors.map((c)=>{
                       const hex = (c as any).hex || (c as any).hex_code || '#cccccc'
                       const selected = v.colorId === String(c.id)
+                      const englishName = getColorEnglishName(c.name, c.slug)
                       return (
                         <button
                           key={c.id}
                           type="button"
-                          title={c.name}
+                          title={englishName}
                           onClick={()=> updateVariant(idx, { colorId: String(c.id) })}
                           className={`relative w-10 h-10 rounded-sm border-2 transition-fintage ${selected ? 'ring-2 ring-accent dark:ring-accent border-accent dark:border-accent scale-110' : 'border-fintage-graphite/40 dark:border-fintage-graphite/50 hover:border-fintage-graphite/60 dark:hover:border-fintage-graphite/60 hover:scale-105'}`}
                           style={{ backgroundColor: hex }}
@@ -338,7 +340,7 @@ export default function BackofficeNewProductPage(){
                     })}
                   </div>
                   <p className="text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
-                    {v.colorId ? `Выбран: ${colors.find(c=> String(c.id) === String(v.colorId))?.name || '—'}` : 'Выберите цвет'}
+                    {v.colorId ? `Selected: ${getColorEnglishName(colors.find(c=> String(c.id) === String(v.colorId))?.name || '—', colors.find(c=> String(c.id) === String(v.colorId))?.slug)}` : 'Select color'}
                   </p>
                 </div>
                 <div>

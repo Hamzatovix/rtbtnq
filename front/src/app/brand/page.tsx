@@ -285,6 +285,9 @@ export default function BrandPage() {
             <p className="text-fintage-charcoal/90 dark:text-fintage-offwhite/90">
               {t('brandPage.paragraph2')}
             </p>
+            <p className="text-fintage-charcoal/90 dark:text-fintage-offwhite/90">
+              {t('brandPage.paragraph3')}
+            </p>
           </div>
 
           {/* Теги ценностей - технический стиль */}
@@ -309,7 +312,7 @@ export default function BrandPage() {
           {/* Подпись - технический стиль */}
           <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
             <p className="text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-graphite/50">
-              {t('brandPage.madeIn')}
+              Noxçiyn maxkaẋ bezamca yina
             </p>
           </div>
         </motion.div>

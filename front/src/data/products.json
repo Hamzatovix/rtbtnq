@@ -1,5 +1,5 @@
 {
-  "count": 5,
+  "count": 6,
   "next": null,
   "previous": null,
   "results": [
@@ -224,6 +224,45 @@
       ],
       "createdAt": "2025-01-08T12:00:00.000Z",
       "updatedAt": "2025-01-08T12:00:00.000Z"
+    },
+    {
+      "id": "1765251098946",
+      "slug": "sdwe",
+      "name": "Баул",
+      "description": "Баул из непромокаемой ткани в четырех оттенках, вместе с ним идет мешочек который кладется вовнутрь и обвес - брелок для ключей / наушников",
+      "categoryId": "1",
+      "isPublished": true,
+      "is_featured": false,
+      "variants": [
+        {
+          "colorId": "2",
+          "sku": "1765251098946-2",
+          "priceCents": 599900,
+          "currency": "RUB",
+          "stockQty": 0,
+          "isDefault": true,
+          "images": [
+            {
+              "url": "/uploads/products/1765251091607-_K8Z6rKbOR.jpeg"
+            }
+          ]
+        },
+        {
+          "colorId": "7",
+          "sku": "1765251098946-7",
+          "priceCents": 500000,
+          "currency": "EUR",
+          "stockQty": 0,
+          "isDefault": false,
+          "images": [
+            {
+              "url": "/uploads/products/1765252683976-W7CO462MKX.jpg"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2025-12-09T03:31:38.946Z",
+      "updatedAt": "2025-12-09T03:58:31.444Z"
     }
   ]
 }

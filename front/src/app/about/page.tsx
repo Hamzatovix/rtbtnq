@@ -83,12 +83,15 @@ export default function AboutPage() {
           </h2>
 
           {/* Основной текст */}
-          <div className="space-y-6 md:space-y-7 text-base md:text-lg lg:text-xl font-light leading-relaxed md:leading-loose text-fintage-charcoal/80 dark:text-fintage-offwhite/80">
-            <p>
+          <div className="space-y-6 md:space-y-7 text-base md:text-lg lg:text-xl font-light leading-relaxed md:leading-loose text-fintage-charcoal dark:text-fintage-offwhite">
+            <p className="text-fintage-charcoal/90 dark:text-fintage-offwhite/90">
               {t('aboutPage.paragraph1')}
             </p>
-            <p>
+            <p className="text-fintage-charcoal/90 dark:text-fintage-offwhite/90">
               {t('aboutPage.paragraph2')}
+            </p>
+            <p className="text-fintage-charcoal/90 dark:text-fintage-offwhite/90">
+              {t('aboutPage.paragraph3')}
             </p>
           </div>
 
@@ -109,7 +112,7 @@ export default function AboutPage() {
           {/* Подпись */}
           <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
             <p className="text-xs md:text-sm font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-graphite/50">
-              made in daymohk
+              Noxçiyn maxkaẋ bezamca yina
             </p>
           </div>
         </motion.div>

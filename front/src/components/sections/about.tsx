@@ -103,8 +103,8 @@ export function About() {
   // Массив изображений для ротации (вертикальные изображения)
   // ВАЖНО: Файлы должны быть конвертированы из HEIC в JPG/PNG/WebP
   const rotatingImages = [
-    `/images/about_v1.jpg.jpg`,
-    `/images/about_v2.jpg.jpg`,
+    `/images/about_v1.png`,
+    `/images/about_v2.png`,
   ]
   
   // Состояние для текущего индекса ротирующегося изображения
@@ -272,7 +272,7 @@ export function About() {
               {/* Горизонтальное изображение 1 */}
               <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src="/images/about_h1.jpg.jpg"
+                  src="/images/about_h1.png"
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
@@ -298,7 +298,7 @@ export function About() {
               {/* Горизонтальное изображение 2 */}
               <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
                 <Image
-                  src="/images/about_h2.jpg.jpg"
+                  src="/images/about_h2.png"
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"
@@ -317,6 +317,32 @@ export function About() {
                 <figcaption className="absolute bottom-2 left-2 z-10 pointer-events-none">
                   <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
                     {t('home.brand.caption.movement') || 'IN MOTION'}
+                  </span>
+                </figcaption>
+              </figure>
+
+              {/* Горизонтальное изображение 3 */}
+              <figure className="relative min-w-[80%] aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30 snap-center flex-shrink-0">
+                <Image
+                  src="/images/about_h3.png"
+                  alt={t('home.brand.alt.details') || 'Details — close-up of bag details and craftsmanship'}
+                  fill
+                  loading="lazy"
+                  sizes="75vw"
+                  className="object-cover motion-safe:transition-fintage group-hover:scale-[1.01]"
+                  unoptimized
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = '/placeholder/about_main_placeholder.svg'
+                  }}
+                />
+                {/* Subtle overlay */}
+                <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_80%)] bg-accent/5 dark:bg-accent/5 pointer-events-none" aria-hidden="true" />
+                
+                {/* Retro catalog caption */}
+                <figcaption className="absolute bottom-2 left-2 z-10 pointer-events-none">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                    {t('home.brand.caption.details') || 'DETAILS'}
                   </span>
                 </figcaption>
               </figure>
@@ -399,7 +425,7 @@ export function About() {
               {/* Top horizontal image — горизонтальное изображение 1 */}
               <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src="/images/about_h1.jpg.jpg"
+                  src="/images/about_h1.png"
                   alt={t('home.brand.alt.accessories') || 'Accessories flatlay — bag on concrete with headphones, camera, keys'}
                   fill
                   loading="lazy"
@@ -425,7 +451,7 @@ export function About() {
               {/* Bottom horizontal image — горизонтальное изображение 2 */}
               <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
                 <Image
-                  src="/images/about_h2.jpg.jpg"
+                  src="/images/about_h2.png"
                   alt={t('home.brand.alt.movement') || 'In motion — person walking with bag, cropped focus on bag and movement'}
                   fill
                   loading="lazy"
@@ -444,6 +470,32 @@ export function About() {
                 <figcaption className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10 pointer-events-none">
                   <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
                     {t('home.brand.caption.movement') || 'IN MOTION'}
+                  </span>
+                </figcaption>
+              </figure>
+
+              {/* Third horizontal image — горизонтальное изображение 3 */}
+              <figure className="relative aspect-[4/3] rounded-sm overflow-hidden group border border-fintage-graphite/20 dark:border-fintage-graphite/30">
+                <Image
+                  src="/images/about_h3.png"
+                  alt={t('home.brand.alt.details') || 'Details — close-up of bag details and craftsmanship'}
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="object-cover motion-safe:transition-fintage group-hover:scale-[1.01]"
+                  unoptimized
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = '/placeholder/about_main_placeholder.svg'
+                  }}
+                />
+                {/* Subtle overlay */}
+                <div className="absolute inset-0 [mask-image:linear-gradient(to_top,black,transparent_80%)] bg-accent/5 dark:bg-accent/5 pointer-events-none" aria-hidden="true" />
+                
+                {/* Retro catalog caption */}
+                <figcaption className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10 pointer-events-none">
+                  <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                    {t('home.brand.caption.details') || 'DETAILS'}
                   </span>
                 </figcaption>
               </figure>

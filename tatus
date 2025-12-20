@@ -1,0 +1,34 @@
+warning: in the working copy of 'front/src/app/layout.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'front/src/app/product/[id]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'front/src/components/product/product-card-quick-actions.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'front/src/components/product/product-card.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'front/src/components/product/product-share-buttons.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'front/src/data/products.json', LF will be replaced by CRLF the next time Git touches it
+front/src/app/layout.tsx
+front/src/app/product/[id]/page.tsx
+front/src/components/product/product-card-quick-actions.tsx
+front/src/components/product/product-card.tsx
+front/src/components/product/product-share-buttons.tsx
+front/src/data/products.json
+warning: in the working copy of 'front/src/app/product/[id]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/front/src/app/product/[id]/page.tsx b/front/src/app/product/[id]/page.tsx[m
+[1mindex 41d9f20..db104d1 100644[m
+[1m--- a/front/src/app/product/[id]/page.tsx[m
+[1m+++ b/front/src/app/product/[id]/page.tsx[m
+[36m@@ -44,6 +44,7 @@[m [mtype Color = {[m
+   name: string[m
+   hex?: string[m
+   hex_code?: string[m
+[32m+[m[32m  slug?: string[m
+ }[m
+ [m
+ export default function ProductPage() {[m
+[36m@@ -493,7 +494,7 @@[m [mexport default function ProductPage() {[m
+                   productUrl={`${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}/product/${product.slug}`}[m
+                   productImageUrl={currentImage.startsWith('http') ? currentImage : `${typeof window !== 'undefined' ? window.location.origin : 'https://rosebotanique.store'}${currentImage.startsWith('/') ? currentImage : '/' + currentImage}`}[m
+                   productPrice={selectedVariant ? selectedVariant.priceCents / 100 : 0}[m
+[31m-                  productColor={selectedColor ? { name: selectedColor.name, hex: selectedColor.hex, hex_code: selectedColor.hex_code, slug: (selectedColor as any).slug } : null}[m
+[32m+[m[32m                  productColor={selectedColor ? { name: selectedColor.name, hex: selectedColor.hex, hex_code: selectedColor.hex_code, slug: selectedColor.slug } : null}[m
+                   productCategory={Array.isArray(categories) ? categories.find(c => String(c.id) === String(product.categoryId))?.name : undefined}[m
+                   variant="page"[m
+                 />[m

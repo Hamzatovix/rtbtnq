@@ -101,11 +101,11 @@ export const metadata: Metadata = {
     description: 'Купить сумки ручной работы Rosebotanique с доставкой по России, Москве, Кавказу и СНГ. Дизайнерские сумки из натуральных материалов. Мастерская в Грозном, Чеченская Республика. Доставка по всей России, Москве, Кавказу, СНГ.',
     images: [
       {
-        url: `${baseUrl}/logo/logo_day.svg`,
-        width: 1024,
-        height: 1536,
+        url: `${baseUrl}/og/default.png`,
+        width: 1200,
+        height: 630,
         alt: 'Rosebotanique - Сумки ручной работы',
-        type: 'image/svg+xml',
+        type: 'image/png',
       },
     ],
   },
@@ -113,7 +113,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Rosebotanique - Сумки ручной работы',
     description: 'Откройте для себя коллекцию сумок ручной работы Rosebotanique',
-    images: [`${baseUrl}/logo/logo_day.svg`],
+    images: [`${baseUrl}/og/default.png`],
   },
   alternates: {
     canonical: baseUrl,
@@ -148,45 +148,45 @@ export default async function RootLayout({
     console.warn('next-intl config not found, using default locale:', error)
   }
   
-      return (
-        <html lang={locale} className={`${inter.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
-          <body className="font-body antialiased bg-fintage-offwhite dark:bg-fintage-charcoal">
+  return (
+    <html lang={locale} className={`${inter.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
+      <body className="font-body antialiased bg-fintage-offwhite dark:bg-fintage-charcoal">
             {/* Яндекс.Метрика - размещено в начале body для ранней загрузки */}
             {process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID ? (
               <YandexMetrika counterId={process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID} />
             ) : (
               <YandexMetrika counterId="105738536" />
             )}
-            <ErrorBoundary>
-              <Providers>
-                {/* Skip link для клавиатурной навигации */}
-                <a 
-                  href="#main-content" 
-                  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 
-                    focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground 
-                    focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary 
-                    focus:ring-offset-2 dark:focus:bg-primary dark:focus:text-primary-foreground"
-                >
-                  Перейти к основному контенту
-                </a>
-                <HideOnBackoffice>
-                  <SiteHeader />
-                </HideOnBackoffice>
-                <main id="main-content">{children}</main>
-                <HideOnBackoffice>
-                  <Footer />
-                </HideOnBackoffice>
-                <CartDrawer />
-                <FavoritesDrawer />
+        <ErrorBoundary>
+          <Providers>
+            {/* Skip link для клавиатурной навигации */}
+            <a 
+              href="#main-content" 
+              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 
+                focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground 
+                focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary 
+                focus:ring-offset-2 dark:focus:bg-primary dark:focus:text-primary-foreground"
+            >
+              Перейти к основному контенту
+            </a>
+            <HideOnBackoffice>
+              <SiteHeader />
+            </HideOnBackoffice>
+            <main id="main-content">{children}</main>
+            <HideOnBackoffice>
+              <Footer />
+            </HideOnBackoffice>
+            <CartDrawer />
+            <FavoritesDrawer />
                 <ToastContainer />
-                <ScrollToTop />
+            <ScrollToTop />
                 {/* Google Analytics */}
                 {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
                   <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
                 )}
-              </Providers>
-            </ErrorBoundary>
-          </body>
-        </html>
-      )
+          </Providers>
+        </ErrorBoundary>
+      </body>
+    </html>
+  )
 }

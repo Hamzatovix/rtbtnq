@@ -19,7 +19,7 @@ export async function generateMetadata({
   }
 
   const firstVariant = product.variants?.[0]
-  const price = firstVariant ? firstVariant.priceCents / 100 : 0
+  const price = firstVariant ? firstVariant.priceCents / 100 : undefined
   const image = firstVariant?.images?.[0]?.url || '/placeholder/product.jpg'
   const fullImageUrl = image.startsWith('http') 
     ? image 
@@ -67,11 +67,11 @@ export async function generateMetadata({
       locale: 'ru_RU',
       images: [
         {
-          url: fullImageUrl,
+          url: `${baseUrl}/api/og?type=product&title=${encodeURIComponent(product.name)}&productName=${encodeURIComponent(product.name)}&imageUrl=${encodeURIComponent(fullImageUrl)}${price ? `&price=${price}` : ''}`,
           width: 1200,
-          height: 1200,
+          height: 630,
           alt: `${product.name} - Доставка по России, Москве, Кавказу, СНГ`,
-          type: 'image/jpeg',
+          type: 'image/png',
         },
       ],
     },
@@ -79,7 +79,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: `${product.name} - Rosebotanique | Доставка по России, Москве, Кавказу, СНГ`,
       description,
-      images: [fullImageUrl],
+      images: [`${baseUrl}/api/og?type=product&title=${encodeURIComponent(product.name)}&productName=${encodeURIComponent(product.name)}&imageUrl=${encodeURIComponent(fullImageUrl)}${price ? `&price=${price}` : ''}`],
     },
     alternates: {
       canonical: `${baseUrl}/product/${product.slug}`,

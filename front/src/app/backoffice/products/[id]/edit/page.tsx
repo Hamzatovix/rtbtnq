@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { getColorEnglishName } from '@/lib/utils'
 
 type Category = { id: string; slug: string; name: string }
 type Color = { id: string; name: string; slug: string }
@@ -237,11 +238,14 @@ export default function BackofficeEditProductPage() {
                     onChange={e => updateVariant(idx, { colorId: e.target.value })}
                   >
                     <option value="" className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">—</option>
-                    {colors.map(c => (
-                      <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">
-                        {c.name}
-                      </option>
-                    ))}
+                    {colors.map(c => {
+                      const englishName = getColorEnglishName(c.name, c.slug)
+                      return (
+                        <option key={c.id} value={c.id} className="bg-fintage-offwhite dark:bg-fintage-graphite/30 text-fintage-charcoal dark:text-fintage-offwhite">
+                          {englishName}
+                        </option>
+                      )
+                    })}
                   </select>
                 </div>
                 <div>

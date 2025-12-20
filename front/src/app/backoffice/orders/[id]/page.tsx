@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { getColorEnglishName } from '@/lib/utils'
 
 export default function OrderDetailPage() {
   const params = useParams()
@@ -153,7 +154,7 @@ export default function OrderDetailPage() {
                   <div className="flex-1 min-w-0">
                     <div className="font-medium mb-1 text-fintage-charcoal dark:text-fintage-offwhite">{it.name || it.productName}</div>
                     {it.color && (
-                      <div className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/75 mb-1">Цвет: {it.color}</div>
+                      <div className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/75 mb-1">Color: {getColorEnglishName(it.color)}</div>
                     )}
                     <div className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono">{it.sku || '-'}</div>
                   </div>
