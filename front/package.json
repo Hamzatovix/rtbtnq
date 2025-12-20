@@ -13,6 +13,7 @@
     "images:optimize": "node ./scripts/optimize-collection-images.mjs",
     "images:optimize-about": "node ./scripts/optimize-about-images.mjs",
     "favicon:generate": "node ./scripts/generate-favicon.js",
+    "icons:generate": "node ./scripts/generate-icons.mjs",
     "og:generate": "node ./scripts/generate-og-images.mjs"
   },
   "dependencies": {

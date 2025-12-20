@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ProductShareButtons } from '@/components/product/product-share-buttons'
 import { Button } from '@/components/ui/button'
 
@@ -11,6 +11,14 @@ import { Button } from '@/components/ui/button'
 export default function SharePreviewTestPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [origin, setOrigin] = useState<string>('')
+
+  // Получаем origin только на клиенте
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setOrigin(window.location.origin)
+    }
+  }, [])
 
   // Тестовые данные
   const testProduct = {
@@ -26,6 +34,11 @@ export default function SharePreviewTestPage() {
   }
 
   const handlePreview = async () => {
+    if (!origin) {
+      alert('Страница еще загружается. Подождите немного и попробуйте снова.')
+      return
+    }
+
     setIsGenerating(true)
     
     try {
@@ -48,7 +61,7 @@ export default function SharePreviewTestPage() {
         img.onerror = reject
         img.src = testProduct.imageUrl.startsWith('http') 
           ? testProduct.imageUrl 
-          : `${window.location.origin}${testProduct.imageUrl}`
+          : `${origin}${testProduct.imageUrl}`
       })
 
       // Фон
@@ -157,7 +170,9 @@ export default function SharePreviewTestPage() {
             productUrl={testProduct.url}
             productImageUrl={testProduct.imageUrl.startsWith('http') 
               ? testProduct.imageUrl 
-              : `${window.location.origin}${testProduct.imageUrl}`}
+              : origin 
+                ? `${origin}${testProduct.imageUrl}`
+                : testProduct.imageUrl}
             productPrice={testProduct.price}
             productColor={testProduct.color}
             variant="page"

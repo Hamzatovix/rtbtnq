@@ -10,8 +10,8 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams
     const type = searchParams.get('type') || 'default'
     const title = searchParams.get('title') || 'Rosebotanique'
-    const description = searchParams.get('description')
-    const imageUrl = searchParams.get('imageUrl')
+    const description = searchParams.get('description') || undefined
+    const imageUrl = searchParams.get('imageUrl') || undefined
     const productName = searchParams.get('productName') || title
     const priceParam = searchParams.get('price')
     const productPrice = priceParam ? parseFloat(priceParam) : undefined
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
       imageBuffer = await generateProductOGImage({
         title,
         description,
-        imageUrl: imageUrl || undefined,
+        imageUrl,
         type: 'product',
         productName,
         productPrice,
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       imageBuffer = await generateDefaultOGImage()
     }
 
-    return new NextResponse(imageBuffer, {
+    return new NextResponse(new Uint8Array(imageBuffer), {
       headers: {
         'Content-Type': 'image/png',
         'Cache-Control': 'public, max-age=31536000, immutable',
