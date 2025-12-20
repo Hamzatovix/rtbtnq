@@ -61,7 +61,7 @@ console.log(`📁 Исходный файл: ${sourcePath}`)
 /**
  * Обрезает белые поля и добавляет безопасную зону
  */
-async function prepareImage(inputBuffer, targetSize, safeAreaPercent = 0.65) {
+async function prepareImage(inputBuffer, targetSize, safeAreaPercent = 0.6) {
   // Сначала обрезаем белые поля (trim), чтобы цветок занимал максимум места
   const trimmed = await sharp(inputBuffer)
     .trim({
@@ -70,7 +70,7 @@ async function prepareImage(inputBuffer, targetSize, safeAreaPercent = 0.65) {
     .toBuffer()
 
   // Вычисляем размер изображения с учетом safe-area
-  // safeAreaPercent определяет, какую часть занимает само изображение (65% изображение + 35% padding)
+  // safeAreaPercent определяет, какую часть занимает само изображение (60% изображение + 40% padding)
   const imageSize = Math.floor(targetSize * safeAreaPercent)
   
   // Масштабируем обрезанное изображение до нужного размера с сохранением пропорций
@@ -106,7 +106,7 @@ async function createFaviconIco(sizes) {
   // Для полноценного ICO нужна библиотека to-ico, но PNG работает в большинстве случаев
   // Используем 32x32 как оптимальный размер для favicon.ico (Google и Яндекс предпочитают этот размер)
   const sourceBuffer = fs.readFileSync(sourcePath)
-  const icoBuffer = await prepareImage(sourceBuffer, 32, 0.65) // 65% изображение + 35% padding
+  const icoBuffer = await prepareImage(sourceBuffer, 32, 0.6) // 60% изображение + 40% padding
   
   return icoBuffer
 }
@@ -115,13 +115,13 @@ async function generateIcons() {
   try {
     const sourceBuffer = fs.readFileSync(sourcePath)
     
-    console.log('\n📦 Подготовка изображения (trim + масштабирование с safe-area 65%)...')
+    console.log('\n📦 Подготовка изображения (trim + масштабирование с safe-area 60%)...')
     
-    // Размеры для favicon (используем 65% изображение + 35% padding для всех размеров)
+    // Размеры для favicon (используем 60% изображение + 40% padding для всех размеров)
     const faviconSizes = [
-      { size: 16, name: 'favicon-16x16.png', desc: '16x16 для старых браузеров', safeArea: 0.65 },
-      { size: 32, name: 'favicon-32x32.png', desc: '32x32 для стандартных браузеров и поисковых систем', safeArea: 0.65 },
-      { size: 48, name: 'favicon-48x48.png', desc: '48x48 для Windows', safeArea: 0.65 },
+      { size: 16, name: 'favicon-16x16.png', desc: '16x16 для старых браузеров', safeArea: 0.6 },
+      { size: 32, name: 'favicon-32x32.png', desc: '32x32 для стандартных браузеров и поисковых систем', safeArea: 0.6 },
+      { size: 48, name: 'favicon-48x48.png', desc: '48x48 для Windows', safeArea: 0.6 },
     ]
 
     console.log('\n📦 Создание favicon файлов...')
@@ -137,26 +137,26 @@ async function generateIcons() {
     console.log('\n📦 Создание favicon.ico для Google и Яндекс...')
     const icoBuffer = await createFaviconIco([16, 32, 48])
     fs.writeFileSync(path.join(publicPath, 'favicon.ico'), icoBuffer)
-    console.log('✅ favicon.ico создан (32x32, 65% изображение + 35% padding)')
+    console.log('✅ favicon.ico создан (32x32, 60% изображение + 40% padding)')
 
     // Apple Touch Icon (180x180)
     console.log('\n📦 Создание apple-touch-icon.png (180x180 для iOS)...')
-    const appleIcon = await prepareImage(sourceBuffer, 180, 0.65)
+    const appleIcon = await prepareImage(sourceBuffer, 180, 0.6)
     fs.writeFileSync(path.join(publicPath, 'apple-touch-icon.png'), appleIcon)
-    console.log('✅ apple-touch-icon.png создан (180x180, 65% изображение + 35% padding)')
+    console.log('✅ apple-touch-icon.png создан (180x180, 60% изображение + 40% padding)')
 
     // Android PWA иконки
     console.log('\n📦 Создание иконок для Android PWA...')
     
     // 192x192 для Android (стандартный размер)
-    const icon192 = await prepareImage(sourceBuffer, 192, 0.65)
+    const icon192 = await prepareImage(sourceBuffer, 192, 0.6)
     fs.writeFileSync(path.join(publicPath, 'android-chrome-192x192.png'), icon192)
-    console.log('✅ android-chrome-192x192.png создан (для Android PWA, 65% изображение + 35% padding)')
+    console.log('✅ android-chrome-192x192.png создан (для Android PWA, 60% изображение + 40% padding)')
 
     // 512x512 для Android (высокое разрешение)
-    const icon512 = await prepareImage(sourceBuffer, 512, 0.65)
+    const icon512 = await prepareImage(sourceBuffer, 512, 0.6)
     fs.writeFileSync(path.join(publicPath, 'android-chrome-512x512.png'), icon512)
-    console.log('✅ android-chrome-512x512.png создан (для Android PWA высокого разрешения, 65% изображение + 35% padding)')
+    console.log('✅ android-chrome-512x512.png создан (для Android PWA высокого разрешения, 60% изображение + 40% padding)')
 
     // Также создаем icon-192x192.png и icon-512x512.png для обратной совместимости
     fs.writeFileSync(path.join(publicPath, 'icon-192x192.png'), icon192)
