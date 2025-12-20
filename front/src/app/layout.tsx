@@ -67,13 +67,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      // ICO файл для старых браузеров
-      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
-      // PNG favicon файлы разных размеров
-      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      // Favicon для Google и Яндекс (приоритетный - должен быть первым)
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
       { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      // Дополнительные размеры для разных браузеров
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
       { url: '/favicon-48x48.png', type: 'image/png', sizes: '48x48' },
-      // PWA иконки для Android (приоритетные)
+      // PWA иконки для Android
       { url: '/android-chrome-192x192.png', type: 'image/png', sizes: '192x192' },
       { url: '/android-chrome-512x512.png', type: 'image/png', sizes: '512x512' },
     ],
