@@ -146,7 +146,7 @@ async function generateIcons() {
 
     // Apple Touch Icon (180x180)
     console.log('\n📦 Создание apple-touch-icon.png (180x180 для iOS)...')
-    const appleIcon = await prepareImage(sourceBuffer, 180, 0.8)
+    const appleIcon = await prepareImage(sourceBuffer, 180, 0.6)
     fs.writeFileSync(path.join(publicPath, 'apple-touch-icon.png'), appleIcon)
     console.log('✅ apple-touch-icon.png создан (180x180)')
 
@@ -154,12 +154,12 @@ async function generateIcons() {
     console.log('\n📦 Создание иконок для Android PWA...')
     
     // 192x192 для Android (стандартный размер)
-    const icon192 = await prepareImage(sourceBuffer, 192, 0.8)
+    const icon192 = await prepareImage(sourceBuffer, 192, 0.6)
     fs.writeFileSync(path.join(publicPath, 'android-chrome-192x192.png'), icon192)
     console.log('✅ android-chrome-192x192.png создан (для Android PWA)')
 
     // 512x512 для Android (высокое разрешение)
-    const icon512 = await prepareImage(sourceBuffer, 512, 0.8)
+    const icon512 = await prepareImage(sourceBuffer, 512, 0.6)
     fs.writeFileSync(path.join(publicPath, 'android-chrome-512x512.png'), icon512)
     console.log('✅ android-chrome-512x512.png создан (для Android PWA высокого разрешения)')
 
