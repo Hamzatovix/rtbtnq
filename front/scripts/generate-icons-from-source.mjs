@@ -26,7 +26,7 @@ console.log(`📁 Исходный файл: ${sourcePath}`)
 /**
  * Создает иконку нужного размера с безопасной зоной
  */
-async function createIcon(size, safeAreaPercent = 0.6) {
+async function createIcon(size, safeAreaPercent = 0.55) {
   const sourceBuffer = fs.readFileSync(sourcePath)
   
   // Вычисляем размер изображения с учетом safe-area
@@ -61,22 +61,22 @@ async function generateIcons() {
   try {
     // Apple Touch Icon (180x180 для iOS)
     console.log('\n📦 Создание apple-touch-icon.png (180x180 для iOS)...')
-    const appleIcon = await createIcon(180, 0.6)
+    const appleIcon = await createIcon(180, 0.55)
     fs.writeFileSync(path.join(publicPath, 'apple-touch-icon.png'), appleIcon)
-    console.log('✅ apple-touch-icon.png создан (180x180, 60% изображение + 40% padding)')
+    console.log('✅ apple-touch-icon.png создан (180x180, 55% изображение + 45% padding)')
 
     // Android PWA иконки
     console.log('\n📦 Создание иконок для Android PWA...')
     
     // 192x192 для Android (стандартный размер)
-    const icon192 = await createIcon(192, 0.6)
+    const icon192 = await createIcon(192, 0.55)
     fs.writeFileSync(path.join(publicPath, 'android-chrome-192x192.png'), icon192)
-    console.log('✅ android-chrome-192x192.png создан (для Android PWA, 60% изображение + 40% padding)')
+    console.log('✅ android-chrome-192x192.png создан (для Android PWA, 55% изображение + 45% padding)')
 
     // 512x512 для Android (высокое разрешение)
-    const icon512 = await createIcon(512, 0.6)
+    const icon512 = await createIcon(512, 0.55)
     fs.writeFileSync(path.join(publicPath, 'android-chrome-512x512.png'), icon512)
-    console.log('✅ android-chrome-512x512.png создан (для Android PWA высокого разрешения, 60% изображение + 40% padding)')
+    console.log('✅ android-chrome-512x512.png создан (для Android PWA высокого разрешения, 55% изображение + 45% padding)')
 
     // Также создаем icon-192x192.png и icon-512x512.png для обратной совместимости
     fs.writeFileSync(path.join(publicPath, 'icon-192x192.png'), icon192)
