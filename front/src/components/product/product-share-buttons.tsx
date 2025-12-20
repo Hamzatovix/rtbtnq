@@ -66,9 +66,20 @@ export function ProductShareButtons({
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Изображение с увеличенными отступами для большего воздуха
+    // Адаптивный размер изображения в зависимости от длины названия
+    const titleLength = productName.length
+    let imageHeightPercent = 0.52 // Базовый процент высоты canvas для изображения
+    
+    // Если название длинное, уменьшаем размер изображения для большего пространства под текстом
+    if (titleLength > 20) {
+      imageHeightPercent = 0.48 // Уменьшаем на 4% для длинных названий
+    } else if (titleLength > 15) {
+      imageHeightPercent = 0.50 // Уменьшаем на 2% для средних названий
+    }
+    
     const imagePadding = 100 // Увеличено с 80px для большего воздуха
     const topPadding = 140 // Увеличено с 120px для лучшего баланса
-    const imageHeight = Math.floor(canvas.height * 0.52) // Немного уменьшено для большего пространства под текстом
+    const imageHeight = Math.floor(canvas.height * imageHeightPercent)
     const imageWidth = canvas.width - imagePadding * 2
     const imageX = imagePadding
     const imageY = topPadding
@@ -131,37 +142,54 @@ export function ProductShareButtons({
     // Определяем максимальную ширину текста
     const maxTitleWidth = canvas.width - contentPadding * 2
 
-    // Название товара - премиальная типографика
+    // Название товара - премиальная типографика с адаптивным размером
+    // ВАЖНО: название всегда на одной строке, без переноса
     const titleY = dividerY + 80 // Увеличенный отступ для большего воздуха
     ctx.fillStyle = '#0F0F0F' // Charcoal Black из палитры
     
-    // Улучшенная типографика: больше размер, лучший tracking
-    const titleFontSize = 80 // Увеличено с 72px для большего визуального веса
+    // Адаптивный размер шрифта - уменьшаем до тех пор, пока название не поместится на одну строку
+    const titleText = productName.toUpperCase()
+    let titleFontSize = 80 // Базовый размер
+    let displayText = titleText
+    
+    // Устанавливаем начальный шрифт
     ctx.font = `900 ${titleFontSize}px "Cormorant Garamond", serif`
+    ctx.letterSpacing = '-0.03em'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
-    ctx.letterSpacing = '-0.03em' // Более плотный tracking для элегантности
     
-    const titleText = productName.toUpperCase()
-    const titleLines = wrapText(ctx, titleText, maxTitleWidth, titleFontSize)
-    const lineHeight = titleFontSize * 1.15 // Улучшенный leading для читаемости
+    // Измеряем ширину текста и уменьшаем размер шрифта, пока он не поместится
+    let textWidth = ctx.measureText(displayText).width
+    const minFontSize = 40 // Минимальный размер шрифта
     
-    // Рисуем название с легкой тенью для глубины
-    titleLines.forEach((line, index) => {
-      // Легкая тень для глубины
-      ctx.shadowColor = 'rgba(15, 15, 15, 0.08)'
-      ctx.shadowBlur = 4
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 2
-      ctx.fillText(line, canvas.width / 2, titleY + index * lineHeight, maxTitleWidth)
-      
-      // Сбрасываем тень
-      ctx.shadowColor = 'transparent'
-      ctx.shadowBlur = 0
-      ctx.shadowOffsetY = 0
-    })
+    while (textWidth > maxTitleWidth && titleFontSize > minFontSize) {
+      titleFontSize -= 2 // Уменьшаем на 2px за раз
+      ctx.font = `900 ${titleFontSize}px "Cormorant Garamond", serif`
+      textWidth = ctx.measureText(displayText).width
+    }
+    
+    // Если даже при минимальном размере не помещается, обрезаем текст с многоточием
+    if (textWidth > maxTitleWidth) {
+      let truncatedText = displayText
+      while (ctx.measureText(truncatedText + '...').width > maxTitleWidth && truncatedText.length > 0) {
+        truncatedText = truncatedText.slice(0, -1)
+      }
+      displayText = truncatedText + '...'
+    }
+    
+    // Рисуем название на одной строке с легкой тенью для глубины
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.08)'
+    ctx.shadowBlur = 4
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 2
+    ctx.fillText(displayText, canvas.width / 2, titleY, maxTitleWidth)
+    
+    // Сбрасываем тень
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetY = 0
 
-    const titleHeight = titleLines.length * lineHeight
+    const titleHeight = titleFontSize * 1.15 // Высота одной строки
 
     // Цвет товара (если есть) - премиальное отображение с тенью
     // Цвет идет сразу после названия
@@ -287,21 +315,21 @@ export function ProductShareButtons({
     }
 
     // Премиальный брендинг внизу - ВСЕГДА рисуем брендинг
-    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 80px от последнего элемента
+    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 60px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
     const underlineHeight = 8 // Высота подчеркивания
     const bottomPadding = 20 // Отступ снизу
     
-    // Минимальная позиция брендинга: минимум 80px от последнего элемента (уменьшено с 120px)
-    const minBrandY = lastElementBottom + 80
+    // Минимальная позиция брендинга: минимум 60px от последнего элемента (уменьшено для экономии места)
+    const minBrandY = lastElementBottom + 60
     
     // Максимальная позиция брендинга: не ближе bottomPadding от низа canvas
     // Учитываем высоту текста + подчеркивание + отступ
     const maxBrandY = canvas.height - brandFontSize - underlineHeight - bottomPadding
     
-    // Брендинг должен быть минимум на 80px ниже последнего элемента
+    // Брендинг должен быть минимум на 60px ниже последнего элемента
     // Но не должен выходить за границы canvas
     // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
     let brandY = Math.min(minBrandY, maxBrandY)
@@ -314,6 +342,12 @@ export function ProductShareButtons({
     
     // Убеждаемся, что brandY в допустимых пределах
     brandY = Math.max(0, Math.min(brandY, canvas.height - brandFontSize - 10))
+    
+    // Если брендинг все еще слишком близко к контенту, уменьшаем отступы между элементами
+    if (brandY - lastElementBottom < 40) {
+      // Уменьшаем отступы между элементами для экономии места
+      // Это уже обработано выше через уменьшение minBrandY
+    }
     
     // ВСЕГДА рисуем брендинг, если он помещается на canvas
     ctx.fillStyle = '#0F0F0F' // Charcoal Black - темный цвет на светлом фоне
@@ -418,9 +452,20 @@ export function ProductShareButtons({
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Изображение с увеличенными отступами для большего воздуха
+    // Адаптивный размер изображения в зависимости от длины названия
+    const titleLength = productName.length
+    let imageHeightPercent = 0.52 // Базовый процент высоты canvas для изображения
+    
+    // Если название длинное, уменьшаем размер изображения для большего пространства под текстом
+    if (titleLength > 20) {
+      imageHeightPercent = 0.48 // Уменьшаем на 4% для длинных названий
+    } else if (titleLength > 15) {
+      imageHeightPercent = 0.50 // Уменьшаем на 2% для средних названий
+    }
+    
     const imagePadding = 100 // Увеличено с 80px для большего воздуха
     const topPadding = 140 // Увеличено с 120px для лучшего баланса
-    const imageHeight = Math.floor(canvas.height * 0.52) // Немного уменьшено для большего пространства под текстом
+    const imageHeight = Math.floor(canvas.height * imageHeightPercent)
     const imageWidth = canvas.width - imagePadding * 2
     const imageX = imagePadding
     const imageY = topPadding
@@ -483,37 +528,54 @@ export function ProductShareButtons({
     // Определяем максимальную ширину текста
     const maxTitleWidth = canvas.width - contentPadding * 2
 
-    // Название товара - премиальная типографика
+    // Название товара - премиальная типографика с адаптивным размером
+    // ВАЖНО: название всегда на одной строке, без переноса
     const titleY = dividerY + 80 // Увеличенный отступ для большего воздуха
     ctx.fillStyle = '#0F0F0F' // Charcoal Black из палитры
     
-    // Улучшенная типографика: больше размер, лучший tracking
-    const titleFontSize = 80 // Увеличено с 72px для большего визуального веса
+    // Адаптивный размер шрифта - уменьшаем до тех пор, пока название не поместится на одну строку
+    const titleText = productName.toUpperCase()
+    let titleFontSize = 80 // Базовый размер
+    let displayText = titleText
+    
+    // Устанавливаем начальный шрифт
     ctx.font = `900 ${titleFontSize}px "Cormorant Garamond", serif`
+    ctx.letterSpacing = '-0.03em'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
-    ctx.letterSpacing = '-0.03em' // Более плотный tracking для элегантности
     
-    const titleText = productName.toUpperCase()
-    const titleLines = wrapText(ctx, titleText, maxTitleWidth, titleFontSize)
-    const lineHeight = titleFontSize * 1.15 // Улучшенный leading для читаемости
+    // Измеряем ширину текста и уменьшаем размер шрифта, пока он не поместится
+    let textWidth = ctx.measureText(displayText).width
+    const minFontSize = 40 // Минимальный размер шрифта
     
-    // Рисуем название с легкой тенью для глубины
-    titleLines.forEach((line, index) => {
-      // Легкая тень для глубины
-      ctx.shadowColor = 'rgba(15, 15, 15, 0.08)'
-      ctx.shadowBlur = 4
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 2
-      ctx.fillText(line, canvas.width / 2, titleY + index * lineHeight, maxTitleWidth)
-      
-      // Сбрасываем тень
-      ctx.shadowColor = 'transparent'
-      ctx.shadowBlur = 0
-      ctx.shadowOffsetY = 0
-    })
+    while (textWidth > maxTitleWidth && titleFontSize > minFontSize) {
+      titleFontSize -= 2 // Уменьшаем на 2px за раз
+      ctx.font = `900 ${titleFontSize}px "Cormorant Garamond", serif`
+      textWidth = ctx.measureText(displayText).width
+    }
+    
+    // Если даже при минимальном размере не помещается, обрезаем текст с многоточием
+    if (textWidth > maxTitleWidth) {
+      let truncatedText = displayText
+      while (ctx.measureText(truncatedText + '...').width > maxTitleWidth && truncatedText.length > 0) {
+        truncatedText = truncatedText.slice(0, -1)
+      }
+      displayText = truncatedText + '...'
+    }
+    
+    // Рисуем название на одной строке с легкой тенью для глубины
+    ctx.shadowColor = 'rgba(15, 15, 15, 0.08)'
+    ctx.shadowBlur = 4
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 2
+    ctx.fillText(displayText, canvas.width / 2, titleY, maxTitleWidth)
+    
+    // Сбрасываем тень
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetY = 0
 
-    const titleHeight = titleLines.length * lineHeight
+    const titleHeight = titleFontSize * 1.15 // Высота одной строки
 
     // Цвет товара (если есть) - премиальное отображение с тенью
     // Цвет идет сразу после названия
@@ -639,21 +701,21 @@ export function ProductShareButtons({
     }
 
     // Премиальный брендинг внизу - ВСЕГДА рисуем брендинг
-    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 80px от последнего элемента
+    // Убеждаемся, что брендинг не налезает на предыдущие элементы - минимум 60px от последнего элемента
     const lastElementBottom = priceBottomY // Последний элемент - цена (или цвет, если цены нет)
     const brandFontSize = 26 // Увеличено с 24px
     const brandText = 'rosebotanique.store'
     const underlineHeight = 8 // Высота подчеркивания
     const bottomPadding = 20 // Отступ снизу
     
-    // Минимальная позиция брендинга: минимум 80px от последнего элемента (уменьшено с 120px)
-    const minBrandY = lastElementBottom + 80
+    // Минимальная позиция брендинга: минимум 60px от последнего элемента (уменьшено для экономии места)
+    const minBrandY = lastElementBottom + 60
     
     // Максимальная позиция брендинга: не ближе bottomPadding от низа canvas
     // Учитываем высоту текста + подчеркивание + отступ
     const maxBrandY = canvas.height - brandFontSize - underlineHeight - bottomPadding
     
-    // Брендинг должен быть минимум на 80px ниже последнего элемента
+    // Брендинг должен быть минимум на 60px ниже последнего элемента
     // Но не должен выходить за границы canvas
     // Если контент слишком большой и брендинг не помещается, используем максимальную позицию
     let brandY = Math.min(minBrandY, maxBrandY)
@@ -666,6 +728,12 @@ export function ProductShareButtons({
     
     // Убеждаемся, что brandY в допустимых пределах
     brandY = Math.max(0, Math.min(brandY, canvas.height - brandFontSize - 10))
+    
+    // Если брендинг все еще слишком близко к контенту, уменьшаем отступы между элементами
+    if (brandY - lastElementBottom < 40) {
+      // Уменьшаем отступы между элементами для экономии места
+      // Это уже обработано выше через уменьшение minBrandY
+    }
     
     // ВСЕГДА рисуем брендинг, если он помещается на canvas
     ctx.fillStyle = '#0F0F0F' // Charcoal Black - темный цвет на светлом фоне
@@ -839,23 +907,89 @@ export function ProductShareButtons({
     }
   }
 
-  // Функция для переноса текста на несколько строк
-  const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, fontSize: number): string[] => {
+  // Функция для переноса текста на несколько строк с обработкой длинных слов
+  const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, fontSize: number, maxLines: number = 4): string[] => {
     const words = text.split(' ')
     const lines: string[] = []
-    let currentLine = words[0]
+    let currentLine = ''
 
-    for (let i = 1; i < words.length; i++) {
+    for (let i = 0; i < words.length; i++) {
+      // Проверяем лимит строк перед обработкой нового слова
+      if (lines.length >= maxLines) {
+        // Если уже достигли максимума, обрезаем последнюю строку и возвращаем
+        if (lines.length > 0) {
+          const lastLine = lines[lines.length - 1]
+          const truncated = lastLine.length > 25 ? lastLine.substring(0, 22) + '...' : lastLine + '...'
+          lines[lines.length - 1] = truncated
+        }
+        return lines
+      }
+
       const word = words[i]
-      const width = ctx.measureText(currentLine + ' ' + word).width
-      if (width < maxWidth) {
-        currentLine += ' ' + word
+      const testLine = currentLine ? `${currentLine} ${word}` : word
+      const width = ctx.measureText(testLine).width
+
+      if (width <= maxWidth && currentLine) {
+        // Слово помещается на текущую строку
+        currentLine = testLine
       } else {
-        lines.push(currentLine)
-        currentLine = word
+        // Слово не помещается или это первое слово
+        if (currentLine) {
+          lines.push(currentLine)
+          // Проверяем лимит после добавления строки
+          if (lines.length >= maxLines) {
+            return lines
+          }
+        }
+        
+        // Проверяем, помещается ли одно слово на строку
+        const wordWidth = ctx.measureText(word).width
+        if (wordWidth > maxWidth) {
+          // Слово слишком длинное - разбиваем по символам
+          let charLine = ''
+          for (let j = 0; j < word.length; j++) {
+            // Проверяем лимит перед обработкой каждого символа
+            if (lines.length >= maxLines) {
+              if (charLine) {
+                lines.push(charLine)
+              }
+              return lines
+            }
+
+            const char = word[j]
+            const testCharLine = charLine + char
+            const charWidth = ctx.measureText(testCharLine).width
+            
+            if (charWidth <= maxWidth) {
+              charLine = testCharLine
+            } else {
+              if (charLine) {
+                lines.push(charLine)
+                // Проверяем лимит после добавления строки
+                if (lines.length >= maxLines) {
+                  return lines
+                }
+              }
+              charLine = char
+            }
+          }
+          // Добавляем последнюю часть длинного слова, если есть место
+          if (charLine && lines.length < maxLines) {
+            currentLine = charLine
+          } else {
+            currentLine = ''
+          }
+        } else {
+          currentLine = word
+        }
       }
     }
-    lines.push(currentLine)
+
+    // Добавляем последнюю строку, если есть место
+    if (currentLine && lines.length < maxLines) {
+      lines.push(currentLine)
+    }
+
     return lines
   }
 

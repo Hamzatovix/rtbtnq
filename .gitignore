@@ -65,3 +65,9 @@ PCManger/
 MediaGet2/
 IntelGraphicsProfiles/
 Creative Cloud Files Personal Account*/
+
+# Данные, которые изменяются на сервере (не должны быть в репозитории)
+front/src/data/products.json
+front/src/data/gallery.json
+front/prisma_data/
+front/public/uploads/
