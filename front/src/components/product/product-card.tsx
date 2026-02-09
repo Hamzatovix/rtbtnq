@@ -89,13 +89,15 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
     return null
   }, [product.stockQtyByColor, product.stockQtyTotal, selectedColor?.id])
   const isOutOfStock = selectedStockQty !== null && selectedStockQty <= 0
+  const inStockLabel = t('product.inStock')
+  const outOfStockLabel = t('product.outOfStock')
   const stockText = useMemo(() => {
     if (selectedStockQty === null) return null
     if (selectedStockQty > 0) {
-      return locale === 'ru' ? `В наличии: ${selectedStockQty}` : `In stock: ${selectedStockQty}`
+      return `${inStockLabel}: ${selectedStockQty}`
     }
-    return t('checkout.productNotInStock')
-  }, [selectedStockQty, locale, t])
+    return outOfStockLabel
+  }, [selectedStockQty, inStockLabel, outOfStockLabel])
 
   // Sync with store on client side
   useEffect(() => {
@@ -609,7 +611,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               </div>
             </Link>
             
-            <div className={`flex items-center justify-between ${priceSectionPadding}`}>
+            <div className={`flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:justify-between ${priceSectionPadding}`}>
               <div className="flex items-center space-x-2">
                 <span className={`text-fintage-charcoal dark:text-fintage-offwhite ${priceClass} tracking-normal`}>
                   {typeof product.price === 'number'
@@ -620,7 +622,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               </div>
               {stockText && (
                 <span
-                  className={`inline-flex items-center rounded-sm border px-2 py-1 text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.1em] ${
+                  className={`inline-flex max-w-full items-center rounded-sm border px-2 py-1 text-[9px] sm:text-[10px] font-mono tracking-[0.08em] leading-tight ${
                     isOutOfStock
                       ? 'border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'
                       : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 text-fintage-charcoal/80 dark:text-fintage-offwhite/80'
@@ -648,7 +650,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                 const isDisabled = isColorNotSelected || isOutOfStock
                 const helperText = isColorNotSelected
                   ? t('product.card.chooseColor')
-                  : (isOutOfStock ? t('checkout.productNotInStock') : undefined)
+                  : (isOutOfStock ? t('product.outOfStock') : undefined)
                 
                 return (
                   <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity transition-fintage">

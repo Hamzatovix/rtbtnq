@@ -143,6 +143,8 @@ export default function ProductPage() {
 
   const favorite = product ? isFavorite(Number(product.id)) : false
   const price = selectedVariant ? selectedVariant.priceCents / 100 : 0
+  const inStockLabel = t('product.inStock')
+  const outOfStockLabel = t('product.outOfStock')
   const selectedStockQty = selectedVariant
     ? Math.max(0, Number(selectedVariant.stockQty ?? 0))
     : null
@@ -150,8 +152,8 @@ export default function ProductPage() {
   const stockText = selectedStockQty === null
     ? null
     : (selectedStockQty > 0
-      ? (locale === 'ru' ? `В наличии: ${selectedStockQty}` : `In stock: ${selectedStockQty}`)
-      : t('checkout.productNotInStock'))
+      ? `${inStockLabel}: ${selectedStockQty}`
+      : outOfStockLabel)
 
   if (loading) {
     return (
@@ -432,7 +434,7 @@ export default function ProductPage() {
               {stockText && (
                 <div className="mb-6">
                   <span
-                    className={`inline-flex items-center rounded-sm border px-3 py-1.5 text-[10px] md:text-xs font-mono uppercase tracking-[0.1em] ${
+                    className={`inline-flex max-w-full items-center rounded-sm border px-2.5 py-1 text-[10px] sm:text-xs font-mono tracking-[0.08em] leading-tight ${
                       isOutOfStock
                         ? 'border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'
                         : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 text-fintage-charcoal/80 dark:text-fintage-offwhite/80'
