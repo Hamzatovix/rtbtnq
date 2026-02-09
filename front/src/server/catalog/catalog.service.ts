@@ -71,6 +71,23 @@ function buildProductListItem(
     return acc
   }, {})
 
+  const stockQtyByColor = variants.reduce((acc: Record<string, number>, variant: any) => {
+    const colorId = variant?.colorId
+    if (colorId === undefined || colorId === null || colorId === '') return acc
+
+    const rawQty = Number(variant?.stockQty ?? variant?.stock ?? 0)
+    const normalizedQty = Number.isFinite(rawQty) ? Math.max(0, Math.floor(rawQty)) : 0
+    const key = String(colorId)
+    acc[key] = (acc[key] ?? 0) + normalizedQty
+    return acc
+  }, {})
+
+  const stockQtyTotal = variants.reduce((sum: number, variant: any) => {
+    const rawQty = Number(variant?.stockQty ?? variant?.stock ?? 0)
+    const normalizedQty = Number.isFinite(rawQty) ? Math.max(0, Math.floor(rawQty)) : 0
+    return sum + normalizedQty
+  }, 0)
+
   const priceInCents = variants[0]?.priceCents
 
   return {
@@ -83,6 +100,8 @@ function buildProductListItem(
     colors: productColors,
     colorImages: Object.keys(variantImages).length ? variantImages : undefined,
     is_featured: Boolean(product.is_featured),
+    stockQtyTotal,
+    stockQtyByColor: Object.keys(stockQtyByColor).length ? stockQtyByColor : undefined,
   }
 }
 

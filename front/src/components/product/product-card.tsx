@@ -78,6 +78,24 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const priceSectionPadding = isCompact ? 'pt-1 sm:pt-1.5' : 'pt-2 sm:pt-2.5'
   const swatchSectionPadding = isCompact ? 'pt-2 sm:pt-2.5' : 'pt-3 sm:pt-4'
   const numericId = useMemo(() => Number(product.id), [product.id])
+  const selectedStockQty = useMemo(() => {
+    const byColor = product.stockQtyByColor
+    if (selectedColor?.id && byColor && typeof byColor[selectedColor.id] === 'number') {
+      return byColor[selectedColor.id]
+    }
+    if (typeof product.stockQtyTotal === 'number') {
+      return product.stockQtyTotal
+    }
+    return null
+  }, [product.stockQtyByColor, product.stockQtyTotal, selectedColor?.id])
+  const isOutOfStock = selectedStockQty !== null && selectedStockQty <= 0
+  const stockText = useMemo(() => {
+    if (selectedStockQty === null) return null
+    if (selectedStockQty > 0) {
+      return locale === 'ru' ? `В наличии: ${selectedStockQty}` : `In stock: ${selectedStockQty}`
+    }
+    return t('checkout.productNotInStock')
+  }, [selectedStockQty, locale, t])
 
   // Sync with store on client side
   useEffect(() => {
@@ -420,6 +438,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (selectedStockQty !== null && selectedStockQty <= 0) return
     
     // Determine if product has color variants
     const hasColorVariants = product.colors && product.colors.length > 0
@@ -439,7 +458,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
         },
         color: variant || selectedColor,
         price: (product.price ?? 0).toString(),
-        stock_qty: 10, // Default stock
+        stock_qty: selectedStockQty ?? 0,
         image: getImageForColor(selectedColor).src,
         description: '',
         category: product.category?.name || ''
@@ -457,7 +476,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
         },
         color: null,
         price: (product.price ?? 0).toString(),
-        stock_qty: 10, // Default stock
+        stock_qty: selectedStockQty ?? 0,
         image: product.thumbnail || '/placeholder/about_main_placeholder.svg',
         description: '',
         category: product.category?.name || ''
@@ -599,6 +618,17 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                   }
                 </span>
               </div>
+              {stockText && (
+                <span
+                  className={`inline-flex items-center rounded-sm border px-2 py-1 text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.1em] ${
+                    isOutOfStock
+                      ? 'border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'
+                      : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 text-fintage-charcoal/80 dark:text-fintage-offwhite/80'
+                  }`}
+                >
+                  {stockText}
+                </span>
+              )}
             </div>
 
             <div className={`${swatchSectionPadding} grid grid-cols-[1fr_auto] items-center gap-3 border-t border-fintage-graphite/10 dark:border-fintage-graphite/20 ${isCompact ? 'pt-2 sm:pt-2.5' : 'pt-3 sm:pt-4'}`}>
@@ -614,10 +644,11 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
               {/* On mobile: always visible. On desktop: only on hover */}
               {(() => {
                 const hasColorVariants = product.colors && product.colors.length > 0
-                const isDisabled = hasColorVariants && !selectedColor
-                const helperText = isDisabled 
+                const isColorNotSelected = hasColorVariants && !selectedColor
+                const isDisabled = isColorNotSelected || isOutOfStock
+                const helperText = isColorNotSelected
                   ? t('product.card.chooseColor')
-                  : undefined
+                  : (isOutOfStock ? t('checkout.productNotInStock') : undefined)
                 
                 return (
                   <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity transition-fintage">
@@ -655,6 +686,8 @@ const ProductCard = memo(ProductCardComponent, (prevProps, nextProps) => {
     prevProps.product.name === nextProps.product.name &&
     prevProps.product.thumbnail === nextProps.product.thumbnail &&
     prevProps.product.price === nextProps.product.price &&
+    prevProps.product.stockQtyTotal === nextProps.product.stockQtyTotal &&
+    prevProps.product.stockQtyByColor === nextProps.product.stockQtyByColor &&
     prevProps.density === nextProps.density &&
     prevProps.className === nextProps.className &&
     // Проверяем изменения в массиве colors (по длине и ID первого цвета)
@@ -665,4 +698,3 @@ const ProductCard = memo(ProductCardComponent, (prevProps, nextProps) => {
 
 export { ProductCard }
 export default ProductCard
-

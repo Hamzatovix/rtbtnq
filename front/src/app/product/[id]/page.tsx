@@ -143,6 +143,15 @@ export default function ProductPage() {
 
   const favorite = product ? isFavorite(Number(product.id)) : false
   const price = selectedVariant ? selectedVariant.priceCents / 100 : 0
+  const selectedStockQty = selectedVariant
+    ? Math.max(0, Number(selectedVariant.stockQty ?? 0))
+    : null
+  const isOutOfStock = selectedStockQty !== null && selectedStockQty <= 0
+  const stockText = selectedStockQty === null
+    ? null
+    : (selectedStockQty > 0
+      ? (locale === 'ru' ? `В наличии: ${selectedStockQty}` : `In stock: ${selectedStockQty}`)
+      : t('checkout.productNotInStock'))
 
   if (loading) {
     return (
@@ -170,6 +179,7 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     if (!selectedVariant) return
+    if (isOutOfStock) return
     
     const variant = {
       id: selectedVariant.sku || `${product.id}-${selectedColorId}`,
@@ -419,6 +429,19 @@ export default function ProductPage() {
               <p className="text-xl md:text-2xl font-bold text-fintage-charcoal dark:text-fintage-offwhite mb-6">
                 {formatPriceWithLocale(price, locale)}
               </p>
+              {stockText && (
+                <div className="mb-6">
+                  <span
+                    className={`inline-flex items-center rounded-sm border px-3 py-1.5 text-[10px] md:text-xs font-mono uppercase tracking-[0.1em] ${
+                      isOutOfStock
+                        ? 'border-fintage-graphite/20 dark:border-fintage-graphite/30 text-fintage-graphite/60 dark:text-fintage-graphite/50'
+                        : 'border-fintage-graphite/30 dark:border-fintage-graphite/40 text-fintage-charcoal/80 dark:text-fintage-offwhite/80'
+                    }`}
+                  >
+                    {stockText}
+                  </span>
+                </div>
+              )}
               {/* Разделительная линия */}
               <div className="h-px bg-gradient-to-r from-transparent via-fintage-graphite/20 to-transparent dark:via-fintage-graphite/30 mb-6" aria-hidden="true" />
               <p className="text-fintage-charcoal/80 dark:text-fintage-offwhite/80 leading-relaxed text-sm md:text-base break-words max-w-[65ch] font-light">
@@ -469,6 +492,7 @@ export default function ProductPage() {
                 variant="primary"
                 className="flex-1 flex items-center justify-center space-x-2 h-12 text-sm font-mono tracking-[0.15em] uppercase"
                 onClick={handleAddToCart}
+                disabled={!selectedVariant || isOutOfStock}
               >
                 <ShoppingBag className="h-4 w-4" />
                 <span>{t('product.addToCart')}</span>
@@ -562,6 +586,16 @@ export default function ProductPage() {
                 })
                 .filter(Boolean) as Array<{ id: string; name: string; hex_code: string }>
 
+              const relatedStockQtyByColor = (relatedProduct.variants || []).reduce((acc: Record<string, number>, v: ProductVariant) => {
+                const colorId = String(v.colorId || '')
+                if (!colorId) return acc
+                const qty = Number(v.stockQty ?? 0)
+                const normalizedQty = Number.isFinite(qty) ? Math.max(0, Math.floor(qty)) : 0
+                acc[colorId] = (acc[colorId] ?? 0) + normalizedQty
+                return acc
+              }, {})
+              const relatedStockQtyTotal = (Object.values(relatedStockQtyByColor) as number[]).reduce((sum, qty) => sum + qty, 0)
+
               const relatedItem = {
                 id: String(relatedProduct.id),
                 slug: relatedProduct.slug,
@@ -576,6 +610,8 @@ export default function ProductPage() {
                 colors: relatedColors,
                 colorImages: undefined,
                 is_featured: Boolean(relatedProduct.is_featured),
+                stockQtyTotal: relatedStockQtyTotal,
+                stockQtyByColor: Object.keys(relatedStockQtyByColor).length ? relatedStockQtyByColor : undefined,
               }
               return <ProductCard key={relatedItem.id} product={relatedItem as any} />
             })}
@@ -597,5 +633,3 @@ export default function ProductPage() {
     </div>
   )
 }
-
-

@@ -16,6 +16,8 @@ export interface CatalogProduct {
   colors: CatalogColor[]
   colorImages?: Record<string, string>
   is_featured?: boolean
+  stockQtyTotal?: number
+  stockQtyByColor?: Record<string, number>
 }
 
 export interface CatalogData {
