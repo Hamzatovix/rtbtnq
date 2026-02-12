@@ -650,7 +650,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                 const isDisabled = isColorNotSelected || isOutOfStock
                 const helperText = isColorNotSelected
                   ? t('product.card.chooseColor')
-                  : (isOutOfStock ? t('product.outOfStock') : undefined)
+                  : undefined
                 
                 return (
                   <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity transition-fintage">
@@ -659,7 +659,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                       ariaLabel={t('product.addToCart')}
                       isCompact={isCompact}
                       disabled={isDisabled}
-                      showHelperText={isDisabled}
+                      showHelperText={isColorNotSelected}
                       helperText={helperText}
                       locale={locale}
                     />
