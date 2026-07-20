@@ -14,9 +14,9 @@ interface LogoProps {
 }
 
 const sizeMap = {
-  compact: 'h-9 md:h-11',
-  default: 'h-14 max-[390px]:h-12 md:h-16 lg:h-18',
-  large: 'h-16 md:h-18 lg:h-20',
+  compact: 'h-6 md:h-8',
+  default: 'h-10 max-[390px]:h-8 md:h-11 lg:h-12',
+  large: 'h-11 md:h-12 lg:h-14',
 }
 
 export function Logo({ 
@@ -29,17 +29,14 @@ export function Logo({
 }: LogoProps) {
   const logoContent = (
     <>
-      {/* Логотип - использует CSS фильтры для адаптации к темной теме */}
       <Image
-        src="/logo/logo_day.svg"
+        src="/logo/logo_day.png"
         alt=""
-        width={120}
-        height={48}
+        width={416}
+        height={432}
         className={cn(
           sizeMap[variant],
-          'w-auto transition-all duration-300 group-hover:opacity-80 group-hover:scale-105',
-          // Инверсия цвета для темной темы: черный -> светлый (Off-White)
-          'dark:brightness-0 dark:invert dark:opacity-90'
+          'w-auto transition-all duration-300 group-hover:opacity-80'
         )}
         priority
       />

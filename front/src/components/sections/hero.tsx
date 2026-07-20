@@ -29,7 +29,7 @@ export function Hero() {
         <div className="relative mx-auto max-w-6xl text-center">
           {/* Год - технический стиль */}
           <div className="flex justify-center mb-8 md:mb-12">
-            <span className="text-[10px] md:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 tracking-[0.3em] uppercase">
+            <span className="text-[10px] md:text-xs font-mono text-fintage-graphite/50 dark:text-fintage-offwhite tracking-[0.3em] uppercase">
               2020
             </span>
           </div>
@@ -43,7 +43,7 @@ export function Hero() {
 
           {/* Подзаголовок - технический стиль */}
           <div className="mb-16 md:mb-20">
-            <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-4">
+            <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.2em] mb-4">
               {t('home.hero.tagline')}
             </p>
             {/* Разделительная линия */}
@@ -67,7 +67,7 @@ export function Hero() {
             </Button>
 
             {/* Техническая подпись под кнопкой */}
-            <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
+            <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-offwhite uppercase tracking-[0.2em]">
               {t('home.hero.collectionLabel')}
             </p>
           </div>
@@ -76,7 +76,7 @@ export function Hero() {
 
       {/* Минималистичные бейджи внизу - технический стиль */}
       <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 text-center px-6">
-        <div className="text-[8px] sm:text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 leading-relaxed tracking-[0.15em] sm:tracking-[0.2em] uppercase break-words max-w-full" suppressHydrationWarning>
+        <div className="text-[8px] sm:text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-offwhite leading-relaxed tracking-[0.15em] sm:tracking-[0.2em] uppercase break-words max-w-full" suppressHydrationWarning>
           {t('home.hero.badges')}
         </div>
       </div>

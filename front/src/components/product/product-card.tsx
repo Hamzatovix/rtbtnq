@@ -605,7 +605,7 @@ function ProductCardComponent({ product, density = 'compact', className }: Produ
                 <h3 className={`font-display-vintage font-black leading-[0.95] text-fintage-charcoal dark:text-fintage-offwhite ${titleClass} uppercase tracking-tighter`}>
                   {product.name}
                 </h3>
-                <p className={`leading-relaxed font-mono tracking-[0.15em] text-fintage-graphite dark:text-fintage-graphite/60 ${descClass} uppercase`}>
+                <p className={`leading-relaxed font-mono tracking-[0.15em] text-fintage-graphite dark:text-fintage-offwhite ${descClass} uppercase`}>
                   {product.category.name}
                 </p>
               </div>

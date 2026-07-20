@@ -397,7 +397,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
           <div className="w-full border-t border-fintage-graphite/30 dark:border-fintage-graphite/40"></div>
         </div>
         <div className="relative flex justify-center">
-          <span className="px-2 bg-fintage-offwhite dark:bg-fintage-charcoal text-[8px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.3em]">
+          <span className="px-2 bg-fintage-offwhite dark:bg-fintage-charcoal text-[8px] font-mono text-fintage-graphite/40 dark:text-fintage-offwhite uppercase tracking-[0.3em]">
             ─
           </span>
         </div>
@@ -407,7 +407,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
       <div className="px-3 pb-3 space-y-2.5">
         {/* Техническая подпись секции */}
         <div className="px-2 mb-2">
-          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
+          <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-offwhite uppercase tracking-[0.2em]">
             {t('header.actions') || 'ACTIONS'}
           </span>
         </div>
@@ -446,7 +446,7 @@ const MobileDrawerContent = memo(function MobileDrawerContent({
         <div className="px-3 pb-3">
           {/* Техническая подпись секции */}
           <div className="px-2 mb-2">
-            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em]">
+            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-offwhite uppercase tracking-[0.2em]">
               {t('common.settings') || 'SETTINGS'}
             </span>
           </div>
@@ -525,7 +525,7 @@ const SettingsCard = memo(function SettingsCard({
       <div className="flex items-center justify-center group-hover:opacity-90 transition-fintage">
         {icon}
       </div>
-      <span className="text-[9px] font-mono text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">
+      <span className="text-[9px] font-mono text-fintage-graphite/70 dark:text-fintage-offwhite group-hover:text-accent transition-fintage leading-tight uppercase tracking-[0.2em]">
         {label}
       </span>
     </div>

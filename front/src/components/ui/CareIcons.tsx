@@ -33,12 +33,12 @@ const CareIcon = ({ icon, label }: CareIconProps) => {
         strokeWidth="1.25"
         strokeLinecap="round"
         fill="none"
-        className="text-fintage-graphite dark:text-fintage-graphite/60"
+        className="text-fintage-graphite dark:text-fintage-offwhite"
         aria-hidden="true"
       >
         {getIconPath()}
       </svg>
-      <span className="text-xs font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-graphite/50 text-center leading-tight" aria-label={`care instruction: ${label}`}>
+      <span className="text-xs font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-offwhite text-center leading-tight" aria-label={`care instruction: ${label}`}>
         {label}
       </span>
     </div>

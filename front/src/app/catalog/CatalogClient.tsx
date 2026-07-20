@@ -62,7 +62,7 @@ const FiltersPanel = ({
       <div className="flex flex-col gap-4 md:gap-5">
         <div className="flex items-center gap-3 mb-1">
           <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
-          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em] flex-shrink-0">
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-offwhite uppercase tracking-[0.2em] flex-shrink-0">
             {texts.categoryLabel || (locale === 'ru' ? 'КАТЕГОРИИ' : 'CATEGORIES')}
           </span>
           <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
@@ -98,7 +98,7 @@ const FiltersPanel = ({
       <div className="flex flex-col gap-4 md:gap-5">
         <div className="flex items-center gap-3 mb-1">
           <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
-          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em] flex-shrink-0">
+          <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-offwhite uppercase tracking-[0.2em] flex-shrink-0">
             {texts.colorLabel || (locale === 'ru' ? 'ЦВЕТА' : 'COLORS')}
           </span>
           <div className="h-px flex-1 bg-fintage-graphite/20 dark:bg-fintage-graphite/30" aria-hidden="true" />
@@ -415,7 +415,7 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
               {/* Утилитарный номер секции в стиле каталога */}
               <div className="flex-shrink-0">
                 <span 
-                  className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-graphite/30 leading-none tracking-tighter"
+                  className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-offwhite leading-none tracking-tighter"
                   aria-hidden="true"
                 >
                   01
@@ -428,7 +428,7 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
                   <span suppressHydrationWarning>{t('catalog.title')}</span>
                 </h1>
                 {/* Техническая подпись в стиле Stone Island */}
-                <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+                <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.15em]">
                   {locale === 'ru' ? 'ПОЛНЫЙ КАТАЛОГ' : 'FULL CATALOG'}
                 </p>
               </div>
@@ -513,7 +513,7 @@ export function CatalogClient({ initialData, initialFilters }: CatalogClientProp
             )
           ) : (
             <div className="text-center py-16 md:py-20">
-              <p className="text-sm md:text-base font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-6">
+              <p className="text-sm md:text-base font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.2em] mb-6">
                 {t('catalog.empty') || (locale === 'ru' ? 'товары не найдены' : 'no products found')}
               </p>
               <Button 

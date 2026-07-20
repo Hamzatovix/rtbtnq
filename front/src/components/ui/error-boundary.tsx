@@ -47,7 +47,7 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
         <div className="mb-6">
           <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 border border-fintage-graphite/20 dark:border-fintage-graphite/30 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-fintage-graphite/60 dark:text-fintage-graphite/50"
+              className="w-8 h-8 text-fintage-graphite/60 dark:text-fintage-offwhite"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -62,7 +62,7 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
             </svg>
           </div>
           <h1 className="text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite mb-2 uppercase tracking-tighter">Something went wrong</h1>
-          <p className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/50 mb-6 font-light">
+          <p className="text-sm text-fintage-graphite/60 dark:text-fintage-offwhite mb-6 font-light">
             We're sorry, but something unexpected happened. Please try refreshing the page.
           </p>
         </div>
@@ -85,10 +85,10 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
 
         {process.env.NODE_ENV === 'development' && error && (
           <details className="mt-6 text-left">
-            <summary className="text-xs font-mono uppercase tracking-[0.15em] text-fintage-graphite/50 dark:text-fintage-graphite/50 cursor-pointer mb-2">
+            <summary className="text-xs font-mono uppercase tracking-[0.15em] text-fintage-graphite/50 dark:text-fintage-offwhite cursor-pointer mb-2">
               Error details (development only)
             </summary>
-            <pre className="text-xs text-fintage-graphite/60 dark:text-fintage-graphite/50 bg-fintage-graphite/5 dark:bg-fintage-graphite/10 p-3 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 overflow-auto font-mono">
+            <pre className="text-xs text-fintage-graphite/60 dark:text-fintage-offwhite bg-fintage-graphite/5 dark:bg-fintage-graphite/10 p-3 rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 overflow-auto font-mono">
               {error.message}
               {error.stack && `\n\n${error.stack}`}
             </pre>

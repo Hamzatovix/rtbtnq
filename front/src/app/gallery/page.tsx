@@ -183,7 +183,7 @@ export default function GalleryPage() {
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             className="w-16 h-16 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent rounded-sm mx-auto mb-6"
           />
-          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">Загрузка галереи...</p>
+          <p className="text-fintage-graphite/60 dark:text-fintage-offwhite font-mono text-xs uppercase tracking-[0.2em]">Загрузка галереи...</p>
         </div>
       </div>
     )
@@ -204,7 +204,7 @@ export default function GalleryPage() {
               <div className="flex items-baseline justify-center gap-3 md:gap-4 mb-6">
                 <div className="flex-shrink-0">
                   <span
-                    className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-graphite/30 leading-none tracking-tighter"
+                    className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-offwhite leading-none tracking-tighter"
                     aria-hidden="true"
                   >
                     03
@@ -214,7 +214,7 @@ export default function GalleryPage() {
                   <h1 className="text-title-1 md:text-[2rem] lg:text-[2.5rem] font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite leading-[0.95] tracking-tighter uppercase">
                     {t('gallery.title')}
                   </h1>
-                  <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+                  <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.15em]">
                     {locale === 'ru' ? 'ГАЛЕРЕЯ' : 'GALLERY'}
                   </p>
                 </div>
@@ -229,9 +229,9 @@ export default function GalleryPage() {
         <section className="py-16 md:py-20">
           <div className="container mx-auto px-6 md:px-8 lg:px-12 text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-sm bg-fintage-graphite/10 dark:bg-fintage-graphite/20 border border-fintage-graphite/20 dark:border-fintage-graphite/30 mb-4">
-              <Sparkles className="w-8 h-8 text-fintage-graphite/40 dark:text-fintage-graphite/50" />
+              <Sparkles className="w-8 h-8 text-fintage-graphite/40 dark:text-fintage-offwhite" />
             </div>
-            <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">Галерея пуста</p>
+            <p className="text-fintage-graphite/60 dark:text-fintage-offwhite font-mono text-xs uppercase tracking-[0.2em]">Галерея пуста</p>
           </div>
         </section>
       </div>
@@ -342,7 +342,7 @@ export default function GalleryPage() {
                 {locale === 'ru' ? 'МАГАЗИН' : 'SHOP'}
               </Link>
               {/* Техническая подпись под кнопкой */}
-              <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
+              <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-offwhite uppercase tracking-[0.2em]">
                 {locale === 'ru' ? `${galleryImages.length} ИЗОБРАЖЕНИЙ` : `${galleryImages.length} IMAGES`}
               </p>
             </div>

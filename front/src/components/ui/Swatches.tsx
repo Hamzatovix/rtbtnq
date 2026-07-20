@@ -28,7 +28,7 @@ export function Swatches({ swatches = defaultSwatches, className = '' }: Swatche
             aria-label={`material: ${swatch.label}`}
             title={swatch.label}
           />
-          <span className="text-xs font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-graphite/50 text-center leading-tight">
+          <span className="text-xs font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-offwhite text-center leading-tight">
             {swatch.label}
           </span>
         </div>

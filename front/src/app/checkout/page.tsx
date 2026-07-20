@@ -190,7 +190,7 @@ export default function CheckoutPage() {
               </div>
               
               <div className="space-y-3">
-                <Label className="text-sm font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-graphite/50">{t('checkout.shippingMethod')}</Label>
+                <Label className="text-sm font-mono uppercase tracking-[0.15em] text-fintage-graphite/60 dark:text-fintage-offwhite">{t('checkout.shippingMethod')}</Label>
                 <div className="space-y-2">
                   {(['ozon', 'courier', 'russianPost', 'cdek', 'international'] as const).map((method) => (
                     <label
@@ -276,7 +276,7 @@ export default function CheckoutPage() {
                       {item.title}
                       {item.selectedColor && ` - ${item.selectedColor}`}
                     </p>
-                    <p className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/50" suppressHydrationWarning>
+                    <p className="text-sm text-fintage-graphite/60 dark:text-fintage-offwhite" suppressHydrationWarning>
                       {item.quantity} × {formatPriceWithLocale(item.price, locale)}
                     </p>
                   </div>

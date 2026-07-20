@@ -253,7 +253,7 @@ export default function BrandPage() {
               {/* Утилитарный номер секции в стиле каталога */}
               <div className="flex-shrink-0">
                 <span 
-                  className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-graphite/30 leading-none tracking-tighter"
+                  className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-offwhite leading-none tracking-tighter"
                   aria-hidden="true"
                 >
                   00
@@ -267,7 +267,7 @@ export default function BrandPage() {
                   {t('brandPage.storyTitle')}
                 </h2>
                 {/* Техническая подпись в стиле Stone Island */}
-                <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+                <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.15em]">
                   {locale === 'ru' ? 'НАША ИСТОРИЯ' : 'OUR STORY'}
                 </p>
               </div>
@@ -293,7 +293,7 @@ export default function BrandPage() {
           {/* Теги ценностей - технический стиль */}
           <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
             <div className="mb-4">
-              <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em]">
+              <span className="text-[9px] font-mono text-fintage-graphite/50 dark:text-fintage-offwhite uppercase tracking-[0.2em]">
                 {t('brandPage.valuesLabel')}
               </span>
             </div>
@@ -311,7 +311,7 @@ export default function BrandPage() {
 
           {/* Подпись - технический стиль */}
           <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
-            <p className="text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-graphite/50">
+            <p className="text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-offwhite">
               Noxçiyn maxkaẋ bezamca yina
             </p>
           </div>
@@ -334,7 +334,7 @@ export default function BrandPage() {
                 {t('brandPage.galleryTitle')}
               </h2>
               {/* Техническая подпись в стиле Stone Island */}
-              <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+              <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.15em]">
                 {t('brandPage.galleryLabel')}
               </p>
             </div>
@@ -352,14 +352,14 @@ export default function BrandPage() {
                   transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   className="w-8 h-8 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent rounded-sm mx-auto mb-3"
                 />
-                <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-[9px] uppercase tracking-[0.2em]">
+                <p className="text-fintage-graphite/60 dark:text-fintage-offwhite font-mono text-[9px] uppercase tracking-[0.2em]">
                   {locale === 'ru' ? 'Загрузка...' : 'Loading...'}
                 </p>
               </div>
             </div>
           ) : galleryImages.length === 0 ? (
             <div className="md:hidden flex items-center justify-center aspect-[4/5] rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
-              <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-[9px] uppercase tracking-[0.2em] text-center px-4">
+              <p className="text-fintage-graphite/60 dark:text-fintage-offwhite font-mono text-[9px] uppercase tracking-[0.2em] text-center px-4">
                 {locale === 'ru' ? 'Галерея пуста' : 'Gallery is empty'}
               </p>
             </div>
@@ -473,14 +473,14 @@ export default function BrandPage() {
                   transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   className="w-12 h-12 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent rounded-sm mx-auto mb-4"
                 />
-                <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">
+                <p className="text-fintage-graphite/60 dark:text-fintage-offwhite font-mono text-xs uppercase tracking-[0.2em]">
                   {locale === 'ru' ? 'Загрузка...' : 'Loading...'}
                 </p>
               </div>
             </div>
           ) : galleryImages.length === 0 ? (
             <div className="hidden md:flex items-center justify-center min-h-[400px] rounded-sm border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-graphite/5 dark:bg-fintage-graphite/10">
-              <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">
+              <p className="text-fintage-graphite/60 dark:text-fintage-offwhite font-mono text-xs uppercase tracking-[0.2em]">
                 {locale === 'ru' ? 'Галерея пуста' : 'Gallery is empty'}
               </p>
             </div>

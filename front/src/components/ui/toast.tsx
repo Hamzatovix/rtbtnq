@@ -126,28 +126,28 @@ function ToastItem({ toast }: { toast: Toast }) {
       border: 'border-accent/30 dark:border-accent/40',
       icon: 'text-accent',
       title: 'text-fintage-charcoal dark:text-fintage-offwhite',
-      description: 'text-fintage-graphite dark:text-fintage-graphite/70',
+      description: 'text-fintage-graphite dark:text-fintage-offwhite',
     },
     error: {
       bg: 'bg-fintage-offwhite dark:bg-fintage-charcoal',
       border: 'border-fintage-punch/30 dark:border-fintage-punch/40',
       icon: 'text-fintage-punch',
       title: 'text-fintage-charcoal dark:text-fintage-offwhite',
-      description: 'text-fintage-graphite dark:text-fintage-graphite/70',
+      description: 'text-fintage-graphite dark:text-fintage-offwhite',
     },
     info: {
       bg: 'bg-fintage-offwhite dark:bg-fintage-charcoal',
       border: 'border-fintage-graphite/30 dark:border-fintage-graphite/40',
-      icon: 'text-fintage-graphite dark:text-fintage-graphite/70',
+      icon: 'text-fintage-graphite dark:text-fintage-offwhite',
       title: 'text-fintage-charcoal dark:text-fintage-offwhite',
-      description: 'text-fintage-graphite dark:text-fintage-graphite/70',
+      description: 'text-fintage-graphite dark:text-fintage-offwhite',
     },
     default: {
       bg: 'bg-fintage-offwhite dark:bg-fintage-charcoal',
       border: 'border-fintage-graphite/30 dark:border-fintage-graphite/40',
       icon: 'text-fintage-charcoal dark:text-fintage-offwhite',
       title: 'text-fintage-charcoal dark:text-fintage-offwhite',
-      description: 'text-fintage-graphite dark:text-fintage-graphite/70',
+      description: 'text-fintage-graphite dark:text-fintage-offwhite',
     },
   }
 

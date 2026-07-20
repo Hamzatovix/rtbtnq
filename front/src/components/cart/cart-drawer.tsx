@@ -283,7 +283,7 @@ export function CartDrawer() {
             {!isDesktop && (
               <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5" aria-hidden="true">
                 <div className="w-12 h-0.5 rounded-sm bg-fintage-graphite/40 dark:bg-fintage-graphite/60 shadow-fintage-sm" />
-                <span className="text-[8px] font-mono text-fintage-graphite/30 dark:text-fintage-graphite/50 uppercase tracking-[0.3em]">
+                <span className="text-[8px] font-mono text-fintage-graphite/30 dark:text-fintage-offwhite uppercase tracking-[0.3em]">
                   SWIPE
                 </span>
               </div>
@@ -292,7 +292,7 @@ export function CartDrawer() {
             {/* Header - технический стиль Stone Island */}
             <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 pt-6 pb-4 border-b-2 border-fintage-graphite/30 dark:border-fintage-graphite/40">
               <h2 className="text-lg md:text-xl font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">
-                {t('cart.title')} <span className="font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50">({totalItems})</span>
+                {t('cart.title')} <span className="font-mono text-fintage-graphite/60 dark:text-fintage-offwhite">({totalItems})</span>
               </h2>
               <button
                 onClick={toggleCart}
@@ -307,9 +307,9 @@ export function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-4 md:px-6 lg:px-8">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
-                  <ShoppingBag className="w-16 h-16 text-fintage-graphite dark:text-fintage-graphite/60" />
+                  <ShoppingBag className="w-16 h-16 text-fintage-graphite dark:text-fintage-offwhite" />
                   <h3 className="text-lg font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite uppercase tracking-tighter">{t('cart.empty')}</h3>
-                  <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">{t('favorites.empty') || ''}</p>
+                  <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.2em]">{t('favorites.empty') || ''}</p>
                   <Button onClick={toggleCart} asChild>
                     <Link href="/catalog">{t('favorites.continueShopping')}</Link>
                   </Button>
@@ -355,14 +355,14 @@ export function CartDrawer() {
                         </div>
                       ) : (
                         <div className="w-16 h-16 bg-fintage-graphite/20 dark:bg-fintage-graphite/30 rounded-sm flex-shrink-0 flex items-center justify-center border border-fintage-graphite/20 dark:border-fintage-graphite/30">
-                          <ShoppingBag className="w-6 h-6 text-fintage-graphite dark:text-fintage-graphite/60" />
+                          <ShoppingBag className="w-6 h-6 text-fintage-graphite dark:text-fintage-offwhite" />
                         </div>
                       )}
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite truncate text-sm uppercase tracking-tighter">{item.title}</h3>
-                        <p className="text-[10px] font-mono text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.2em] mt-1">
+                        <p className="text-[10px] font-mono text-fintage-graphite/70 dark:text-fintage-offwhite uppercase tracking-[0.2em] mt-1">
                           {item.selectedColor || (locale === 'ru' ? 'цвет не выбран' : 'Color not selected')}
                         </p>
                         <p className="text-sm font-bold text-fintage-charcoal dark:text-fintage-offwhite mt-1">

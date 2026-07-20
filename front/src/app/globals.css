@@ -130,13 +130,13 @@
     --secondary-foreground: 0 0% 96%;
     --muted: 0 0% 16%;
     --muted-foreground: 0 0% 78%;    /* Улучшенная контрастность для темной темы - 78% для WCAG AA */
-    --accent: 210 12% 55%;           /* Slate-Blue #6B7F8F - urban vintage акцент (Nike/North Face/Stone Island) */
-    --accent-foreground: 0 0% 96%;   /* Off-White для контраста на slate-blue */
+    --accent: 180 8% 45%;            /* Sage Slate #6B7F7F - единый акцент для светлой и темной темы */
+    --accent-foreground: 0 0% 96%;   /* Off-White для контраста на sage-slate */
     --destructive: 0 75% 55%;        /* Electric Punch */
     --destructive-foreground: 0 0% 96%;
     --border: 0 0% 25%;              /* Улучшена видимость границ - 25% вместо 20% */
     --input: 0 0% 10%;
-    --ring: 210 12% 55%;             /* Slate-Blue focus - urban технический акцент */
+    --ring: 180 8% 45%;              /* Sage Slate focus - единый акцент */
     
     /* Семантические токены для темной темы */
     --color-bg: 0 0% 6%;              /* Charcoal Black #0F0F0F - основной фон */
@@ -145,7 +145,7 @@
     --color-text-primary: 0 0% 96%;   /* Off-White #F5F5F3 - основной текст */
     --color-text-muted: 0 0% 78%;     /* #C7C7C7 - приглушённый текст - улучшено до 78% для контрастности ~4.8:1 */
     --color-border-subtle: 0 0% 35%;  /* #595959 - тонкие границы - улучшено до 35% для лучшей видимости */
-    --color-accent: 210 12% 55%;      /* Slate-Blue #6B7F8F - urban vintage акцент */
+    --color-accent: 180 8% 45%;       /* Sage Slate #6B7F7F - единый акцент */
     --color-accent-strong: 0 75% 55%; /* Electric Punch - сильный акцент */
     --color-danger: 0 75% 55%;        /* Electric Punch - ошибки */
     
@@ -154,20 +154,20 @@
     --color-hover-border: 0 0% 35%;   /* #595959 - более заметная граница при hover */
     --color-active-bg: 0 0% 22%;      /* #383838 - более заметный active фон */
     --color-active-border: 0 0% 40%;  /* #666666 - более заметная граница при active */
-    --color-focus-ring: 210 12% 55%;  /* #6B7F8F - slate-blue для focus ring */
-    --color-selection-bg: 210 12% 35%; /* #45505A - читаемый slate-blue для выделения текста */
+    --color-focus-ring: 180 8% 45%;   /* #6B7F7F - sage-slate для focus ring */
+    --color-selection-bg: 180 8% 35%; /* #5B6666 - читаемый sage-slate для выделения текста */
     --color-selection-text: 0 0% 96%; /* Off-White - контрастный текст на selection */
     
     /* Fintage цвета для темной темы */
     --fintage-charcoal: 0 0% 6%;
-    --fintage-graphite: 0 0% 16%;
+    --fintage-graphite: 0 0% 78%;      /* Осветлено с 16% - на тёмном фоне тёмно-серый (16%) сливался с фоном (~1.3:1), теперь ~4.5:1+ на большинстве используемых прозрачностей */
     --fintage-offwhite: 0 0% 96%;
-    --fintage-greige: 210 12% 55%;    /* Slate-Blue #6B7F8F - urban vintage вместо greige */
-    --fintage-steel: 210 12% 55%;     /* Slate-Blue - технический urban акцент */
+    --fintage-greige: 180 8% 45%;     /* Sage Slate #6B7F7F - единый акцент */
+    --fintage-steel: 180 8% 45%;      /* Sage Slate - единый технический акцент */
     --fintage-punch: 0 75% 55%;
     
     /* Совместимость - старый sand теперь slate-blue */
-    --fintage-sand: 210 12% 55%;      /* Slate-Blue вместо Accent Sand */
+    --fintage-sand: 180 8% 45%;       /* Sage Slate вместо Accent Sand */
     
     /* Винтажные цвета для темной темы (совместимость) */
     --vintage-cream: 0 0% 6%;
@@ -223,17 +223,22 @@
     font-size: 16px;
     font-weight: 400;
     line-height: 1.8; /* Большая межстрочность - fashion эстетика */
-    color: hsl(var(--foreground)) !important;
+    color: hsl(var(--foreground));
     letter-spacing: -0.01em;
   }
   
   /* Принудительное переопределение цвета для body в темной теме */
   .dark body {
-    color: hsl(var(--foreground)) !important;
+    color: hsl(var(--foreground));
   }
   
-  /* Плавный переход при смене темы - slow fade 220-350ms */
-  * {
+  /* Плавный переход при смене темы только для интерактивных и базовых элементов */
+  body,
+  a,
+  button,
+  input,
+  textarea,
+  select {
     transition: 
       background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
       color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
@@ -273,213 +278,16 @@
     line-height: clamp(1.2, 1.0vw + 1.05, 1.05);
   }
   
-  /* Явное переопределение цвета для всех текстовых элементов в темной теме */
+  /* Минимальный глобальный слой: цвета управляются компонентами, без агрессивных override-правил */
   .dark {
-    color: hsl(var(--foreground)) !important;
-  }
-  
-  /* Переопределение для всех дочерних элементов - принудительно убираем синий */
-  /* Исключаем кнопки, ссылки, их дочерние элементы и элементы с явно заданным цветом через классы Tailwind */
-  .dark *:not([class*="text-"]):not(svg):not(path):not(circle):not(rect):not(line):not(polygon):not(button):not(a):not(button *):not(a *) {
-    color: hsl(var(--foreground)) !important;
-  }
-  
-  /* Исключения для элементов с явно заданным цветом через классы Tailwind */
-  /* Для кнопок и ссылок используем более специфичное правило */
-  .dark [class*="text-"]:not(button):not(a) {
-    color: inherit !important;
-  }
-  
-  /* SVG элементы не должны менять цвет */
-  .dark svg,
-  .dark svg * {
-    color: inherit !important;
-  }
-  
-  /* Ссылки без классов - наследуют цвет */
-  /* Исключаем ссылки с явно заданным цветом через Tailwind классы */
-  .dark a:not([class*="text-"]):not([class*="dark:text-"]):not([class*="dark:!text-"]) {
-    color: hsl(var(--foreground)) !important;
-  }
-  
-  /* Кнопки без классов - наследуют цвет текста */
-  /* Исключаем кнопки с явно заданным цветом через Tailwind классы */
-  .dark button:not([class*="text-"]):not([class*="dark:text-"]):not([class*="dark:!text-"]),
-  .dark a[class*="button"]:not([class*="text-"]):not([class*="dark:text-"]):not([class*="dark:!text-"]) {
-    color: hsl(var(--foreground)) !important;
-  }
-  
-  /* Специфичное правило для primary кнопок в темной теме - принудительно применяем Charcoal цвет */
-  /* Primary кнопки в темной теме имеют bg-fintage-offwhite и должны иметь text-fintage-charcoal */
-  /* Это правило должно иметь максимальную специфичность и применяться после всех остальных */
-  .dark button[class*="bg-fintage-offwhite"],
-  .dark a[class*="bg-fintage-offwhite"],
-  .dark button[class*="dark:bg-fintage-offwhite"],
-  .dark a[class*="dark:bg-fintage-offwhite"],
-  .dark button.dark\:bg-fintage-offwhite,
-  .dark a.dark\:bg-fintage-offwhite {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* Также для hover и active состояний primary кнопок */
-  .dark button[class*="bg-fintage-offwhite"]:hover,
-  .dark a[class*="bg-fintage-offwhite"]:hover,
-  .dark button[class*="dark:bg-fintage-offwhite"]:hover,
-  .dark a[class*="dark:bg-fintage-offwhite"]:hover,
-  .dark button.dark\:bg-fintage-offwhite:hover,
-  .dark a.dark\:bg-fintage-offwhite:hover,
-  .dark button[class*="bg-fintage-offwhite"]:active,
-  .dark a[class*="bg-fintage-offwhite"]:active,
-  .dark button[class*="dark:bg-fintage-offwhite"]:active,
-  .dark a[class*="dark:bg-fintage-offwhite"]:active,
-  .dark button.dark\:bg-fintage-offwhite:active,
-  .dark a.dark\:bg-fintage-offwhite:active {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* Принудительно применяем цвет для кнопок и ссылок с явно заданным цветом через dark:text- */
-  /* Исключаем primary кнопки, которые обрабатываются выше и ниже */
-  .dark button[class*="text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
-  .dark button[class*="dark:text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
-  .dark a[class*="text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
-  .dark a[class*="dark:text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]),
-  .dark a[class*="button"][class*="text-"]:not([class*="bg-fintage-offwhite"]):not([class*="dark:bg-fintage-offwhite"]):not([class*="dark:!text-fintage-charcoal"]):not([class*="dark:text-fintage-charcoal"]) {
-    color: inherit !important;
-  }
-  
-  /* Специфичное правило для кнопок с темным фоном и светлым текстом в темной теме */
-  /* Кнопки с bg-fintage-charcoal должны иметь text-fintage-offwhite */
-  .dark button[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]),
-  .dark a[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]),
-  .dark button[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]),
-  .dark a[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]) {
-    color: hsl(var(--fintage-offwhite)) !important;
-  }
-  
-  /* Также для hover и active состояний кнопок с темным фоном */
-  .dark button[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
-  .dark a[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
-  .dark button[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
-  .dark a[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):hover,
-  .dark button[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active,
-  .dark a[class*="bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active,
-  .dark button[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active,
-  .dark a[class*="dark:bg-fintage-charcoal"]:not([class*="bg-fintage-offwhite"]):active {
-    color: hsl(var(--fintage-offwhite)) !important;
-  }
-  
-  /* Правило для кнопок с явно заданным dark:text-fintage-offwhite */
-  .dark button[class*="dark:text-fintage-offwhite"],
-  .dark button[class*="dark:!text-fintage-offwhite"],
-  .dark a[class*="dark:text-fintage-offwhite"],
-  .dark a[class*="dark:!text-fintage-offwhite"] {
-    color: hsl(var(--fintage-offwhite)) !important;
-  }
-  
-  /* КРИТИЧНО: Правило для primary кнопок с dark:!text-fintage-charcoal */
-  /* Primary кнопки должны иметь темный текст на светлом фоне в темной теме */
-  .dark button[class*="dark:!text-fintage-charcoal"],
-  .dark button[class*="dark:text-fintage-charcoal"],
-  .dark a[class*="dark:!text-fintage-charcoal"],
-  .dark a[class*="dark:text-fintage-charcoal"],
-  .dark button.dark\:\!text-fintage-charcoal,
-  .dark a.dark\:\!text-fintage-charcoal {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* Также для hover и active состояний */
-  .dark button[class*="dark:!text-fintage-charcoal"]:hover,
-  .dark button[class*="dark:text-fintage-charcoal"]:hover,
-  .dark a[class*="dark:!text-fintage-charcoal"]:hover,
-  .dark a[class*="dark:text-fintage-charcoal"]:hover,
-  .dark button[class*="dark:!text-fintage-charcoal"]:active,
-  .dark button[class*="dark:text-fintage-charcoal"]:active,
-  .dark a[class*="dark:!text-fintage-charcoal"]:active,
-  .dark a[class*="dark:text-fintage-charcoal"]:active {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* ФИНАЛЬНОЕ ПРАВИЛО: Максимальная специфичность для primary кнопок */
-  /* Комбинированный селектор для кнопок с bg-fintage-offwhite И dark:!text-fintage-charcoal */
-  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
-  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
-  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
-  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"],
-  .dark button.dark\:bg-fintage-offwhite[class*="dark:!text-fintage-charcoal"],
-  .dark a.dark\:bg-fintage-offwhite[class*="dark:!text-fintage-charcoal"] {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* Также для hover и active */
-  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
-  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
-  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
-  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:hover,
-  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active,
-  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active,
-  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active,
-  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"]:active {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* КРИТИЧНО: Правило для span и других дочерних элементов внутри primary кнопок */
-  /* Дочерние элементы должны иметь явный цвет charcoal */
-  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
-  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
-  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
-  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] *,
-  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
-  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
-  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
-  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* Также для кнопок с dark:!text-fintage-charcoal без bg-fintage-offwhite в селекторе */
-  .dark button[class*="dark:!text-fintage-charcoal"] *,
-  .dark a[class*="dark:!text-fintage-charcoal"] *,
-  .dark button[class*="dark:!text-fintage-charcoal"] span,
-  .dark a[class*="dark:!text-fintage-charcoal"] span {
-    color: hsl(var(--fintage-charcoal)) !important;
-  }
-  
-  /* Переопределение для всех текстовых элементов */
-  .dark p,
-  .dark span:not([class*="text-"]),
-  .dark div:not([class*="text-"]),
-  .dark h1:not([class*="text-"]),
-  .dark h2:not([class*="text-"]),
-  .dark h3:not([class*="text-"]),
-  .dark h4:not([class*="text-"]),
-  .dark h5:not([class*="text-"]),
-  .dark h6:not([class*="text-"]),
-  .dark li,
-  .dark td,
-  .dark th {
-    color: hsl(var(--foreground)) !important;
-  }
-  
-  /* КРИТИЧНО: Исключаем span внутри primary кнопок из правила выше */
-  /* Span внутри primary кнопок должны наследовать цвет от кнопки (charcoal) */
-  /* Это правило должно идти ПОСЛЕ правила для всех span, чтобы переопределить его */
-  .dark button[class*="bg-fintage-offwhite"] span,
-  .dark a[class*="bg-fintage-offwhite"] span,
-  .dark button[class*="dark:bg-fintage-offwhite"] span,
-  .dark a[class*="dark:bg-fintage-offwhite"] span,
-  .dark button[class*="dark:!text-fintage-charcoal"] span,
-  .dark a[class*="dark:!text-fintage-charcoal"] span,
-  .dark button[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
-  .dark a[class*="bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
-  .dark button[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span,
-  .dark a[class*="dark:bg-fintage-offwhite"][class*="dark:!text-fintage-charcoal"] span {
-    color: hsl(var(--fintage-charcoal)) !important;
+    color: hsl(var(--foreground));
   }
 
   /* Form controls: Fintage focus and autofill reset */
   input, textarea, select {
     accent-color: hsl(var(--color-accent));
     caret-color: hsl(var(--fintage-charcoal));
-    background-color: hsl(var(--background)) !important; /* жёстко фиксируем фон */
+    background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
   
@@ -489,8 +297,8 @@
   .dark select {
     accent-color: hsl(var(--color-accent));
     caret-color: hsl(var(--fintage-offwhite));
-    background-color: hsl(0 0% 16% / 0.3) !important; /* fintage-graphite/30 для лучшей видимости */
-    color: hsl(var(--fintage-offwhite)) !important;
+    background-color: hsl(0 0% 16% / 0.3); /* fintage-graphite/30 для лучшей видимости */
+    color: hsl(var(--fintage-offwhite));
   }
   
   /* Стили для option элементов в темной теме */
@@ -709,6 +517,11 @@
     letter-spacing: -0.03em;
     font-weight: 700;
     text-transform: uppercase;
+  }
+
+  .font-display-vintage {
+    font-family: var(--font-display), "Cormorant Garamond", serif;
+    letter-spacing: -0.03em;
   }
   
   .text-graceful {
@@ -1583,4 +1396,3 @@ input:-webkit-autofill {
 .font-logo {
   font-family: 'Modern No. 20', var(--font-logo), serif !important;
 }
-

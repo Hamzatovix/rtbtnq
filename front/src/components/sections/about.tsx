@@ -142,7 +142,7 @@ export function About() {
                 {/* Утилитарный номер секции в стиле каталога */}
                 <div className="flex-shrink-0">
                   <span 
-                    className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-graphite/30 leading-none tracking-tighter"
+                    className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-offwhite leading-none tracking-tighter"
                     aria-hidden="true"
                   >
                     00
@@ -156,7 +156,7 @@ export function About() {
                     {t('home.brand.title')}
                   </h2>
                   {/* Техническая подпись в стиле Stone Island */}
-                  <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+                  <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.15em]">
                     {t('home.brand.subtitleLabel')}
                   </p>
                 </div>
@@ -167,7 +167,7 @@ export function About() {
             </div>
               
             <div className="flex flex-col items-center md:items-start gap-8 min-h-[60px]">
-              <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] leading-relaxed max-w-lg">
+              <p className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.2em] leading-relaxed max-w-lg">
                 {t('home.brand.description')}
               </p>
               
@@ -195,7 +195,7 @@ export function About() {
                 </Button>
 
                 {/* Техническая подпись под кнопкой */}
-                <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
+                <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-offwhite uppercase tracking-[0.2em]">
                   {t('home.brand.learnMore')}
                 </p>
               </div>
@@ -261,7 +261,7 @@ export function About() {
               
               {/* Retro catalog caption */}
               <figcaption className="absolute bottom-3 left-3 right-3 z-20 pointer-events-none">
-                <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite">
                   {t('home.brand.caption.storm') || 'STORM'}
                 </span>
               </figcaption>
@@ -289,7 +289,7 @@ export function About() {
                 
                 {/* Retro catalog caption */}
                 <figcaption className="absolute bottom-2 left-2 z-10 pointer-events-none">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite">
                     {t('home.brand.caption.accessories') || 'ACCESSORIES'}
                   </span>
                 </figcaption>
@@ -315,7 +315,7 @@ export function About() {
                 
                 {/* Retro catalog caption */}
                 <figcaption className="absolute bottom-2 left-2 z-10 pointer-events-none">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite">
                     {t('home.brand.caption.movement') || 'IN MOTION'}
                   </span>
                 </figcaption>
@@ -341,7 +341,7 @@ export function About() {
                 
                 {/* Retro catalog caption */}
                 <figcaption className="absolute bottom-2 left-2 z-10 pointer-events-none">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite">
                     {t('home.brand.caption.details') || 'DETAILS'}
                   </span>
                 </figcaption>
@@ -409,11 +409,11 @@ export function About() {
               {/* Retro catalog caption — wide line under hero on desktop */}
               <figcaption className="absolute bottom-3 left-3 md:bottom-4 md:left-4 lg:static lg:mt-2 lg:px-0 z-20 pointer-events-none">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] md:text-[11px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60 block text-center lg:text-left">
+                  <span className="text-[10px] md:text-[11px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite block text-center lg:text-left">
                     {t('home.brand.caption.storm') || 'STORM'}
                   </span>
                   {/* Техническая подпись о ротации */}
-                  <span className="text-[8px] md:text-[9px] font-mono uppercase tracking-[0.2em] text-fintage-graphite/50 dark:text-fintage-graphite/40 hidden lg:block">
+                  <span className="text-[8px] md:text-[9px] font-mono uppercase tracking-[0.2em] text-fintage-graphite/50 dark:text-fintage-offwhite hidden lg:block">
                     {currentRotatingIndex + 1}/{rotatingImages.length}
                   </span>
                 </div>
@@ -442,7 +442,7 @@ export function About() {
                 
                 {/* Retro catalog caption */}
                 <figcaption className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10 pointer-events-none">
-                  <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                  <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite">
                     {t('home.brand.caption.accessories') || 'ACCESSORIES'}
                   </span>
                 </figcaption>
@@ -468,7 +468,7 @@ export function About() {
                 
                 {/* Retro catalog caption */}
                 <figcaption className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10 pointer-events-none">
-                  <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                  <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite">
                     {t('home.brand.caption.movement') || 'IN MOTION'}
                   </span>
                 </figcaption>
@@ -494,7 +494,7 @@ export function About() {
                 
                 {/* Retro catalog caption */}
                 <figcaption className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10 pointer-events-none">
-                  <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-graphite/60">
+                  <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-fintage-graphite/80 dark:text-fintage-offwhite">
                     {t('home.brand.caption.details') || 'DETAILS'}
                   </span>
                 </figcaption>

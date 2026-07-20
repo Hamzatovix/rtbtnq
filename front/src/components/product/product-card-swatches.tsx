@@ -114,7 +114,7 @@ export default function ProductCardSwatches({
 
       {moreCount > 0 && (
         <div
-          className={`${swatchSizeClass} rounded-sm border-2 flex items-center justify-center text-[9px] font-mono font-medium text-fintage-graphite dark:text-fintage-graphite/70 shadow-fintage-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border-fintage-graphite/30 dark:border-fintage-graphite/40`}
+          className={`${swatchSizeClass} rounded-sm border-2 flex items-center justify-center text-[9px] font-mono font-medium text-fintage-graphite dark:text-fintage-offwhite shadow-fintage-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 border-fintage-graphite/30 dark:border-fintage-graphite/40`}
           role="img"
           aria-label={locale === 'ru' ? `ещё ${moreCount} цветов доступно` : `${moreCount} more colors available`}
         >

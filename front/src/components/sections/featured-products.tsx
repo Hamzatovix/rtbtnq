@@ -42,7 +42,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
               {/* Утилитарный номер секции в стиле каталога */}
               <div className="flex-shrink-0">
                 <span 
-                  className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-graphite/30 leading-none tracking-tighter"
+                  className="inline-block text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-mono font-bold text-fintage-graphite/40 dark:text-fintage-offwhite leading-none tracking-tighter"
                   aria-hidden="true"
                 >
                   01
@@ -56,7 +56,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                   <span suppressHydrationWarning>{t('home.featuredProducts.title')}</span>
                 </h2>
                 {/* Техническая подпись в стиле Stone Island */}
-                <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.15em]">
+                <p className="mt-1.5 text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.15em]">
                   {t('home.featuredProducts.mainCollection')}
                 </p>
               </div>
@@ -68,7 +68,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 {uniqueCategories.map((category, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 text-[9px] font-mono font-medium text-fintage-graphite/50 dark:text-fintage-graphite/40 uppercase tracking-[0.2em] border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/50 dark:bg-fintage-charcoal/50 backdrop-blur-sm"
+                    className="px-2.5 py-1 text-[9px] font-mono font-medium text-fintage-graphite/50 dark:text-fintage-offwhite uppercase tracking-[0.2em] border border-fintage-graphite/20 dark:border-fintage-graphite/30 bg-fintage-offwhite/50 dark:bg-fintage-charcoal/50 backdrop-blur-sm"
                     aria-label={category || undefined}
                   >
                     {category}
@@ -91,7 +91,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
               </div>
             ))
           ) : (
-            <p className="col-span-full text-center text-fintage-graphite dark:text-fintage-graphite/70 text-sm font-mono tracking-[0.15em] uppercase py-12">
+            <p className="col-span-full text-center text-fintage-graphite dark:text-fintage-offwhite text-sm font-mono tracking-[0.15em] uppercase py-12">
               {emptyMessage}
             </p>
           )}
@@ -117,7 +117,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           </Button>
 
           {/* Техническая подпись под кнопкой */}
-          <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-graphite/50 uppercase tracking-[0.2em]">
+          <p className="text-[9px] md:text-[10px] font-mono text-fintage-graphite/40 dark:text-fintage-offwhite uppercase tracking-[0.2em]">
             {t('home.featuredProducts.piecesCount').replace('{count}', `${products.length > 0 ? products.length : 0}`)}
           </p>
         </div>

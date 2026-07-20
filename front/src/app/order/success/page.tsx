@@ -49,7 +49,7 @@ function OrderSuccessInner() {
           </Lead>
 
           <div className="bg-fintage-graphite/5 dark:bg-fintage-graphite/10 p-6 rounded-sm max-w-md mx-auto mb-8 border border-fintage-graphite/20 dark:border-fintage-graphite/30">
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-fintage-graphite/60 dark:text-fintage-graphite/50 mb-2">{t('order.success.orderNumber')}</p>
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-fintage-graphite/60 dark:text-fintage-offwhite mb-2">{t('order.success.orderNumber')}</p>
             <p className="text-h3 font-black text-fintage-charcoal dark:text-fintage-offwhite">{orderNumber}</p>
           </div>
         </motion.div>

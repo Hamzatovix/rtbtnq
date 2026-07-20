@@ -111,7 +111,7 @@ export default function AboutPage() {
 
           {/* Подпись */}
           <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-fintage-graphite/20 dark:border-fintage-graphite/30">
-            <p className="text-xs md:text-sm font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-graphite/50">
+            <p className="text-xs md:text-sm font-mono tracking-[0.2em] uppercase text-fintage-graphite/60 dark:text-fintage-offwhite">
               Noxçiyn maxkaẋ bezamca yina
             </p>
           </div>

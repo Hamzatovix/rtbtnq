@@ -160,7 +160,7 @@ export default function ProductPage() {
       <div className="min-h-screen flex items-center justify-center bg-fintage-offwhite dark:bg-fintage-charcoal">
         <div className="text-center">
           <div className="animate-spin rounded-sm h-12 w-12 border-2 border-fintage-graphite/30 dark:border-fintage-graphite/50 border-t-accent dark:border-t-accent mx-auto mb-4"></div>
-          <p className="text-fintage-graphite/60 dark:text-fintage-graphite/50 font-mono text-xs uppercase tracking-[0.2em]">Загрузка...</p>
+          <p className="text-fintage-graphite/60 dark:text-fintage-offwhite font-mono text-xs uppercase tracking-[0.2em]">Загрузка...</p>
         </div>
       </div>
     )
@@ -455,7 +455,7 @@ export default function ProductPage() {
             {availableColors.length > 0 && (
               <div>
                 <div className="mb-3">
-                  <h3 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-2">{t('product.colors') || 'ЦВЕТ'}</h3>
+                  <h3 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.2em] mb-2">{t('product.colors') || 'ЦВЕТ'}</h3>
                   <div className="h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30 w-16" aria-hidden="true" />
                 </div>
                 <div className="flex flex-wrap gap-2 md:gap-3">
@@ -533,7 +533,7 @@ export default function ProductPage() {
                 {product.materials && (
                   <div>
                     <div className="mb-3">
-                      <h4 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-2">{t('product.materials') || 'МАТЕРИАЛЫ'}</h4>
+                      <h4 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.2em] mb-2">{t('product.materials') || 'МАТЕРИАЛЫ'}</h4>
                       <div className="h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30 w-16" aria-hidden="true" />
                     </div>
                     <p className="text-sm md:text-base text-fintage-charcoal/80 dark:text-fintage-offwhite/80 leading-relaxed whitespace-pre-line font-light">
@@ -544,7 +544,7 @@ export default function ProductPage() {
                 {product.care && (
                   <div>
                     <div className="mb-3">
-                      <h4 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.2em] mb-2">{t('product.care') || 'УХОД'}</h4>
+                      <h4 className="text-[10px] md:text-xs font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.2em] mb-2">{t('product.care') || 'УХОД'}</h4>
                       <div className="h-px bg-fintage-graphite/20 dark:bg-fintage-graphite/30 w-16" aria-hidden="true" />
                     </div>
                     <p className="text-sm md:text-base text-fintage-charcoal/80 dark:text-fintage-offwhite/80 leading-relaxed whitespace-pre-line font-light">

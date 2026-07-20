@@ -44,7 +44,7 @@ export default function ProductCardCartButton({
         <ShoppingBag className={iconSize} />
       </button>
       {showHelperText && helperText && (
-        <p className="text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-graphite/50 uppercase tracking-[0.1em] text-right">
+        <p className="text-[9px] sm:text-[10px] font-mono text-fintage-graphite/60 dark:text-fintage-offwhite uppercase tracking-[0.1em] text-right">
           {helperText}
         </p>
       )}

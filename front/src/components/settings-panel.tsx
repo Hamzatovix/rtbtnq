@@ -130,7 +130,7 @@ export function SettingsPanel() {
         >
           {/* Header - технический стиль */}
           <div className="flex items-center justify-between mb-3 pb-2 border-b-2 border-fintage-graphite/20 dark:border-fintage-graphite/30">
-            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-graphite/60 uppercase tracking-[0.25em]">
+            <span className="text-[10px] font-mono font-semibold text-fintage-graphite/70 dark:text-fintage-offwhite uppercase tracking-[0.25em]">
               {t('common.settings')}
             </span>
             <Button
@@ -151,7 +151,7 @@ export function SettingsPanel() {
               <div className="flex items-center justify-center scale-90">
                 <ThemeToggle />
               </div>
-              <span className="text-[9px] font-mono font-medium text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
+              <span className="text-[9px] font-mono font-medium text-fintage-graphite/70 dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
                 {t('common.theme')}
               </span>
             </div>
@@ -161,7 +161,7 @@ export function SettingsPanel() {
               <div className="flex items-center justify-center scale-90">
                 <LocaleSwitcher />
               </div>
-              <span className="text-[9px] font-mono font-medium text-fintage-graphite/70 dark:text-fintage-graphite/60 group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
+              <span className="text-[9px] font-mono font-medium text-fintage-graphite/70 dark:text-fintage-offwhite group-hover:text-accent transition-fintage uppercase tracking-[0.2em]">
                 {t('common.language')}
               </span>
             </div>
