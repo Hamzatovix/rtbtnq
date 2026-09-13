@@ -216,7 +216,7 @@ export function OrderNotifications() {
   if (pushState === 'subscribed') {
     return (
       <span
-        className="hidden sm:inline-flex h-9 w-9 items-center justify-center text-accent"
+        className="inline-flex h-9 w-9 items-center justify-center text-accent"
         title="Уведомления о новых заказах включены (в т.ч. на этом устройстве)"
       >
         <BellRing className="h-4 w-4" />
@@ -226,7 +226,7 @@ export function OrderNotifications() {
 
   if (pushState === 'subscribing') {
     return (
-      <span className="hidden sm:inline-flex h-9 w-9 items-center justify-center text-fintage-charcoal/50 dark:text-fintage-offwhite/50">
+      <span className="inline-flex h-9 w-9 items-center justify-center text-fintage-charcoal/50 dark:text-fintage-offwhite/50">
         <Loader2 className="h-4 w-4 animate-spin" />
       </span>
     )
@@ -243,7 +243,7 @@ export function OrderNotifications() {
           : 'Включить уведомления о новых заказах (в т.ч. на телефоне)'
       }
       className={cn(
-        'hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-sm transition-fintage',
+        'inline-flex h-9 w-9 items-center justify-center rounded-sm transition-fintage',
         pushState === 'denied'
           ? 'text-fintage-graphite/40 dark:text-fintage-graphite/50 cursor-not-allowed'
           : 'text-fintage-charcoal/70 dark:text-fintage-offwhite/70 hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent dark:hover:text-accent'
