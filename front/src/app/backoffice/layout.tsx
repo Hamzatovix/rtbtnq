@@ -18,6 +18,7 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LocaleSwitcher } from "@/components/i18n/locale-switcher"
 import { MobileDrawer } from "@/components/layout/MobileDrawer"
+import { OrderNotifications } from "@/components/backoffice/OrderNotifications"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -242,6 +243,7 @@ function QuickActions() {
 
   return (
     <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-4">
+      <OrderNotifications />
       <div className="hidden sm:block">
         <ThemeToggle />
       </div>

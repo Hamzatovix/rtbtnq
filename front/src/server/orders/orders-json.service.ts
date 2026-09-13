@@ -3,6 +3,7 @@ import { join } from 'path'
 import { nanoid } from 'nanoid'
 import { sendOrderNotification } from '@/lib/telegram'
 import { isSupabaseEnabled, supabaseDelete, supabaseSelect, supabaseUpsert, supabaseCount } from '@/lib/supabase-admin'
+import { orderEvents, NEW_ORDER_EVENT } from '@/server/order-events'
 
 const SUPABASE_ORDERS_TABLE = process.env.SUPABASE_ORDERS_TABLE || 'orders'
 
@@ -299,79 +300,87 @@ export async function createOrder(data: {
     total: order.total
   })
 
-  // Отправляем уведомление в Telegram синхронно, но не блокируем создание заказа при ошибках
-  // На Vercel serverless функции завершаются сразу после ответа,
-  // поэтому отправляем синхронно с коротким таймаутом и быстрым retry
-  try {
-    console.log('[Order] Начало отправки уведомления в Telegram...', {
-      orderId: order.id,
-      orderNumber: order.number,
-      timestamp: new Date().toISOString()
-    })
-    
-    const shippingAddress = order.addresses?.find(addr => addr.type === 'shipping') || order.addresses?.[0]
-    
-    // Отправляем с таймаутом на весь процесс (включая retry)
-    const notificationPromise = sendOrderNotification({
-      orderId: order.id,
-      orderNumber: order.number,
-      customerName: order.customerName || 'Не указано',
-      customerPhone: order.customerPhone,
-      items: order.items.map(item => ({
-        name: item.name,
-        qty: item.qty,
-        color: (item as any).color || null,
-        price: item.price,
-        total: item.total,
-        image: (item as any).image || null,
-      })),
-      total: order.total,
-      currency: order.currency,
-      address: shippingAddress ? {
-        country: shippingAddress.country,
-        city: shippingAddress.city,
-        line1: shippingAddress.line1,
-        line2: shippingAddress.line2 || null,
-        postal: shippingAddress.postal,
-      } : null,
-      shippingMethod: (shippingAddress as any)?.shippingMethod ?? (order as any).shippingMethod ?? null,
-      shippingPrice: (shippingAddress as any)?.shippingPrice ?? (order as any).shippingPrice ?? null,
-      note: order.note,
-      baseUrl: data.baseUrl,
-    })
-    
-    // Ждем отправки с общим таймаутом (максимум 30 секунд на все retry)
-    // Расчет времени: 15s (таймаут) + 0.5s (задержка) + 15s + 1s + 15s + 2s = ~48.5s максимум
-    // Но обычно Telegram отвечает за 1-3 секунды, поэтому 30 секунд достаточно для большинства случаев
-    // Если не успевает - заказ все равно создается, уведомление может быть пропущено
-    const timeoutPromise = new Promise<boolean>((resolve) => {
-      setTimeout(() => {
-        console.warn('[Order] Таймаут ожидания отправки в Telegram (30s), продолжаем без блокировки')
-        resolve(false)
-      }, 30000) // 30 секунд на все retry попытки
-    })
-    
-    const notificationResult = await Promise.race([notificationPromise, timeoutPromise])
-    
-    console.log('[Order] Результат отправки в Telegram:', {
-      success: notificationResult,
-      orderId: order.id,
-      orderNumber: order.number,
-      timestamp: new Date().toISOString()
-    })
-  } catch (error) {
-    // Не блокируем создание заказа, если отправка в Telegram не удалась
-    console.error('[Order] Ошибка при отправке уведомления в Telegram:', {
-      orderId: order.id,
-      orderNumber: order.number,
-      error: error instanceof Error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      } : error,
-      timestamp: new Date().toISOString()
-    })
-  }
+  // Живое уведомление в backoffice (SSE, см. src/server/order-events.ts и
+  // /api/backoffice/events). Синхронно, мгновенно, не зависит от внешней сети.
+  orderEvents.emit(NEW_ORDER_EVENT, {
+    id: order.id,
+    number: order.number,
+    customerName: order.customerName,
+    customerPhone: order.customerPhone,
+    total: order.total,
+    currency: order.currency,
+    createdAt: order.createdAt,
+  })
+
+  // Отправляем уведомление в Telegram в ФОНЕ, не блокируя ответ клиенту.
+  //
+  // Раньше здесь был Promise.race с таймаутом 30с, специально под Vercel
+  // (serverless-функция обрывается сразу после ответа, поэтому уведомление
+  // приходилось ждать синхронно). Но прод работает не на Vercel, а на VPS
+  // через Docker — это постоянный процесс, которому не нужно ничего ждать
+  // перед ответом: фоновая задача спокойно доработает уже после того, как
+  // клиент получил подтверждение заказа. Из-за нестабильной сети до
+  // api.telegram.org с этого сервера клиенты иногда ждали до 30 секунд —
+  // теперь они получают ответ мгновенно, а Telegram (с теми же ретраями
+  // внутри sendOrderNotification) — просто резервный канал уведомления.
+  void (async () => {
+    try {
+      console.log('[Order] Начало отправки уведомления в Telegram (фон)...', {
+        orderId: order.id,
+        orderNumber: order.number,
+        timestamp: new Date().toISOString()
+      })
+
+      const shippingAddress = order.addresses?.find(addr => addr.type === 'shipping') || order.addresses?.[0]
+
+      const notificationResult = await sendOrderNotification({
+        orderId: order.id,
+        orderNumber: order.number,
+        customerName: order.customerName || 'Не указано',
+        customerPhone: order.customerPhone,
+        items: order.items.map(item => ({
+          name: item.name,
+          qty: item.qty,
+          color: (item as any).color || null,
+          price: item.price,
+          total: item.total,
+          image: (item as any).image || null,
+        })),
+        total: order.total,
+        currency: order.currency,
+        address: shippingAddress ? {
+          country: shippingAddress.country,
+          city: shippingAddress.city,
+          line1: shippingAddress.line1,
+          line2: shippingAddress.line2 || null,
+          postal: shippingAddress.postal,
+        } : null,
+        shippingMethod: (shippingAddress as any)?.shippingMethod ?? (order as any).shippingMethod ?? null,
+        shippingPrice: (shippingAddress as any)?.shippingPrice ?? (order as any).shippingPrice ?? null,
+        note: order.note,
+        baseUrl: data.baseUrl,
+      })
+
+      console.log('[Order] Результат отправки в Telegram:', {
+        success: notificationResult,
+        orderId: order.id,
+        orderNumber: order.number,
+        timestamp: new Date().toISOString()
+      })
+    } catch (error) {
+      // Заказ уже создан и отдан клиенту — ошибка Telegram никак на это не влияет
+      console.error('[Order] Ошибка при отправке уведомления в Telegram:', {
+        orderId: order.id,
+        orderNumber: order.number,
+        error: error instanceof Error ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        } : error,
+        timestamp: new Date().toISOString()
+      })
+    }
+  })()
 
   return order
 }

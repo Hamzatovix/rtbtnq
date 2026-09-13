@@ -24,6 +24,21 @@ export default function OrdersListPage() {
       .finally(() => setLoading(false))
   }, [])
 
+  // Живое обновление списка, когда OrderNotifications (SSE) сообщает о новом
+  // заказе — без перезагрузки страницы и без повторного показа спиннера
+  useEffect(() => {
+    const handleNewOrder = () => {
+      fetch('/api/orders?markViewed=true')
+        .then(r => r.json())
+        .then(setData)
+        .catch(() => {
+          // фоновое обновление — молча пропускаем, список обновится в следующий раз
+        })
+    }
+    window.addEventListener('rb:new-order', handleNewOrder)
+    return () => window.removeEventListener('rb:new-order', handleNewOrder)
+  }, [])
+
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <p className="text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono text-xs uppercase tracking-[0.15em]">Загрузка…</p>
