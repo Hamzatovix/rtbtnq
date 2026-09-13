@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Heart, ShoppingBag, ArrowLeft, ZoomIn } from 'lucide-react'
@@ -51,8 +51,12 @@ export default function ProductPage() {
   const locale = useClientLocale()
   const t = useTranslations()
   const params = useParams()
+  const searchParams = useSearchParams()
   const productSlug = params.id as string
-  
+  // Пришли из backoffice со страницы заказа — сразу открываем тот цвет,
+  // который выбрал клиент (см. /backoffice/orders/[id])
+  const requestedColorName = searchParams?.get('color')
+
   const [product, setProduct] = useState<Product | null>(null)
   const [colors, setColors] = useState<Color[]>([])
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([])
@@ -89,9 +93,22 @@ export default function ProductPage() {
               : [])
         setCategories(categoriesArray)
         
-        // Выбираем первый доступный цвет
-        if (productData.variants && productData.variants.length > 0) {
-          setSelectedColorId(String(productData.variants[0].colorId || ''))
+        // Если пришли по ссылке из заказа с конкретным цветом — открываем его,
+        // если у товара такой вариант ещё есть; иначе (и по умолчанию) —
+        // первый доступный цвет
+        const allColors: Color[] = colorsData.results || colorsData
+        const variants: ProductVariant[] = productData.variants || []
+        const requestedColor = requestedColorName
+          ? allColors.find((c) => c.name?.toLowerCase() === requestedColorName.toLowerCase())
+          : undefined
+        const requestedVariant = requestedColor
+          ? variants.find((v) => String(v.colorId) === String(requestedColor.id))
+          : undefined
+
+        if (requestedVariant) {
+          setSelectedColorId(String(requestedVariant.colorId))
+        } else if (variants.length > 0) {
+          setSelectedColorId(String(variants[0].colorId || ''))
         }
         setLoading(false)
       })

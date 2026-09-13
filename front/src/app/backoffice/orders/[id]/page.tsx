@@ -266,16 +266,25 @@ export default function OrderDetailPage() {
 
                 // Товар кликабелен только если известен его productId — в старых
                 // заказах (созданных до этой правки) его нет, тогда просто
-                // показываем строку без ссылки
+                // показываем строку без ссылки.
+                // Ссылка ведёт на публичную страницу товара (не на редактирование) —
+                // так видно именно то, что заказал клиент: фото, описание, и сразу
+                // открыт заказанный цвет. Открываем в новой вкладке, чтобы не
+                // терять место в backoffice.
                 if (it.productId) {
+                  const productUrl = it.color
+                    ? `/product/${it.productId}?color=${encodeURIComponent(it.color)}`
+                    : `/product/${it.productId}`
                   return (
-                    <Link
+                    <a
                       key={it.id || it.sku}
-                      href={`/backoffice/products/${it.productId}/edit`}
+                      href={productUrl}
+                      target="_blank"
+                      rel="noreferrer"
                       className={`${rowClassName} hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage rounded-sm -mx-2 px-2`}
                     >
                       {itemContent}
-                    </Link>
+                    </a>
                   )
                 }
 
