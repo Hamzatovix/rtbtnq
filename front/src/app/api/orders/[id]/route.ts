@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getOrder, updateOrder } from '@/server/orders/orders-json.service'
+import { getOrder, updateOrder, markOrderViewed } from '@/server/orders/orders-json.service'
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -7,7 +7,9 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     if (!order) {
       return NextResponse.json({ error: 'Заказ не найден' }, { status: 404 })
     }
-    return NextResponse.json(order)
+    // Открыли конкретный заказ — снимаем с него бейдж "новый"
+    const viewed = order.orderStatus === 'new' ? await markOrderViewed(params.id) : order
+    return NextResponse.json(viewed ?? order)
   } catch (error: any) {
     console.error('Ошибка при получении заказа:', error)
     return NextResponse.json(

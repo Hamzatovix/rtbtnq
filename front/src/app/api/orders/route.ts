@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { listOrders, createOrder, markNewOrdersAsViewed } from '@/server/orders/orders-json.service'
+import { listOrders, createOrder } from '@/server/orders/orders-json.service'
 
 function buildBaseUrl(req: NextRequest): string | undefined {
   const headerUrl = req.headers.get('x-forwarded-host') || req.headers.get('host')
@@ -11,13 +11,10 @@ function buildBaseUrl(req: NextRequest): string | undefined {
 export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url)
-    const markViewed = url.searchParams.get('markViewed') === 'true'
-    
-    // Если запрос с markViewed=true, обновляем статус новых заказов
-    if (markViewed) {
-      await markNewOrdersAsViewed()
-    }
-    
+
+    // "Новый" теперь снимается при открытии конкретного заказа
+    // (см. GET /api/orders/[id]), а не при простом просмотре списка —
+    // иначе бейдж "новый" гас, даже если заказ никто не открывал.
     const status = url.searchParams.get('status') || undefined
     const limit = parseInt(url.searchParams.get('limit') || '100')
     const offset = parseInt(url.searchParams.get('offset') || '0')
@@ -57,9 +54,9 @@ export async function POST(req: NextRequest) {
       baseUrl, // Передаем baseUrl в createOrder для использования в уведомлении
     })
     
-    // Уведомление отправляется внутри createOrder синхронно (с таймаутом)
-    // Это гарантирует, что retry попытки завершатся до возврата ответа
-    
+    // Уведомления (SSE/Push/Telegram) отправляются внутри createOrder в фоне
+    // и не блокируют этот ответ — см. комментарии в orders-json.service.ts
+
     return NextResponse.json(order, { status: 201 })
   } catch (error: any) {
     console.error('Ошибка при создании заказа:', error)

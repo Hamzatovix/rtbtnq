@@ -18,7 +18,7 @@ export default function OrdersListPage() {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/orders?markViewed=true')
+    fetch('/api/orders')
       .then(r => r.json())
       .then(setData)
       .finally(() => setLoading(false))
@@ -28,7 +28,7 @@ export default function OrdersListPage() {
   // заказе — без перезагрузки страницы и без повторного показа спиннера
   useEffect(() => {
     const handleNewOrder = () => {
-      fetch('/api/orders?markViewed=true')
+      fetch('/api/orders')
         .then(r => r.json())
         .then(setData)
         .catch(() => {

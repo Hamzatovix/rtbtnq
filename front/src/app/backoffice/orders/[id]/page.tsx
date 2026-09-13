@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { getColorEnglishName } from '@/lib/utils'
+import { toast } from '@/components/ui/toast'
 
 export default function OrderDetailPage() {
   const params = useParams()
@@ -25,10 +26,21 @@ export default function OrderDetailPage() {
       .finally(() => setLoading(false))
   }, [id])
 
+  const actionLabels: Record<'confirm' | 'cancel' | 'payment', string> = {
+    confirm: 'подтвердить заказ',
+    cancel: 'отменить заказ',
+    payment: 'добавить платёж',
+  }
+  const actionSuccessLabels: Record<'confirm' | 'cancel' | 'payment', string> = {
+    confirm: 'Заказ подтверждён',
+    cancel: 'Заказ отменён',
+    payment: 'Платёж добавлен',
+  }
+
   const handleAction = async (action: 'confirm' | 'cancel' | 'payment', data?: any) => {
     setActionLoading(action)
     try {
-      const endpoint = action === 'payment' 
+      const endpoint = action === 'payment'
         ? `/api/orders/${id}/payments`
         : `/api/orders/${id}/${action}`
       const res = await fetch(endpoint, {
@@ -40,7 +52,16 @@ export default function OrderDetailPage() {
         // Перезагружаем данные
         const updated = await fetch(`/api/orders/${id}`, { cache:'no-store' }).then(r=>r.json())
         setOrder(updated)
+        toast.success(actionSuccessLabels[action])
+      } else {
+        const body = await res.json().catch(() => null)
+        toast.error(
+          `Не удалось ${actionLabels[action]}`,
+          body?.error || `Сервер ответил ${res.status}`
+        )
       }
+    } catch (error) {
+      toast.error(`Не удалось ${actionLabels[action]}`, 'Проверьте соединение и попробуйте ещё раз')
     } finally {
       setActionLoading(null)
     }

@@ -34,6 +34,12 @@ interface Order {
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded'
   fulfillmentStatus: 'unfulfilled' | 'fulfilled' | 'partially_fulfilled' | 'cancelled'
   orderStatus: 'new' | 'in_progress' | 'completed' | 'cancelled'
+  payments?: Array<{
+    id: string
+    amount: number
+    method: string
+    createdAt: string
+  }>
   total: number
   currency: string
   note?: string | null
@@ -475,20 +481,24 @@ export async function confirmOrder(id: string): Promise<Order | null> {
   return updateOrder(id, { orderStatus: 'completed' })
 }
 
-export async function markNewOrdersAsViewed(): Promise<void> {
+/**
+ * Снимает статус "новый" с одного конкретного заказа — вызывается при
+ * реальном открытии заказа (GET /api/orders/[id]), а не при простом
+ * просмотре списка. Раньше бейдж "новый" гас у ВСЕХ заказов сразу же
+ * при загрузке страницы "Заказы", даже если их никто не открывал.
+ */
+export async function markOrderViewed(id: string): Promise<Order | null> {
   const orders = await loadOrders()
-  let changed = false
-  
-  for (const order of orders) {
-    if (order.orderStatus === 'new') {
-      order.orderStatus = 'in_progress'
-      order.updatedAt = new Date().toISOString()
-      changed = true
-    }
+  const index = orders.findIndex(o => o.id === id)
+  if (index === -1) return null
+  if (orders[index].orderStatus !== 'new') return orders[index]
+
+  orders[index] = {
+    ...orders[index],
+    orderStatus: 'in_progress',
+    updatedAt: new Date().toISOString(),
   }
-  
-  if (changed) {
-    await saveOrders(orders)
-  }
+  await saveOrders(orders)
+  return orders[index]
 }
 
