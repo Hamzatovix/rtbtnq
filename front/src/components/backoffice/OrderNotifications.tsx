@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Bell, BellOff, BellRing } from 'lucide-react'
+import { Bell, BellOff, BellRing, Loader2 } from 'lucide-react'
 import { toast } from '@/components/ui/toast'
 import { cn } from '@/lib/utils'
 
@@ -31,9 +31,9 @@ function formatMoney(total: number, currency: string) {
 
 /**
  * Короткий двухтональный сигнал через Web Audio API — без внешнего аудиофайла.
- * Если браузер ещё не разрешил звук на странице (autoplay policy), просто
- * молча ничего не проигрываем — сотрудник backoffice уже точно взаимодействовал
- * со страницей (залогинился), так что на практике это почти всегда работает.
+ * Используется только пока вкладка backoffice реально открыта (сигнал от SSE).
+ * За системные уведомления (в т.ч. когда вкладка/приложение закрыты) отвечает
+ * Web Push + Service Worker, см. requestPushSubscription() ниже и public/sw.js.
  */
 function playChime() {
   try {
@@ -60,57 +60,105 @@ function playChime() {
 
     setTimeout(() => ctx.close().catch(() => {}), 600)
   } catch {
-    // звук — это приятное дополнение, а не критичная часть уведомления
+    // звук — приятное дополнение, а не критичная часть уведомления
   }
 }
 
-function notifyBrowser(payload: NewOrderPayload) {
-  if (typeof window === 'undefined' || !('Notification' in window)) return
-  if (Notification.permission !== 'granted') return
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; i++) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
 
-  try {
-    const n = new Notification('Новый заказ ' + payload.number, {
-      body: `${payload.customerName || 'Без имени'} — ${formatMoney(payload.total, payload.currency)}`,
-      tag: `order-${payload.id}`,
-      silent: true, // звук уже играем сами через playChime()
+type PushState =
+  | 'unsupported' // браузер не умеет Push API / Service Worker
+  | 'idle' // ещё не подписан, кнопка доступна
+  | 'subscribing' // идёт процесс подписки
+  | 'subscribed' // всё готово, пуши приходят
+  | 'denied' // пользователь/браузер запретил уведомления
+
+async function requestPushSubscription(): Promise<{ ok: boolean; reason?: string }> {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    return { ok: false, reason: 'unsupported' }
+  }
+
+  const registration = await navigator.serviceWorker.register('/sw.js')
+  await navigator.serviceWorker.ready
+
+  const keyRes = await fetch('/api/backoffice/push', { credentials: 'include' })
+  if (!keyRes.ok) {
+    return { ok: false, reason: 'no-server-key' }
+  }
+  const { publicKey } = await keyRes.json()
+
+  let subscription = await registration.pushManager.getSubscription()
+  if (!subscription) {
+    subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      // Типы lib.dom для BufferSource и Uint8Array иногда расходятся между
+      // версиями TS/@types — привести к BufferSource безопасно, это то, что
+      // PushManager.subscribe() ожидает по спецификации.
+      applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
     })
-    n.onclick = () => {
-      window.focus()
-      window.location.href = '/backoffice/orders'
-      n.close()
-    }
-  } catch {
-    // некоторые браузеры/ОС могут кидать ошибку на createNotification — не критично
   }
-}
 
-type PermissionState = 'default' | 'granted' | 'denied' | 'unsupported'
+  await fetch('/api/backoffice/push', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(subscription.toJSON()),
+  })
+
+  return { ok: true }
+}
 
 /**
  * Слушает поток /api/backoffice/events (SSE) и на событие "новый заказ":
- *  - проигрывает звук,
- *  - показывает системное уведомление браузера (если разрешено),
- *  - показывает toast внутри backoffice,
- *  - рассылает window-событие 'rb:new-order', чтобы страницы (например,
- *    список заказов) могли сами обновить данные без перезагрузки.
+ *  - проигрывает звук и показывает toast (пока вкладка открыта),
+ *  - обновляет список заказов через window-событие 'rb:new-order'.
  *
- * Также рендерит маленькую кнопку в шапке для включения/статуса уведомлений.
+ * Отдельно управляет подпиской на Web Push (кнопка-колокольчик в шапке) —
+ * это то, что реально доставит уведомление на телефон, даже если backoffice
+ * не открыт: сервер сам шлёт push при создании заказа (см. sendPushToAll в
+ * src/server/orders/orders-json.service.ts), а показывает его Service Worker
+ * (public/sw.js), не эта страница.
  */
 export function OrderNotifications() {
-  const [permission, setPermission] = useState<PermissionState>('default')
+  const [pushState, setPushState] = useState<PushState>('idle')
   const esRef = useRef<EventSource | null>(null)
 
+  // Определяем текущее состояние подписки при монтировании
   useEffect(() => {
-    if (typeof window === 'undefined' || !('Notification' in window)) {
-      setPermission('unsupported')
-      return
+    let cancelled = false
+    ;(async () => {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+        if (!cancelled) setPushState('unsupported')
+        return
+      }
+      if (Notification.permission === 'denied') {
+        if (!cancelled) setPushState('denied')
+        return
+      }
+      try {
+        const registration = await navigator.serviceWorker.getRegistration('/sw.js')
+        const existing = await registration?.pushManager.getSubscription()
+        if (!cancelled) setPushState(existing ? 'subscribed' : 'idle')
+      } catch {
+        if (!cancelled) setPushState('idle')
+      }
+    })()
+    return () => {
+      cancelled = true
     }
-    setPermission(Notification.permission as PermissionState)
   }, [])
 
   const handleNewOrder = useCallback((payload: NewOrderPayload) => {
     playChime()
-    notifyBrowser(payload)
     toast.default(
       `Новый заказ ${payload.number}`,
       `${payload.customerName || 'Без имени'} — ${formatMoney(payload.total, payload.currency)}`
@@ -134,7 +182,6 @@ export function OrderNotifications() {
     })
 
     es.onerror = () => {
-      // Ошибка транзитная (переподключение браузер делает сам) — просто логируем
       console.warn('[OrderNotifications] SSE-соединение прервано, браузер переподключится автоматически')
     }
 
@@ -144,25 +191,43 @@ export function OrderNotifications() {
     }
   }, [handleNewOrder])
 
-  const requestPermission = async () => {
-    if (typeof window === 'undefined' || !('Notification' in window)) return
+  const enablePush = async () => {
+    setPushState('subscribing')
     try {
-      const result = await Notification.requestPermission()
-      setPermission(result as PermissionState)
-    } catch {
-      // пользователь мог закрыть системный диалог — не критично
+      const result = await requestPushSubscription()
+      if (result.ok) {
+        setPushState('subscribed')
+        toast.success('Уведомления включены', 'Теперь заказы будут приходить даже на телефон')
+      } else if (Notification.permission === 'denied') {
+        setPushState('denied')
+      } else {
+        setPushState('idle')
+        toast.error('Не получилось включить уведомления', 'Попробуйте ещё раз чуть позже')
+      }
+    } catch (error) {
+      console.error('[OrderNotifications] Ошибка подписки на push:', error)
+      setPushState(Notification.permission === 'denied' ? 'denied' : 'idle')
+      toast.error('Не получилось включить уведомления', 'Попробуйте ещё раз чуть позже')
     }
   }
 
-  if (permission === 'unsupported') return null
+  if (pushState === 'unsupported') return null
 
-  if (permission === 'granted') {
+  if (pushState === 'subscribed') {
     return (
       <span
         className="hidden sm:inline-flex h-9 w-9 items-center justify-center text-accent"
-        title="Уведомления о новых заказах включены"
+        title="Уведомления о новых заказах включены (в т.ч. на этом устройстве)"
       >
         <BellRing className="h-4 w-4" />
+      </span>
+    )
+  }
+
+  if (pushState === 'subscribing') {
+    return (
+      <span className="hidden sm:inline-flex h-9 w-9 items-center justify-center text-fintage-charcoal/50 dark:text-fintage-offwhite/50">
+        <Loader2 className="h-4 w-4 animate-spin" />
       </span>
     )
   }
@@ -170,21 +235,22 @@ export function OrderNotifications() {
   return (
     <button
       type="button"
-      onClick={requestPermission}
+      onClick={enablePush}
+      disabled={pushState === 'denied'}
       title={
-        permission === 'denied'
+        pushState === 'denied'
           ? 'Уведомления заблокированы в настройках браузера'
-          : 'Включить уведомления о новых заказах'
+          : 'Включить уведомления о новых заказах (в т.ч. на телефоне)'
       }
       className={cn(
         'hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-sm transition-fintage',
-        permission === 'denied'
+        pushState === 'denied'
           ? 'text-fintage-graphite/40 dark:text-fintage-graphite/50 cursor-not-allowed'
           : 'text-fintage-charcoal/70 dark:text-fintage-offwhite/70 hover:bg-hover-bg dark:hover:bg-hover-bg hover:text-accent dark:hover:text-accent'
       )}
       aria-label="Включить уведомления о новых заказах"
     >
-      {permission === 'denied' ? <BellOff className="h-4 w-4" /> : <Bell className="h-4 w-4" />}
+      {pushState === 'denied' ? <BellOff className="h-4 w-4" /> : <Bell className="h-4 w-4" />}
     </button>
   )
 }

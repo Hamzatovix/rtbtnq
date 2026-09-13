@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid'
 import { sendOrderNotification } from '@/lib/telegram'
 import { isSupabaseEnabled, supabaseDelete, supabaseSelect, supabaseUpsert, supabaseCount } from '@/lib/supabase-admin'
 import { orderEvents, NEW_ORDER_EVENT } from '@/server/order-events'
+import { sendPushToAll } from '@/lib/web-push'
 
 const SUPABASE_ORDERS_TABLE = process.env.SUPABASE_ORDERS_TABLE || 'orders'
 
@@ -310,6 +311,22 @@ export async function createOrder(data: {
     total: order.total,
     currency: order.currency,
     createdAt: order.createdAt,
+  })
+
+  // Web Push — доходит даже на телефон, если backoffice не открыт (в отличие
+  // от SSE). Тоже в фоне, не блокирует ответ клиенту. Если VAPID-ключи не
+  // настроены на сервере, sendPushToAll() просто ничего не делает.
+  void sendPushToAll({
+    title: `Новый заказ ${order.number}`,
+    body: `${order.customerName || 'Без имени'} — ${order.total} ${order.currency}`,
+    url: `/backoffice/orders/${order.id}`,
+    tag: `order-${order.id}`,
+  }).catch((error) => {
+    console.error('[Order] Ошибка при отправке Web Push:', {
+      orderId: order.id,
+      orderNumber: order.number,
+      error: error instanceof Error ? error.message : error,
+    })
   })
 
   // Отправляем уведомление в Telegram в ФОНЕ, не блокируя ответ клиенту.
