@@ -8,6 +8,14 @@ import { ArrowLeft, Phone, MessageCircle, Printer } from 'lucide-react'
 import { getColorEnglishName } from '@/lib/utils'
 import { toast } from '@/components/ui/toast'
 
+const SHIPPING_METHOD_LABELS: Record<string, string> = {
+  ozon: 'Ozon доставка',
+  courier: 'Доставка курьером (г. Грозный)',
+  russianPost: 'Почта России',
+  cdek: 'СДЭК',
+  international: 'Международная доставка',
+}
+
 function formatPhoneLinks(phone: string) {
   const digits = phone.replace(/\D/g, '')
   if (!digits) return null
@@ -169,30 +177,45 @@ export default function OrderDetailPage() {
             <div className="p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
               <h2 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-4 uppercase tracking-[0.15em]">Доставка</h2>
               <div className="space-y-2 text-sm">
-                {order.addresses.map((addr: any, idx: number) => (
-                  <div key={addr.id || idx} className="space-y-2">
-                    {addr.country && (
-                      <div>
-                        <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Страна:</span> {addr.country}
-                      </div>
-                    )}
-                    {addr.city && (
-                      <div>
-                        <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Город:</span> {addr.city}
-                      </div>
-                    )}
-                    {(addr.line1 || addr.address) && (
-                      <div>
-                        <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Адрес:</span> {addr.line1 || addr.address || '-'}
-                      </div>
-                    )}
-                    {(addr.line2 || addr.pickupPoint) && (
-                      <div>
-                        <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Пункт выдачи:</span> {addr.line2 || addr.pickupPoint || '-'}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                {order.addresses.map((addr: any, idx: number) => {
+                  const shippingMethod = addr.shippingMethod || order.shippingMethod
+                  const shippingPrice = addr.shippingPrice ?? order.shippingPrice
+                  return (
+                    <div key={addr.id || idx} className="space-y-2">
+                      {shippingMethod && (
+                        <div>
+                          <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Способ доставки:</span>{' '}
+                          {SHIPPING_METHOD_LABELS[shippingMethod] || shippingMethod}
+                        </div>
+                      )}
+                      {typeof shippingPrice === 'number' && shippingPrice > 0 && (
+                        <div>
+                          <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Стоимость доставки:</span> {shippingPrice} ₽
+                        </div>
+                      )}
+                      {addr.country && (
+                        <div>
+                          <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Страна:</span> {addr.country}
+                        </div>
+                      )}
+                      {addr.city && (
+                        <div>
+                          <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Город:</span> {addr.city}
+                        </div>
+                      )}
+                      {(addr.line1 || addr.address) && (
+                        <div>
+                          <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Адрес:</span> {addr.line1 || addr.address || '-'}
+                        </div>
+                      )}
+                      {(addr.line2 || addr.pickupPoint) && (
+                        <div>
+                          <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Пункт выдачи:</span> {addr.line2 || addr.pickupPoint || '-'}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}
