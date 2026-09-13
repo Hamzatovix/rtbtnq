@@ -136,34 +136,59 @@ export default function OrderDetailPage() {
           <div className="p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
             <h2 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-4 uppercase tracking-[0.15em]">Состав заказа</h2>
             <div className="space-y-4">
-              {(order.items || []).map((it:any)=> (
-                <div key={it.id || it.sku} className="flex gap-4 items-start pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/45 last:border-0 last:pb-0">
-                  {it.image && (
-                    <div className="w-20 h-20 rounded-sm overflow-hidden flex-shrink-0 border border-fintage-graphite/20 dark:border-fintage-graphite/45">
-                      <img 
-                        src={it.image.startsWith('http') || it.image.startsWith('/') ? it.image : `/${it.image}`}
-                        alt={it.name || it.productName}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.src = '/placeholder/about_main_placeholder.svg'
-                        }}
-                      />
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium mb-1 text-fintage-charcoal dark:text-fintage-offwhite">{it.name || it.productName}</div>
-                    {it.color && (
-                      <div className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/75 mb-1">Color: {getColorEnglishName(it.color)}</div>
+              {(order.items || []).map((it:any)=> {
+                const itemContent = (
+                  <>
+                    {it.image && (
+                      <div className="w-20 h-20 rounded-sm overflow-hidden flex-shrink-0 border border-fintage-graphite/20 dark:border-fintage-graphite/45">
+                        <img
+                          src={it.image.startsWith('http') || it.image.startsWith('/') ? it.image : `/${it.image}`}
+                          alt={it.name || it.productName}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src = '/placeholder/about_main_placeholder.svg'
+                          }}
+                        />
+                      </div>
                     )}
-                    <div className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono">{it.sku || '-'}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium mb-1 text-fintage-charcoal dark:text-fintage-offwhite">{it.name || it.productName}</div>
+                      {it.color && (
+                        <div className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/75 mb-1">Color: {getColorEnglishName(it.color)}</div>
+                      )}
+                      <div className="text-sm text-fintage-graphite/60 dark:text-fintage-graphite/75 font-mono">{it.sku || '-'}</div>
+                    </div>
+                    <div className="text-right whitespace-nowrap">
+                      <div className="text-sm text-fintage-graphite/70 dark:text-fintage-graphite/75">{it.qty || it.quantity} × {it.price || it.unitPrice} ₽</div>
+                      <div className="text-sm font-medium mt-1 text-fintage-charcoal dark:text-fintage-offwhite">{it.total || (it.qty * it.price)} ₽</div>
+                    </div>
+                  </>
+                )
+
+                const rowClassName = "flex gap-4 items-start pb-4 border-b border-fintage-graphite/20 dark:border-fintage-graphite/45 last:border-0 last:pb-0"
+
+                // Товар кликабелен только если известен его productId — в старых
+                // заказах (созданных до этой правки) его нет, тогда просто
+                // показываем строку без ссылки
+                if (it.productId) {
+                  return (
+                    <Link
+                      key={it.id || it.sku}
+                      href={`/backoffice/products/${it.productId}/edit`}
+                      className={`${rowClassName} hover:bg-fintage-graphite/5 dark:hover:bg-fintage-graphite/10 transition-fintage rounded-sm -mx-2 px-2`}
+                    >
+                      {itemContent}
+                    </Link>
+                  )
+                }
+
+                return (
+                  <div key={it.id || it.sku} className={rowClassName}>
+                    {itemContent}
                   </div>
-                  <div className="text-right whitespace-nowrap">
-                    <div className="text-sm text-fintage-graphite/70 dark:text-fintage-graphite/75">{it.qty || it.quantity} × {it.price || it.unitPrice} ₽</div>
-                    <div className="text-sm font-medium mt-1 text-fintage-charcoal dark:text-fintage-offwhite">{it.total || (it.qty * it.price)} ₽</div>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 

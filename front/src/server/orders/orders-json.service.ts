@@ -431,11 +431,19 @@ export async function listOrders(options?: {
   
   // Для файловой системы используем старую логику (загружаем все и фильтруем в памяти)
   let orders = await loadOrders()
-  
+
   if (options?.status) {
     orders = orders.filter(o => o.orderStatus === options.status)
   }
-  
+
+  // Новые заказы должны быть сверху — новые дописываются в конец файла
+  // (order.push в createOrder), поэтому без сортировки список шёл от
+  // старых к новым. Supabase-ветка выше уже сортирует (order=created_at.desc),
+  // здесь просто приводим файловый путь к тому же поведению.
+  orders = [...orders].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
+
   const total = orders.length
   const results = orders.slice(offset, offset + limit)
   

@@ -91,6 +91,7 @@ export default function CheckoutPage() {
       const orderItems = items.map(item => ({
         name: item.title,
         productName: item.title,
+        productId: item.id,
         sku: `${item.id}-${item.selectedColor || 'default'}`,
         qty: item.quantity,
         quantity: item.quantity,
