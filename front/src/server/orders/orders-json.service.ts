@@ -502,3 +502,38 @@ export async function markOrderViewed(id: string): Promise<Order | null> {
   return orders[index]
 }
 
+/**
+ * Автоотменяет заказы, которые висят неоплаченными дольше hoursThreshold
+ * часов — чтобы список не захламлялся брошенными корзинами (человек начал
+ * оформлять заказ и передумал/не оплатил). Оплаченные и уже завершённые/
+ * отменённые заказы не трогает.
+ */
+export async function expireStaleOrders(hoursThreshold: number): Promise<number> {
+  const orders = await loadOrders()
+  const cutoff = Date.now() - hoursThreshold * 60 * 60 * 1000
+  let cancelledCount = 0
+
+  const updated = orders.map((order) => {
+    if (
+      order.orderStatus === 'new' &&
+      order.paymentStatus !== 'paid' &&
+      new Date(order.createdAt).getTime() < cutoff
+    ) {
+      cancelledCount++
+      return {
+        ...order,
+        orderStatus: 'cancelled' as const,
+        fulfillmentStatus: 'cancelled' as const,
+        updatedAt: new Date().toISOString(),
+      }
+    }
+    return order
+  })
+
+  if (cancelledCount > 0) {
+    await saveOrders(updated)
+  }
+
+  return cancelledCount
+}
+

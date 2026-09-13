@@ -23,6 +23,10 @@ export async function middleware(request: NextRequest) {
   const isBackofficeRoute = pathname.startsWith('/backoffice')
   const isApiRoute = pathname.startsWith('/api')
   const isAuthRoute = pathname.startsWith('/api/auth')
+  // Cron-эндпоинты не идут через браузер (нет auth-cookie), поэтому не
+  // защищаются JWT-мидлваром — вместо этого каждый такой роут сам проверяет
+  // заголовок x-cron-secret против CRON_SECRET (см. /api/cron/orders/expire)
+  const isCronRoute = pathname.startsWith('/api/cron')
   const publicApiRules: Array<{ prefix: string; methods: string[] }> = [
     { prefix: '/api/catalog', methods: ['GET'] },
     { prefix: '/api/products', methods: ['GET'] },
@@ -37,6 +41,10 @@ export async function middleware(request: NextRequest) {
   const isLoginPage = pathname === '/backoffice/login'
 
   if (isBackofficeRoute && isLoginPage) {
+    return NextResponse.next()
+  }
+
+  if (isCronRoute) {
     return NextResponse.next()
   }
 

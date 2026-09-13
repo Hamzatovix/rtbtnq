@@ -4,9 +4,17 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Phone, MessageCircle, Printer } from 'lucide-react'
 import { getColorEnglishName } from '@/lib/utils'
 import { toast } from '@/components/ui/toast'
+
+function formatPhoneLinks(phone: string) {
+  const digits = phone.replace(/\D/g, '')
+  if (!digits) return null
+  // Российский номер часто вводят с ведущей 8 — для tel:/wa.me нужен код +7
+  const intl = digits.length === 11 && digits.startsWith('8') ? `7${digits.slice(1)}` : digits
+  return { tel: `tel:+${intl}`, whatsapp: `https://wa.me/${intl}` }
+}
 
 export default function OrderDetailPage() {
   const params = useParams()
@@ -85,7 +93,7 @@ export default function OrderDetailPage() {
   return (
     <div className="space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
+      <div className="print:hidden flex items-center gap-2 text-xs font-mono text-fintage-graphite/60 dark:text-fintage-graphite/75 uppercase tracking-[0.15em]">
         <Link href="/backoffice" className="hover:text-accent dark:hover:text-accent transition-fintage">Панель</Link>
         <span>/</span>
         <Link href="/backoffice/orders" className="hover:text-accent dark:hover:text-accent transition-fintage">Заказы</Link>
@@ -95,20 +103,64 @@ export default function OrderDetailPage() {
 
       <div className="flex items-center justify-between">
         <h1 className="text-title-1 font-display-vintage font-black text-fintage-charcoal dark:text-fintage-offwhite tracking-tighter uppercase">Заказ {order.number}</h1>
-        <Link href="/backoffice/orders" className="text-xs font-mono text-accent dark:text-accent hover:underline inline-flex items-center gap-2 transition-fintage uppercase tracking-[0.15em]">
-          <ArrowLeft className="h-4 w-4" />
-          назад к заказам
-        </Link>
+        <div className="print:hidden flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="text-xs font-mono text-accent dark:text-accent hover:underline inline-flex items-center gap-2 transition-fintage uppercase tracking-[0.15em]"
+          >
+            <Printer className="h-4 w-4" />
+            печать
+          </button>
+          <Link href="/backoffice/orders" className="text-xs font-mono text-accent dark:text-accent hover:underline inline-flex items-center gap-2 transition-fintage uppercase tracking-[0.15em]">
+            <ArrowLeft className="h-4 w-4" />
+            назад к заказам
+          </Link>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 print:grid-cols-1 gap-6">
+        <div className="md:col-span-2 print:col-span-1 space-y-6">
           {/* Клиент */}
           <div className="p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm bg-fintage-graphite/5 dark:bg-fintage-graphite/10 shadow-fintage-sm">
             <h2 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-4 uppercase tracking-[0.15em]">Клиент</h2>
             <div className="space-y-2 text-sm">
               <div><span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Имя:</span> {order.customerName || '-'}</div>
-              <div><span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Телефон:</span> {order.customerPhone || '-'}</div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-fintage-graphite/60 dark:text-fintage-graphite/75">Телефон:</span>
+                {order.customerPhone ? (
+                  (() => {
+                    const links = formatPhoneLinks(order.customerPhone)
+                    return (
+                      <>
+                        <span>{order.customerPhone}</span>
+                        {links && (
+                          <span className="inline-flex items-center gap-1 print:hidden">
+                            <a
+                              href={links.tel}
+                              title="Позвонить"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-sm text-accent dark:text-accent hover:bg-accent/10 dark:hover:bg-accent/20 transition-fintage"
+                            >
+                              <Phone className="h-3.5 w-3.5" />
+                            </a>
+                            <a
+                              href={links.whatsapp}
+                              target="_blank"
+                              rel="noreferrer"
+                              title="Написать в WhatsApp"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-sm text-accent dark:text-accent hover:bg-accent/10 dark:hover:bg-accent/20 transition-fintage"
+                            >
+                              <MessageCircle className="h-3.5 w-3.5" />
+                            </a>
+                          </span>
+                        )}
+                      </>
+                    )
+                  })()
+                ) : (
+                  '-'
+                )}
+              </div>
             </div>
           </div>
 
@@ -215,7 +267,7 @@ export default function OrderDetailPage() {
 
           {/* События */}
           {order.events && order.events.length > 0 && (
-            <div className="p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm shadow-fintage-sm">
+            <div className="print:hidden p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm shadow-fintage-sm">
               <h2 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-4 uppercase tracking-[0.15em]">История событий</h2>
               <ul className="space-y-2 text-sm">
                 {order.events.map((e:any)=> (
@@ -255,7 +307,7 @@ export default function OrderDetailPage() {
           </div>
 
           {/* Операции */}
-          <div className="p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm shadow-fintage-sm">
+          <div className="print:hidden p-6 border border-fintage-graphite/20 dark:border-fintage-graphite/45 rounded-sm shadow-fintage-sm">
             <h2 className="text-sm font-mono text-fintage-charcoal dark:text-fintage-offwhite mb-4 uppercase tracking-[0.15em]">Операции</h2>
             <div className="space-y-2">
               <Button 

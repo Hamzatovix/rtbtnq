@@ -333,7 +333,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
   return (
     <div className="min-h-screen bg-fintage-offwhite dark:bg-fintage-charcoal bg-vintage-canvas text-fintage-charcoal dark:text-fintage-offwhite">
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 backdrop-blur-md border-b border-fintage-graphite/20 dark:border-fintage-graphite/45 shadow-fintage-sm">
+      <header className="print:hidden sticky top-0 z-50 bg-fintage-offwhite/90 dark:bg-fintage-charcoal/90 backdrop-blur-md border-b border-fintage-graphite/20 dark:border-fintage-graphite/45 shadow-fintage-sm">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
           <div className="flex h-14 sm:h-16 md:h-16 lg:h-20 items-center justify-between gap-2 sm:gap-3 md:gap-4">
             <Link href="/backoffice" className="flex items-center space-x-1.5 sm:space-x-2 group flex-shrink-0 min-w-0" aria-label="Backoffice home">
@@ -356,7 +356,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       </main>
 
       {/* FOOTER (optional minimal) */}
-      <footer className="mt-8 sm:mt-12 md:mt-16 py-4 sm:py-6 md:py-8 border-t border-fintage-graphite/20 dark:border-fintage-graphite/45">
+      <footer className="print:hidden mt-8 sm:mt-12 md:mt-16 py-4 sm:py-6 md:py-8 border-t border-fintage-graphite/20 dark:border-fintage-graphite/45">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <p className="text-[10px] font-mono text-fintage-graphite/50 dark:text-fintage-graphite/75 tracking-[0.2em] uppercase">© RSBTNQ Backoffice</p>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
